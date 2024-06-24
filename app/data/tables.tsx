@@ -1,0 +1,460 @@
+import { ColumnsTable, TableDataItem, TableDataItemOld } from '@/types/tables';
+import moment from 'moment';
+import Link from 'next/link';
+const Button = () => <button type='button'>Download</button>;
+
+const dataTables = {
+    basic: {
+        data: [
+            {
+                id: "1",
+                SNO: 1,
+                NAME: "Yonna",
+                LASTNAME: "Qond",
+                POSITION: "Financial Controller",
+                DATE: "01/03/22",
+                SALARY: "$143,654",
+                EMAIL: "i.bond@datatables.net",
+            },
+            {
+                id: "2",
+                SNO: 2,
+                NAME: "Zonna",
+                LASTNAME: "Jond",
+                POSITION: "Accountant",
+                DATE: "02/06/22",
+                SALARY: "$343,654",
+                EMAIL: "a.bond@datatables.net",
+            },
+            {
+                id: "3",
+                SNO: 3,
+                NAME: "Nonna",
+                LASTNAME: "Tond",
+                POSITION: "Chief Executive Officer",
+                DATE: "06/04/22",
+                SALARY: "$743,654",
+                EMAIL: "s.bond@datatables.net",
+            },
+            {
+                id: "4",
+                SNO: 4,
+                NAME: "Bonna",
+                LASTNAME: "Oond",
+                POSITION: "Chief Operating Officer",
+                DATE: "08/04/22",
+                SALARY: "$643,654",
+                EMAIL: "w.bond@datatables.net",
+            },
+            {
+                id: "5",
+                SNO: 5,
+                NAME: "Honna",
+                LASTNAME: "Pond",
+                POSITION: "Data Coordinator",
+                DATE: "12/04/22",
+                SALARY: "$243,654",
+                EMAIL: "e.bond@datatables.net",
+            },
+            {
+                id: "6",
+                SNO: 6,
+                NAME: "Fonna",
+                LASTNAME: "Nond",
+                POSITION: "Developer",
+                DATE: "14/04/22",
+                SALARY: "$543,654",
+                EMAIL: "r.bond@datatables.net",
+            },
+            {
+                id: "7",
+                SNO: 7,
+                NAME: "Aonna",
+                LASTNAME: "Xond",
+                POSITION: "Development lead",
+                DATE: "15/04/22",
+                SALARY: "$843,654",
+                EMAIL: "g.bond@datatables.net",
+            },
+            {
+                id: "8",
+                SNO: 8,
+                NAME: "Qonna",
+                LASTNAME: "Vond",
+                POSITION: "Director",
+                DATE: "18/04/22",
+                SALARY: "$743,654",
+                EMAIL: "x.bond@datatables.net",
+            },
+            {
+                id: "9",
+                SNO: 9,
+                NAME: "Jond",
+                LASTNAME: "Zonna",
+                POSITION: "Marketing Officer",
+                DATE: "20/04/22",
+                SALARY: "$543,654",
+                EMAIL: "k.bond@datatables.net",
+            },
+            {
+                id: "10",
+                SNO: 10,
+                NAME: "Yonna",
+                LASTNAME: "Qond",
+                POSITION: "Financial Controller",
+                DATE: "22/04/22",
+                SALARY: "$143,654",
+                EMAIL: "s.bond@datatables.net",
+            },
+            {
+                id: "11",
+                SNO: 11,
+                NAME: "Yonna",
+                LASTNAME: "Qond",
+                POSITION: "Financial Controller",
+                DATE: "24/04/22",
+                SALARY: "$143,654",
+                EMAIL: "b.bond@datatables.net",
+            },
+            {
+                id: "12",
+                SNO: 12,
+                NAME: "Yonna",
+                LASTNAME: "Qond",
+                POSITION: "Financial Controller",
+                DATE: "26/04/22",
+                SALARY: "$143,654",
+                EMAIL: "o.bond@datatables.net",
+            },
+            {
+                id: "13",
+                SNO: 13,
+                NAME: "Qonna",
+                LASTNAME: "Pond",
+                POSITION: "Data Coordinator",
+                DATE: "28/04/22",
+                SALARY: "$243,654",
+                EMAIL: "q.bond@datatables.net",
+            },
+            {
+                id: "14",
+                SNO: 14,
+                NAME: "Yonna",
+                LASTNAME: "Qond",
+                POSITION: "Financial Controller",
+                DATE: "30/04/22",
+                SALARY: "$143,654",
+                EMAIL: "m.bond@datatables.net",
+            },
+        ],
+        columns: [
+            // {
+            //     name: "Actions",
+            //     selector: (row: TableDataItemOld) => [row.actions],
+            //     sortable: false,
+            // },
+            {
+                name: "S.NO",
+                selector: (row: TableDataItemOld) => [row.SNO],
+                sortable: true,
+            },
+            {
+                name: "NAME",
+                selector: (row: TableDataItemOld) => [row.NAME],
+                sortable: true,
+            },
+            {
+                name: "LAST NAME",
+                selector: (row: TableDataItemOld) => [row.LASTNAME],
+                sortable: true,
+            },
+            {
+                name: "POSITION",
+                selector: (row: TableDataItemOld) => [row.POSITION],
+                sortable: true,
+            },
+            {
+                name: "DATE",
+                selector: (row: TableDataItemOld) => [row.DATE],
+                sortable: true,
+            },
+            {
+                name: " SALARY",
+                selector: (row: TableDataItemOld) => [row.SALARY],
+                sortable: true,
+            },
+            {
+                name: "EMAIL",
+                selector: (row: TableDataItemOld) => [row.EMAIL],
+                sortable: true,
+            },
+        ],
+    },
+    export: {
+        data: [
+            {
+                id: "1",
+                SNO: 1,
+                NAME: "Yonna",
+                LASTNAME: "Qond",
+                POSITION: "Financial Controller",
+                DATE: "15/05/22",
+                SALARY: "$143,654",
+                EMAIL: "i.bond@datatables.net",
+            },
+            {
+                id: "2",
+                SNO: 2,
+                NAME: "Zonna",
+                LASTNAME: "Jond",
+                POSITION: "Accountant",
+                DATE: "18/05/22",
+                SALARY: "$343,654",
+                EMAIL: "a.bond@datatables.net",
+            },
+            {
+                id: "3",
+                SNO: 3,
+                NAME: "Nonna",
+                LASTNAME: "Tond",
+                POSITION: "Chief Executive Officer",
+                DATE: "18/05/22",
+                SALARY: "$743,654",
+                EMAIL: "s.bond@datatables.net",
+            },
+            {
+                id: "4",
+                SNO: 4,
+                NAME: "Bonna",
+                LASTNAME: "Oond",
+                POSITION: "Chief Operating Officer",
+                DATE: "20/05/22",
+                SALARY: "$643,654",
+                EMAIL: "w.bond@datatables.net",
+            },
+            {
+                id: "5",
+                SNO: 5,
+                NAME: "Honna",
+                LASTNAME: "Pond",
+                POSITION: "Data Coordinator",
+                DATE: "22/05/22",
+                SALARY: "$243,654",
+                EMAIL: "e.bond@datatables.net",
+            },
+            {
+                id: "6",
+                SNO: 6,
+                NAME: "Fonna",
+                LASTNAME: "Nond",
+                POSITION: "Developer",
+                DATE: "24/05/22",
+                SALARY: "$543,654",
+                EMAIL: "r.bond@datatables.net",
+            },
+            {
+                id: "7",
+                SNO: 7,
+                NAME: "Aonna",
+                LASTNAME: "Xond",
+                POSITION: "Development lead",
+                DATE: "26/05/22",
+                SALARY: "$843,654",
+                EMAIL: "g.bond@datatables.net",
+            },
+            {
+                id: "8",
+                SNO: 8,
+                NAME: "Qonna",
+                LASTNAME: "Vond",
+                POSITION: "Director",
+                DATE: "28/05/22",
+                SALARY: "$743,654",
+                EMAIL: "x.bond@datatables.net",
+            },
+            {
+                id: "9",
+                SNO: 9,
+                NAME: "Jond",
+                LASTNAME: "Zonna",
+                POSITION: "Marketing Officer",
+                DATE: "29/05/22",
+                SALARY: "$543,654",
+                EMAIL: "k.bond@datatables.net",
+            },
+            {
+                id: "10",
+                SNO: 10,
+                NAME: "Yonna",
+                LASTNAME: "Qond",
+                POSITION: "Financial Controller",
+                DATE: "01/06/22",
+                SALARY: "$143,654",
+                EMAIL: "s.bond@datatables.net",
+            },
+            {
+                id: "11",
+                SNO: 11,
+                NAME: "Yonna",
+                LASTNAME: "Qond",
+                POSITION: "Financial Controller",
+                DATE: "02/06/22",
+                SALARY: "$143,654",
+                EMAIL: "b.bond@datatables.net",
+            },
+            {
+                id: "12",
+                SNO: 12,
+                NAME: "Yonna",
+                LASTNAME: "Qond",
+                POSITION: "Financial Controller",
+                DATE: "05/06/22",
+                SALARY: "$143,654",
+                EMAIL: "o.bond@datatables.net",
+            },
+            {
+                id: "13",
+                SNO: 13,
+                NAME: "Qonna",
+                LASTNAME: "Pond",
+                POSITION: "Data Coordinator",
+                DATE: "08/06/22",
+                SALARY: "$243,654",
+                EMAIL: "q.bond@datatables.net",
+            },
+            {
+                id: "14",
+                SNO: 14,
+                NAME: "Yonna",
+                LASTNAME: "Qond",
+                POSITION: "Financial Controller",
+                DATE: "11/06/22",
+                SALARY: "$143,654",
+                EMAIL: "m.bond@datatables.net",
+            },
+        ],
+        columns: [
+            {
+                name: "ID PROVEEDOR",
+                selector: (row: TableDataItem) => [row.supplier_code],
+                sortable: true,
+            },
+            {
+                name: "PROVEEDOR",
+                selector: (row: TableDataItem) => [row.supplier],
+                sortable: true,
+            },
+
+            {
+                name: "CODIGO",
+                selector: (row: TableDataItem) => [row.code],
+                sortable: true,
+            },
+            {
+                name: "COSTO",
+                selector: (row: TableDataItem) => [row.buy_value],
+                sortable: true,
+            },
+            {
+                name: "FECHA COMPRA",
+                selector: (row: TableDataItem) => [
+                    moment(row.date_start).format("YYYY-MM-DD"),
+                ],
+                sortable: true,
+            },
+            {
+                name: "FECHA VENCI",
+                selector: (row: TableDataItem) => [
+                    moment(row.date_end).format("YYYY-MM-DD"),
+                ],
+                sortable: true,
+            },
+            {
+                name: " FECHA VENTA",
+                selector: (row: TableDataItem) => [
+                    row.date_sold > 0
+                        ? moment(row.date_sold).format("YYYY-MM-DD")
+                        : "0000-00-00",
+                ],
+                sortable: true,
+            },
+            {
+                name: " FECHA RED",
+                selector: (row: TableDataItem) => [
+                    row.date_redeemed > 0
+                        ? moment(row.date_redeemed).format("YYYY-MM-DD")
+                        : "0000-00-00",
+                ],
+                sortable: true,
+            },
+            {
+                name: "ESTADO",
+                selector: (row: TableDataItem) => [
+                    row.is_active ? "Activo" : "Inactivo",
+                ],
+                sortable: true,
+            },
+            {
+                name: "ESTADO RED",
+                selector: (row: TableDataItem) => [
+                    row.redeem ? "Redimido" : "Vigente",
+                ],
+                sortable: true,
+            },
+            {
+                name: "VENDIDO",
+                selector: (row: TableDataItem) => [
+                    row.sold ? "Vendido" : "Pendiente",
+                ],
+                sortable: true,
+            },
+            {
+                name: "VAL VENTA",
+                selector: (row: TableDataItem) => [
+                    row.sold_value != "" ? row.sold_value : "0",
+                ],
+                sortable: true,
+            },
+            {
+                name: "CLIENTE",
+                selector: (row: TableDataItem) => [
+                    row.customer != "" ? row.customer : "N/A",
+                ],
+                sortable: true,
+            },
+            {
+                name: "TITULO",
+                selector: (row: TableDataItem) => [row.title],
+                sortable: true,
+            },
+            {
+                name: "DESCRIPCIÓN",
+                selector: (row: TableDataItem) => [row.description],
+                sortable: true,
+            },
+            {
+                name: "CUPON",
+                button: true,
+                selector: (row: TableDataItem) => [row.url],
+                sortable: true,
+                cell: (row: TableDataItem) =>
+                    row.url ? (
+                        <Link href={row.url} target="_blank">
+                            Ver
+                        </Link>
+                    ) : (
+                        ""
+                    ),
+            },
+        ],
+    },
+};
+export const basicTableData = {
+  columns: dataTables.basic.columns as any,
+  data: dataTables.basic.data,
+};
+
+export const exportTableData = {
+  columns: dataTables.export.columns as ColumnsTable[],
+  data: dataTables.export.data,
+};
