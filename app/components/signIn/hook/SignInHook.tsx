@@ -26,7 +26,8 @@ const SignUpHook = () => {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleSignIn = async ({ email, password }: LoginParams) => {
-        loginFirebase(email, password)
+        setError("");
+        await loginFirebase(email, password)
             .then((result) => {
                 setError("");
                 setSignIn(true);

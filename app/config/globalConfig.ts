@@ -1,6 +1,6 @@
 export const globalConfig = {
   primary: '0,0,0',
-  name: 'BoilerPlateBackOffice',
+  name: 'OneTapCorp',
   icon: './favicon.ico',
   description: 'Descripción global de la aplicación',
   login: {

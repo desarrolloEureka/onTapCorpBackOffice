@@ -45,13 +45,14 @@ const SingIn = () => {
                             <Col
                                 lg={6}
                                 xl={5}
-                                className="d-none d-lg-block text-center bg-primary details custom-bg"
+                                className="d-none d-lg-block text-center details custom-bg"
                             >
                                 <div className="mt-5 pt-4 p-2 position-absolute">
                                     <img
                                         src={main_logo_dark.src}
-                                        className="header-brand-img mb-4"
+                                        className="header-brand-img tw-mb-10"
                                         alt="logo-light"
+                                        style={{ width: '85px' }}
                                     />
                                     <div className="clearfix"></div>
                                     <img
@@ -162,7 +163,7 @@ const SingIn = () => {
                                                                 }
                                                                 color="black"
                                                                 size={14}
-                                                                // style={{}}
+                                                            // style={{}}
                                                             />
                                                         </InputGroup.Text>
                                                     </InputGroup>

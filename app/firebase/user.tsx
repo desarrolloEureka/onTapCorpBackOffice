@@ -11,14 +11,14 @@ import axios from "axios";
 
 const user = auth.currentUser;
 
-const backendClient = async (accessTokenUser: string) => {
+/* const backendClient = async (accessTokenUser: string) => {
     return axios.create({
         baseURL: firebaseConfig.backendBaseUrl,
         headers: {
             Authorization: `Bearer ${accessTokenUser}`,
         },
     });
-};
+}; */
 
 export const addUser = async ({
     email,
@@ -31,7 +31,7 @@ export const addUser = async ({
     accessTokenUser: string;
     uid: string;
 }) => {
-    return new Promise((resolve, reject) => {
+   /*  return new Promise((resolve, reject) => {
         backendClient(accessTokenUser).then(async (client) => {
             const data = await client.post(`auth/createUser`, {
                 uid,
@@ -45,7 +45,7 @@ export const addUser = async ({
                 reject(data);
             }
         });
-    });
+    }); */
 };
 
 export const updateUserPassword = async ({
@@ -57,7 +57,7 @@ export const updateUserPassword = async ({
     password: string;
     accessTokenUser: string;
 }) => {
-    return new Promise((resolve, reject) => {
+   /*  return new Promise((resolve, reject) => {
         backendClient(accessTokenUser).then(async (client) => {
             const data = await client.post(`auth/updatePassword`, {
                 uid,
@@ -70,7 +70,7 @@ export const updateUserPassword = async ({
                 reject(data);
             }
         });
-    });
+    }); */
 };
 
 export const saveUserById = async (data: any) => {

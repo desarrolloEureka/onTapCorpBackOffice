@@ -42,6 +42,7 @@ const ForgotPassword = () => {
                           src={main_logo_light.src}
                           className='header-brand-img mb-4'
                           alt='logo'
+                          style={{ width: '85px' }}
                         />
                       </Link>
 
@@ -57,9 +58,6 @@ const ForgotPassword = () => {
                       <span className='text-white-6 fs-13 mb-5 mt-xl-0'>
                         {globalConfig.rememberPassword.banner.description}
                       </span>
-                      {message != '' && (
-                        <Alert variant='danger'>{message}</Alert>
-                      )}
                     </div>
                   </Col>
                   <Col lg={6} xl={7} xs={12} sm={12} className=' login_form '>
@@ -81,6 +79,12 @@ const ForgotPassword = () => {
                             alt='logo'
                           />
                           <div className='clearfix'></div>
+
+                          {message != '' && (
+                            <Alert variant='danger'>{message}</Alert>
+                          )}
+
+
                           <h5 className='text-start mb-2'>
                             {globalConfig.rememberPassword.form.title}
                           </h5>

@@ -13,7 +13,7 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb)) !important;
+  /* color: rgb(var(--foreground-rgb)) !important; */
   background: rgb(var(--background-start-rgb)) !important;
 }
 

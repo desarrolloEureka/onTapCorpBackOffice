@@ -23,7 +23,7 @@ const HomeDash = () => {
   ];
   return (
     <>
-      <div className='row row-sm'>
+      {/*  <div className='row row-sm'>
         <div className='col-sm-12 col-md-6 col-lg-6 col-xl-4'>
           <div className='card custom-card'>
             <div className='card-body'>
@@ -558,7 +558,7 @@ const HomeDash = () => {
             </Card.Body>
           </Card>
         </Col>
-      </Row>
+      </Row> */}
     </>
   );
 };

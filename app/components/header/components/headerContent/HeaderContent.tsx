@@ -14,10 +14,10 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
     const { logOut, main_logo, data } = HeaderHook();
 
     return (
-        <header className="app-header ">
+        <header className="app-header bg-primary">
             <img
                 src={main_logo_dark.src}
-                className="tw-absolute tw-left-10 tw-w-48"
+                className="tw-absolute tw-left-10 tw-w-14"
                 alt="img"
             />
             <Container fluid className="main-header-container">
