@@ -23,7 +23,7 @@ const HomeDash = () => {
   ];
   return (
     <>
-      {/*  <div className='row row-sm'>
+      <div className='row row-sm'>
         <div className='col-sm-12 col-md-6 col-lg-6 col-xl-4'>
           <div className='card custom-card'>
             <div className='card-body'>
@@ -318,7 +318,7 @@ const HomeDash = () => {
                 Country Wise Sales
               </label>
               <p className='fs-12 mb-0 text-muted'>
-                ​The global ecommerce sales in 2020 is expected to reach $4.453
+                The global ecommerce sales in 2020 is expected to reach $4.453
                 trillion this marks an increase of <b>22.5 %</b> percent from
                 the previous year as the global ecommerce market.
               </p>
@@ -558,7 +558,7 @@ const HomeDash = () => {
             </Card.Body>
           </Card>
         </Col>
-      </Row> */}
+      </Row>
     </>
   );
 };

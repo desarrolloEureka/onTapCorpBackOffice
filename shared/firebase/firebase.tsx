@@ -4,12 +4,13 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 const firebaseConfig = {
-    apiKey: "AIzaSyBMxPncTwFOXkpvGR6Mc8UBdGDRPK-ljfo",
-    authDomain: "ontapcorp-backoffice.firebaseapp.com",
-    projectId: "ontapcorp-backoffice",
-    storageBucket: "ontapcorp-backoffice.appspot.com",
-    messagingSenderId: "613452523667",
-    appId: "1:613452523667:web:d2b73db35c8aaa95ab0566",
+    apiKey: "AIzaSyBsybfHvoAj3Bvtzu_WwFq3fj9bWOYVziM",
+    authDomain: "onetapcorp-d0146.firebaseapp.com",
+    projectId: "onetapcorp-d0146",
+    storageBucket: "onetapcorp-d0146.appspot.com",
+    messagingSenderId: "828170350312",
+    appId: "1:828170350312:web:e023c1b6a14e680233235d",
+    measurementId: "G-ES4RD6WMNW"
     /* measurementId: "G-NVG2EXRMDV",
     backendBaseUrl:
         "https://us-central1-rxcountry-backoffice.cloudfunctions.net/backendApp", */

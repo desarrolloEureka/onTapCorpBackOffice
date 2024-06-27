@@ -188,15 +188,14 @@ const SingIn = () => {
                                                     </Link>
                                                 </div>
                                                 <div>
-                                                    {/* {`Don't`} */}
-                                                    No tienes una cuenta
+                                                  {/*   No tienes una cuenta
                                                     registrada?
                                                     <Link
                                                         href={`/components/signup/`}
                                                     >
                                                         {" "}
                                                         Regístrate aquí
-                                                    </Link>
+                                                    </Link> */}
                                                 </div>
                                             </div>
                                         </Card.Body>
