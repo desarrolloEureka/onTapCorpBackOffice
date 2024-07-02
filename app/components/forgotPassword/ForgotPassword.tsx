@@ -37,7 +37,7 @@ const ForgotPassword = () => {
                     className='d-none d-lg-block text-center bg-primary details custom-bg'
                   >
                     <div className='mt-3 pt-3 p-2 position-absolute'>
-                      <Link href='/components/dashboard/dashboard'>
+                      <Link href={`/components/signIn`}>
                         <img
                           src={main_logo_light.src}
                           className='header-brand-img mb-4'
@@ -60,10 +60,10 @@ const ForgotPassword = () => {
                       </span>
                     </div>
                   </Col>
-                  <Col lg={6} xl={7} xs={12} sm={12} className=' login_form '>
+                  <Col lg={6} xl={7} xs={12} sm={12} className='login_form construction'>
                     <Container fluid>
                       <Row className=' row-sm'>
-                        <Card.Body className='card-body mt-2 mb-2'>
+                        <Card.Body className='card-body mt-3 tw-mb-2'>
                           <img
                             src={
                               '../../../assets/images/brand-logos/desktop-white.png'
@@ -85,10 +85,10 @@ const ForgotPassword = () => {
                           )}
 
 
-                          <h5 className='text-start mb-2'>
+                          <h5 className='text-start mb-2' style={{ color: 'white' }}>
                             {globalConfig.rememberPassword.form.title}
                           </h5>
-                          <p className='mb-4 text-muted fs-13 ms-0 text-start'>
+                          <p className='mb-4 fs-13 ms-0 text-start' style={{ color: 'white' }}>
                             {/* {`It's`} free to signup and only takes a minute. */}
                             {globalConfig.rememberPassword.form.description}
                           </p>
@@ -112,9 +112,9 @@ const ForgotPassword = () => {
                               Solicitar link de recuperación
                             </Button>
                           </Form>
-                          <div className='card-footer border-top-0 ps-0 mt-3 text-start '>
-                            <p className='mb-1'>Recuerdas tu contraseña?</p>
-                            <p className='mb-0'>
+                          <div className='border-top-0 ps-0 mt-3 text-start mb-3'>
+                            <p className='mb-1' style={{ color: 'white' }}>Recuerdas tu contraseña?</p>
+                            <p className='mb-0' style={{ color: 'white' }}>
                               Intenta
                               <Link href={`/components/signIn`}> Ingresar</Link>
                             </p>

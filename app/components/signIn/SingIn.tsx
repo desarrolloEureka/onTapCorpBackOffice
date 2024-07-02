@@ -60,7 +60,7 @@ const SingIn = () => {
                                         className="ht-100 mb-0"
                                         alt="user"
                                     />
-                                    <h5 className="mt-4 text-white">
+                                    <h5 className="mt-4 text-white-6">
                                         {globalConfig.login.banner.title}
                                     </h5>
                                     <span className="text-white-6 fs-13 mb-5 mt-xl-0">
@@ -73,7 +73,7 @@ const SingIn = () => {
                                 xl={7}
                                 xs={12}
                                 sm={12}
-                                className="login_form "
+                                className="login_form construction"
                             >
                                 <Container fluid>
                                     <Row className="row-sm">
@@ -83,11 +83,6 @@ const SingIn = () => {
                                                 className=" d-lg-none header-brand-img text-start float-start mb-4 auth-light-logo"
                                                 alt="logo"
                                             />
-                                            {/* <img
-                                                src={logo_light.src}
-                                                className=" d-lg-none header-brand-img text-start float-start mb-4 auth-dark-logo"
-                                                alt="logo"
-                                            /> */}
                                             <div className="clearfix"></div>
                                             {error != "" && (
                                                 <Alert variant="danger">
@@ -95,13 +90,13 @@ const SingIn = () => {
                                                 </Alert>
                                             )}
                                             <Form>
-                                                <h5 className="text-start mb-2">
+                                                <h5 className="text-start mb-2" style={{ color: 'white' }}>
                                                     {
                                                         globalConfig.login.form
                                                             .title
                                                     }
                                                 </h5>
-                                                <p className="mb-4 text-muted fs-13 ms-0 text-start">
+                                                <p className="mb-4 fs-13 ms-0 text-start" style={{ color: 'white' }}>
                                                     {
                                                         globalConfig.login.form
                                                             .description
@@ -181,21 +176,13 @@ const SingIn = () => {
                                                 </Button>
                                             </Form>
                                             <div className="text-start mt-5 ms-0">
-                                                <div className="mb-1">
-                                                    <Link href="/components/forgotPassword">
-                                                        Has olvidado tu
-                                                        contraseña ?
+                                                <div className="mb-1" style={{ color: '#fff' }}>
+                                                    <Link href="/components/forgotPassword" style={{ color: 'white' }}>
+                                                        Has olvidado tu contraseña ?
                                                     </Link>
                                                 </div>
                                                 <div>
-                                                  {/*   No tienes una cuenta
-                                                    registrada?
-                                                    <Link
-                                                        href={`/components/signup/`}
-                                                    >
-                                                        {" "}
-                                                        Regístrate aquí
-                                                    </Link> */}
+
                                                 </div>
                                             </div>
                                         </Card.Body>

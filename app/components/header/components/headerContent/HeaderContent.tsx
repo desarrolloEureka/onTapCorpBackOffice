@@ -89,7 +89,7 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                                     //href="#functionary"
                                     eventKey="second"
                                 >
-                                    Areas de Trabajo
+                                    Áreas de Trabajo
                                 </NavDropdown.Item>
                                 <NavDropdown.Item
                                     //href="#functionary"
@@ -117,7 +117,7 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                                 </NavDropdown.Item>
                             </NavDropdown>
 
-                            {/*  Gps */}
+                            {/*  GPS */}
                             <NavDropdown
                                 title="GPS"
                                 id="nav-dropdown"
@@ -127,7 +127,7 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                                     //href="#functionary"
                                     eventKey="second"
                                 >
-                                    Areas
+                                    Áreas
                                 </NavDropdown.Item>
                                 <NavDropdown.Item
                                     //href="#functionary"
@@ -171,7 +171,7 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                                     //href="#functionary"
                                     eventKey="second"
                                 >
-                                    Trajetas
+                                    Tarjetas
                                 </NavDropdown.Item>
                                 <NavDropdown.Item
                                     //href="#functionary"
@@ -209,13 +209,13 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                                     //href="#functionary"
                                     eventKey="second"
                                 >
-                                    Areas
+                                    Áreas
                                 </NavDropdown.Item>
                                 <NavDropdown.Item
                                     //href="#functionary"
                                     eventKey="second"
                                 >
-                                    Metricas
+                                    Métricas
                                 </NavDropdown.Item>
                                 <NavDropdown.Item
                                     //href="#functionary"
@@ -254,6 +254,7 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                         />
                     </div>
                 </div>
+
             </Container>
         </header>
     );

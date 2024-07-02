@@ -1,4 +1,4 @@
-import user from '@/assets/images/svgs/user.svg';
+import user from '@/assets/images/svgs/user.png';
 import logoDark from '@/assets/images/brand-logos/desktop-logo-dark.png';
 import logoLight from '@/assets/images/brand-logos/desktop-logo-dark.png';
 import flag1 from '@/assets/images/flags/1.jpg';
