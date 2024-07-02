@@ -62,6 +62,7 @@ const ForgotPassword = () => {
                   </Col>
                   <Col lg={6} xl={7} xs={12} sm={12} className='login_form construction'>
                     <Container fluid>
+                      
                       <Row className=' row-sm'>
                         <Card.Body className='card-body mt-3 tw-mb-2'>
                           <img
