@@ -21,6 +21,7 @@ export const idTypes = [
     { value: "PE", label: "PE" },
     { value: "AS", label: "AS" },
     { value: "MS", label: "MS" },
+    
 ];
 
 export const countries = [{ value: "CO", label: "Colombia" }];
