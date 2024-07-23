@@ -10,6 +10,7 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
         <Tab.Container defaultActiveKey="first">
             <HeaderContent />
             <Tab.Content>
+                {/* Vista del home */}
                 <Tab.Pane
                     className="tab-pane show  text-muted"
                     id="home1"
@@ -18,6 +19,7 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                 >
                     <HomeDash />
                 </Tab.Pane>
+                {/* Vista de Funcionarios */}
                 <Tab.Pane
                     className="tab-pane text-muted"
                     id="users"
@@ -37,6 +39,27 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         reference="functionary"
                     />
                 </Tab.Pane>
+                {/* Vista de Empresas */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="companies"
+                    role="tabpanel"
+                    eventKey="companies"
+                >
+                    <BannerMenu
+                        seoTitle="Empresas"
+                        title="Empresas"
+                        item="Dashboard"
+                        activeItem="Registro de Empresas"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla del Listado de Empresas."
+                        componentDescription="En esta tabla se encuentran listados todos los empresas para su administración."
+                        tableTitle="Empresas"
+                        reference="companies"
+                    />
+                </Tab.Pane>
+                {/* Vista de los Roles */}
                 <Tab.Pane
                     className="tab-pane text-muted"
                     id="Roles"
@@ -56,6 +79,7 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         reference="roles"
                     />
                 </Tab.Pane>
+                {/* Vista del perfil */}
                 <Tab.Pane
                     className="tab-pane text-muted"
                     id="profile"
