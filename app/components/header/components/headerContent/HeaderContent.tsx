@@ -72,8 +72,8 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                                     Empleados
                                 </NavDropdown.Item>
                                 <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
+                                    href="#company"
+                                    eventKey="companies"
                                 >
                                     Empresas
                                 </NavDropdown.Item>
