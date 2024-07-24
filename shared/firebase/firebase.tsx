@@ -16,6 +16,8 @@ import "firebase/compat/firestore";
     measurementId: "G-ES4RD6WMNW"
 }; */
 
+//prueba
+
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_API_KEY,
     authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
