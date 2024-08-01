@@ -181,6 +181,7 @@ const MainFormModal = ({
                                 reference !== "specialties" &&
                                 reference !== "agreements" &&
                                 reference !== "diagnoses" &&
+                                reference !== "companies" &&
                                 reference !== "areas" && (
                                     <>
                                         <Col md={6} lg={4} className="mb-3">
@@ -241,7 +242,6 @@ const MainFormModal = ({
                                                 name="id"
                                                 className="form-control"
                                                 placeholder="Número"
-                                                aria-label="Last name"
                                                 onChange={changeHandler}
                                             />
                                         </Col>
@@ -278,6 +278,23 @@ const MainFormModal = ({
                                     className="form-control"
                                     placeholder="Nombres"
                                     aria-label="First name"
+                                    onChange={changeHandler}
+                                />
+                            </Col>
+                            <Col md={6} lg={4} className="mb-3">
+                                <Form.Label className="">
+                                    NIT
+                                    <span className="tw-text-red-500">*</span>
+                                </Form.Label>
+                                <Form.Control
+                                    required
+                                    value={data.id}
+                                    type="text"
+                                    minLength={2}
+                                    maxLength={250}
+                                    name="id"
+                                    className="form-control"
+                                    placeholder="Número"
                                     onChange={changeHandler}
                                 />
                             </Col>
@@ -422,6 +439,7 @@ const MainFormModal = ({
                                 reference !== "specialties" &&
                                 reference !== "diagnostician" &&
                                 reference !== "diagnoses" &&
+                                reference !== "companies" &&
                                 reference !== "agreements" &&
                                 reference !== "areas" && (
                                     <Col md={6} lg={4} className="mb-3">
@@ -575,7 +593,7 @@ const MainFormModal = ({
                                                 onChange={changeHandler}
                                             /> */}
                                         </Col>
-                                        <Col md={6} className="mb-3">
+                                        <Col className="mb-3">
                                             <Form.Label className="">
                                                 Dirección
                                                 {/* <span className="tw-text-red-500">
@@ -1238,7 +1256,9 @@ const MainFormModal = ({
                                             controlId="files"
                                         >
                                             <Form.Label>
-                                                Subir Imagen:
+                                                {reference === "companies"
+                                                    ? "Subir Icono:"
+                                                    : "Subir Imagen:"}
                                                 {/* <span className="tw-text-red-500">
                                                     *
                                                 </span> */}

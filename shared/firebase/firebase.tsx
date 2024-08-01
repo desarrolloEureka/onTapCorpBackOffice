@@ -6,6 +6,7 @@ import { config as configDotenv } from "dotenv";
 // Add the Firebase products that you want to use
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
+
 /* const firebaseConfig = {
     apiKey: "AIzaSyBsybfHvoAj3Bvtzu_WwFq3fj9bWOYVziM",
     authDomain: "onetapcorp-d0146.firebaseapp.com",

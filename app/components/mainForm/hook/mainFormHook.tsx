@@ -3,6 +3,7 @@ import {
     dataAgreementsObject,
     dataAreasObject,
     dataCampusObject,
+    dataCompanyObject,
     dataDiagnosesObject,
     dataDiagnosticianObject,
     dataFunctionaryObject,
@@ -497,6 +498,44 @@ const MainFormHook = ({
             newData = { ...currentDataObject };
         }
 
+        if (reference === "companies") {
+            const currentDataObject = { ...dataCompanyObject };
+
+            handleShowMainFormEdit
+                ? (currentDataObject.uid = data.uid)
+                : (currentDataObject.uid = documentRef.id);
+                currentDataObject.name = data.name;
+            currentDataObject.id = data.id;
+            currentDataObject.phone = data.phone;
+            currentDataObject.phone2 = data.phone2;
+            currentDataObject.address = data.address;
+            currentDataObject.country = data.country;
+            currentDataObject.state = data.state;
+            currentDataObject.city = data.city;
+            currentDataObject.email = data.email;
+            currentDataObject.isActive = data.isActive;
+
+            for (const record of files) {
+                const urlName = record.name.split(".")[0];
+                await saveFilesDocuments({
+                    urlName,
+                    record,
+                    uid: handleShowMainFormEdit ? data.uid : documentRef.id,
+                    reference,
+                })
+                    .then((result) => {
+                        currentDataObject.urlPhoto = result;
+                        // error.push(...result);
+                    })
+                    .catch((err) => {
+                        error.push({ success: false, urlName });
+                        // console.log(error);
+                    });
+            }
+
+            newData = { ...currentDataObject };
+        }
+
         // console.log("newData", newData);
         // console.log("reference", reference);
 
@@ -573,6 +612,7 @@ const MainFormHook = ({
                   .then(confirmAlert)
             : reference === "professionals" ||
               reference === "patients" ||
+              reference === "companies" ||
               reference === "functionary"
             ? await addUser({
                   email: data.email,
@@ -634,12 +674,19 @@ const MainFormHook = ({
         data.phone &&
         !itemExist &&
         data.email;
+    
+    const companyVal =
+        reference === "companies" &&
+        data.name &&
+        data.id &&
+        data.phone &&
+        // !itemExist &&
+        data.email;
 
     const agreementsVal =
         reference === "agreements" && data.name && data.personType;
-    
-    const diagnosesVal =
-        reference === "diagnoses" && data.name && data.code;
+
+    const diagnosesVal = reference === "diagnoses" && data.name && data.code;
 
     const areasVal =
         !itemExist &&
@@ -687,6 +734,7 @@ const MainFormHook = ({
         // console.log(data);
         if (
             areasVal ||
+            companyVal ||
             campusVal ||
             specialtyVal ||
             diagnosticianVal ||
