@@ -11,7 +11,7 @@ const HeadDropDown = dynamic(
 );
 
 const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
-    const { logOut, main_logo, data } = HeaderHook();
+    const { logOut, main_logo, data, userRole } = HeaderHook();
 
     return (
         <header className="app-header bg-primary">
@@ -53,198 +53,218 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                                 </Nav.Link>
                             </Nav.Item>
 
-                            {/*  Perfil */}
-                            <NavDropdown
-                                title="Perfil"
-                                id="nav-dropdown"
-                                className="nav-item dropdown"
-                            >
-                                <NavDropdown.Item
-                                    href="#functionary"
-                                    eventKey="second"
+                            {/* Locaciones */}
+                            {(userRole === "superadmin" || userRole === "operativo" || userRole === "administrativo") && (
+                                <NavDropdown
+                                    title="Locaciones"
+                                    id="nav-dropdown"
+                                    className="nav-item dropdown"
                                 >
-                                    Funcionarios
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Empleados
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    href="#company"
-                                    eventKey="companies"
-                                >
-                                    Empresas
-                                </NavDropdown.Item>
-                            </NavDropdown>
+                                    {(userRole === "operativo" || userRole === "administrativo") ? (
+                                        <>
+                                            <NavDropdown.Item eventKey="second">Áreas de Trabajo</NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="second">Sedes</NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="second">Zonas</NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="second">Rutas</NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="second">Puntos Fijos</NavDropdown.Item>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <NavDropdown.Item eventKey="countries">País</NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="departments">Departamentos</NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="cities">Ciudades</NavDropdown.Item>
+                                        </>
+                                    )}
+                                </NavDropdown>
+                            )}
 
-                            {/*  Locaciones */}
-                            <NavDropdown
-                                title="Locaciones"
-                                id="nav-dropdown"
-                                className="nav-item dropdown"
-                            >
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
+                            {/*  Perfil */}
+                            {(userRole === "superadmin" || userRole === "operativo" || userRole === "administrativo") && (
+                                < NavDropdown
+                                    title="Perfil"
+                                    id="nav-dropdown"
+                                    className="nav-item dropdown"
                                 >
-                                    Áreas de Trabajo
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
+
+                                    {(userRole === "operativo" || userRole === "administrativo") ? (
+                                        <>
+                                            <NavDropdown.Item
+                                                href="#functionary"
+                                                eventKey="second"
+                                            >
+                                                Funcionarios
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item
+                                                //href="#functionary"
+                                                eventKey="second"
+                                            >
+                                                Empleados
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item
+                                                href="#company"
+                                                eventKey="companies"
+                                            >
+                                                Empresas
+                                            </NavDropdown.Item>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <NavDropdown.Item href="#company" eventKey="companies">Empresas</NavDropdown.Item>
+                                        </>
+                                    )}
+                                </NavDropdown>
+                            )}
+
+                            {/*  Configuraciónes */}
+                            {(userRole === "superadmin" || userRole === "operativo" || userRole === "administrativo") && (
+                                < NavDropdown
+                                    title="Configuraciónes"
+                                    id="nav-dropdown"
+                                    className="nav-item dropdown"
                                 >
-                                    Sedes
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Zonas
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Rutas
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Puntos Fijos
-                                </NavDropdown.Item>
-                            </NavDropdown>
+                                    <NavDropdown.Item href="#company" eventKey="roles">Roles</NavDropdown.Item>
+                                    <NavDropdown.Item href="#company" eventKey="documentTypes">Tipos Documento</NavDropdown.Item>
+                                </NavDropdown>
+                            )}
 
                             {/*  GPS */}
-                            <NavDropdown
-                                title="GPS"
-                                id="nav-dropdown"
-                                className="nav-item dropdown"
-                            >
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
+                            {(userRole === "operativo" || userRole === "administrativo") && (
+                                <NavDropdown
+                                    title="GPS"
+                                    id="nav-dropdown"
+                                    className="nav-item dropdown"
                                 >
-                                    Áreas
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Sedes
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Empleados
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Rutas
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Puntos Fijos
-                                </NavDropdown.Item>
-                            </NavDropdown>
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="second"
+                                    >
+                                        Áreas
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="second"
+                                    >
+                                        Sedes
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="second"
+                                    >
+                                        Empleados
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="second"
+                                    >
+                                        Rutas
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="second"
+                                    >
+                                        Puntos Fijos
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                            )}
 
                             {/*  Plantillas */}
-                            <NavDropdown
-                                title="Plantillas"
-                                id="nav-dropdown"
-                                className="nav-item dropdown"
-                            >
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
+                            {(userRole === "operativo" || userRole === "administrativo") && (
+                                <NavDropdown
+                                    title="Plantillas"
+                                    id="nav-dropdown"
+                                    className="nav-item dropdown"
                                 >
-                                    Logos
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Tarjetas
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Empleados
-                                </NavDropdown.Item>
-                            </NavDropdown>
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="second"
+                                    >
+                                        Logos
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="second"
+                                    >
+                                        Tarjetas
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="second"
+                                    >
+                                        Empleados
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                            )}
 
                             {/*  Reportes */}
-                            <NavDropdown
-                                title="Reportes"
-                                id="nav-dropdown"
-                                className="nav-item dropdown"
-                            >
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
+                            {(userRole === "operativo" || userRole === "administrativo") && (
+                                <NavDropdown
+                                    title="Reportes"
+                                    id="nav-dropdown"
+                                    className="nav-item dropdown"
                                 >
-                                    Rutas
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Zonas
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Sedes
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Áreas
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Métricas
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Visitas
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    //href="#functionary"
-                                    eventKey="second"
-                                >
-                                    Clics
-                                </NavDropdown.Item>
-                            </NavDropdown>
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="second"
+                                    >
+                                        Rutas
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="second"
+                                    >
+                                        Zonas
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="second"
+                                    >
+                                        Sedes
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="second"
+                                    >
+                                        Áreas
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="second"
+                                    >
+                                        Métricas
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="second"
+                                    >
+                                        Visitas
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="second"
+                                    >
+                                        Clics
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                            )}
 
                             {/*  General */}
-                            <NavDropdown
-                                title="General"
-                                id="nav-dropdown"
-                                className="nav-item dropdown"
-                            >
-                                <NavDropdown.Item
-                                    href="#roles"
-                                    eventKey="second"
+                            {(userRole === "operativo" || userRole === "administrativo") && (
+
+                                <NavDropdown
+                                    title="General"
+                                    id="nav-dropdown"
+                                    className="nav-item dropdown"
                                 >
-                                    Roles
-                                </NavDropdown.Item>
-                            </NavDropdown>
+                                    <NavDropdown.Item
+                                        href="#roles"
+                                        eventKey="second"
+                                    >
+                                        Roles
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                            )}
                         </Nav>
+
                         <HeadDropDown
                             // notifications={false}
                             dark
@@ -256,7 +276,7 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                 </div>
 
             </Container>
-        </header>
+        </header >
     );
 };
 

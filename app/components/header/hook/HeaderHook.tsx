@@ -12,6 +12,9 @@ function HeaderHook() {
     const { user } = useAuth();
     const [data, setData] = useState<any>(ProfileData);
 
+    // Obtener el rol del usuario desde el almacenamiento local
+    const userRole = localStorage.getItem('userRoleSlug');
+
     const theme = localStorage.getItem("@theme");
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
     const main_logo = themeParsed
@@ -32,7 +35,7 @@ function HeaderHook() {
         getUserProfileData();
     }, [getUserProfileData]);
 
-    return { logOut, main_logo, data };
+    return { logOut, main_logo, data, userRole };
 }
 
 export default HeaderHook;
