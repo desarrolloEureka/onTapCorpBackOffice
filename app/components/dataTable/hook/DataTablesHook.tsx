@@ -1,4 +1,6 @@
 "use client";
+import { colombianCitiesData } from "@/data/colombianCitiesData";
+import { countriesTable, idTypesTable } from "@/data/formConstant";
 import { allRef } from "@/firebase/campus";
 import { getAllCampusQuery } from "@/queries/campusQueries";
 import { getAllDocumentsQuery } from "@/queries/documentsQueries";
@@ -40,8 +42,25 @@ const DataTablesHook = (reference: string) => {
         return moment(fechaISO).format("DD/MM/YYYY HH:mm:ss");
     };
 
+    const transformCitiesData = (data: any) => {
+        const transformedData: { id: any; ciudad: any; departamento: any; pais: string; }[] = [];
+        let uniqueId = 1;
+
+        data.forEach((item: any) => {
+            item.ciudades.forEach((ciudad: any) => {
+                transformedData.push({
+                    id: uniqueId++,
+                    ciudad: ciudad,
+                    departamento: item.departamento,
+                    pais: 'Colombia',
+                });
+            });
+        });
+        return transformedData;
+    };
+
     const getAllDocuments = useCallback(async () => {
-        const documents = await getAllDocumentsQuery(reference);
+        const documents = reference === 'country' ? countriesTable : reference === 'departments' ? colombianCitiesData : reference === 'cities' ? transformCitiesData(colombianCitiesData) : reference === 'documentTypes' ? idTypesTable : await getAllDocumentsQuery(reference);
 
         const labelToDisplay = ["professionals", "patients", "functionary"];
 
@@ -49,39 +68,68 @@ const DataTablesHook = (reference: string) => {
             const cols: any[] = [];
             const entries = Object.keys(documents[0]);
 
-            const columnNamesToDisplay: ColumnNamesToDisplay = {
-                // uid:"uid",
-                timestamp: "Fecha Registro",
-                idType: "Tipo",
-                id: "Documento",
-                name: labelToDisplay.includes(reference) ? "Nombres" : "Nombre",
-                lastName: labelToDisplay.includes(reference)
-                    ? "Apellidos"
-                    : "Apellido",
-                code: "Código",
-                email: "Correo",
-                phone: "Teléfono",
-                phone2: "Teléfono fijo",
-                address: "Dirección",
-                description: "Descripción",
-                age: "Edad",
-                discount: "Descuento(%)",
-                // "birthDate",
-                // "country",
-                // "state",
-                city: "Ciudad",
-                // "password",
-                // "confirmPassword",
-                specialty: "Especialidad",
-                contract: "Convenio",
-                // rol: "Rol",
-                campus: "Sede",
-                availableCampus: "Sedes",
-                // "area",
-                // urlPhoto: "urlPhoto",
-                isActive: "Estado",
-                // "isDeleted",
-            };
+            // Define column names based on reference
+            let columnNamesToDisplay: ColumnNamesToDisplay = {};
+
+            if (reference === 'documentTypes' || reference === 'country') {
+                columnNamesToDisplay = {
+                    id: "Id",
+                    label: "Nombre"
+                };
+            } else if (reference === 'departments') {
+                columnNamesToDisplay = {
+                    id: "Id",
+                    departamento: "Nombre"
+                };
+            } else if (reference === 'cities') {
+                columnNamesToDisplay = {
+                    id: "Id",
+                    ciudad: "Ciudad",
+                    departamento: "Departamento",
+                    pais: "País"
+                };
+            } else if (reference === 'roles') {
+                columnNamesToDisplay = {
+                    uid: "Id",
+                    name: "Nombre",
+                    description: "Descripción"
+                };
+            } else {
+                columnNamesToDisplay = {
+                    // uid:"uid",
+                    timestamp: "Fecha Registro",
+                    idType: "Tipo",
+                    id: "Documento",
+                    name: labelToDisplay.includes(reference) ? "Nombres" : "Nombre",
+                    lastName: labelToDisplay.includes(reference)
+                        ? "Apellidos"
+                        : "Apellido",
+                    code: "Código",
+                    email: "Correo",
+                    phone: "Teléfono",
+                    phone2: "Teléfono fijo",
+                    address: "Dirección",
+                    description: "Descripción",
+                    age: "Edad",
+                    discount: "Descuento(%)",
+                    // "birthDate",
+                    // "country",
+                    // "state",
+                    city: "Ciudad",
+                    // "password",
+                    // "confirmPassword",
+                    specialty: "Especialidad",
+                    contract: "Convenio",
+                    // rol: "Rol",
+                    campus: "Sede",
+                    availableCampus: "Sedes",
+                    // "area",
+                    // urlPhoto: "urlPhoto",
+                    isActive: "Estado",
+                    // "isDeleted",
+                };
+            }
+
 
             const omittedColumns = Object.keys(columnNamesToDisplay);
 
@@ -117,22 +165,24 @@ const DataTablesHook = (reference: string) => {
                                     .map((campus) => campus.label)
                                     .join(", "),
                             ]
+                        ) : val === "id" && reference === 'documentTypes' || reference === 'country' || reference === 'departments' || reference === 'cities' ? (
+                            row[val]
                         ) : (
                             [row[val]]
                         ),
                     sortable: true,
                     width:
                         val === "email" ||
-                        val === "address" ||
-                        val === "timestamp" ||
-                        val === "name" ||
-                        val === "lastName"
+                            val === "address" ||
+                            val === "timestamp" ||
+                            val === "name" ||
+                            val === "lastName"
                             ? "200px"
                             : val === "id" ||
-                              val === "phone" ||
-                              val === "phone2"
-                            ? "150px"
-                            : undefined,
+                                val === "phone" ||
+                                val === "phone2"
+                                ? "150px"
+                                : undefined,
                     omit: !omittedColumns.includes(val),
                 };
                 cols.push(columnsData);
@@ -143,7 +193,7 @@ const DataTablesHook = (reference: string) => {
                 data: documents,
             };
 
-            // console.log("cols", cols);
+            //console.log("cols", cols);
             // console.log("currentData", currentData);
             // console.log("documents", documents);
 
@@ -168,14 +218,16 @@ const DataTablesHook = (reference: string) => {
         const campusResult = await getAllCampusQuery();
 
         const filtered = getDocuments?.filter((item) => {
-            return _.some(item, (prop) => {
-                if (Array.isArray(prop)) {
-                    const dataFiltered =
-                        reference === "areas"
-                            ? campusResult
-                                  .filter((item) => prop.includes(item.value))
-                                  .map((campus) => campus.label)
-                            : prop;
+            return _.some(item, (prop, key) => {
+                if (reference === "departments") {
+                    // Si reference es 'departments', filtra solo por el campo 'departamento'
+                    return key === "departamento" && prop.toString().toLowerCase().includes(value);
+                } else if (Array.isArray(prop)) {
+                    const dataFiltered = reference === "areas"
+                        ? campusResult
+                            .filter((item) => prop.includes(item.value))
+                            .map((campus) => campus.label)
+                        : prop;
                     return dataFiltered.some((subProp) =>
                         subProp.toString().toLowerCase().includes(value),
                     );
@@ -190,6 +242,7 @@ const DataTablesHook = (reference: string) => {
         };
         setDataTable(currentData);
     };
+
 
     const clearSearch = () => {
         setSearchTerm("");

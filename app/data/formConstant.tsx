@@ -23,7 +23,25 @@ export const idTypes = [
     { value: "MS", label: "MS" },
 ];
 
+export const idTypesTable = [
+    { id: 1, label: "CC" },
+    { id: 2, label: "NIT" },
+    { id: 3, label: "RC" },
+    { id: 4, label: "TI" },
+    { id: 5, label: "CN" },
+    { id: 6, label: "CD" },
+    { id: 7, label: "CE" },
+    { id: 8, label: "PA" },
+    { id: 9, label: "SC" },
+    { id: 10, label: "PE" },
+    { id: 11, label: "AS" },
+    { id: 12, label: "MS" },
+];
+
 export const countries = [{ value: "CO", label: "Colombia" }];
+
+
+export const countriesTable = [{ id: 1, label: "Colombia" }];
 
 export const personTypes = [
     { value: "Jurídico", label: "Jurídico" },
