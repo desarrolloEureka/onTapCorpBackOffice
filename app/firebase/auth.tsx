@@ -1,12 +1,15 @@
 import { User, onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from "react";
-import { auth } from "shared/firebase/firebase";
+import { getDoc, doc, DocumentReference } from "firebase/firestore";
+import { useCallback, useEffect, useState } from "react";
+import { auth, db } from "shared/firebase/firebase";
+
 interface Role {
     id: string;
     name: string;
     slug: string;
     isAdmin: boolean;
 }
+
 const useAuth = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState<User | null>();
@@ -14,25 +17,62 @@ const useAuth = () => {
     const [error, setError] = useState<string>();
     const [accessTokenUser, setAccessTokenUser] = useState<string>("");
 
-    //   const getRole = useCallback(async () => {
-    //     if (user) {
-    //       const document = await getDoc(doc(db, 'usersData', user.uid));
-    //       if (document.exists()) {
-    //         const roleDocument = await getDoc(
-    //           document.data().roleRef as DocumentReference
-    //         );
-    //         if (roleDocument.exists()) {
-    //           setRole({
-    //             ...roleDocument.data(),
-    //             id: roleDocument.id,
-    //             isAdmin: roleDocument.data().slug === 'admin',
-    //           } as Role);
-    //         }
-    //       }
-    //     } else if (user === null) {
-    //       setRole(null);
-    //     }
-    //   }, [user]);
+    const getRole = useCallback(async () => {
+        if (user) {
+            // Obtiene el documento del usuario desde Firestore
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+
+                // Obtiene el rolId del documento del usuario
+                const roleId = userData.rolId;
+
+                // Determina el rol del usuario en función del rolId
+                let role: Role = {
+                    id: roleId,
+                    name: "",
+                    slug: "",
+                    isAdmin: false
+                };
+
+                switch (roleId) {
+                    case "vE7NrHpiRU2s1Gjv5feg":
+                        role.name = "Superadmin";
+                        role.slug = "superadmin";
+                        break;
+                    case "LJTfIeCONNjlxsyooofx":
+                        role.name = "Operativo";
+                        role.slug = "operativo";
+                        break;
+                    case "TZ3vIk6qaQ97Pej1qqwV":
+                        role.name = "Administrativo";
+                        role.slug = "administrativo";
+                        role.isAdmin = true;
+                        break;
+                    case "uysG1ULyEDklfbGDFate":
+                        role.name = "Empleado";
+                        role.slug = "empleado";
+                        break;
+                    default:
+                        role.name = "Desconocido";
+                        role.slug = "desconocido";
+                        break;
+                }
+
+                // Guardar solo el slug en el almacenamiento local
+                setRole(role);
+                await localStorage.setItem('userRoleSlug', role.slug); // Guarda el rol en localStorage
+            } else {
+                setRole(null);
+                localStorage.removeItem('userRoleSlug'); // Limpia el rol si no existe
+            }
+        } else if (user === null) {
+            setRole(null);
+            localStorage.removeItem('userRoleSlug'); // Limpia el rol si no hay usuario
+        }
+    }, [user])
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, setUser, (error: any) => {
             setError(error.toString());
@@ -45,12 +85,11 @@ const useAuth = () => {
         };
     }, []);
 
-    //   useEffect(() => {
-    //     getRole();
-    //   }, [getRole]);
+    useEffect(() => {
+        getRole();
+    }, [getRole]);
 
     useEffect(() => {
-        console.log("user", user);
         if (user !== undefined) {
             setIsLoading(false);
             user?.getIdToken().then((token) => setAccessTokenUser(token));

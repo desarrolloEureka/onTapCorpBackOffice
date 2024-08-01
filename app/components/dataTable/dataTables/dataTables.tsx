@@ -169,7 +169,7 @@ export const ExportCSV = ({
                         </Button>
                     )}
                 </div>
-                {reference !== "roles" && onMainFormModal && (
+                {!["roles", "country", "departments", "cities", "documentTypes"].includes(reference) && onMainFormModal && (
                     <MainFormModal
                         campusIsEmpty={campusIsEmpty}
                         onMainFormModal={onMainFormModal}
@@ -253,9 +253,9 @@ export const ExportCSV = ({
 
     const tableDatas = campusIsEmpty
         ? {
-              columns: [],
-              data: [],
-          }
+            columns: [],
+            data: [],
+        }
         : tableData;
 
     return (
@@ -280,9 +280,9 @@ export const ExportCSV = ({
                     />
                 }
                 onRowClicked={(row: any, event) => {
-                    reference !== "roles" &&
-                        !row.isDeleted &&
+                    if (!["roles", "country", "departments", "cities", "documentTypes"].includes(reference) && !row.isDeleted) {
                         onMainFormModalEdit(row);
+                    }
                 }}
                 // onRowClicked={onMainFormModalEdit}
                 pointerOnHover={reference !== "roles"}
