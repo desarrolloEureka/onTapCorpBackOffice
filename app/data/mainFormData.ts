@@ -9,6 +9,7 @@ import {
     DataAgreementsObject,
     DataAreasObject,
     DataDiagnosesObject,
+    DataCompanyObject,
 } from "@/types/mainForm";
 
 export const dataMainFormObject = {
@@ -173,6 +174,24 @@ export const dataAreasObject = {
     isActive: false,
     isDeleted: false,
 } as DataAreasObject;
+
+export const dataCompanyObject = {
+    uid: "",
+    id: "",
+    name: "",
+    phone: "",
+    phone2: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    address: "",
+    country: "",
+    state: "",
+    city: "",
+    urlPhoto: "",
+    isActive: false,
+    isDeleted: false,
+} as DataCompanyObject;
 
 export const dataDiagnosticianObject = {
     uid: "",

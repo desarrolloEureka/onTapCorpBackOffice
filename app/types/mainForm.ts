@@ -161,6 +161,25 @@ export type DataAreasObject = {
     isDeleted: boolean;
 };
 
+export type DataCompanyObject = {
+    uid: string;
+    id: string;
+    name: string;
+    phone: any;
+    phone2: any;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    address: string;
+    country: string;
+    state: any;
+    city: string;
+    urlPhoto: string;
+    timestamp: Date;
+    isActive: boolean;
+    isDeleted: boolean;
+};
+
 export type DataDiagnosticianObject = {
     uid: string;
     idType: string;
