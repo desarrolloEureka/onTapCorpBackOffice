@@ -18,6 +18,12 @@ const storageRefProfile = (
     fileName: string,
 ) => ref(storage, `${reference}Photos/${folder}/${fileName}`);
 
+const storageRefIcon = (
+    reference: string,
+    folder: string,
+    fileName: string,
+) => ref(storage, `${reference}Icons/${folder}/${fileName}`);
+
 export const uploadFiles = async ({
     folder,
     fileName,
@@ -37,6 +43,18 @@ export const uploadFile = async ({
     await uploadBytes(storageRefProfile(reference, folder, fileName), file);
     
     return await getDownloadURL(storageRefProfile(reference, folder, fileName));
+};
+
+export const uploadIconFile = async ({
+    folder,
+    fileName,
+    file,
+    reference,
+}: UploadFileProps) => {
+    const storageRef = storageRefIcon(reference, folder, fileName);
+    await uploadBytes(storageRef, file);
+    
+    return await getDownloadURL(storageRef);
 };
 
 export const urlFile = async ({

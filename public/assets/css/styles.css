@@ -2788,8 +2788,10 @@ Width
   --bs-heading-color: inherit;
   --bs-link-color: #6ea8fe;
   --bs-link-hover-color: #8bb9fe;
-  --bs-link-color-rgb: 110, 168, 254;
-  --bs-link-hover-color-rgb: 139, 185, 254;
+  --bs-link-color-rgb: 255, 255, 255;
+  /* --bs-link-color-rgb: 110, 168, 254; */
+  --bs-link-hover-color-rgb: 255, 255, 255;
+  /* --bs-link-hover-color-rgb: 139, 185, 254; */
   --bs-code-color: #e685b5;
   --bs-highlight-color: #dee2e6;
   --bs-highlight-bg: #664d03;
@@ -7004,7 +7006,8 @@ fieldset:disabled .btn {
 
 .nav-link:focus,
 .nav-link:hover {
-  color: var(--bs-nav-link-hover-color);
+  /* color: var(--bs-nav-link-hover-color); */
+  color: #fff;
 }
 
 .nav-link:focus-visible {
@@ -7045,7 +7048,8 @@ fieldset:disabled .btn {
 
 .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-link.active {
-  color: var(--bs-nav-tabs-link-active-color);
+  /* color: var(--bs-nav-tabs-link-active-color); */
+  color: #fff;
   background-color: var(--bs-nav-tabs-link-active-bg);
   border-color: var(--bs-nav-tabs-link-active-border-color);
 }
@@ -19966,7 +19970,8 @@ html[dir='rtl'] .carousel-item-prev:not(.carousel-item-end) {
 .btn-loader {
   pointer-events: none;
   position: relative;
-  display: flex;
+  /* display: flex;
+  flex-direction: row; */
   align-items: center;
 }
 
@@ -23363,7 +23368,8 @@ label:is(.form-label) {
 .tab-style-3 .nav-item .nav-link.active {
   background-color: transparent;
   border: 0;
-  color: var(--primary-color);
+  color: #fff;
+  /* color: var(--primary-color); */
 }
 
 .tab-style-3 .nav-item .nav-link.active:before {
@@ -28901,8 +28907,7 @@ label {
 
 /*** dark styles ***/
 [data-theme-mode='dark'] .main-content-title {
-  /* color: #fff; */
-  color: #e9a225;
+  color: #8bb8e7;
 
 }
 

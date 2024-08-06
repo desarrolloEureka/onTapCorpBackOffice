@@ -7,13 +7,13 @@ import {
     updateCampusByIdFb,
     updateDocumentsByIdFb,
 } from "@/firebase/Documents";
-import { uploadFile, uploadFiles, urlFile } from "@/firebase/files";
 import {
-    DataObject,
-    DocumentsById,
-    ErrorData,
-    ErrorDataForm,
-} from "@/types/documents";
+    uploadFile,
+    uploadFiles,
+    uploadIconFile,
+    urlFile,
+} from "@/firebase/files";
+import { DataObject, DocumentsById, ErrorData } from "@/types/documents";
 import {
     DownloadFileProps,
     saveFilesDocumentsProps,
@@ -73,12 +73,22 @@ export const saveFilesDocuments = async ({
         file: record,
         reference,
     });
-    // if (queryResult) {
-    //     dataError.push({ success: true, urlName });
-    // } else {
-    //     dataError.push({ success: false, urlName });
-    // }
-    // return dataError;
+    return queryResult;
+};
+
+export const saveIconFile = async ({
+    urlName,
+    record,
+    uid,
+    reference,
+}: saveFilesDocumentsProps) => {
+    // let dataError: ErrorDataForm[] = [];
+    const queryResult = await uploadIconFile({
+        folder: uid,
+        fileName: urlName,
+        file: record,
+        reference,
+    });
     return queryResult;
 };
 
@@ -142,8 +152,8 @@ export const getDocumentReference = (ref: string) => {
 export const saveDataDocumentsQuery = async ({
     documentRef,
     data,
-    // accessTokenUser,
-}: {
+}: // accessTokenUser,
+{
     documentRef: any;
     data: any;
     // accessTokenUser: string;

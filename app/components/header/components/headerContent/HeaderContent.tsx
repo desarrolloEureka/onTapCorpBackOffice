@@ -1,5 +1,5 @@
 import HeaderHook from "@/components/header/hook/HeaderHook";
-import { main_logo_dark } from "@/globals/images";
+import { main_logo_light } from "@/globals/images";
 import dynamic from "next/dynamic";
 import { Container, Dropdown, Nav, NavDropdown } from "react-bootstrap";
 
@@ -16,8 +16,8 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
     return (
         <header className="app-header bg-primary">
             <img
-                src={main_logo_dark.src}
-                className="tw-absolute tw-left-10 tw-w-14"
+                src={main_logo_light.src}
+                className="tw-absolute tw-left-10 tw-top-1.5 tw-w-14"
                 alt="img"
             />
             <Container fluid className="main-header-container">
@@ -29,7 +29,7 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                                     aria-label="Hide Sidebar"
                                     className="side menu-toggle header-link animated-arrow hor-toggle horizontal-nav toggle"
                                     data-bs-toggle="sidebar"
-                                // onClick={() => headerToggleButton()}
+                                    // onClick={() => headerToggleButton()}
                                 >
                                     <span></span>
                                 </a>
@@ -54,39 +54,60 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                             </Nav.Item>
 
                             {/* Locaciones */}
-                            {(userRole === "superadmin" || userRole === "operativo" || userRole === "administrativo") && (
+                            {(userRole === "superadmin" ||
+                                userRole === "operativo" ||
+                                userRole === "administrativo") && (
                                 <NavDropdown
                                     title="Locaciones"
                                     id="nav-dropdown"
-                                    className="nav-item dropdown"
+                                    className="nav-item dropdown text-white"
                                 >
-                                    {(userRole === "operativo" || userRole === "administrativo") ? (
+                                    {userRole === "operativo" ||
+                                    userRole === "administrativo" ? (
                                         <>
-                                            <NavDropdown.Item eventKey="second">Áreas de Trabajo</NavDropdown.Item>
-                                            <NavDropdown.Item eventKey="second">Sedes</NavDropdown.Item>
-                                            <NavDropdown.Item eventKey="second">Zonas</NavDropdown.Item>
-                                            <NavDropdown.Item eventKey="second">Rutas</NavDropdown.Item>
-                                            <NavDropdown.Item eventKey="second">Puntos Fijos</NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="second">
+                                                Áreas de Trabajo
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="second">
+                                                Sedes
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="second">
+                                                Zonas
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="second">
+                                                Rutas
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="second">
+                                                Puntos Fijos
+                                            </NavDropdown.Item>
                                         </>
                                     ) : (
                                         <>
-                                            <NavDropdown.Item eventKey="countries">País</NavDropdown.Item>
-                                            <NavDropdown.Item eventKey="departments">Departamentos</NavDropdown.Item>
-                                            <NavDropdown.Item eventKey="cities">Ciudades</NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="countries">
+                                                País
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="departments">
+                                                Departamentos
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="cities">
+                                                Ciudades
+                                            </NavDropdown.Item>
                                         </>
                                     )}
                                 </NavDropdown>
                             )}
 
                             {/*  Perfil */}
-                            {(userRole === "superadmin" || userRole === "operativo" || userRole === "administrativo") && (
-                                < NavDropdown
+                            {(userRole === "superadmin" ||
+                                userRole === "operativo" ||
+                                userRole === "administrativo") && (
+                                <NavDropdown
                                     title="Perfil"
                                     id="nav-dropdown"
                                     className="nav-item dropdown"
                                 >
-
-                                    {(userRole === "operativo" || userRole === "administrativo") ? (
+                                    {userRole === "operativo" ||
+                                    userRole === "administrativo" ? (
                                         <>
                                             <NavDropdown.Item
                                                 href="#functionary"
@@ -109,26 +130,44 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                                         </>
                                     ) : (
                                         <>
-                                            <NavDropdown.Item href="#company" eventKey="companies">Empresas</NavDropdown.Item>
+                                            <NavDropdown.Item
+                                                href="#company"
+                                                eventKey="companies"
+                                            >
+                                                Empresas
+                                            </NavDropdown.Item>
                                         </>
                                     )}
                                 </NavDropdown>
                             )}
 
                             {/*  Configuraciónes */}
-                            {(userRole === "superadmin" || userRole === "operativo" || userRole === "administrativo") && (
-                                < NavDropdown
+                            {(userRole === "superadmin" ||
+                                userRole === "operativo" ||
+                                userRole === "administrativo") && (
+                                <NavDropdown
                                     title="Configuraciónes"
                                     id="nav-dropdown"
                                     className="nav-item dropdown"
                                 >
-                                    <NavDropdown.Item href="#company" eventKey="roles">Roles</NavDropdown.Item>
-                                    <NavDropdown.Item href="#company" eventKey="documentTypes">Tipos Documento</NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        href="#company"
+                                        eventKey="roles"
+                                    >
+                                        Roles
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        href="#company"
+                                        eventKey="documentTypes"
+                                    >
+                                        Tipos Documento
+                                    </NavDropdown.Item>
                                 </NavDropdown>
                             )}
 
                             {/*  GPS */}
-                            {(userRole === "operativo" || userRole === "administrativo") && (
+                            {(userRole === "operativo" ||
+                                userRole === "administrativo") && (
                                 <NavDropdown
                                     title="GPS"
                                     id="nav-dropdown"
@@ -168,7 +207,8 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                             )}
 
                             {/*  Plantillas */}
-                            {(userRole === "operativo" || userRole === "administrativo") && (
+                            {(userRole === "operativo" ||
+                                userRole === "administrativo") && (
                                 <NavDropdown
                                     title="Plantillas"
                                     id="nav-dropdown"
@@ -196,7 +236,8 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                             )}
 
                             {/*  Reportes */}
-                            {(userRole === "operativo" || userRole === "administrativo") && (
+                            {(userRole === "operativo" ||
+                                userRole === "administrativo") && (
                                 <NavDropdown
                                     title="Reportes"
                                     id="nav-dropdown"
@@ -248,8 +289,8 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                             )}
 
                             {/*  General */}
-                            {(userRole === "operativo" || userRole === "administrativo") && (
-
+                            {(userRole === "operativo" ||
+                                userRole === "administrativo") && (
                                 <NavDropdown
                                     title="General"
                                     id="nav-dropdown"
@@ -274,9 +315,8 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                         />
                     </div>
                 </div>
-
             </Container>
-        </header >
+        </header>
     );
 };
 

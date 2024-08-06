@@ -1,6 +1,7 @@
 :root {
     --body-bg-rgb: 184, 181, 181; //change this to set primary bg color in all platform
     --primary-rgb: 57, 101, 147; //change this to set primary color in all platform // azul oscuro (OneTap)
+    --primary-rgb: 57, 101, 147; //change this to set primary color in all platform // azul oscuro (OneTap)
     --secondary-rgb: 241, 56, 139; //change this to set secondary color in all platform
     --tertiary-rgb: 0, 0, 0;
     --warning-rgb: 255, 155, 33;
@@ -231,7 +232,7 @@ $black-9: var(--black-9);
     --default-border: rgba(255, 255, 255, 0.1);
     --default-text-color: #d0d0e2;
     // --light-rgb: 43, 46, 65;
-    --light-rgb: 86, 86, 86;
+    --light-rgb: 86, 150, 211;
     --dark-rgb: 240, 245, 248;
     --bootstrap-card-border: rgba(255, 255, 255, 0.1);
     --list-hover-focus-bg: rgba(255, 255, 255, 0.1);

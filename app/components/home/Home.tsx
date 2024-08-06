@@ -14,7 +14,10 @@ const Home = () => {
     ) : (
         <Fragment>
             <Seo title={"Home"} />
-            <Container fluid className="tw-px-10 tw-mt-14">
+            <Container
+                fluid
+                className="tw-px-10 dark:bg-black dark:tw-bg-repeat tw-mt-14"
+            >
                 <Container fluid className="tw-px-20">
                     <Header />
                 </Container>

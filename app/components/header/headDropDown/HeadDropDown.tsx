@@ -35,7 +35,7 @@ const HeadDropDown = (params: HeaderDropDownProps) => {
                 localVariableClone.dataThemeMode,
             );
 
-            console.log("localVariableClone", localVariableClone);
+            // console.log("localVariableClone", localVariableClone);
             localStorage.setItem("@theme", JSON.stringify(localVariableClone));
         }
     };

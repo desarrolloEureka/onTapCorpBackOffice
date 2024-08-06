@@ -2,8 +2,12 @@ export interface DataMainFormObject {
     uid: string;
     icon: string;
     idType: string;
+    idTypeAdmin: string;
     id: string;
+    idAdmin: string;
     name: string;
+    businessName: string;
+    tradename: string;
     description: string;
     personType: string;
     discount: string;
@@ -12,8 +16,14 @@ export interface DataMainFormObject {
     lastName: string;
     birthDate: string;
     age: string;
-    phone: any;
-    phone2: any;
+    indicativeOne: string;
+    indicativeTwo: string;
+    phone: string;
+    phoneAdmin: string;
+    phone2: string;
+    ext: string;
+    webSite: string;
+    sector: string;
     address: string;
     country: string;
     state: any;
@@ -163,10 +173,23 @@ export type DataAreasObject = {
 
 export type DataCompanyObject = {
     uid: string;
+    idType: string;
+    idTypeAdmin: string;
     id: string;
+    idAdmin: string;
+    icon: string;
     name: string;
-    phone: any;
-    phone2: any;
+    lastName: string;
+    businessName: string;
+    tradename: string;
+    indicativeOne: string;
+    indicativeTwo: string;
+    phone: string;
+    phoneAdmin: string;
+    phone2: string;
+    ext: string;
+    webSite: string;
+    sector: string;
     email: string;
     password: string;
     confirmPassword: string;

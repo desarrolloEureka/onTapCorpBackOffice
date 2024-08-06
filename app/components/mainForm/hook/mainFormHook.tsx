@@ -24,6 +24,7 @@ import {
     saveDataDocumentsQuery,
     saveEditDataDocumentsQuery,
     saveFilesDocuments,
+    saveIconFile,
 } from "@/queries/documentsQueries";
 import { getAllSpecialtiesQuery } from "@/queries/SpecialtiesQueries";
 import { AgreementSelector } from "@/types/agreements";
@@ -42,6 +43,7 @@ import useAuth from "@/firebase/auth";
 import { addUser } from "@/firebase/user";
 import { getAllRolesQuery } from "@/queries/RolesQueries";
 import { RolesSelector } from "@/types/roles";
+import { handleSendWelcomeEmail } from "lib/brevo/handlers/actions";
 
 const MainFormHook = ({
     handleShowMainForm,
@@ -62,9 +64,11 @@ const MainFormHook = ({
     const [errorForm, setErrorForm] = useState(false);
     const [errorPass, setErrorPass] = useState(false);
     const [itemExist, setItemExist] = useState(false);
+    const [nextStep, setNextStep] = useState(true);
     const [errorDataUpload, setErrorDataUpload] = useState<ErrorDataForm[]>();
     const [showPassword, setShowPassword] = useState(false);
     const [files, setFiles] = useState<SetStateAction<any>[]>([]);
+    const [iconFile, setIconFile] = useState<SetStateAction<any>[]>([]);
     // const [urlPhoto, setUrlPhoto] = useState<string>("");
     const [campus, setCampus] = useState<CampusSelector[]>();
     const [specialties, setSpecialties] = useState<SpecialtySelector[]>();
@@ -74,6 +78,7 @@ const MainFormHook = ({
     const [diagnostician, setDiagnostician] = useState<any[]>();
 
     const [selectedIdType, setSelectedIdType] = useState<any>(null);
+    const [selectedIdTypeAdmin, setSelectedIdTypeAdmin] = useState<any>(null);
     const [selectedState, setSelectedState] = useState<any>(null);
     const [selectedCountry, setSelectedCountry] = useState<any>(null);
     const [selectedCity, setSelectedCity] = useState<any>(null);
@@ -205,6 +210,10 @@ const MainFormHook = ({
         setData({ ...data, ["idType"]: e?.value });
         setSelectedIdType(e);
     };
+    const selectChangeHandlerIdTypeAdmin = (e: any) => {
+        setData({ ...data, ["idTypeAdmin"]: e?.value });
+        setSelectedIdTypeAdmin(e);
+    };
     const selectChangeHandlerState = (e: any) => {
         setData({ ...data, ["state"]: e?.value });
         setSelectedState(e);
@@ -256,17 +265,21 @@ const MainFormHook = ({
     const handleMultipleChange = (event: { target: any }) => {
         event.target.files && setFiles([...event.target.files]);
     };
-    const phoneChangeHandler = (e: any) => {
-        setData({ ...data, ["phone"]: e });
+    const handleIconFileChange = (event: { target: any }) => {
+        event.target.files && setIconFile([...event.target.files]);
     };
-    const phoneTwoChangeHandler = (e: any) => {
-        setData({ ...data, ["phone2"]: e });
+    const indicativeOneChangeHandler = (e: any) => {
+        setData({ ...data, ["indicativeOne"]: e });
+    };
+    const indicativeTwoChangeHandler = (e: any) => {
+        setData({ ...data, ["indicativeTwo"]: e });
     };
 
     const uploadHandle = async () => {
         let newData = {};
         const error: ErrorDataForm[] = [];
         const documentRef: any = getDocumentReference(reference);
+        const documentRefUser: any = getDocumentReference("users");
 
         if (reference === "functionary") {
             const currentDataObject = { ...dataFunctionaryObject };
@@ -503,16 +516,26 @@ const MainFormHook = ({
 
             handleShowMainFormEdit
                 ? (currentDataObject.uid = data.uid)
-                : (currentDataObject.uid = documentRef.id);
-                currentDataObject.name = data.name;
+                : (currentDataObject.uid = documentRefUser.id);
+            currentDataObject.idType = data.idType;
+            currentDataObject.idTypeAdmin = data.idTypeAdmin;
             currentDataObject.id = data.id;
-            currentDataObject.phone = data.phone;
-            currentDataObject.phone2 = data.phone2;
+            currentDataObject.idAdmin = data.idAdmin;
+            currentDataObject.businessName = data.businessName;
+            currentDataObject.tradename = data.tradename;
             currentDataObject.address = data.address;
+            currentDataObject.indicativeOne = data.indicativeOne;
+            currentDataObject.phone = data.phone;
+            currentDataObject.phoneAdmin = data.phoneAdmin;
+            currentDataObject.ext = data.ext;
+            currentDataObject.webSite = data.webSite;
+            currentDataObject.sector = data.sector;
             currentDataObject.country = data.country;
             currentDataObject.state = data.state;
             currentDataObject.city = data.city;
             currentDataObject.email = data.email;
+            currentDataObject.name = data.name;
+            currentDataObject.lastName = data.lastName;
             currentDataObject.isActive = data.isActive;
 
             for (const record of files) {
@@ -525,6 +548,24 @@ const MainFormHook = ({
                 })
                     .then((result) => {
                         currentDataObject.urlPhoto = result;
+                        // error.push(...result);
+                    })
+                    .catch((err) => {
+                        error.push({ success: false, urlName });
+                        // console.log(error);
+                    });
+            }
+
+            for (const record of iconFile) {
+                const urlName = record.name.split(".")[0];
+                await saveIconFile({
+                    urlName,
+                    record,
+                    uid: handleShowMainFormEdit ? data.uid : documentRef.id,
+                    reference,
+                })
+                    .then((result) => {
+                        currentDataObject.icon = result;
                         // error.push(...result);
                     })
                     .catch((err) => {
@@ -610,20 +651,21 @@ const MainFormHook = ({
                       }
                   })
                   .then(confirmAlert)
-            : reference === "professionals" ||
-              reference === "patients" ||
-              reference === "companies" ||
-              reference === "functionary"
+            : reference === "companies"
             ? await addUser({
                   email: data.email,
-                  password: data.password,
+                  password: reference === "companies" ? data.id : data.password,
                   accessTokenUser,
-                  uid: documentRef.id,
+                  uid: documentRefUser.id,
               }).then(async () => {
                   await saveDataDocumentsQuery({
-                      documentRef,
+                      documentRef: documentRefUser,
                       data: newData,
-                  }).then(confirmAlert);
+                  }).then(async () => {
+                      // Envía el correo de nuevo usuario
+                      await handleSendWelcomeEmail(data);
+                      confirmAlert();
+                  });
               })
             : await saveDataDocumentsQuery({
                   documentRef,
@@ -674,13 +716,23 @@ const MainFormHook = ({
         data.phone &&
         !itemExist &&
         data.email;
-    
+
     const companyVal =
         reference === "companies" &&
-        data.name &&
+        data.idType &&
         data.id &&
-        data.phone &&
-        // !itemExist &&
+        data.businessName &&
+        // data.phone &&
+        data.country &&
+        data.state &&
+        data.city;
+
+    const companyAdminVal =
+        reference === "companies" &&
+        // data.idTypeAdmin &&
+        // data.idAdmin &&
+        data.name &&
+        data.lastName &&
         data.email;
 
     const agreementsVal =
@@ -735,6 +787,7 @@ const MainFormHook = ({
         if (
             areasVal ||
             companyVal ||
+            companyAdminVal ||
             campusVal ||
             specialtyVal ||
             diagnosticianVal ||
@@ -789,6 +842,7 @@ const MainFormHook = ({
         // setUrlPhoto("");
         clearSelectFields();
         setItemExist(false);
+        setNextStep(true);
     };
 
     const clearSelectFields = () => {
@@ -870,6 +924,7 @@ const MainFormHook = ({
         errorValid,
         data,
         selectedIdType,
+        selectedIdTypeAdmin,
         selectedState,
         selectedCountry,
         selectedCity,
@@ -890,6 +945,8 @@ const MainFormHook = ({
         areas,
         roles: getRolesByReference(),
         theme: themeParsed?.dataThemeMode,
+        nextStep,
+        companyVal,
         setErrorPass,
         setErrorValid,
         changeHandler,
@@ -914,13 +971,16 @@ const MainFormHook = ({
         selectChangeHandlerCity,
         selectChangeHandlerCountry,
         selectChangeHandlerState,
-        phoneChangeHandler,
-        phoneTwoChangeHandler,
+        indicativeOneChangeHandler,
+        indicativeTwoChangeHandler,
         findValue,
         handleEditForm,
         handleMultipleChange,
+        handleIconFileChange,
         selectChangeHandlerPersonType,
+        selectChangeHandlerIdTypeAdmin,
         areasByCampus,
+        setNextStep,
     };
 };
 

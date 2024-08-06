@@ -46,7 +46,7 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
-                {/* Vista de Paises */}
+                {/* Vista de Países */}
                 <Tab.Pane
                     className="tab-pane text-muted"
                     id="users"
@@ -67,7 +67,7 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
-                {/* Vista de Paises */}
+                {/* Vista de Departamentos */}
                 <Tab.Pane
                     className="tab-pane text-muted"
                     id="users"
@@ -142,8 +142,8 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     <BannerMenu
                         seoTitle="Empresas"
                         title="Empresas"
-                        item="Dashboard"
-                        activeItem="Registro de Empresas"
+                        item=""
+                        activeItem="Registro"
                     />
                     <DataTableComponent
                         componentTitle="Tabla del Listado de Empresas."
