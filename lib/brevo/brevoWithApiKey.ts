@@ -21,7 +21,7 @@ export const sendEmail = async ({ subject, to, htmlContent }: Params) => {
     smtpEmail.htmlContent = htmlContent;
     smtpEmail.sender = {
         name: "OneTap No Reply",
-        email: "ceo@eurekadreams.com",
+        email: "fernando@eurekadreams.com",
     };
     await apiInstance.sendTransacEmail(smtpEmail);
 };

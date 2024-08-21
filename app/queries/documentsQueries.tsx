@@ -13,7 +13,7 @@ import {
     uploadIconFile,
     urlFile,
 } from "@/firebase/files";
-import { DataObject, DocumentsById, ErrorData } from "@/types/documents";
+import { ErrorData } from "@/types/documents";
 import {
     DownloadFileProps,
     saveFilesDocumentsProps,
@@ -92,6 +92,14 @@ export const saveIconFile = async ({
     return queryResult;
 };
 
+export const getDocumentsByIdQuery = async (ref: string, uid: string) => {
+    const querySnapshot = await getDocumentsByIdFb(ref, uid);
+    if (querySnapshot.exists()) {
+        return querySnapshot.data();
+    }
+    return;
+};
+
 export const getAllDocumentsQuery = async (ref: string) => {
     const documents: any[] = [];
     const querySnapshot = await getAllDocumentsFb(ref);
@@ -104,32 +112,32 @@ export const getAllDocumentsQuery = async (ref: string) => {
     return documents;
 };
 
-export const getDocumentsByIdQuery = async (
-    id: string,
-    date: number,
-    saleLimit: number | undefined,
-    reference: string,
-) => {
-    const dataResultArray: { id: string; coupon: DataObject }[] = [];
-    const querySnapshot = await getDocumentsByIdFb(
-        id,
-        date,
-        saleLimit,
-        reference,
-    );
+// export const getDocumentsByIdQuery = async (
+//     id: string,
+//     date: number,
+//     saleLimit: number | undefined,
+//     reference: string,
+// ) => {
+//     const dataResultArray: { id: string; coupon: DataObject }[] = [];
+//     const querySnapshot = await getDocumentsByIdFb(
+//         id,
+//         date,
+//         saleLimit,
+//         reference,
+//     );
 
-    if (querySnapshot) {
-        querySnapshot.forEach((doc: any) => {
-            const dataResult = doc.data() as DataObject;
-            dataResultArray.push({
-                id: doc.id,
-                coupon: dataResult,
-            } as DocumentsById);
-        });
-    }
+//     if (querySnapshot) {
+//         querySnapshot.forEach((doc: any) => {
+//             const dataResult = doc.data() as DataObject;
+//             dataResultArray.push({
+//                 id: doc.id,
+//                 coupon: dataResult,
+//             } as DocumentsById);
+//         });
+//     }
 
-    return dataResultArray;
-};
+//     return dataResultArray;
+// };
 
 export const getUrlFile = async ({
     folder,

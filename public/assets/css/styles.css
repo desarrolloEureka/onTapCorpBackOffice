@@ -110,6 +110,7 @@ Width
   --default-font-weight: 400;
   --default-text-color: #1d212f;
   --default-border: #e8e8f7;
+  --default-company-border: #030124;
   --default-background: #eaedf7;
   --menu-bg: #fff;
   --menu-prime-color: #536485;
@@ -155,6 +156,9 @@ Width
   --black-7: rgba(0, 0, 0, 0.7);
   --black-8: rgba(0, 0, 0, 0.8);
   --black-9: rgba(0, 0, 0, 0.9);
+  /* Company colors */
+  --card-header-text: #030124;
+  --card-body-text: #fff;
 }
 
 /*Font Family*/
@@ -187,6 +191,7 @@ Width
   --custom-white: rgb(var(--body-bg-rgb));
   --custom-black: #fff;
   --default-border: rgba(255, 255, 255, 0.1);
+  --default-company-border: rgb(12, 12, 12);
   --default-text-color: #d0d0e2;
   /* --light-rgb: 43, 46, 65; */
   --light-rgb: 86, 86, 86;
@@ -231,6 +236,9 @@ Width
   --black-7: rgba(255, 255, 255, 0.7);
   --black-8: rgba(255, 255, 255, 0.8);
   --black-9: rgba(255, 255, 255, 0.9);
+  /* Company colors */
+  --card-header-text: #8bb8e7;
+  --card-body-text: #8bb8e7;
 }
 
 /* Sidemenu Layout Syles */
@@ -2749,6 +2757,7 @@ Width
   color-scheme: dark;
   --bs-body-color: #dee2e6;
   --bs-body-color-rgb: 222, 226, 230;
+  /* --bs-body-bg: #f56c6c; */
   --bs-body-bg: #212529;
   --bs-body-bg-rgb: 33, 37, 41;
   --bs-emphasis-color: #fff;
@@ -7013,6 +7022,7 @@ fieldset:disabled .btn {
 .nav-link:focus-visible {
   outline: 0;
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  /* box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25); */
 }
 
 .nav-link.disabled,
@@ -7050,6 +7060,7 @@ fieldset:disabled .btn {
 .nav-tabs .nav-link.active {
   /* color: var(--bs-nav-tabs-link-active-color); */
   color: #fff;
+  /* background-color: #FFF; */
   background-color: var(--bs-nav-tabs-link-active-bg);
   border-color: var(--bs-nav-tabs-link-active-border-color);
 }
@@ -12647,6 +12658,25 @@ fieldset:disabled .btn {
 
 .bg-gradient {
   background-image: var(--bs-gradient) !important;
+}
+
+[data-theme-mode='dark'] .bg-home {
+    background-image: linear-gradient(
+    to bottom,
+    /* rgba(0, 0, 0, 0.4), */
+    rgba(0, 0, 0, 0.9),
+    rgba(0, 0, 0, 0.5)
+  ), url('/assets/images/bg-images/bg-home.png');
+    background-size: cover;
+}
+
+.bg-home {
+    background-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0)
+  ), url('/assets/images/bg-images/bg-home.png');
+    background-size: cover;
 }
 
 .user-select-all {
@@ -21948,6 +21978,7 @@ fieldset:disabled .btn {
   border-radius: 50px;
   color: var(--primary-color);
   background-color: transparent;
+  /* background-color: #fff; */
 }
 
 .form-wizard-1.nav-tabs .nav-link.active i {
@@ -22512,6 +22543,7 @@ label:is(.form-label) {
 
 .navbar-primary-transparent .nav-link:hover {
   color: var(--default-text-color);
+  /* color: #fff; */
 }
 
 .navbar-primary-transparent .form-control:focus {
@@ -22918,6 +22950,7 @@ label:is(.form-label) {
 }
 
 .nav.nav-style-1 .nav-link.active {
+  /* background-color: #fff; */
   background-color: var(--primary-color);
   color: #fff;
 }
@@ -23054,6 +23087,7 @@ label:is(.form-label) {
 }
 
 .nav-tabs-footer .nav-item .nav-link {
+  /* background-color: #fff; */
   background-color: transparent;
   color: var(--primary-color);
   border: 1px solid var(--primary-color);
@@ -23092,6 +23126,7 @@ label:is(.form-label) {
   border: 1px solid var(--default-border);
   margin-bottom: 0.5rem;
   color: var(--text-muted);
+  /* background-color: #fff; */
   background-color: rgb(var(--light-rgb));
 }
 
@@ -23171,7 +23206,8 @@ label:is(.form-label) {
 /* Start:: Nav-tabs */
 .nav-link:focus,
 .nav-link:hover {
-  color: var(--primary-color);
+  /* color: var(--primary-color); */
+  color: #fff;
 }
 
 .nav-tabs {
@@ -23181,6 +23217,7 @@ label:is(.form-label) {
 .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-link.active {
   color: var(--default-text-color);
+  /* background-color: #fff; */
   background-color: rgb(var(--light-rgb));
   border-color: var(--default-border);
 }
@@ -23262,6 +23299,7 @@ label:is(.form-label) {
 
 .tab-style-2 .nav-item .nav-link.active {
   background-color: transparent;
+  /* background-color: #fff; */
   position: relative;
   border: 0;
   color: var(--primary-color);
@@ -39578,6 +39616,7 @@ table.dataTable thead .sorting_asc_disabled:after,
 .item1-links .nav-link:hover,
 .item1-links .nav-link:focus {
   background-color: var(--primary-color);
+  /* background-color: #fff; */
   color: #fff;
   border-radius: 0;
 }
@@ -39923,6 +39962,7 @@ table.dataTable thead .sorting_asc_disabled:after,
 .item1-links.nav.nav-tabs .nav-link:hover,
 .item1-links.nav.nav-tabs .nav-link:focus {
   background-color: var(--primary-color);
+  /* background-color: #fff; */
 }
 
 /* ########## Ecommerce ########## */
@@ -42558,6 +42598,7 @@ ul.inbox-pagination {
 .main-nav-column .nav-link:focus,
 .main-nav-column .nav-link:hover i:not([class*=' tx-']),
 .main-nav-column .nav-link:focus i:not([class*=' tx-']) {
+  /* color: #000; */
   color: var(--gray-4);
 }
 
@@ -42814,9 +42855,62 @@ ul.inbox-pagination {
   -webkit-box-pack: end;
   justify-content: flex-end;
   overflow: hidden;
-  background: url(../images/front-page/portada-med.jpg) no-repeat;
+  /* background: url(../images/front-page/portada-med.jpg) no-repeat; */
   background-size: cover;
 }
+
+/* --------------------------------------------- */
+
+
+.custom-card .card-body .sub-card-body {
+  background-color: var(--black-2);
+  color: #fff;
+}
+
+.custom-card .card-body .main-title-sub-card{
+  background-color: var(--default-company-border);
+}
+
+.custom-card .card-title {
+  color: var(--card-header-text);
+}
+
+.company-cover__img {
+  /* position: flex;
+  inset-inline-start: 50px;
+  inset-block-start: 170px;
+  text-align: center;
+  z-index: 1; */
+
+  > {
+    img {
+      max-width: 120px;
+      border: 8px solid var(--default-company-border);
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+
+    div.banner{
+      background-color: var(--default-company-border);
+      /* padding-left: 10px; */
+      /* padding-right: 10px; */
+      /* border-radius: 0% 40% 0% 40%; */
+    }
+
+    div >.h3 {
+      color: #fff;
+      font-size: 20px;
+      line-height: 30px;
+      margin: 0px;
+    }
+
+    img+.h3 {
+      margin-block-start: 6px;
+    }
+  }
+}
+
+/* --------------------------------- */
 
 .profile-cover__action>.btn {
   margin-inline: 10px;

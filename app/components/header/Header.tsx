@@ -4,16 +4,17 @@ import HomeDash from "../dashBoard/homeDash/HomeDash";
 import DataTableComponent from "../dataTable/DataTableComponent";
 import Profile from "../profile/page";
 import HeaderContent from "./components/headerContent/HeaderContent";
+import CompanyPage from "../company/page";
+import theme from "../../theme";
+import { useState } from "react";
 
 const Header = ({ hamburger }: { hamburger?: boolean }) => {
+    const [theme, setTheme] = useState<string>("light");
     return (
         <Tab.Container defaultActiveKey="first">
-
-            <HeaderContent />
+            <HeaderContent setTheme={setTheme} />
 
             <Tab.Content>
-
-
                 {/* Vista del home */}
                 <Tab.Pane
                     className="tab-pane show  text-muted"
@@ -23,7 +24,6 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                 >
                     <HomeDash />
                 </Tab.Pane>
-
 
                 {/* Vista de Funcionarios */}
                 <Tab.Pane
@@ -109,7 +109,6 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
-
                 {/* Vista de tipos documentos */}
                 <Tab.Pane
                     className="tab-pane text-muted"
@@ -131,8 +130,7 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
-
-                {/* Vista de Empresas */}
+                {/* Vista de Empresas Super Admin */}
                 <Tab.Pane
                     className="tab-pane text-muted"
                     id="companies"
@@ -152,7 +150,6 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         reference="companies"
                     />
                 </Tab.Pane>
-
 
                 {/* Vista de los Roles */}
                 <Tab.Pane
@@ -175,6 +172,15 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
+                {/* Vista de la Empresa */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="company"
+                    role="tabpanel"
+                    eventKey="company"
+                >
+                    <CompanyPage theme={theme} />
+                </Tab.Pane>
 
                 {/* Vista del perfil */}
                 <Tab.Pane
@@ -185,8 +191,6 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                 >
                     <Profile />
                 </Tab.Pane>
-
-
             </Tab.Content>
         </Tab.Container>
     );

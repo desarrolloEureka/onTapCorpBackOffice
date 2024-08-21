@@ -39,10 +39,10 @@ export const uploadFile = async ({
     file,
     reference,
 }: UploadFileProps) => {
-    // 'file' comes from the Blob or File API
-    await uploadBytes(storageRefProfile(reference, folder, fileName), file);
+     const storageRef = storageRefProfile(reference, folder, fileName);
+    await uploadBytes(storageRef, file);
     
-    return await getDownloadURL(storageRefProfile(reference, folder, fileName));
+    return await getDownloadURL(storageRef);
 };
 
 export const uploadIconFile = async ({

@@ -1,9 +1,11 @@
 export interface DataMainFormObject {
     uid: string;
+    adminId: string;
     icon: string;
     idType: string;
     idTypeAdmin: string;
     id: string;
+    companyId: string;
     idAdmin: string;
     name: string;
     businessName: string;
@@ -41,7 +43,7 @@ export interface DataMainFormObject {
     area: string;
     availableAreas: string[];
     urlPhoto: string;
-    timestamp: Date;
+    timestamp: string;
     isActive: boolean;
     isDeleted: boolean;
 }
@@ -171,34 +173,39 @@ export type DataAreasObject = {
     isDeleted: boolean;
 };
 
-export type DataCompanyObject = {
+export type DataAdminCompanyObject = {
     uid: string;
-    idType: string;
-    idTypeAdmin: string;
-    id: string;
-    idAdmin: string;
-    icon: string;
     name: string;
     lastName: string;
+    email: string;
+    idTypeAdmin: string;
+    idAdmin: string;
+    indicativeTwo: string;
+    phoneAdmin: string;
+    urlPhoto: string;
+    companyId: string;
+    rolId: string;
+};
+
+export type DataCompanyObject = {
+    uid: string;
+    adminId: string;
+    idType: string;
+    id: string;
+    icon: string;
     businessName: string;
     tradename: string;
     indicativeOne: string;
-    indicativeTwo: string;
     phone: string;
-    phoneAdmin: string;
     phone2: string;
     ext: string;
     webSite: string;
     sector: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
     address: string;
     country: string;
     state: any;
     city: string;
-    urlPhoto: string;
-    timestamp: Date;
+    timestamp: string;
     isActive: boolean;
     isDeleted: boolean;
 };

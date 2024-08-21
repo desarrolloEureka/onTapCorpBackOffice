@@ -8,5 +8,6 @@ const nextConfig = {
     loader: 'imgix',
     path: '/',
   },
+  transpilePackages: ['mui-tel-input'],
 };
 export default nextConfig;

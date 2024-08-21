@@ -16,11 +16,9 @@ const Home = () => {
             <Seo title={"Home"} />
             <Container
                 fluid
-                className="tw-px-10 dark:bg-black dark:tw-bg-repeat tw-mt-14"
+                className="tw-px-0 bg-home lg:tw-px-10 tw-bg-white tw-bg-opacity-10 tw-mt-14 tw-min-h-screen"
             >
-                <Container fluid className="tw-px-20">
-                    <Header />
-                </Container>
+                <Header />
             </Container>
         </Fragment>
     );

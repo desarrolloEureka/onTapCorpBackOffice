@@ -1,5 +1,6 @@
 "use client";
 import {
+    dataAdminCompanyObject,
     dataAgreementsObject,
     dataAreasObject,
     dataCampusObject,
@@ -14,36 +15,35 @@ import {
 } from "@/data/mainFormData";
 // import { getDocumentRefById } from "@/firebase/Documents";
 // import { registerFirebase } from "@/firebase/user";
+import useAuth from "@/firebase/auth";
+import { addUser } from "@/firebase/user";
 import { getAllAgreementsQuery } from "@/queries/AgreementsQueries";
+import { getAllAreasQuery } from "@/queries/AreasQueries";
 import { getAllCampusQuery } from "@/queries/campusQueries";
 import {
     getAllDocumentsQuery,
     getDocumentReference,
-    getUrlFile,
     saveAreasOnCampusQuery,
     saveDataDocumentsQuery,
     saveEditDataDocumentsQuery,
     saveFilesDocuments,
     saveIconFile,
 } from "@/queries/documentsQueries";
+import { getAllRolesQuery } from "@/queries/RolesQueries";
 import { getAllSpecialtiesQuery } from "@/queries/SpecialtiesQueries";
 import { AgreementSelector } from "@/types/agreements";
+import { AreasSelector } from "@/types/areas";
 import { CampusSelector } from "@/types/campus";
 import { ErrorDataForm } from "@/types/documents";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
+import { RolesSelector } from "@/types/roles";
 import { SpecialtySelector } from "@/types/specialty";
+import { handleSendWelcomeEmail } from "lib/brevo/handlers/actions";
+import _ from "lodash";
 import moment from "moment";
 import { SetStateAction, useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import _ from "lodash";
-import { getAllAreasQuery } from "@/queries/AreasQueries";
-import { AreasSelector } from "@/types/areas";
-import useAuth from "@/firebase/auth";
-import { addUser } from "@/firebase/user";
-import { getAllRolesQuery } from "@/queries/RolesQueries";
-import { RolesSelector } from "@/types/roles";
-import { handleSendWelcomeEmail } from "lib/brevo/handlers/actions";
 
 const MainFormHook = ({
     handleShowMainForm,
@@ -76,6 +76,7 @@ const MainFormHook = ({
     const [areas, setAreas] = useState<AreasSelector[]>();
     const [roles, setRoles] = useState<RolesSelector[]>();
     const [diagnostician, setDiagnostician] = useState<any[]>();
+    const [adminUsers, setAdminUsers] = useState<any[]>();
 
     const [selectedIdType, setSelectedIdType] = useState<any>(null);
     const [selectedIdTypeAdmin, setSelectedIdTypeAdmin] = useState<any>(null);
@@ -94,6 +95,8 @@ const MainFormHook = ({
 
     const theme = localStorage.getItem("@theme");
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
+
+    // console.log("theme", themeParsed?.dataThemeMode);
 
     const generateGUID = () => {
         const S4 = (): string => {
@@ -275,8 +278,35 @@ const MainFormHook = ({
         setData({ ...data, ["indicativeTwo"]: e });
     };
 
+    const getAdminCompanyData: any = useCallback(() => {
+        const adminData = adminUsers?.find(
+            (user) => user.uid === editData?.adminId,
+        );
+        const newEditDataObj = {
+            ...editData,
+            address: editData?.address[0],
+            state: _.isNumber(editData?.state[0])
+                ? editData?.state[0]
+                : parseInt(editData?.state[0]),
+            country: editData?.country[0],
+            idType: editData?.idType[0],
+            id: editData?.id[0],
+            businessName: editData?.businessName[0],
+            tradename: editData?.tradename[0],
+            indicativeOne: editData?.indicativeOne[0],
+            phone: editData?.phone[0],
+            ext: editData?.ext[0],
+            webSite: editData?.webSite[0],
+            sector: editData?.sector[0],
+            city: editData?.city[0],
+            icon: editData?.icon[0],
+        };
+
+        return { ...newEditDataObj, ..._.omit(adminData, "uid") };
+    }, [adminUsers, editData]);
+
     const uploadHandle = async () => {
-        let newData = {};
+        let newData: any;
         const error: ErrorDataForm[] = [];
         const documentRef: any = getDocumentReference(reference);
         const documentRefUser: any = getDocumentReference("users");
@@ -512,31 +542,40 @@ const MainFormHook = ({
         }
 
         if (reference === "companies") {
-            const currentDataObject = { ...dataCompanyObject };
+            const currentDataObjectCompany = { ...dataCompanyObject };
+            const currentDataObjectAdmin = { ...dataAdminCompanyObject };
 
             handleShowMainFormEdit
-                ? (currentDataObject.uid = data.uid)
-                : (currentDataObject.uid = documentRefUser.id);
-            currentDataObject.idType = data.idType;
-            currentDataObject.idTypeAdmin = data.idTypeAdmin;
-            currentDataObject.id = data.id;
-            currentDataObject.idAdmin = data.idAdmin;
-            currentDataObject.businessName = data.businessName;
-            currentDataObject.tradename = data.tradename;
-            currentDataObject.address = data.address;
-            currentDataObject.indicativeOne = data.indicativeOne;
-            currentDataObject.phone = data.phone;
-            currentDataObject.phoneAdmin = data.phoneAdmin;
-            currentDataObject.ext = data.ext;
-            currentDataObject.webSite = data.webSite;
-            currentDataObject.sector = data.sector;
-            currentDataObject.country = data.country;
-            currentDataObject.state = data.state;
-            currentDataObject.city = data.city;
-            currentDataObject.email = data.email;
-            currentDataObject.name = data.name;
-            currentDataObject.lastName = data.lastName;
-            currentDataObject.isActive = data.isActive;
+                ? ((currentDataObjectCompany.uid = data.uid),
+                  (currentDataObjectCompany.adminId = data.adminId),
+                  (currentDataObjectCompany.icon = data.icon),
+                  (currentDataObjectAdmin.urlPhoto = data.urlPhoto))
+                : ((currentDataObjectCompany.uid = documentRef.id),
+                  (currentDataObjectCompany.adminId = documentRefUser.id));
+
+            currentDataObjectCompany.idType = data.idType;
+            currentDataObjectCompany.id = data.id;
+            currentDataObjectCompany.businessName = data.businessName;
+            currentDataObjectCompany.tradename = data.tradename;
+            currentDataObjectCompany.address = data.address;
+            currentDataObjectCompany.indicativeOne = data.indicativeOne;
+            currentDataObjectCompany.phone = data.phone;
+            currentDataObjectCompany.ext = data.ext;
+            currentDataObjectCompany.webSite = data.webSite;
+            currentDataObjectCompany.sector = data.sector;
+            currentDataObjectCompany.country = data.country;
+            currentDataObjectCompany.state = data.state;
+            currentDataObjectCompany.city = data.city;
+            currentDataObjectCompany.isActive = data.isActive;
+
+            currentDataObjectAdmin.idTypeAdmin = data.idTypeAdmin;
+            currentDataObjectAdmin.idAdmin = data.idAdmin;
+            currentDataObjectAdmin.name = data.name;
+            currentDataObjectAdmin.lastName = data.lastName;
+            currentDataObjectAdmin.email = data.email;
+            currentDataObjectAdmin.indicativeTwo = data.indicativeTwo;
+            currentDataObjectAdmin.phoneAdmin = data.phoneAdmin;
+            currentDataObjectAdmin.companyId = documentRef.id;
 
             for (const record of files) {
                 const urlName = record.name.split(".")[0];
@@ -544,10 +583,10 @@ const MainFormHook = ({
                     urlName,
                     record,
                     uid: handleShowMainFormEdit ? data.uid : documentRef.id,
-                    reference,
+                    reference: "users",
                 })
                     .then((result) => {
-                        currentDataObject.urlPhoto = result;
+                        currentDataObjectAdmin.urlPhoto = result;
                         // error.push(...result);
                     })
                     .catch((err) => {
@@ -565,7 +604,7 @@ const MainFormHook = ({
                     reference,
                 })
                     .then((result) => {
-                        currentDataObject.icon = result;
+                        currentDataObjectCompany.icon = result;
                         // error.push(...result);
                     })
                     .catch((err) => {
@@ -574,83 +613,123 @@ const MainFormHook = ({
                     });
             }
 
-            newData = { ...currentDataObject };
+            const company = {
+                ...currentDataObjectCompany,
+                idType: [currentDataObjectCompany.idType, true],
+                id: [currentDataObjectCompany.id, true],
+                businessName: [currentDataObjectCompany.businessName, true],
+                tradename: [currentDataObjectCompany.tradename, true],
+                address: [currentDataObjectCompany.address, true],
+                indicativeOne: [currentDataObjectCompany.indicativeOne, true],
+                phone: [currentDataObjectCompany.phone, true],
+                ext: [currentDataObjectCompany.ext, true],
+                webSite: [currentDataObjectCompany.webSite, true],
+                sector: [currentDataObjectCompany.sector, true],
+                country: [currentDataObjectCompany.country, true],
+                state: [currentDataObjectCompany.state, true],
+                city: [currentDataObjectCompany.city, true],
+                icon: [currentDataObjectCompany.icon, true],
+            };
+
+            newData = {
+                company,
+                admin: { ...currentDataObjectAdmin },
+            };
         }
 
         // console.log("newData", newData);
         // console.log("reference", reference);
 
         handleShowMainFormEdit
-            ? await saveEditDataDocumentsQuery({
-                  id: data.uid,
-                  data: newData,
-                  reference,
-              })
-                  .then(() => {
-                      if (reference === "areas") {
-                          if (
-                              editData.availableCampus.length >
-                                  data.availableCampus.length ||
-                              !_.isEqual(
-                                  editData.availableCampus,
-                                  data.availableCampus.length,
-                              )
-                          ) {
-                              const currentData = _.difference(
-                                  editData.availableCampus,
-                                  data.availableCampus,
-                              );
-                              //   console.log("currentData", currentData);
-
-                              currentData.forEach(async (itemData: string) => {
-                                  await saveAreasOnCampusQuery({
-                                      id: itemData,
-                                      refArea: data.uid,
-                                      data:
-                                          campus &&
-                                          campus.find(
-                                              (item) => item.value === itemData,
-                                          )?.areas,
-                                      reference: "campus",
-                                      refExist: true,
-                                  });
-                              });
-
-                              data.availableCampus.forEach(
-                                  async (itemData: string) => {
-                                      await saveAreasOnCampusQuery({
-                                          id: itemData,
-                                          refArea: data.uid,
-                                          data:
-                                              campus &&
-                                              campus.find(
-                                                  (item) =>
-                                                      item.value === itemData,
-                                              )?.areas,
-                                          reference: "campus",
-                                      });
-                                  },
-                              );
-                          } else {
-                              data.availableCampus.forEach(
-                                  async (itemData: string) => {
-                                      await saveAreasOnCampusQuery({
-                                          id: itemData,
-                                          refArea: data.uid,
-                                          data:
-                                              campus &&
-                                              campus.find(
-                                                  (item) =>
-                                                      item.value === itemData,
-                                              )?.areas,
-                                          reference: "campus",
-                                      });
-                                  },
-                              );
-                          }
-                      }
+            ? reference === "companies"
+                ? await saveEditDataDocumentsQuery({
+                      id: data.adminId,
+                      data: { ...newData.admin, uid: data.adminId },
+                      reference: "users",
+                  }).then(async () => {
+                      await saveEditDataDocumentsQuery({
+                          id: data.uid,
+                          data: newData.company,
+                          reference,
+                      });
+                      confirmAlert();
                   })
-                  .then(confirmAlert)
+                : await saveEditDataDocumentsQuery({
+                      id: data.uid,
+                      data: newData,
+                      reference,
+                  })
+                      .then(() => {
+                          if (reference === "areas") {
+                              if (
+                                  editData.availableCampus.length >
+                                      data.availableCampus.length ||
+                                  !_.isEqual(
+                                      editData.availableCampus,
+                                      data.availableCampus.length,
+                                  )
+                              ) {
+                                  const currentData = _.difference(
+                                      editData.availableCampus,
+                                      data.availableCampus,
+                                  );
+                                  //   console.log("currentData", currentData);
+
+                                  currentData.forEach(
+                                      async (itemData: string) => {
+                                          await saveAreasOnCampusQuery({
+                                              id: itemData,
+                                              refArea: data.uid,
+                                              data:
+                                                  campus &&
+                                                  campus.find(
+                                                      (item) =>
+                                                          item.value ===
+                                                          itemData,
+                                                  )?.areas,
+                                              reference: "campus",
+                                              refExist: true,
+                                          });
+                                      },
+                                  );
+
+                                  data.availableCampus.forEach(
+                                      async (itemData: string) => {
+                                          await saveAreasOnCampusQuery({
+                                              id: itemData,
+                                              refArea: data.uid,
+                                              data:
+                                                  campus &&
+                                                  campus.find(
+                                                      (item) =>
+                                                          item.value ===
+                                                          itemData,
+                                                  )?.areas,
+                                              reference: "campus",
+                                          });
+                                      },
+                                  );
+                              } else {
+                                  data.availableCampus.forEach(
+                                      async (itemData: string) => {
+                                          await saveAreasOnCampusQuery({
+                                              id: itemData,
+                                              refArea: data.uid,
+                                              data:
+                                                  campus &&
+                                                  campus.find(
+                                                      (item) =>
+                                                          item.value ===
+                                                          itemData,
+                                                  )?.areas,
+                                              reference: "campus",
+                                          });
+                                      },
+                                  );
+                              }
+                          }
+                      })
+                      .then(confirmAlert)
             : reference === "companies"
             ? await addUser({
                   email: data.email,
@@ -660,8 +739,18 @@ const MainFormHook = ({
               }).then(async () => {
                   await saveDataDocumentsQuery({
                       documentRef: documentRefUser,
-                      data: newData,
+                      data: reference === "companies" ? newData.admin : newData,
                   }).then(async () => {
+                      await saveDataDocumentsQuery({
+                          documentRef,
+                          data:
+                              reference === "companies"
+                                  ? {
+                                        ...newData.company,
+                                        adminId: documentRefUser.id,
+                                    }
+                                  : newData,
+                      });
                       // Envía el correo de nuevo usuario
                       await handleSendWelcomeEmail(data);
                       confirmAlert();
@@ -901,6 +990,8 @@ const MainFormHook = ({
                 "diagnostician",
             );
             diagnosticianResult && setDiagnostician(diagnosticianResult);
+            const usersResult = await getAllDocumentsQuery("users");
+            usersResult && setAdminUsers(usersResult);
         }
     }, [handleShowMainForm, handleShowMainFormEdit]);
 
@@ -913,8 +1004,16 @@ const MainFormHook = ({
     }, [handleShowMainForm]);
 
     useEffect(() => {
-        handleShowMainFormEdit && (setShow(true), setData(editData));
-    }, [editData, handleShowMainFormEdit]);
+        const allCompanyData = getAdminCompanyData();
+        if (handleShowMainFormEdit) {
+            setShow(true);
+            if (allCompanyData && reference === "companies") {
+                setData(allCompanyData);
+            } else {
+                setData(editData);
+            }
+        }
+    }, [editData, getAdminCompanyData, handleShowMainFormEdit, reference]);
 
     return {
         show,

@@ -7,7 +7,7 @@ import {
     image_flag5,
 } from "@/globals/images";
 import SelectOptions, { HeaderDropDownProps, Notify } from "@/data/header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SimpleBar from "simplebar-react";
 import Link from "next/link";
 import { LocalVariable } from "@/types/global";
@@ -17,7 +17,7 @@ const HeadDropDown = (params: HeaderDropDownProps) => {
     // console.log('localVariable>>>', localVariable);
     const handleToggleDark = () => {
         const localVariable = localStorage.getItem("@theme");
-        console.log("localVariable", localVariable);
+        // console.log("localVariable", localVariable);
 
         // console.log('localVariableClone', localVariableClone);
         if (localVariable) {
@@ -27,8 +27,10 @@ const HeadDropDown = (params: HeaderDropDownProps) => {
 
             if (localVariableClone.dataThemeMode === "light") {
                 localVariableClone.dataThemeMode = "dark";
+                params.setTheme("dark");
             } else {
                 localVariableClone.dataThemeMode = "light";
+                params.setTheme("light");
             }
             document.documentElement.setAttribute(
                 "data-theme-mode",
@@ -39,6 +41,15 @@ const HeadDropDown = (params: HeaderDropDownProps) => {
             localStorage.setItem("@theme", JSON.stringify(localVariableClone));
         }
     };
+
+    useEffect(() => {
+        const theme = localStorage.getItem("@theme");
+        const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
+
+        if (theme) {
+            params.setTheme(themeParsed?.dataThemeMode);
+        }
+    }, []);
 
     return (
         <>
@@ -157,7 +168,7 @@ const HeadDropDown = (params: HeaderDropDownProps) => {
                     </InputGroup>
                 </Dropdown.Menu>
             </Dropdown>
-            
+
             {/* Notificaciones */}
             {params.notifications && (
                 <Dropdown className="header-element notifications-dropdown">
