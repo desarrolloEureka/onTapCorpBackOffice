@@ -1,3 +1,4 @@
+"use client";
 import { Dropdown, Form, InputGroup, Nav } from "react-bootstrap";
 import {
     image_flag1,

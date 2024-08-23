@@ -1,3 +1,4 @@
+"use client";
 import { dataAdminCompanyObject } from "@/data/mainFormData";
 import { getDocumentsByIdQuery } from "@/queries/documentsQueries";
 import { DataAdminCompanyObject } from "@/types/mainForm";
@@ -84,7 +85,7 @@ const useAuth = () => {
             // Obtiene el documento del usuario desde Firestore
             const userDoc = await getDoc(doc(db, "users", userId));
             userDoc && setUserData(userDoc.data());
-            
+
             if (userDoc.data()?.companyId) {
                 const result = await getDocumentsByIdQuery(
                     "companies",
