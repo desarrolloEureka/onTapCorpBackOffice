@@ -1,5 +1,6 @@
 "use client";
 import {
+    dataAdminCompanyObject,
     dataAgreementsObject,
     dataAreasObject,
     dataCampusObject,
@@ -14,34 +15,35 @@ import {
 } from "@/data/mainFormData";
 // import { getDocumentRefById } from "@/firebase/Documents";
 // import { registerFirebase } from "@/firebase/user";
+import useAuth from "@/firebase/auth";
+import { addUser } from "@/firebase/user";
 import { getAllAgreementsQuery } from "@/queries/AgreementsQueries";
+import { getAllAreasQuery } from "@/queries/AreasQueries";
 import { getAllCampusQuery } from "@/queries/campusQueries";
 import {
     getAllDocumentsQuery,
     getDocumentReference,
-    getUrlFile,
     saveAreasOnCampusQuery,
     saveDataDocumentsQuery,
     saveEditDataDocumentsQuery,
     saveFilesDocuments,
+    saveIconFile,
 } from "@/queries/documentsQueries";
+import { getAllRolesQuery } from "@/queries/RolesQueries";
 import { getAllSpecialtiesQuery } from "@/queries/SpecialtiesQueries";
 import { AgreementSelector } from "@/types/agreements";
+import { AreasSelector } from "@/types/areas";
 import { CampusSelector } from "@/types/campus";
 import { ErrorDataForm } from "@/types/documents";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
+import { RolesSelector } from "@/types/roles";
 import { SpecialtySelector } from "@/types/specialty";
+import { handleSendWelcomeEmail } from "lib/brevo/handlers/actions";
+import _ from "lodash";
 import moment from "moment";
 import { SetStateAction, useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import _ from "lodash";
-import { getAllAreasQuery } from "@/queries/AreasQueries";
-import { AreasSelector } from "@/types/areas";
-import useAuth from "@/firebase/auth";
-import { addUser } from "@/firebase/user";
-import { getAllRolesQuery } from "@/queries/RolesQueries";
-import { RolesSelector } from "@/types/roles";
 
 const MainFormHook = ({
     handleShowMainForm,
@@ -62,9 +64,11 @@ const MainFormHook = ({
     const [errorForm, setErrorForm] = useState(false);
     const [errorPass, setErrorPass] = useState(false);
     const [itemExist, setItemExist] = useState(false);
+    const [nextStep, setNextStep] = useState(true);
     const [errorDataUpload, setErrorDataUpload] = useState<ErrorDataForm[]>();
     const [showPassword, setShowPassword] = useState(false);
     const [files, setFiles] = useState<SetStateAction<any>[]>([]);
+    const [iconFile, setIconFile] = useState<SetStateAction<any>[]>([]);
     // const [urlPhoto, setUrlPhoto] = useState<string>("");
     const [campus, setCampus] = useState<CampusSelector[]>();
     const [specialties, setSpecialties] = useState<SpecialtySelector[]>();
@@ -72,8 +76,10 @@ const MainFormHook = ({
     const [areas, setAreas] = useState<AreasSelector[]>();
     const [roles, setRoles] = useState<RolesSelector[]>();
     const [diagnostician, setDiagnostician] = useState<any[]>();
+    const [adminUsers, setAdminUsers] = useState<any[]>();
 
     const [selectedIdType, setSelectedIdType] = useState<any>(null);
+    const [selectedIdTypeAdmin, setSelectedIdTypeAdmin] = useState<any>(null);
     const [selectedState, setSelectedState] = useState<any>(null);
     const [selectedCountry, setSelectedCountry] = useState<any>(null);
     const [selectedCity, setSelectedCity] = useState<any>(null);
@@ -89,6 +95,8 @@ const MainFormHook = ({
 
     const theme = localStorage.getItem("@theme");
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
+
+    // console.log("theme", themeParsed?.dataThemeMode);
 
     const generateGUID = () => {
         const S4 = (): string => {
@@ -205,6 +213,10 @@ const MainFormHook = ({
         setData({ ...data, ["idType"]: e?.value });
         setSelectedIdType(e);
     };
+    const selectChangeHandlerIdTypeAdmin = (e: any) => {
+        setData({ ...data, ["idTypeAdmin"]: e?.value });
+        setSelectedIdTypeAdmin(e);
+    };
     const selectChangeHandlerState = (e: any) => {
         setData({ ...data, ["state"]: e?.value });
         setSelectedState(e);
@@ -256,17 +268,21 @@ const MainFormHook = ({
     const handleMultipleChange = (event: { target: any }) => {
         event.target.files && setFiles([...event.target.files]);
     };
-    const phoneChangeHandler = (e: any) => {
-        setData({ ...data, ["phone"]: e });
+    const handleIconFileChange = (event: { target: any }) => {
+        event.target.files && setIconFile([...event.target.files]);
     };
-    const phoneTwoChangeHandler = (e: any) => {
-        setData({ ...data, ["phone2"]: e });
+    const indicativeOneChangeHandler = (e: any) => {
+        setData({ ...data, ["indicative"]: e });
+    };
+    const indicativeTwoChangeHandler = (e: any) => {
+        setData({ ...data, ["indicativeTwo"]: e });
     };
 
     const uploadHandle = async () => {
-        let newData = {};
+        let newData: any;
         const error: ErrorDataForm[] = [];
         const documentRef: any = getDocumentReference(reference);
+        const documentRefUser: any = getDocumentReference("users");
 
         if (reference === "functionary") {
             const currentDataObject = { ...dataFunctionaryObject };
@@ -499,21 +515,41 @@ const MainFormHook = ({
         }
 
         if (reference === "companies") {
-            const currentDataObject = { ...dataCompanyObject };
+            const currentDataObjectCompany = { ...dataCompanyObject };
+            const currentDataObjectAdmin = { ...dataAdminCompanyObject };
 
             handleShowMainFormEdit
-                ? (currentDataObject.uid = data.uid)
-                : (currentDataObject.uid = documentRef.id);
-                currentDataObject.name = data.name;
-            currentDataObject.id = data.id;
-            currentDataObject.phone = data.phone;
-            currentDataObject.phone2 = data.phone2;
-            currentDataObject.address = data.address;
-            currentDataObject.country = data.country;
-            currentDataObject.state = data.state;
-            currentDataObject.city = data.city;
-            currentDataObject.email = data.email;
-            currentDataObject.isActive = data.isActive;
+                ? ((currentDataObjectCompany.uid = data.uid),
+                  (currentDataObjectCompany.adminId = data.adminId),
+                  (currentDataObjectCompany.icon = data.icon),
+                  (currentDataObjectAdmin.urlPhoto = data.urlPhoto))
+                : ((currentDataObjectCompany.uid = documentRef.id),
+                  (currentDataObjectAdmin.uid = documentRefUser.id));
+
+            currentDataObjectCompany.idType = data.idType;
+            currentDataObjectCompany.id = data.id;
+            currentDataObjectCompany.businessName = data.businessName;
+            currentDataObjectCompany.tradename = data.tradename;
+            currentDataObjectCompany.address = data.address;
+            currentDataObjectCompany.indicative = data.indicative;
+            currentDataObjectCompany.phone = data.phone;
+            currentDataObjectCompany.ext = data.ext;
+            currentDataObjectCompany.webSite = data.webSite;
+            currentDataObjectCompany.sector = data.sector;
+            currentDataObjectCompany.country = data.country;
+            currentDataObjectCompany.state = data.state;
+            currentDataObjectCompany.city = data.city;
+            currentDataObjectCompany.adminId = documentRefUser.id;
+            currentDataObjectCompany.isActive = data.isActive;
+
+            currentDataObjectAdmin.idTypeAdmin = data.idTypeAdmin;
+            currentDataObjectAdmin.idAdmin = data.idAdmin;
+            currentDataObjectAdmin.name = data.name;
+            currentDataObjectAdmin.lastName = data.lastName;
+            currentDataObjectAdmin.email = data.email;
+            currentDataObjectAdmin.indicativeTwo = data.indicativeTwo;
+            currentDataObjectAdmin.phoneAdmin = data.phoneAdmin;
+            currentDataObjectAdmin.companyId = documentRef.id;
 
             for (const record of files) {
                 const urlName = record.name.split(".")[0];
@@ -521,10 +557,10 @@ const MainFormHook = ({
                     urlName,
                     record,
                     uid: handleShowMainFormEdit ? data.uid : documentRef.id,
-                    reference,
+                    reference: "users",
                 })
                     .then((result) => {
-                        currentDataObject.urlPhoto = result;
+                        currentDataObjectAdmin.urlPhoto = result;
                         // error.push(...result);
                     })
                     .catch((err) => {
@@ -533,97 +569,166 @@ const MainFormHook = ({
                     });
             }
 
-            newData = { ...currentDataObject };
+            for (const record of iconFile) {
+                const urlName = record.name.split(".")[0];
+                await saveIconFile({
+                    urlName,
+                    record,
+                    uid: handleShowMainFormEdit ? data.uid : documentRef.id,
+                    reference,
+                })
+                    .then((result) => {
+                        currentDataObjectCompany.icon = result;
+                        // error.push(...result);
+                    })
+                    .catch((err) => {
+                        error.push({ success: false, urlName });
+                        // console.log(error);
+                    });
+            }
+
+            const company = {
+                ...currentDataObjectCompany,
+                idType: [currentDataObjectCompany.idType, true],
+                id: [currentDataObjectCompany.id, true],
+                businessName: [currentDataObjectCompany.businessName, true],
+                tradename: [currentDataObjectCompany.tradename, true],
+                address: [currentDataObjectCompany.address, true],
+                // indicativeOne: [currentDataObjectCompany.indicativeOne, ""],
+                phone: [currentDataObjectCompany.phone, true],
+                // ext: [currentDataObjectCompany.ext, true],
+                webSite: [currentDataObjectCompany.webSite, true],
+                sector: [currentDataObjectCompany.sector, true],
+                country: [currentDataObjectCompany.country, true],
+                state: [currentDataObjectCompany.state, true],
+                city: [currentDataObjectCompany.city, true],
+                icon: [currentDataObjectCompany.icon, true],
+            };
+
+            newData = {
+                company,
+                admin: { ...currentDataObjectAdmin },
+            };
         }
 
         // console.log("newData", newData);
         // console.log("reference", reference);
 
         handleShowMainFormEdit
-            ? await saveEditDataDocumentsQuery({
-                  id: data.uid,
-                  data: newData,
-                  reference,
-              })
-                  .then(() => {
-                      if (reference === "areas") {
-                          if (
-                              editData.availableCampus.length >
-                                  data.availableCampus.length ||
-                              !_.isEqual(
-                                  editData.availableCampus,
-                                  data.availableCampus.length,
-                              )
-                          ) {
-                              const currentData = _.difference(
-                                  editData.availableCampus,
-                                  data.availableCampus,
-                              );
-                              //   console.log("currentData", currentData);
-
-                              currentData.forEach(async (itemData: string) => {
-                                  await saveAreasOnCampusQuery({
-                                      id: itemData,
-                                      refArea: data.uid,
-                                      data:
-                                          campus &&
-                                          campus.find(
-                                              (item) => item.value === itemData,
-                                          )?.areas,
-                                      reference: "campus",
-                                      refExist: true,
-                                  });
-                              });
-
-                              data.availableCampus.forEach(
-                                  async (itemData: string) => {
-                                      await saveAreasOnCampusQuery({
-                                          id: itemData,
-                                          refArea: data.uid,
-                                          data:
-                                              campus &&
-                                              campus.find(
-                                                  (item) =>
-                                                      item.value === itemData,
-                                              )?.areas,
-                                          reference: "campus",
-                                      });
-                                  },
-                              );
-                          } else {
-                              data.availableCampus.forEach(
-                                  async (itemData: string) => {
-                                      await saveAreasOnCampusQuery({
-                                          id: itemData,
-                                          refArea: data.uid,
-                                          data:
-                                              campus &&
-                                              campus.find(
-                                                  (item) =>
-                                                      item.value === itemData,
-                                              )?.areas,
-                                          reference: "campus",
-                                      });
-                                  },
-                              );
-                          }
-                      }
+            ? reference === "companies"
+                ? await saveEditDataDocumentsQuery({
+                      id: data.adminId,
+                      data: { ...newData.admin, uid: data.adminId },
+                      reference: "users",
+                  }).then(async () => {
+                      await saveEditDataDocumentsQuery({
+                          id: data.uid,
+                          data: newData.company,
+                          reference,
+                      });
+                      confirmAlert();
                   })
-                  .then(confirmAlert)
-            : reference === "professionals" ||
-              reference === "patients" ||
-              reference === "companies" ||
-              reference === "functionary"
+                : await saveEditDataDocumentsQuery({
+                      id: data.uid,
+                      data: newData,
+                      reference,
+                  })
+                      .then(() => {
+                          if (reference === "areas") {
+                              if (
+                                  editData.availableCampus.length >
+                                      data.availableCampus.length ||
+                                  !_.isEqual(
+                                      editData.availableCampus,
+                                      data.availableCampus.length,
+                                  )
+                              ) {
+                                  const currentData = _.difference(
+                                      editData.availableCampus,
+                                      data.availableCampus,
+                                  );
+                                  //   console.log("currentData", currentData);
+
+                                  currentData.forEach(
+                                      async (itemData: string) => {
+                                          await saveAreasOnCampusQuery({
+                                              id: itemData,
+                                              refArea: data.uid,
+                                              data:
+                                                  campus &&
+                                                  campus.find(
+                                                      (item) =>
+                                                          item.value ===
+                                                          itemData,
+                                                  )?.areas,
+                                              reference: "campus",
+                                              refExist: true,
+                                          });
+                                      },
+                                  );
+
+                                  data.availableCampus.forEach(
+                                      async (itemData: string) => {
+                                          await saveAreasOnCampusQuery({
+                                              id: itemData,
+                                              refArea: data.uid,
+                                              data:
+                                                  campus &&
+                                                  campus.find(
+                                                      (item) =>
+                                                          item.value ===
+                                                          itemData,
+                                                  )?.areas,
+                                              reference: "campus",
+                                          });
+                                      },
+                                  );
+                              } else {
+                                  data.availableCampus.forEach(
+                                      async (itemData: string) => {
+                                          await saveAreasOnCampusQuery({
+                                              id: itemData,
+                                              refArea: data.uid,
+                                              data:
+                                                  campus &&
+                                                  campus.find(
+                                                      (item) =>
+                                                          item.value ===
+                                                          itemData,
+                                                  )?.areas,
+                                              reference: "campus",
+                                          });
+                                      },
+                                  );
+                              }
+                          }
+                      })
+                      .then(confirmAlert)
+            : reference === "companies"
             ? await addUser({
                   email: data.email,
-                  password: data.password,
+                  password: reference === "companies" ? data.id : data.password,
                   accessTokenUser,
-                  uid: documentRef.id,
+                  uid: documentRefUser.id,
               }).then(async () => {
                   await saveDataDocumentsQuery({
-                      documentRef,
-                      data: newData,
-                  }).then(confirmAlert);
+                      documentRef: documentRefUser,
+                      data: reference === "companies" ? newData.admin : newData,
+                  }).then(async () => {
+                      await saveDataDocumentsQuery({
+                          documentRef,
+                          data:
+                              reference === "companies"
+                                  ? {
+                                        ...newData.company,
+                                        adminId: documentRefUser.id,
+                                    }
+                                  : newData,
+                      });
+                      // Envía el correo de nuevo usuario
+                      await handleSendWelcomeEmail(data);
+                      confirmAlert();
+                  });
               })
             : await saveDataDocumentsQuery({
                   documentRef,
@@ -674,13 +779,23 @@ const MainFormHook = ({
         data.phone &&
         !itemExist &&
         data.email;
-    
+
     const companyVal =
         reference === "companies" &&
-        data.name &&
+        data.idType &&
         data.id &&
-        data.phone &&
-        // !itemExist &&
+        data.businessName &&
+        // data.phone &&
+        data.country &&
+        data.state &&
+        data.city;
+
+    const companyAdminVal =
+        reference === "companies" &&
+        // data.idTypeAdmin &&
+        // data.idAdmin &&
+        data.name &&
+        data.lastName &&
         data.email;
 
     const agreementsVal =
@@ -735,6 +850,7 @@ const MainFormHook = ({
         if (
             areasVal ||
             companyVal ||
+            companyAdminVal ||
             campusVal ||
             specialtyVal ||
             diagnosticianVal ||
@@ -789,6 +905,7 @@ const MainFormHook = ({
         // setUrlPhoto("");
         clearSelectFields();
         setItemExist(false);
+        setNextStep(true);
     };
 
     const clearSelectFields = () => {
@@ -831,6 +948,37 @@ const MainFormHook = ({
         return age;
     };
 
+    const getAdminCompanyData: any = useCallback(() => {
+        const adminData = adminUsers?.find(
+            (user) => user.uid === editData?.adminId,
+            adminUsers,
+        );
+
+        const newEditDataObj = {
+            ...editData,
+            address: editData?.address[0],
+            state: _.isNumber(editData?.state[0])
+                ? editData?.state[0]
+                : parseInt(editData?.state[0]),
+            country: editData?.country[0],
+            idType: editData?.idType[0],
+            id: editData?.id[0],
+            businessName: editData?.businessName[0],
+            tradename: editData?.tradename[0],
+            // indicative: editData?.indicative,
+            phone: editData?.phone[0],
+            // ext: editData?.ext[0],
+            webSite: editData?.webSite[0],
+            sector: editData?.sector[0],
+            city: editData?.city[0],
+            icon: editData?.icon[0],
+        };
+
+        // console.log({ ...newEditDataObj, ..._.omit(adminData, "uid") });
+
+        return { ...newEditDataObj, ..._.omit(adminData, "uid") };
+    }, [adminUsers, editData]);
+
     const getAllSelectOptions = useCallback(async () => {
         if (handleShowMainForm || handleShowMainFormEdit) {
             const campusResult = await getAllCampusQuery();
@@ -847,6 +995,8 @@ const MainFormHook = ({
                 "diagnostician",
             );
             diagnosticianResult && setDiagnostician(diagnosticianResult);
+            const usersResult = await getAllDocumentsQuery("users");
+            usersResult && setAdminUsers(usersResult);
         }
     }, [handleShowMainForm, handleShowMainFormEdit]);
 
@@ -859,8 +1009,16 @@ const MainFormHook = ({
     }, [handleShowMainForm]);
 
     useEffect(() => {
-        handleShowMainFormEdit && (setShow(true), setData(editData));
-    }, [editData, handleShowMainFormEdit]);
+        const allCompanyData = getAdminCompanyData();
+        if (handleShowMainFormEdit) {
+            setShow(true);
+            if (allCompanyData && reference === "companies") {
+                setData(allCompanyData);
+            } else {
+                setData(editData);
+            }
+        }
+    }, [editData, getAdminCompanyData, handleShowMainFormEdit, reference]);
 
     return {
         show,
@@ -870,6 +1028,7 @@ const MainFormHook = ({
         errorValid,
         data,
         selectedIdType,
+        selectedIdTypeAdmin,
         selectedState,
         selectedCountry,
         selectedCity,
@@ -890,6 +1049,8 @@ const MainFormHook = ({
         areas,
         roles: getRolesByReference(),
         theme: themeParsed?.dataThemeMode,
+        nextStep,
+        companyVal,
         setErrorPass,
         setErrorValid,
         changeHandler,
@@ -914,13 +1075,16 @@ const MainFormHook = ({
         selectChangeHandlerCity,
         selectChangeHandlerCountry,
         selectChangeHandlerState,
-        phoneChangeHandler,
-        phoneTwoChangeHandler,
+        indicativeOneChangeHandler,
+        indicativeTwoChangeHandler,
         findValue,
         handleEditForm,
         handleMultipleChange,
+        handleIconFileChange,
         selectChangeHandlerPersonType,
+        selectChangeHandlerIdTypeAdmin,
         areasByCampus,
+        setNextStep,
     };
 };
 

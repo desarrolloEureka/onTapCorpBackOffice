@@ -139,9 +139,9 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {
+                                                                {/* {
                                                                     data?.displayName
-                                                                }
+                                                                } */}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -153,7 +153,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {data?.name}
+                                                                {/* {data?.name} */}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -165,7 +165,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {data?.lastName}
+                                                                {/* {data?.lastName} */}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -177,7 +177,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {data?.rol}
+                                                                {/* {data?.rol} */}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -189,7 +189,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {data?.position}
+                                                                {/* {data?.position} */}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -209,7 +209,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {data?.email}
+                                                                {/* {data?.email} */}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -221,7 +221,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {data?.phone}
+                                                                {/* {data?.phone} */}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -233,7 +233,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {data?.address}
+                                                                {/* {data?.address} */}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -250,7 +250,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15 tw-text-justify">
-                                                                {data?.aboutMe}
+                                                                {/* {data?.aboutMe} */}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -292,10 +292,10 @@ const Profile = () => {
                                                                 </Col>
                                                                 <Col md={9}>
                                                                     <Form.Control
-                                                                        value={
-                                                                            data &&
-                                                                            data?.displayName
-                                                                        }
+                                                                        // value={
+                                                                        //     data &&
+                                                                        //     data?.displayName
+                                                                        // }
                                                                         type="text"
                                                                         name="displayName"
                                                                         placeholder="User Name"
@@ -316,10 +316,10 @@ const Profile = () => {
                                                                 </Col>
                                                                 <Col md={9}>
                                                                     <Form.Control
-                                                                        value={
-                                                                            data &&
-                                                                            data?.name
-                                                                        }
+                                                                        // value={
+                                                                        //     data &&
+                                                                        //     data?.name
+                                                                        // }
                                                                         type="text"
                                                                         name="name"
                                                                         placeholder="First Name"
@@ -340,10 +340,10 @@ const Profile = () => {
                                                                 </Col>
                                                                 <Col md={9}>
                                                                     <Form.Control
-                                                                        value={
-                                                                            data &&
-                                                                            data?.lastName
-                                                                        }
+                                                                        // value={
+                                                                        //     data &&
+                                                                        //     data?.lastName
+                                                                        // }
                                                                         type="text"
                                                                         name="lastName"
                                                                         placeholder="Last Name"
@@ -364,10 +364,10 @@ const Profile = () => {
                                                                 </Col>
                                                                 <Col md={9}>
                                                                     <Form.Control
-                                                                        value={
-                                                                            data &&
-                                                                            data?.rol
-                                                                        }
+                                                                        // value={
+                                                                        //     data &&
+                                                                        //     data?.rol
+                                                                        // }
                                                                         type="text"
                                                                         name="rol"
                                                                         placeholder="Rol"
@@ -388,10 +388,10 @@ const Profile = () => {
                                                                 </Col>
                                                                 <Col md={9}>
                                                                     <Form.Control
-                                                                        value={
-                                                                            data &&
-                                                                            data?.position
-                                                                        }
+                                                                        // value={
+                                                                        //     data &&
+                                                                        //     data?.position
+                                                                        // }
                                                                         type="text"
                                                                         name="position"
                                                                         placeholder="Designation"
@@ -422,10 +422,10 @@ const Profile = () => {
                                                                 <Col md={9}>
                                                                     <Form.Control
                                                                         disabled
-                                                                        value={
-                                                                            data &&
-                                                                            data?.email
-                                                                        }
+                                                                        // value={
+                                                                        //     data &&
+                                                                        //     data?.email
+                                                                        // }
                                                                         type="text"
                                                                         name="email"
                                                                         placeholder="email"
@@ -446,10 +446,10 @@ const Profile = () => {
                                                                 </Col>
                                                                 <Col md={9}>
                                                                     <Form.Control
-                                                                        value={
-                                                                            data &&
-                                                                            data?.phone
-                                                                        }
+                                                                        // value={
+                                                                        //     data &&
+                                                                        //     data?.phone
+                                                                        // }
                                                                         type="text"
                                                                         name="phone"
                                                                         placeholder="phone number"
@@ -471,10 +471,10 @@ const Profile = () => {
                                                                 <Col md={9}>
                                                                     <Form.Control
                                                                         aria-label="Comments"
-                                                                        value={
-                                                                            data &&
-                                                                            data?.address
-                                                                        }
+                                                                        // value={
+                                                                        //     data &&
+                                                                        //     data?.address
+                                                                        // }
                                                                         as="textarea"
                                                                         name="address"
                                                                         rows={2}
@@ -501,10 +501,10 @@ const Profile = () => {
                                                                 </Col>
                                                                 <Col md={9}>
                                                                     <Form.Control
-                                                                        value={
-                                                                            data &&
-                                                                            data?.aboutMe
-                                                                        }
+                                                                        // value={
+                                                                        //     data &&
+                                                                        //     data?.aboutMe
+                                                                        // }
                                                                         name="aboutMe"
                                                                         rows={4}
                                                                         as="textarea"
@@ -775,6 +775,6 @@ const Profile = () => {
         </>
     );
 };
-Profile.layout = "Contentlayout";
+// Profile.layout = "Contentlayout";
 
 export default Profile;

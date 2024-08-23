@@ -1,6 +1,6 @@
 /**@type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  // output: 'export',
   reactStrictMode: true,
   trailingSlash: true,
   swcMinify: true,
@@ -8,5 +8,6 @@ const nextConfig = {
     loader: 'imgix',
     path: '/',
   },
+  transpilePackages: ['mui-tel-input'],
 };
 export default nextConfig;

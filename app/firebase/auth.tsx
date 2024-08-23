@@ -1,3 +1,7 @@
+"use client";
+import { dataAdminCompanyObject } from "@/data/mainFormData";
+import { getDocumentsByIdQuery } from "@/queries/documentsQueries";
+import { DataAdminCompanyObject } from "@/types/mainForm";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { getDoc, doc, DocumentReference } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
@@ -16,11 +20,13 @@ const useAuth = () => {
     const [role, setRole] = useState<Role | null>();
     const [error, setError] = useState<string>();
     const [accessTokenUser, setAccessTokenUser] = useState<string>("");
+    const [userData, setUserData] = useState<any>();
+    const [companyData, setCompanyData] = useState<any>();
 
     const getRole = useCallback(async () => {
         if (user) {
             // Obtiene el documento del usuario desde Firestore
-            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            const userDoc = await getDoc(doc(db, "users", user.uid));
 
             if (userDoc.exists()) {
                 const userData = userDoc.data();
@@ -33,7 +39,7 @@ const useAuth = () => {
                     id: roleId,
                     name: "",
                     slug: "",
-                    isAdmin: false
+                    isAdmin: false,
                 };
 
                 switch (roleId) {
@@ -62,16 +68,33 @@ const useAuth = () => {
 
                 // Guardar solo el slug en el almacenamiento local
                 setRole(role);
-                await localStorage.setItem('userRoleSlug', role.slug); // Guarda el rol en localStorage
+                await localStorage.setItem("userRoleSlug", role.slug); // Guarda el rol en localStorage
             } else {
                 setRole(null);
-                localStorage.removeItem('userRoleSlug'); // Limpia el rol si no existe
+                localStorage.removeItem("userRoleSlug"); // Limpia el rol si no existe
             }
         } else if (user === null) {
             setRole(null);
-            localStorage.removeItem('userRoleSlug'); // Limpia el rol si no hay usuario
+            localStorage.removeItem("userRoleSlug"); // Limpia el rol si no hay usuario
         }
-    }, [user])
+    }, [user]);
+
+    const getUserData = useCallback(async () => {
+        if (user) {
+            const userId: string | undefined = user?.uid;
+            // Obtiene el documento del usuario desde Firestore
+            const userDoc = await getDoc(doc(db, "users", userId));
+            userDoc && setUserData(userDoc.data());
+
+            if (userDoc.data()?.companyId) {
+                const result = await getDocumentsByIdQuery(
+                    "companies",
+                    userDoc.data()?.companyId,
+                );
+                result && setCompanyData(result);
+            }
+        }
+    }, [user]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, setUser, (error: any) => {
@@ -91,17 +114,19 @@ const useAuth = () => {
 
     useEffect(() => {
         if (user !== undefined) {
+            getUserData();
             setIsLoading(false);
             user?.getIdToken().then((token) => setAccessTokenUser(token));
-            // console.log(accessTokenUser);
         }
-    }, [user, accessTokenUser]);
+    }, [user, accessTokenUser, getUserData]);
 
     return {
         isLoading,
         user,
         error,
         accessTokenUser,
+        userData,
+        companyData,
     };
 };
 export default useAuth;

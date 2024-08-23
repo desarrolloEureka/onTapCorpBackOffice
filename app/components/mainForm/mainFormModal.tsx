@@ -10,9 +10,10 @@ import {
     // specialties,
     personTypes,
 } from "@/data/formConstant";
+import { showPasswordParams } from "@/types/mainForm";
 import { ModalParamsMainForm } from "@/types/modals";
-import "filepond/dist/filepond.min.css";
 import _ from "lodash";
+import moment from "moment";
 import dynamic from "next/dynamic";
 import {
     Alert,
@@ -21,16 +22,23 @@ import {
     Form,
     InputGroup,
     Modal,
+    OverlayTrigger,
     Row,
+    Tooltip,
 } from "react-bootstrap";
-import { FilePond } from "react-filepond";
-import MainFormHook from "./hook/mainFormHook";
-const Select = dynamic(() => import("react-select"), { ssr: false });
-import { components } from "react-select";
-import { showPasswordParams } from "@/types/mainForm";
-import makeAnimated from "react-select/animated";
+import { BsFillTelephoneForwardFill, BsPersonVcard } from "react-icons/bs";
+import { FaPhone } from "react-icons/fa6";
+import { GrNext, GrPrevious } from "react-icons/gr";
+import { ImCancelCircle } from "react-icons/im";
+import { IoBusinessSharp, IoPersonSharp } from "react-icons/io5";
+import { MdBusinessCenter, MdEmail, MdLocationPin } from "react-icons/md";
+import { FiEdit } from "react-icons/fi";
 import PhoneInput from "react-phone-input-2";
-import moment from "moment";
+import { components } from "react-select";
+import makeAnimated from "react-select/animated";
+import MainFormHook from "./hook/mainFormHook";
+import { VscSave } from "react-icons/vsc";
+const Select = dynamic(() => import("react-select"), { ssr: false });
 
 const animatedComponents = makeAnimated();
 
@@ -87,6 +95,24 @@ const ShowPasswordButton = ({ show, setShow }: showPasswordParams) => (
     </Button>
 );
 
+const TooltipComponent = ({
+    id,
+    children,
+    title,
+}: {
+    id: string;
+    children: any;
+    title: string;
+}) => (
+    <OverlayTrigger
+        placement="bottom"
+        delay={{ show: 150, hide: 400 }}
+        overlay={<Tooltip id={id}>{title}</Tooltip>}
+    >
+        {children}
+    </OverlayTrigger>
+);
+
 const MainFormModal = ({
     handleShowMainForm,
     setHandleShowMainForm,
@@ -104,6 +130,7 @@ const MainFormModal = ({
         data,
         selectedRol,
         selectedIdType,
+        selectedIdTypeAdmin,
         selectedState,
         selectedCountry,
         selectedCity,
@@ -122,6 +149,9 @@ const MainFormModal = ({
         roles,
         theme,
         errorValid,
+        nextStep,
+        companyVal,
+        setNextStep,
         setErrorPass,
         setErrorValid,
         handleSendForm,
@@ -143,12 +173,14 @@ const MainFormModal = ({
         selectChangeHandlerCity,
         selectChangeHandlerCountry,
         selectChangeHandlerState,
-        phoneChangeHandler,
-        phoneTwoChangeHandler,
+        indicativeOneChangeHandler,
+        indicativeTwoChangeHandler,
         findValue,
         handleEditForm,
         handleMultipleChange,
+        handleIconFileChange,
         selectChangeHandlerPersonType,
+        selectChangeHandlerIdTypeAdmin,
         areasByCampus,
     } = MainFormHook({
         handleShowMainForm,
@@ -161,7 +193,7 @@ const MainFormModal = ({
     });
 
     return (
-        <Modal size="xl" centered show={show} onHide={handleClose}>
+        <Modal size="lg" centered show={show} onHide={handleClose}>
             <Form
                 // noValidate
                 // validated={errorForm}
@@ -169,22 +201,21 @@ const MainFormModal = ({
                 onSubmit={handleSendForm}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title
-                        className="tw-text-[#e9a225]"
-                        as="h6"
-                    >{`Nuevo Registro ${title}`}</Modal.Title>
+                    <Modal.Title className="tw-text-[#64a5e2]" as="h6">
+                        Nuevo Registro&nbsp;
+                    </Modal.Title>
                 </Modal.Header>
                 {isEdit ? (
                     <Modal.Body className="tw-px-8">
                         <Row>
-                            {reference !== "campus" &&
-                                reference !== "specialties" &&
-                                reference !== "agreements" &&
-                                reference !== "diagnoses" &&
-                                reference !== "companies" &&
-                                reference !== "areas" && (
+                            {reference === "companies" &&
+                                (nextStep ? (
                                     <>
-                                        <Col md={6} lg={4} className="mb-3">
+                                        <Col
+                                            md={6}
+                                            // lg={4}
+                                            className="mb-3 tw-relative"
+                                        >
                                             <Form.Group controlId="idType">
                                                 <Form.Label className="">
                                                     Tipo Documento
@@ -218,15 +249,37 @@ const MainFormModal = ({
                                                     name="idType"
                                                     options={idTypes}
                                                     id="idType"
+                                                    aria-label="id type"
                                                     className="basic-multi-select"
                                                     classNamePrefix="Select2"
                                                     onChange={
                                                         selectChangeHandlerIdType
                                                     }
+                                                    styles={{
+                                                        placeholder: (
+                                                            provided,
+                                                        ) => ({
+                                                            ...provided,
+                                                            marginLeft: "30px",
+                                                        }),
+                                                        singleValue: (
+                                                            provided,
+                                                        ) => ({
+                                                            ...provided,
+                                                            paddingLeft: "30px",
+                                                        }),
+                                                    }}
                                                 />
+                                                <span className="tw-absolute tw-left-5 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                    <BsPersonVcard size={24} />
+                                                </span>
                                             </Form.Group>
                                         </Col>
-                                        <Col md={6} lg={4} className="mb-3">
+                                        <Col
+                                            md={6}
+                                            // lg={4}
+                                            className="mb-3 tw-relative"
+                                        >
                                             <Form.Label className="">
                                                 Documento
                                                 <span className="tw-text-red-500">
@@ -234,21 +287,704 @@ const MainFormModal = ({
                                                 </span>
                                             </Form.Label>
                                             <Form.Control
+                                                disabled={
+                                                    handleShowMainFormEdit
+                                                }
                                                 required
                                                 value={data.id}
                                                 type="text"
                                                 minLength={2}
                                                 maxLength={250}
                                                 name="id"
-                                                className="form-control"
+                                                aria-label="id"
+                                                className="form-control tw-pl-8"
                                                 placeholder="Número"
                                                 onChange={changeHandler}
                                             />
+                                            <span className="tw-absolute tw-left-5 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                <IoPersonSharp size={20} />
+                                            </span>
+                                        </Col>
+                                        <Col
+                                            md={6}
+                                            // lg={4}
+                                            className="mb-3 tw-relative"
+                                        >
+                                            <Form.Label className="">
+                                                Razón Social
+                                                <span className="tw-text-red-500">
+                                                    *
+                                                </span>
+                                            </Form.Label>
+                                            <Form.Control
+                                                required
+                                                value={data.businessName}
+                                                type="text"
+                                                minLength={2}
+                                                maxLength={250}
+                                                name="businessName"
+                                                aria-label="businessName"
+                                                className="form-control tw-pl-8"
+                                                placeholder="Nombre"
+                                                onChange={changeHandler}
+                                            />
+                                            <span className="tw-absolute tw-left-5 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                <IoBusinessSharp size={20} />
+                                            </span>
+                                        </Col>
+                                        <Col
+                                            md={6}
+                                            // lg={4}
+                                            className="mb-3 tw-relative"
+                                        >
+                                            <Form.Label className="">
+                                                Nombre Comercial
+                                            </Form.Label>
+                                            <Form.Control
+                                                value={data.tradename}
+                                                type="text"
+                                                minLength={2}
+                                                maxLength={1500}
+                                                name="tradename"
+                                                aria-label="tradename"
+                                                className="form-control tw-pl-8"
+                                                placeholder="Nombre"
+                                                onChange={changeHandler}
+                                            />
+                                            <span className="tw-absolute tw-left-5 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                <MdBusinessCenter size={20} />
+                                            </span>
+                                        </Col>
+                                        <Col
+                                            md={6}
+                                            // lg={4}
+                                            className="mb-3 tw-relative"
+                                        >
+                                            <Form.Label className="">
+                                                Dirección
+                                                {/* <span className="tw-text-red-500">
+                                                        *
+                                                    </span> */}
+                                            </Form.Label>
+                                            <Form.Control
+                                                // required
+                                                value={data.address}
+                                                type="text"
+                                                minLength={2}
+                                                maxLength={550}
+                                                name="address"
+                                                className="form-control tw-pl-8"
+                                                placeholder="Dirección"
+                                                aria-label="address"
+                                                onChange={changeHandler}
+                                            />
+                                            <span className="tw-absolute tw-left-5 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                <MdLocationPin size={18} />
+                                            </span>
+                                        </Col>
+                                        <Col
+                                            md={2}
+                                            // lg={4}
+                                            className="mb-3"
+                                        >
+                                            <Form.Label className="">
+                                                Indicativo
+                                                {/* <span className="tw-text-red-500">
+                                                    *
+                                                </span> */}
+                                            </Form.Label>
+                                            <PhoneInput
+                                                countryCodeEditable={false}
+                                                enableLongNumbers={0}
+                                                autoFormat={false}
+                                                inputProps={{
+                                                    readOnly: true,
+                                                    required: true,
+                                                    name: "indicative",
+                                                }}
+                                                country={"co"}
+                                                specialLabel=""
+                                                placeholder=""
+                                                prefix="+"
+                                                dropdownStyle={{
+                                                    color: "black",
+                                                    borderRadius: 12,
+                                                }}
+                                                value={data.indicative}
+                                                onChange={
+                                                    indicativeOneChangeHandler
+                                                }
+                                            />
+                                        </Col>
+                                        <Col
+                                            md={4}
+                                            // lg={4}
+                                            className="mb-3 tw-relative"
+                                        >
+                                            <Form.Label className="">
+                                                Teléfono/Cel
+                                                {/* <span className="tw-text-red-500">
+                                                    *
+                                                </span> */}
+                                            </Form.Label>
+                                            <Form.Control
+                                                // required
+                                                value={data.phone}
+                                                type="tel"
+                                                min={0}
+                                                max={999999999999999}
+                                                name="phone"
+                                                className="form-control tw-pl-8"
+                                                placeholder="Número"
+                                                aria-label="Phone number"
+                                                onChange={changeHandler}
+                                                pattern="^(\\+?\\d{1,4})?\\s?\\d{10,15}$"
+                                                title="Por favor, ingrese un número de teléfono válido"
+                                            />
+                                            <span className="tw-absolute tw-left-5 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                <FaPhone size={18} />
+                                            </span>
+                                        </Col>
+                                        <Col
+                                            md={6}
+                                            lg={4}
+                                            className="mb-3 tw-relative"
+                                        >
+                                            <Form.Label className="">
+                                                Ext
+                                            </Form.Label>
+                                            <Form.Control
+                                                value={data.ext}
+                                                type="text"
+                                                minLength={1}
+                                                maxLength={1500}
+                                                name="ext"
+                                                className="form-control tw-pl-8"
+                                                placeholder="Extensión"
+                                                aria-label="ext"
+                                                onChange={changeHandler}
+                                            />
+                                            <span className="tw-absolute tw-left-5 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                <BsFillTelephoneForwardFill
+                                                    size={18}
+                                                />
+                                            </span>
+                                        </Col>
+                                        <Col
+                                            md={6}
+                                            lg={4}
+                                            className="mb-3 tw-relative"
+                                        >
+                                            <Form.Label className="">
+                                                Sitio Web
+                                            </Form.Label>
+                                            <Form.Control
+                                                value={data.webSite}
+                                                type="text"
+                                                minLength={1}
+                                                maxLength={1500}
+                                                name="webSite"
+                                                className="form-control tw-pl-8"
+                                                placeholder="Url"
+                                                aria-label="webSite"
+                                                onChange={changeHandler}
+                                            />
+                                            <span className="tw-absolute tw-left-5 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                <BsFillTelephoneForwardFill
+                                                    size={18}
+                                                />
+                                            </span>
+                                        </Col>
+                                        <Col
+                                            md={6}
+                                            lg={4}
+                                            className="mb-3 tw-relative"
+                                        >
+                                            <Form.Label className="">
+                                                Sector
+                                            </Form.Label>
+                                            <Form.Control
+                                                value={data.sector}
+                                                type="text"
+                                                minLength={1}
+                                                maxLength={1500}
+                                                name="sector"
+                                                className="form-control tw-pl-8"
+                                                placeholder="Sector"
+                                                aria-label="sector"
+                                                onChange={changeHandler}
+                                            />
+                                            <span className="tw-absolute tw-left-5 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                <BsFillTelephoneForwardFill
+                                                    size={18}
+                                                />
+                                            </span>
+                                        </Col>
+
+                                        <Col md={6} lg={4} className="mb-3">
+                                            <Form.Label className="">
+                                                País
+                                                <span className="tw-text-red-500">
+                                                    *
+                                                </span>
+                                            </Form.Label>
+                                            <Select
+                                                required
+                                                noOptionsMessage={({
+                                                    inputValue,
+                                                }: any) =>
+                                                    `No hay resultados para "${inputValue}"`
+                                                }
+                                                value={
+                                                    data.country
+                                                        ? countries.find(
+                                                              (value) =>
+                                                                  findValue(
+                                                                      value,
+                                                                      data.country,
+                                                                  ),
+                                                          )
+                                                        : []
+                                                }
+                                                defaultValue={selectedCountry}
+                                                placeholder="País"
+                                                isClearable
+                                                name="country"
+                                                options={countries}
+                                                id="inputCountry"
+                                                className="basic-multi-select"
+                                                classNamePrefix="Select2"
+                                                onChange={(e): any => {
+                                                    selectChangeHandlerCountry(
+                                                        e,
+                                                    );
+                                                }}
+                                            />
+                                        </Col>
+                                        <Col md={6} lg={4} className="mb-3">
+                                            <Form.Label className="">
+                                                Departamento
+                                                <span className="tw-text-red-500">
+                                                    *
+                                                </span>
+                                            </Form.Label>
+                                            <Select
+                                                required
+                                                isDisabled={!data.country}
+                                                noOptionsMessage={({
+                                                    inputValue,
+                                                }: any) =>
+                                                    `No hay resultados para "${inputValue}"`
+                                                }
+                                                value={
+                                                    data.country
+                                                        ? ColombianStates.find(
+                                                              (value) =>
+                                                                  findValue(
+                                                                      value,
+                                                                      data.state,
+                                                                  ),
+                                                          )
+                                                        : []
+                                                }
+                                                defaultValue={selectedState}
+                                                placeholder="Departamento"
+                                                isClearable
+                                                name="state"
+                                                options={ColombianStates}
+                                                id="inputState1"
+                                                className="basic-multi-select"
+                                                classNamePrefix="Select2"
+                                                onChange={(value) => {
+                                                    selectChangeHandlerState(
+                                                        value,
+                                                    );
+                                                }}
+                                                styles={customStyles(theme)}
+                                            />
+                                        </Col>
+                                        <Col md={6} lg={4} className="mb-3">
+                                            <Form.Label className="">
+                                                Ciudad
+                                                <span className="tw-text-red-500">
+                                                    *
+                                                </span>
+                                            </Form.Label>
+                                            <Select
+                                                required
+                                                isDisabled={
+                                                    !data.state || !data.country
+                                                }
+                                                noOptionsMessage={({
+                                                    inputValue,
+                                                }: any) =>
+                                                    `No hay resultados para "${inputValue}"`
+                                                }
+                                                value={
+                                                    data.state
+                                                        ? getCities(
+                                                              data.state,
+                                                          ).find((value) =>
+                                                              findValue(
+                                                                  value,
+                                                                  data.city,
+                                                              ),
+                                                          )
+                                                        : []
+                                                }
+                                                defaultValue={selectedCity}
+                                                placeholder="Ciudad"
+                                                isClearable
+                                                name="city"
+                                                options={
+                                                    data.state
+                                                        ? getCities(data.state)
+                                                        : []
+                                                }
+                                                id="city"
+                                                className="basic-multi-select"
+                                                classNamePrefix="Select2"
+                                                onChange={
+                                                    selectChangeHandlerCity
+                                                }
+                                                styles={customStyles(theme)}
+                                            />
+                                        </Col>
+                                        <Col className="mb-3">
+                                            <Form.Group
+                                                className="mb-3"
+                                                controlId="files"
+                                            >
+                                                <Form.Label>
+                                                    Subir Logo:
+                                                    {/* <span className="tw-text-red-500">
+                                                        *
+                                                    </span> */}
+                                                </Form.Label>
+                                                <Form.Control
+                                                    type="file"
+                                                    name="iconFile"
+                                                    // multiple
+                                                    aria-label="iconFile"
+                                                    placeholder="Agregue un Logo"
+                                                    onChange={
+                                                        handleIconFileChange
+                                                    }
+                                                />
+                                            </Form.Group>
                                         </Col>
                                     </>
-                                )}
+                                ) : (
+                                    <>
+                                        <Col
+                                            md={6}
+                                            // lg={4}
+                                            className="mb-3 tw-relative"
+                                        >
+                                            <Form.Label className="">
+                                                Nombres
+                                                <span className="tw-text-red-500">
+                                                    *
+                                                </span>
+                                            </Form.Label>
+                                            <Form.Control
+                                                required
+                                                value={data.name}
+                                                type="text"
+                                                minLength={1}
+                                                maxLength={250}
+                                                name="name"
+                                                className="form-control tw-pl-8"
+                                                placeholder="Nombres"
+                                                aria-label="First name"
+                                                onChange={changeHandler}
+                                            />
+                                            <span className="tw-absolute tw-left-5 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                <IoPersonSharp size={20} />
+                                            </span>
+                                        </Col>
+                                        <Col
+                                            md={6}
+                                            // lg={4}
+                                            className="mb-3 tw-relative"
+                                        >
+                                            <Form.Label className="">
+                                                Apellidos
+                                                <span className="tw-text-red-500">
+                                                    *
+                                                </span>
+                                            </Form.Label>
+                                            <Form.Control
+                                                required
+                                                value={data.lastName}
+                                                type="text"
+                                                minLength={1}
+                                                maxLength={250}
+                                                name="lastName"
+                                                className="form-control tw-pl-8"
+                                                placeholder="Apellidos"
+                                                aria-label="Last name"
+                                                onChange={changeHandler}
+                                            />
+                                            <span className="tw-absolute tw-left-5 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                <IoPersonSharp size={20} />
+                                            </span>
+                                        </Col>
+                                        <Col
+                                            md={6}
+                                            // lg={4}
+                                            className="mb-3 tw-relative"
+                                        >
+                                            <Form.Label className="">
+                                                Email
+                                                <span className="tw-text-red-500">
+                                                    *
+                                                </span>
+                                            </Form.Label>
+                                            <Form.Control
+                                                disabled={
+                                                    handleShowMainFormEdit
+                                                }
+                                                required
+                                                value={data.email}
+                                                type="email"
+                                                name="email"
+                                                className="form-control tw-pl-8"
+                                                placeholder="Email"
+                                                aria-label="email"
+                                                onChange={changeHandler}
+                                            />
+                                            <span className="tw-absolute tw-left-5 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                <MdEmail size={18} />
+                                            </span>
+                                        </Col>
+                                        <Col
+                                            md={6}
+                                            // lg={4}
+                                            className="mb-3 tw-relative"
+                                        >
+                                            <Form.Group controlId="idType">
+                                                <Form.Label className="">
+                                                    Tipo Documento
+                                                    {/* <span className="tw-text-red-500">
+                                                        *
+                                                    </span> */}
+                                                </Form.Label>
+                                                <Select
+                                                    // required
+                                                    noOptionsMessage={({
+                                                        inputValue,
+                                                    }) =>
+                                                        `No hay resultados para "${inputValue}"`
+                                                    }
+                                                    value={
+                                                        data.idTypeAdmin
+                                                            ? idTypes.find(
+                                                                  (value) =>
+                                                                      findValue(
+                                                                          value,
+                                                                          data.idTypeAdmin,
+                                                                      ),
+                                                              )
+                                                            : []
+                                                    }
+                                                    defaultValue={
+                                                        selectedIdTypeAdmin
+                                                    }
+                                                    placeholder="Seleccione"
+                                                    isClearable
+                                                    name="idTypeAdmin"
+                                                    options={idTypes}
+                                                    id="idType"
+                                                    className="basic-multi-select"
+                                                    classNamePrefix="Select2"
+                                                    onChange={
+                                                        selectChangeHandlerIdTypeAdmin
+                                                    }
+                                                    styles={{
+                                                        placeholder: (
+                                                            provided,
+                                                        ) => ({
+                                                            ...provided,
+                                                            marginLeft: "30px",
+                                                        }),
+                                                        singleValue: (
+                                                            provided,
+                                                        ) => ({
+                                                            ...provided,
+                                                            paddingLeft: "30px",
+                                                        }),
+                                                    }}
+                                                />
+                                                <span className="tw-absolute tw-left-5 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                    <BsPersonVcard size={24} />
+                                                </span>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col
+                                            md={6}
+                                            // lg={4}
+                                            className="mb-3 tw-relative"
+                                        >
+                                            <Form.Label className="">
+                                                Documento
+                                                {/* <span className="tw-text-red-500">
+                                                    *
+                                                </span> */}
+                                            </Form.Label>
+                                            <Form.Control
+                                                // required
+                                                value={data.idAdmin}
+                                                type="text"
+                                                minLength={2}
+                                                maxLength={250}
+                                                name="idAdmin"
+                                                className="form-control tw-pl-8"
+                                                placeholder="Número"
+                                                onChange={changeHandler}
+                                            />
+                                            <span className="tw-absolute tw-left-5 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                <IoPersonSharp size={20} />
+                                            </span>
+                                        </Col>
+                                        <Col
+                                            md={2}
+                                            // lg={4}
+                                            className="mb-3"
+                                        >
+                                            <Form.Label className="">
+                                                Indicativo
+                                                {/* <span className="tw-text-red-500">
+                                                    *
+                                                </span> */}
+                                            </Form.Label>
+                                            <PhoneInput
+                                                countryCodeEditable={false}
+                                                enableLongNumbers={0}
+                                                autoFormat={false}
+                                                inputProps={{
+                                                    readOnly: true,
+                                                    required: true,
+                                                    name: "indicativeTwo",
+                                                }}
+                                                country={"co"}
+                                                specialLabel=""
+                                                placeholder=""
+                                                prefix="+"
+                                                dropdownStyle={{
+                                                    color: "black",
+                                                    borderRadius: 12,
+                                                }}
+                                                value={data.indicativeTwo}
+                                                onChange={
+                                                    indicativeTwoChangeHandler
+                                                }
+                                            />
+                                        </Col>
+                                        <Col
+                                            md={4}
+                                            // lg={4}
+                                            className="mb-3 tw-relative"
+                                        >
+                                            <Form.Label className="">
+                                                Celular
+                                                {/* <span className="tw-text-red-500">
+                                                    *
+                                                </span> */}
+                                            </Form.Label>
+                                            <Form.Control
+                                                value={data.phoneAdmin}
+                                                type="tel"
+                                                min={0}
+                                                max={999999999999999}
+                                                name="phoneAdmin"
+                                                className="form-control tw-pl-8"
+                                                placeholder="Número"
+                                                aria-label="Phone number"
+                                                onChange={changeHandler}
+                                                // pattern="^d{10,15}$"
+                                                // title="Por favor, ingrese un número de teléfono válido"
+                                            />
+                                            <span className="tw-absolute tw-left-5 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                <FaPhone size={18} />
+                                            </span>
+                                        </Col>
+                                        <Col
+                                            md={6}
+                                            // lg={4}
+                                            className="mb-3"
+                                        >
+                                            <Form.Label className="">
+                                                Estado
+                                                <span className="tw-text-red-500">
+                                                    *
+                                                </span>
+                                            </Form.Label>
+                                            <Select
+                                                required
+                                                noOptionsMessage={({
+                                                    inputValue,
+                                                }) =>
+                                                    `No hay resultados para "${inputValue}"`
+                                                }
+                                                value={isActiveData.find(
+                                                    (value) =>
+                                                        findValue(
+                                                            value,
+                                                            data.isActive,
+                                                        ),
+                                                )}
+                                                defaultValue={selectedStatus}
+                                                placeholder="Estado"
+                                                isClearable
+                                                name="isActive"
+                                                options={isActiveData}
+                                                id="isActive"
+                                                className="basic-multi-select"
+                                                classNamePrefix="Select2"
+                                                onChange={
+                                                    selectChangeHandlerStatus
+                                                }
+                                                components={{
+                                                    Option: IconOption,
+                                                }}
+                                                styles={{
+                                                    singleValue: (
+                                                        styles,
+                                                        { data }: any,
+                                                    ) => ({
+                                                        ...styles,
+                                                        ...dot(data.color),
+                                                    }),
+                                                }}
+                                            />
+                                        </Col>
+                                        <Col className="mb-3">
+                                            <Form.Group
+                                                className="mb-3"
+                                                controlId="files"
+                                            >
+                                                <Form.Label>
+                                                    Subir Imagen:
+                                                    {/* <span className="tw-text-red-500">
+                                                    *
+                                                </span> */}
+                                                </Form.Label>
+                                                <Form.Control
+                                                    type="file"
+                                                    name="files"
+                                                    // multiple
+                                                    placeholder="Agregue una foto"
+                                                    onChange={
+                                                        handleMultipleChange
+                                                    }
+                                                />
+                                            </Form.Group>
+                                        </Col>
+                                    </>
+                                ))}
 
-                            <Col
+                            {/* <Col
                                 md={6}
                                 lg={
                                     reference !== "agreements" &&
@@ -280,24 +1016,7 @@ const MainFormModal = ({
                                     aria-label="First name"
                                     onChange={changeHandler}
                                 />
-                            </Col>
-                            <Col md={6} lg={4} className="mb-3">
-                                <Form.Label className="">
-                                    NIT
-                                    <span className="tw-text-red-500">*</span>
-                                </Form.Label>
-                                <Form.Control
-                                    required
-                                    value={data.id}
-                                    type="text"
-                                    minLength={2}
-                                    maxLength={250}
-                                    name="id"
-                                    className="form-control"
-                                    placeholder="Número"
-                                    onChange={changeHandler}
-                                />
-                            </Col>
+                            </Col> */}
 
                             {(reference === "campus" ||
                                 reference === "specialties" ||
@@ -373,7 +1092,7 @@ const MainFormModal = ({
                             {reference === "agreements" && (
                                 <>
                                     <Col md={6} className="mb-3">
-                                        <Form.Group controlId="idType">
+                                        <Form.Group controlId="personType">
                                             <Form.Label className="">
                                                 Tipo de Persona
                                                 <span className="tw-text-red-500">
@@ -503,61 +1222,11 @@ const MainFormModal = ({
                                     </Col>
                                 </>
                             )}
-                            {reference !== "campus" &&
-                                reference !== "specialties" &&
-                                reference !== "diagnoses" &&
-                                reference !== "agreements" &&
-                                reference !== "areas" && (
-                                    <Col
-                                        md={6}
-                                        lg={reference !== "campus" && 4}
-                                        className="mb-3"
-                                    >
-                                        <Form.Label className="">
-                                            Celular
-                                            <span className="tw-text-red-500">
-                                                *
-                                            </span>
-                                        </Form.Label>
-                                        <PhoneInput
-                                            autoFormat={false}
-                                            inputProps={{
-                                                name: "phone",
-                                                required: true,
-                                                pattern:
-                                                    "^(\\+?\\d{1,4})?\\s?\\d{10,15}$",
-                                                title: "Por favor, ingrese un número de teléfono válido",
-                                            }}
-                                            country={"co"}
-                                            specialLabel=""
-                                            placeholder=""
-                                            prefix="+"
-                                            dropdownStyle={{
-                                                color: "black",
-                                                borderRadius: 12,
-                                            }}
-                                            value={data.phone}
-                                            onChange={phoneChangeHandler}
-                                        />
-                                        {/* <Form.Control
-                                            required
-                                            value={data.phone}
-                                            type="tel"
-                                            maxLength={250}
-                                            name="phone"
-                                            className=""
-                                            placeholder="Número"
-                                            aria-label="Phone number"
-                                            onChange={changeHandler}
-                                            title="Deben ser números o caracteres telefónicos"
-                                            pattern="^(\+?)?[0-9\s]+$"
-                                        /> */}
-                                    </Col>
-                                )}
 
                             {reference !== "specialties" &&
                                 reference !== "agreements" &&
                                 reference !== "diagnoses" &&
+                                reference !== "companies" &&
                                 reference !== "areas" && (
                                     <>
                                         <Col
@@ -579,7 +1248,7 @@ const MainFormModal = ({
                                                     borderRadius: 12,
                                                 }}
                                                 value={data.phone2}
-                                                onChange={phoneTwoChangeHandler}
+                                                // onChange={phoneTwoChangeHandler}
                                             />
                                             {/* <Form.Control
                                                 value={data.phone2}
@@ -593,26 +1262,7 @@ const MainFormModal = ({
                                                 onChange={changeHandler}
                                             /> */}
                                         </Col>
-                                        <Col className="mb-3">
-                                            <Form.Label className="">
-                                                Dirección
-                                                {/* <span className="tw-text-red-500">
-                                                    *
-                                                </span> */}
-                                            </Form.Label>
-                                            <Form.Control
-                                                // required
-                                                value={data.address}
-                                                type="text"
-                                                minLength={2}
-                                                maxLength={550}
-                                                name="address"
-                                                className=""
-                                                placeholder="Dirección"
-                                                aria-label="address"
-                                                onChange={changeHandler}
-                                            />
-                                        </Col>
+
                                         <Col
                                             md={6}
                                             lg={
@@ -779,6 +1429,7 @@ const MainFormModal = ({
                                 reference !== "specialties" &&
                                 reference !== "agreements" &&
                                 reference !== "diagnoses" &&
+                                reference !== "companies" &&
                                 reference !== "areas" && (
                                     <Col
                                         md={6}
@@ -809,6 +1460,7 @@ const MainFormModal = ({
                                 reference !== "specialties" &&
                                 reference !== "diagnostician" &&
                                 reference !== "diagnoses" &&
+                                reference !== "companies" &&
                                 reference !== "agreements" &&
                                 reference !== "areas" && (
                                     <>
@@ -1014,7 +1666,7 @@ const MainFormModal = ({
                                 </>
                             )}
 
-                            <Col
+                            {/* <Col
                                 md={6}
                                 lg={
                                     reference !== "campus" &&
@@ -1058,7 +1710,7 @@ const MainFormModal = ({
                                         }),
                                     }}
                                 />
-                            </Col>
+                            </Col> */}
 
                             {/* {reference !== "specialties" &&
                                 reference !== "agreements" &&
@@ -1239,6 +1891,7 @@ const MainFormModal = ({
                                 reference !== "diagnostician" &&
                                 reference !== "diagnoses" &&
                                 reference !== "agreements" &&
+                                reference !== "companies" &&
                                 reference !== "areas" && (
                                     <Col className="mb-3">
                                         {/* <FilePond
@@ -1256,9 +1909,7 @@ const MainFormModal = ({
                                             controlId="files"
                                         >
                                             <Form.Label>
-                                                {reference === "companies"
-                                                    ? "Subir Icono:"
-                                                    : "Subir Imagen:"}
+                                                Subir Imagen:
                                                 {/* <span className="tw-text-red-500">
                                                     *
                                                 </span> */}
@@ -1273,15 +1924,22 @@ const MainFormModal = ({
                                         </Form.Group>
                                     </Col>
                                 )}
-                            <Col md={12} className="tw-text-end tw-pb-3">
+                            {/* <Col
+                                md={12}
+                                className="tw-flex tw-justify-between tw-pb-3"
+                            >
+                                <TooltipComponent id="clean" title="Limpiar">
                                 <Button
                                     type="reset"
-                                    variant="primary"
+                                    variant=""
+                                    className="border"
                                     onClick={clearSelectFields}
                                 >
-                                    Limpiar
+                                    <MdOutlineCleaningServices size={20} />
+                                    &nbsp; Limpiar
                                 </Button>
-                            </Col>
+                                </TooltipComponent>
+                            </Col> */}
                         </Row>
                         {errorForm && (
                             <Alert
@@ -1362,6 +2020,46 @@ const MainFormModal = ({
                 ) : (
                     <Modal.Body className="tw-px-8">
                         <Row>
+                            {reference === "companies" && (
+                                <>
+                                    <Col
+                                        md={6}
+                                        // lg={4}
+                                        className="tw-text-center mb-3"
+                                    >
+                                        <h6 className="pb-3">Foto</h6>
+                                        <div className="tw-flex tw-justify-center tw-items-center">
+                                            <img
+                                                src={
+                                                    data.urlPhoto
+                                                        ? data.urlPhoto
+                                                        : "http://via.placeholder.com/150x150"
+                                                }
+                                                alt="Profile Photo"
+                                                width="150"
+                                            />
+                                        </div>
+                                    </Col>
+                                    <Col
+                                        md={6}
+                                        // lg={4}
+                                        className="tw-text-center mb-3"
+                                    >
+                                        <h6 className="pb-3">Logo</h6>
+                                        <div className="tw-flex tw-justify-center tw-items-center">
+                                            <img
+                                                src={
+                                                    data.icon[0]
+                                                        ? data.icon
+                                                        : "http://via.placeholder.com/150x150"
+                                                }
+                                                alt="logo image"
+                                                width="150"
+                                            />
+                                        </div>
+                                    </Col>
+                                </>
+                            )}
                             {reference !== "campus" &&
                                 reference !== "specialties" &&
                                 reference !== "agreements" &&
@@ -1369,24 +2067,32 @@ const MainFormModal = ({
                                 reference !== "areas" && (
                                     <>
                                         {data.idType && (
-                                            <Col md={6} lg={4} className="">
+                                            <Col
+                                                md={6}
+                                                // lg={4}
+                                                className=""
+                                            >
                                                 <div className="tw-flex-1 tw-text-star tw-text-base">
                                                     <h6 className="fw-bold">
                                                         Tipo Documento
                                                     </h6>
-                                                    <p className="border-bottom fw-light">
+                                                    <p className="fw-light">
                                                         {data.idType}
                                                     </p>
                                                 </div>
                                             </Col>
                                         )}
-                                        {data.id && (
-                                            <Col md={6} lg={4} className="">
+                                        {data.idAdmin && (
+                                            <Col
+                                                md={6}
+                                                // lg={4}
+                                                className=""
+                                            >
                                                 <div className="tw-flex-1 tw-text-star tw-text-base">
                                                     <h6 className="fw-bold">
                                                         Documento
                                                     </h6>
-                                                    <p className="border-bottom fw-light">
+                                                    <p className="fw-light">
                                                         {data.id}
                                                     </p>
                                                 </div>
@@ -1394,17 +2100,18 @@ const MainFormModal = ({
                                         )}
                                     </>
                                 )}
-                            {data.name && (
+
+                            {data.tradename && (
                                 <Col
                                     md={6}
-                                    lg={
-                                        reference !== "agreements" &&
-                                        reference !== "areas" &&
-                                        reference !== "specialties" &&
-                                        reference !== "campus"
-                                            ? 4
-                                            : 6
-                                    }
+                                    // lg={
+                                    //     reference !== "agreements" &&
+                                    //     reference !== "areas" &&
+                                    //     reference !== "specialties" &&
+                                    //     reference !== "campus"
+                                    //         ? 4
+                                    //         : 6
+                                    // }
                                     className=""
                                 >
                                     <div className="tw-flex-1 tw-text-star tw-text-base">
@@ -1415,8 +2122,8 @@ const MainFormModal = ({
                                                 ? "Nombre/s"
                                                 : "Nombre"}
                                         </h6>
-                                        <p className="border-bottom fw-light">
-                                            {data.name}
+                                        <p className="fw-light">
+                                            {data.tradename}
                                         </p>
                                     </div>
                                 </Col>
@@ -1506,6 +2213,7 @@ const MainFormModal = ({
                                 reference !== "specialties" &&
                                 reference !== "diagnostician" &&
                                 reference !== "diagnoses" &&
+                                reference !== "companies" &&
                                 reference !== "agreements" &&
                                 reference !== "areas" && (
                                     <>
@@ -1524,7 +2232,7 @@ const MainFormModal = ({
                                     </>
                                 )}
 
-                            {reference === "c" && (
+                            {reference === "professional" && (
                                 <>
                                     {data.birthDate && (
                                         <Col md={6} lg={4} className="">
@@ -1563,14 +2271,14 @@ const MainFormModal = ({
                                         {data.phone && (
                                             <Col
                                                 md={6}
-                                                lg={reference !== "campus" && 4}
+                                                // lg={reference !== "campus" && 4}
                                                 className=""
                                             >
                                                 <div className="tw-flex-1 tw-text-star tw-text-base">
                                                     <h6 className="fw-bold">
                                                         Celular
                                                     </h6>
-                                                    <p className="border-bottom fw-light">
+                                                    <p className="fw-light">
                                                         {data.phone}
                                                     </p>
                                                 </div>
@@ -1587,14 +2295,14 @@ const MainFormModal = ({
                                         {data.phone2 && (
                                             <Col
                                                 md={6}
-                                                lg={reference !== "campus" && 4}
+                                                // lg={reference !== "campus" && 4}
                                                 className=""
                                             >
                                                 <div className="tw-flex-1 tw-text-star tw-text-base">
                                                     <h6 className="fw-bold">
                                                         Teléfono fijo (opcional)
                                                     </h6>
-                                                    <p className="border-bottom fw-light">
+                                                    <p className="fw-light">
                                                         {data.phone2}
                                                     </p>
                                                 </div>
@@ -1606,7 +2314,7 @@ const MainFormModal = ({
                                                     <h6 className="fw-bold">
                                                         Dirección
                                                     </h6>
-                                                    <p className="border-bottom fw-light">
+                                                    <p className="fw-light">
                                                         {data.address}
                                                     </p>
                                                 </div>
@@ -1615,21 +2323,21 @@ const MainFormModal = ({
                                         {data.country && (
                                             <Col
                                                 md={6}
-                                                lg={
-                                                    reference !==
-                                                    "professionals"
-                                                        ? reference !== "campus"
-                                                            ? 4
-                                                            : 6
-                                                        : 3
-                                                }
+                                                // lg={
+                                                //     reference !==
+                                                //     "professionals"
+                                                //         ? reference !== "campus"
+                                                //             ? 4
+                                                //             : 6
+                                                //         : 3
+                                                // }
                                                 className=""
                                             >
                                                 <div className="tw-flex-1 tw-text-star tw-text-base">
                                                     <h6 className="fw-bold">
                                                         País
                                                     </h6>
-                                                    <p className="border-bottom fw-light">
+                                                    <p className="fw-light">
                                                         {data.country}
                                                     </p>
                                                 </div>
@@ -1638,21 +2346,21 @@ const MainFormModal = ({
                                         {data.state && (
                                             <Col
                                                 md={6}
-                                                lg={
-                                                    reference !==
-                                                    "professionals"
-                                                        ? reference !== "campus"
-                                                            ? 4
-                                                            : 6
-                                                        : 3
-                                                }
+                                                // lg={
+                                                //     reference !==
+                                                //     "professionals"
+                                                //         ? reference !== "campus"
+                                                //             ? 4
+                                                //             : 6
+                                                //         : 3
+                                                // }
                                                 className="mb-3"
                                             >
                                                 <div className="tw-flex-1 tw-text-star tw-text-base">
                                                     <h6 className="fw-bold">
                                                         Departamento
                                                     </h6>
-                                                    <p className="border-bottom fw-light">
+                                                    <p className="fw-light">
                                                         {data.state &&
                                                             ColombianStates.find(
                                                                 (value) =>
@@ -1668,21 +2376,21 @@ const MainFormModal = ({
                                         {data.city && (
                                             <Col
                                                 md={6}
-                                                lg={
-                                                    reference !==
-                                                    "professionals"
-                                                        ? reference !== "campus"
-                                                            ? 4
-                                                            : 6
-                                                        : 3
-                                                }
+                                                // lg={
+                                                //     reference !==
+                                                //     "professionals"
+                                                //         ? reference !== "campus"
+                                                //             ? 4
+                                                //             : 6
+                                                //         : 3
+                                                // }
                                                 className="mb-3"
                                             >
                                                 <div className="tw-flex-1 tw-text-star tw-text-base">
                                                     <h6 className="fw-bold">
                                                         Ciudad
                                                     </h6>
-                                                    <p className="border-bottom fw-light">
+                                                    <p className="fw-light">
                                                         {data.city &&
                                                             getCities(
                                                                 data.state,
@@ -1699,6 +2407,34 @@ const MainFormModal = ({
                                     </>
                                 )}
 
+                            {reference === "companies" && (
+                                <>
+                                    <Col
+                                        md={12}
+                                        // lg={reference !== "campus" && 4}
+                                        className="tw-mb-5"
+                                    >
+                                        <div className="tw-flex-1 tw-text-star tw-text-base">
+                                            <h4 className="fw-bold">
+                                                Datos Administrador
+                                            </h4>
+                                        </div>
+                                    </Col>
+                                    {data.name && (
+                                        <Col md={6} className="">
+                                            <div className="tw-flex-1 tw-text-star tw-text-base">
+                                                <h6 className="fw-bold">
+                                                    Nombres
+                                                </h6>
+                                                <p className="fw-light">
+                                                    {data.name}
+                                                </p>
+                                            </div>
+                                        </Col>
+                                    )}
+                                </>
+                            )}
+
                             {reference !== "campus" &&
                                 reference !== "specialties" &&
                                 reference !== "agreements" &&
@@ -1708,14 +2444,14 @@ const MainFormModal = ({
                                         {data.email && (
                                             <Col
                                                 md={6}
-                                                lg={reference !== "campus" && 4}
+                                                // lg={reference !== "campus" && 4}
                                                 className=""
                                             >
                                                 <div className="tw-flex-1 tw-text-star tw-text-base">
                                                     <h6 className="fw-bold">
                                                         Email
                                                     </h6>
-                                                    <p className="border-bottom fw-light">
+                                                    <p className="fw-light">
                                                         {data.email}
                                                     </p>
                                                 </div>
@@ -1804,19 +2540,19 @@ const MainFormModal = ({
 
                             <Col
                                 md={6}
-                                lg={
-                                    reference !== "agreements" &&
-                                    reference !== "areas" &&
-                                    reference !== "specialties" &&
-                                    reference !== "campus"
-                                        ? 4
-                                        : 6
-                                }
+                                // lg={
+                                //     reference !== "agreements" &&
+                                //     reference !== "areas" &&
+                                //     reference !== "specialties" &&
+                                //     reference !== "campus"
+                                //         ? 4
+                                //         : 6
+                                // }
                                 className=""
                             >
                                 <div className="tw-flex-1 tw-text-star tw-text-base">
                                     <h6 className="fw-bold">Estado</h6>
-                                    <p className="border-bottom fw-light">
+                                    <p className="fw-light">
                                         {data.isActive ? "Activo" : "Inactivo"}
                                     </p>
                                 </div>
@@ -1828,12 +2564,16 @@ const MainFormModal = ({
                                 reference !== "areas" && (
                                     <>
                                         {data.timestamp && (
-                                            <Col md={6} lg={4} className="">
+                                            <Col
+                                                md={6}
+                                                // lg={4}
+                                                className=""
+                                            >
                                                 <div className="tw-flex-1 tw-text-star tw-text-base">
                                                     <h6 className="fw-bold">
                                                         Fecha Registro
                                                     </h6>
-                                                    <p className="border-bottom fw-light">
+                                                    <p className="fw-light">
                                                         {moment(
                                                             data.timestamp,
                                                         ).format(
@@ -1852,7 +2592,6 @@ const MainFormModal = ({
                                         <div className="tw-flex-1 tw-text-star tw-text-base">
                                             <h6 className="fw-bold">Rol</h6>
                                             <p className="border-bottom fw-light">
-                                                {/* {data.rol} */}
                                                 {data.rol &&
                                                     roles?.find((value) =>
                                                         findValue(
@@ -1947,53 +2686,119 @@ const MainFormModal = ({
                                 reference !== "specialties" &&
                                 reference !== "diagnostician" &&
                                 reference !== "diagnoses" &&
+                                reference !== "companies" &&
                                 reference !== "agreements" &&
                                 reference !== "areas" && (
-                                    <Col className="tw-text-center">
-                                        <h6 className="pb-3">Foto</h6>
-                                        <div className="tw-flex tw-justify-center tw-items-center">
-                                            <img
-                                                src={
-                                                    data.urlPhoto
-                                                        ? data.urlPhoto
-                                                        : "http://via.placeholder.com/150x150"
-                                                }
-                                                alt="Profile Photo"
-                                                width="150"
-                                            />
-                                        </div>
-                                    </Col>
+                                    <>
+                                        <Col className="tw-text-center">
+                                            <h6 className="pb-3">Foto</h6>
+                                            <div className="tw-flex tw-justify-center tw-items-center">
+                                                <img
+                                                    src={
+                                                        data.urlPhoto
+                                                            ? data.urlPhoto
+                                                            : "http://via.placeholder.com/150x150"
+                                                    }
+                                                    alt="Profile Photo"
+                                                    width="150"
+                                                />
+                                            </div>
+                                        </Col>
+                                        {reference === "companies" && (
+                                            <Col className="tw-text-center">
+                                                <h6 className="pb-3">Logo</h6>
+                                                <div className="tw-flex tw-justify-center tw-items-center">
+                                                    <img
+                                                        src={
+                                                            data.urlPhoto
+                                                                ? data.icon
+                                                                : "http://via.placeholder.com/150x150"
+                                                        }
+                                                        alt="logo image"
+                                                        width="150"
+                                                    />
+                                                </div>
+                                            </Col>
+                                        )}
+                                    </>
                                 )}
                         </Row>
                     </Modal.Body>
                 )}
 
-                <Modal.Footer>
-                    <Button variant="light" onClick={handleClose}>
-                        Cancelar
-                    </Button>
-                    {!isEdit && handleShowMainFormEdit ? (
-                        <Button variant="primary" onClick={handleEditForm}>
-                            Editar
-                        </Button>
-                    ) : (
-                        <Button
-                            variant="primary"
-                            className={`btn  ${isLoading && "btn-loader"}`}
-                            // onClick={handleSendForm}
-                            type="submit"
-                            // disabled={dataDocumentsToSel ? false : true}
-                        >
-                            <span className="me-2">
-                                {handleShowMainFormEdit ? "Guardar" : "Crear"}
-                            </span>
-                            {isLoading && (
-                                <span className="loading">
-                                    <i className="ri-loader-2-fill fs-16"></i>
-                                </span>
-                            )}
-                        </Button>
+                <Modal.Footer className="tw-flex tw-flex-row tw-justify-between">
+                    {isEdit && handleShowMainFormEdit && (
+                        <Col>{nextStep ? "Paso 1/2" : "Paso 2/2"}</Col>
                     )}
+                    <Col className="tw-flex tw-flex-row tw-space-x-2 tw-items-center tw-justify-end">
+                        <Button
+                            className="tw-flex tw-items-center"
+                            variant="light"
+                            onClick={handleClose}
+                        >
+                            <ImCancelCircle size={20} />
+                            {/* Cancelar */}
+                        </Button>
+                        {!isEdit && handleShowMainFormEdit ? (
+                            <Button variant="primary" onClick={handleEditForm}>
+                                <FiEdit size={20} />
+                            </Button>
+                        ) : (
+                            <>
+                                {reference === "companies" && nextStep ? (
+                                    <Button
+                                        className=""
+                                        type={companyVal ? "button" : "submit"}
+                                        variant="primary"
+                                        onClick={() =>
+                                            companyVal && setNextStep(false)
+                                        }
+                                    >
+                                        {/* Siguiente &nbsp; */}
+                                        <GrNext size={17} />
+                                    </Button>
+                                ) : (
+                                    <div className="tw-flex tw-flex-row w-full mx-16">
+                                        {(!isLoading ||
+                                            reference === "companies") && (
+                                            <Button
+                                                className=""
+                                                type="button"
+                                                variant="primary"
+                                                onClick={() =>
+                                                    setNextStep(true)
+                                                }
+                                            >
+                                                <GrPrevious size={17} />
+                                                {/* &nbsp; Regresar */}
+                                            </Button>
+                                        )}
+                                        <Button
+                                            variant="primary"
+                                            className={`btn  ${
+                                                isLoading && "btn-loader"
+                                            } tw-ml-5`}
+                                            type="submit"
+                                        >
+                                            {isLoading ? (
+                                                <span className="ml-2 loading">
+                                                    <i className="ri-loader-2-fill"></i>
+                                                </span>
+                                            ) : (
+                                                <span className="">
+                                                    <VscSave size={18} />
+                                                    {/* {handleShowMainFormEdit ? (
+                                                ) : (
+                                                    "Crear"
+                                                )} */}
+                                                </span>
+                                            )}
+                                        </Button>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </Col>
                 </Modal.Footer>
             </Form>
         </Modal>
