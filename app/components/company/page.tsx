@@ -1,3 +1,4 @@
+"use client";
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
@@ -18,8 +19,9 @@ type CompanyProps = {
     theme: string;
 };
 
-const CompanyPage = (props: CompanyProps) => {
+const CompanyPage = () => {
     const {
+        theme,
         data,
         handleChange,
         companyName,
@@ -82,7 +84,7 @@ const CompanyPage = (props: CompanyProps) => {
                         <div className="tw-absolute tw-left-5 tw-bottom-5">
                             <h5 className="h5">Compartir Todo</h5>
                             <CustomSwitch
-                                modeTheme={props.theme}
+                                modeTheme={theme}
                                 onChange={(e) => handleAllChecked(e)}
                                 checked={allChecked === "none"}
                             />
@@ -121,7 +123,7 @@ const CompanyPage = (props: CompanyProps) => {
                                                 name="tradename"
                                                 type="text"
                                                 switch="true"
-                                                theme={props.theme}
+                                                theme={theme}
                                                 id="tradename"
                                                 fullWidth
                                                 label="Nombre Comercial"
@@ -151,7 +153,7 @@ const CompanyPage = (props: CompanyProps) => {
                                                 name="businessName"
                                                 type="text"
                                                 switch="true"
-                                                theme={props.theme}
+                                                theme={theme}
                                                 id="businessName"
                                                 fullWidth
                                                 label="Razón Social"
@@ -181,7 +183,7 @@ const CompanyPage = (props: CompanyProps) => {
                                                 name="id"
                                                 type="text"
                                                 switch="true"
-                                                theme={props.theme}
+                                                theme={theme}
                                                 id="id"
                                                 fullWidth
                                                 label="Nit"
@@ -211,7 +213,7 @@ const CompanyPage = (props: CompanyProps) => {
                                                 name="sector"
                                                 type="text"
                                                 switch="true"
-                                                theme={props.theme}
+                                                theme={theme}
                                                 id="sector"
                                                 fullWidth
                                                 label="Sector"
@@ -241,7 +243,7 @@ const CompanyPage = (props: CompanyProps) => {
                                                 name="webSite"
                                                 type="text"
                                                 switch="true"
-                                                theme={props.theme}
+                                                theme={theme}
                                                 id="webSite"
                                                 fullWidth
                                                 label="Sitio Web"
@@ -300,7 +302,7 @@ const CompanyPage = (props: CompanyProps) => {
                                                             name={item[0]}
                                                             type="text"
                                                             switch="true"
-                                                            theme={props.theme}
+                                                            theme={theme}
                                                             id="dataName"
                                                             fullWidth
                                                             label="Nombre del Dato"
@@ -336,7 +338,7 @@ const CompanyPage = (props: CompanyProps) => {
                                                                     ? "true"
                                                                     : ""
                                                             }
-                                                            theme={props.theme}
+                                                            theme={theme}
                                                             id="data"
                                                             fullWidth
                                                             label="Dato"
@@ -398,7 +400,7 @@ const CompanyPage = (props: CompanyProps) => {
                                                                 }
                                                                 name={item[5]}
                                                                 theme={
-                                                                    props.theme
+                                                                    theme
                                                                 }
                                                                 id="indicative"
                                                                 variant="standard"
@@ -434,7 +436,7 @@ const CompanyPage = (props: CompanyProps) => {
                                                                 type="text"
                                                                 switch="true"
                                                                 theme={
-                                                                    props.theme
+                                                                    theme
                                                                 }
                                                                 id="phone"
                                                                 fullWidth
@@ -472,7 +474,7 @@ const CompanyPage = (props: CompanyProps) => {
                                                                     ? "true"
                                                                     : ""
                                                             }
-                                                            theme={props.theme}
+                                                            theme={theme}
                                                             id="ext"
                                                             fullWidth
                                                             InputProps={{
@@ -542,7 +544,7 @@ const CompanyPage = (props: CompanyProps) => {
                                                                     : ""
                                                             }
                                                             switch="true"
-                                                            theme={props.theme}
+                                                            theme={theme}
                                                             id="address"
                                                             fullWidth
                                                             label="Dirección"
@@ -601,7 +603,7 @@ const CompanyPage = (props: CompanyProps) => {
                                                             name={item[0]}
                                                             type="text"
                                                             switch="true"
-                                                            theme={props.theme}
+                                                            theme={theme}
                                                             id="url"
                                                             fullWidth
                                                             label="Nombre del url"
@@ -638,7 +640,7 @@ const CompanyPage = (props: CompanyProps) => {
                                                                     ? "true"
                                                                     : ""
                                                             }
-                                                            theme={props.theme}
+                                                            theme={theme}
                                                             id="urlDato"
                                                             fullWidth
                                                             label="Dato"
