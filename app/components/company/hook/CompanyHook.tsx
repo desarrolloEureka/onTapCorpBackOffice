@@ -1,3 +1,4 @@
+"use client";
 import useAuth from "@/firebase/auth";
 import {
     saveEditDataDocumentsQuery,

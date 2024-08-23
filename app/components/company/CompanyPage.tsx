@@ -1,5 +1,3 @@
-"use client";
-
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
@@ -399,7 +397,9 @@ const CompanyPage = (props: CompanyProps) => {
                                                                     )
                                                                 }
                                                                 name={item[5]}
-                                                                theme={props.theme}
+                                                                theme={
+                                                                    props.theme
+                                                                }
                                                                 id="indicative"
                                                                 variant="standard"
                                                                 // defaultCountry="CO"
@@ -433,7 +433,9 @@ const CompanyPage = (props: CompanyProps) => {
                                                                 name={item[0]}
                                                                 type="text"
                                                                 switch="true"
-                                                                theme={props.theme}
+                                                                theme={
+                                                                    props.theme
+                                                                }
                                                                 id="phone"
                                                                 fullWidth
                                                                 label="Teléfono"
