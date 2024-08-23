@@ -1,13 +1,12 @@
 "use server";
 
-import { DataCompanyObject } from "@/types/mainForm";
 import { sendEmail } from "../brevoWithApiKey";
 // import { sendEmailSMTP } from "../brevoWithSMTP";
 import { plantillaBienvenida } from "../plantillas/bienvenida";
 import { plantillaCierreOrden } from "../plantillas/cierreOrden";
 import { plantillaNuevaOrden } from "../plantillas/nuevaOrden";
 
-export const handleSendWelcomeEmail = async (data: DataCompanyObject) => {
+export const handleSendWelcomeEmail = async (data: any) => {
     try {
         // Para envío con SMTP usar sendEmailSMTP.
         await sendEmail({
