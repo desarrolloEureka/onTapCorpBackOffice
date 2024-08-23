@@ -49,7 +49,7 @@ const HeadDropDown = (params: HeaderDropDownProps) => {
         if (theme) {
             params.setTheme(themeParsed?.dataThemeMode);
         }
-    }, []);
+    }, [params]);
 
     return (
         <>
