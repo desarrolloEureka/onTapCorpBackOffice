@@ -1,3 +1,4 @@
+"use client";
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";

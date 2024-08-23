@@ -1,3 +1,4 @@
+"use client";
 import { PaletteMode } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch, { SwitchProps } from "@mui/material/Switch";
