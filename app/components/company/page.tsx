@@ -16,7 +16,11 @@ import CustomSwitch from "./components/CustomSwitch";
 import CustomTextField from "./components/CustomTextField";
 import CompanyHook from "./hook/CompanyHook";
 
-export default function CompanyPage({ theme }: { theme: string }) {
+type CompanyProps = {
+    theme: string;
+};
+
+const CompanyPage = (props: CompanyProps) => {
     const {
         data,
         handleChange,
@@ -80,7 +84,7 @@ export default function CompanyPage({ theme }: { theme: string }) {
                         <div className="tw-absolute tw-left-5 tw-bottom-5">
                             <h5 className="h5">Compartir Todo</h5>
                             <CustomSwitch
-                                modeTheme={theme}
+                                modeTheme={props.theme}
                                 onChange={(e) => handleAllChecked(e)}
                                 checked={allChecked === "none"}
                             />
@@ -119,7 +123,7 @@ export default function CompanyPage({ theme }: { theme: string }) {
                                                 name="tradename"
                                                 type="text"
                                                 switch="true"
-                                                theme={theme}
+                                                theme={props.theme}
                                                 id="tradename"
                                                 fullWidth
                                                 label="Nombre Comercial"
@@ -149,7 +153,7 @@ export default function CompanyPage({ theme }: { theme: string }) {
                                                 name="businessName"
                                                 type="text"
                                                 switch="true"
-                                                theme={theme}
+                                                theme={props.theme}
                                                 id="businessName"
                                                 fullWidth
                                                 label="Razón Social"
@@ -179,7 +183,7 @@ export default function CompanyPage({ theme }: { theme: string }) {
                                                 name="id"
                                                 type="text"
                                                 switch="true"
-                                                theme={theme}
+                                                theme={props.theme}
                                                 id="id"
                                                 fullWidth
                                                 label="Nit"
@@ -209,7 +213,7 @@ export default function CompanyPage({ theme }: { theme: string }) {
                                                 name="sector"
                                                 type="text"
                                                 switch="true"
-                                                theme={theme}
+                                                theme={props.theme}
                                                 id="sector"
                                                 fullWidth
                                                 label="Sector"
@@ -239,7 +243,7 @@ export default function CompanyPage({ theme }: { theme: string }) {
                                                 name="webSite"
                                                 type="text"
                                                 switch="true"
-                                                theme={theme}
+                                                theme={props.theme}
                                                 id="webSite"
                                                 fullWidth
                                                 label="Sitio Web"
@@ -298,7 +302,7 @@ export default function CompanyPage({ theme }: { theme: string }) {
                                                             name={item[0]}
                                                             type="text"
                                                             switch="true"
-                                                            theme={theme}
+                                                            theme={props.theme}
                                                             id="dataName"
                                                             fullWidth
                                                             label="Nombre del Dato"
@@ -334,7 +338,7 @@ export default function CompanyPage({ theme }: { theme: string }) {
                                                                     ? "true"
                                                                     : ""
                                                             }
-                                                            theme={theme}
+                                                            theme={props.theme}
                                                             id="data"
                                                             fullWidth
                                                             label="Dato"
@@ -395,7 +399,7 @@ export default function CompanyPage({ theme }: { theme: string }) {
                                                                     )
                                                                 }
                                                                 name={item[5]}
-                                                                theme={theme}
+                                                                theme={props.theme}
                                                                 id="indicative"
                                                                 variant="standard"
                                                                 // defaultCountry="CO"
@@ -429,7 +433,7 @@ export default function CompanyPage({ theme }: { theme: string }) {
                                                                 name={item[0]}
                                                                 type="text"
                                                                 switch="true"
-                                                                theme={theme}
+                                                                theme={props.theme}
                                                                 id="phone"
                                                                 fullWidth
                                                                 label="Teléfono"
@@ -466,7 +470,7 @@ export default function CompanyPage({ theme }: { theme: string }) {
                                                                     ? "true"
                                                                     : ""
                                                             }
-                                                            theme={theme}
+                                                            theme={props.theme}
                                                             id="ext"
                                                             fullWidth
                                                             InputProps={{
@@ -536,7 +540,7 @@ export default function CompanyPage({ theme }: { theme: string }) {
                                                                     : ""
                                                             }
                                                             switch="true"
-                                                            theme={theme}
+                                                            theme={props.theme}
                                                             id="address"
                                                             fullWidth
                                                             label="Dirección"
@@ -595,7 +599,7 @@ export default function CompanyPage({ theme }: { theme: string }) {
                                                             name={item[0]}
                                                             type="text"
                                                             switch="true"
-                                                            theme={theme}
+                                                            theme={props.theme}
                                                             id="url"
                                                             fullWidth
                                                             label="Nombre del url"
@@ -632,7 +636,7 @@ export default function CompanyPage({ theme }: { theme: string }) {
                                                                     ? "true"
                                                                     : ""
                                                             }
-                                                            theme={theme}
+                                                            theme={props.theme}
                                                             id="urlDato"
                                                             fullWidth
                                                             label="Dato"
@@ -686,4 +690,6 @@ export default function CompanyPage({ theme }: { theme: string }) {
             </div>
         )
     );
-}
+};
+
+export default CompanyPage;
