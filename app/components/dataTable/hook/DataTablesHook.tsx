@@ -123,7 +123,7 @@ const DataTablesHook = (reference: string) => {
                         ? "Apellidos"
                         : "Apellido",
                     email: "Correo",
-                    indicativeOne: "Indicativo",
+                    indicative: "Indicativo",
                     phone: "Teléfono",
                     ext: "Ext",
                     phone2: "Teléfono Fijo",
@@ -159,7 +159,11 @@ const DataTablesHook = (reference: string) => {
                           reference === "cities" ? (
                             row[val]
                         ) : reference === "companies" ? (
-                            [row[val][0]]
+                            _.isArray(row[val]) ? (
+                                [row[val][0]]
+                            ) : (
+                                [row[val]]
+                            )
                         ) : (
                             [row[val]]
                         ),

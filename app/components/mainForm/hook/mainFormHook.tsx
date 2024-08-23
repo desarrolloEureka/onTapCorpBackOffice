@@ -272,38 +272,11 @@ const MainFormHook = ({
         event.target.files && setIconFile([...event.target.files]);
     };
     const indicativeOneChangeHandler = (e: any) => {
-        setData({ ...data, ["indicativeOne"]: e });
+        setData({ ...data, ["indicative"]: e });
     };
     const indicativeTwoChangeHandler = (e: any) => {
         setData({ ...data, ["indicativeTwo"]: e });
     };
-
-    const getAdminCompanyData: any = useCallback(() => {
-        const adminData = adminUsers?.find(
-            (user) => user.uid === editData?.adminId,
-        );
-        const newEditDataObj = {
-            ...editData,
-            address: editData?.address[0],
-            state: _.isNumber(editData?.state[0])
-                ? editData?.state[0]
-                : parseInt(editData?.state[0]),
-            country: editData?.country[0],
-            idType: editData?.idType[0],
-            id: editData?.id[0],
-            businessName: editData?.businessName[0],
-            tradename: editData?.tradename[0],
-            indicativeOne: editData?.indicativeOne[0],
-            phone: editData?.phone[0],
-            ext: editData?.ext[0],
-            webSite: editData?.webSite[0],
-            sector: editData?.sector[0],
-            city: editData?.city[0],
-            icon: editData?.icon[0],
-        };
-
-        return { ...newEditDataObj, ..._.omit(adminData, "uid") };
-    }, [adminUsers, editData]);
 
     const uploadHandle = async () => {
         let newData: any;
@@ -551,14 +524,14 @@ const MainFormHook = ({
                   (currentDataObjectCompany.icon = data.icon),
                   (currentDataObjectAdmin.urlPhoto = data.urlPhoto))
                 : ((currentDataObjectCompany.uid = documentRef.id),
-                  (currentDataObjectCompany.adminId = documentRefUser.id));
+                  (currentDataObjectAdmin.uid = documentRefUser.id));
 
             currentDataObjectCompany.idType = data.idType;
             currentDataObjectCompany.id = data.id;
             currentDataObjectCompany.businessName = data.businessName;
             currentDataObjectCompany.tradename = data.tradename;
             currentDataObjectCompany.address = data.address;
-            currentDataObjectCompany.indicativeOne = data.indicativeOne;
+            currentDataObjectCompany.indicative = data.indicative;
             currentDataObjectCompany.phone = data.phone;
             currentDataObjectCompany.ext = data.ext;
             currentDataObjectCompany.webSite = data.webSite;
@@ -566,6 +539,7 @@ const MainFormHook = ({
             currentDataObjectCompany.country = data.country;
             currentDataObjectCompany.state = data.state;
             currentDataObjectCompany.city = data.city;
+            currentDataObjectCompany.adminId = documentRefUser.id;
             currentDataObjectCompany.isActive = data.isActive;
 
             currentDataObjectAdmin.idTypeAdmin = data.idTypeAdmin;
@@ -620,9 +594,9 @@ const MainFormHook = ({
                 businessName: [currentDataObjectCompany.businessName, true],
                 tradename: [currentDataObjectCompany.tradename, true],
                 address: [currentDataObjectCompany.address, true],
-                indicativeOne: [currentDataObjectCompany.indicativeOne, true],
+                // indicativeOne: [currentDataObjectCompany.indicativeOne, ""],
                 phone: [currentDataObjectCompany.phone, true],
-                ext: [currentDataObjectCompany.ext, true],
+                // ext: [currentDataObjectCompany.ext, true],
                 webSite: [currentDataObjectCompany.webSite, true],
                 sector: [currentDataObjectCompany.sector, true],
                 country: [currentDataObjectCompany.country, true],
@@ -973,6 +947,37 @@ const MainFormHook = ({
 
         return age;
     };
+
+    const getAdminCompanyData: any = useCallback(() => {
+        const adminData = adminUsers?.find(
+            (user) => user.uid === editData?.adminId,
+            adminUsers,
+        );
+
+        const newEditDataObj = {
+            ...editData,
+            address: editData?.address[0],
+            state: _.isNumber(editData?.state[0])
+                ? editData?.state[0]
+                : parseInt(editData?.state[0]),
+            country: editData?.country[0],
+            idType: editData?.idType[0],
+            id: editData?.id[0],
+            businessName: editData?.businessName[0],
+            tradename: editData?.tradename[0],
+            // indicative: editData?.indicative,
+            phone: editData?.phone[0],
+            // ext: editData?.ext[0],
+            webSite: editData?.webSite[0],
+            sector: editData?.sector[0],
+            city: editData?.city[0],
+            icon: editData?.icon[0],
+        };
+
+        // console.log({ ...newEditDataObj, ..._.omit(adminData, "uid") });
+
+        return { ...newEditDataObj, ..._.omit(adminData, "uid") };
+    }, [adminUsers, editData]);
 
     const getAllSelectOptions = useCallback(async () => {
         if (handleShowMainForm || handleShowMainFormEdit) {

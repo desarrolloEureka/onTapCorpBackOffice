@@ -1,4 +1,5 @@
 import { dataAdminCompanyObject } from "@/data/mainFormData";
+import { getDocumentsByIdQuery } from "@/queries/documentsQueries";
 import { DataAdminCompanyObject } from "@/types/mainForm";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { getDoc, doc, DocumentReference } from "firebase/firestore";
@@ -19,6 +20,7 @@ const useAuth = () => {
     const [error, setError] = useState<string>();
     const [accessTokenUser, setAccessTokenUser] = useState<string>("");
     const [userData, setUserData] = useState<any>();
+    const [companyData, setCompanyData] = useState<any>();
 
     const getRole = useCallback(async () => {
         if (user) {
@@ -77,11 +79,19 @@ const useAuth = () => {
     }, [user]);
 
     const getUserData = useCallback(async () => {
-        const userId: string | undefined = user?.uid;
         if (user) {
+            const userId: string | undefined = user?.uid;
             // Obtiene el documento del usuario desde Firestore
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-            setUserData(userDoc.data());
+            const userDoc = await getDoc(doc(db, "users", userId));
+            userDoc && setUserData(userDoc.data());
+            
+            if (userDoc.data()?.companyId) {
+                const result = await getDocumentsByIdQuery(
+                    "companies",
+                    userDoc.data()?.companyId,
+                );
+                result && setCompanyData(result);
+            }
         }
     }, [user]);
 
@@ -107,14 +117,15 @@ const useAuth = () => {
             setIsLoading(false);
             user?.getIdToken().then((token) => setAccessTokenUser(token));
         }
-    }, [user, accessTokenUser]);
+    }, [user, accessTokenUser, getUserData]);
 
     return {
         isLoading,
         user,
         error,
         accessTokenUser,
-        userData
+        userData,
+        companyData,
     };
 };
 export default useAuth;

@@ -1,11 +1,14 @@
+import { PaletteMode } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch, { SwitchProps } from "@mui/material/Switch";
-import { styled } from "@mui/material/styles";
+import { styled, ThemeProvider, createTheme } from "@mui/material/styles";
+import { ChangeEvent } from "react";
 
 const IOSSwitch = styled((props: SwitchProps) => (
     <Switch
         focusVisibleClassName=".Mui-focusVisible"
         disableRipple
+        inputProps={{ "aria-label": "controlled" }}
         {...props}
     />
 ))(({ theme }) => ({
@@ -58,14 +61,37 @@ const IOSSwitch = styled((props: SwitchProps) => (
     },
 }));
 
-const CustomSwitch = () => {
+const CustomSwitch = ({
+    checked,
+    onChange,
+    modeTheme,
+}: {
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    checked: boolean;
+    modeTheme: string;
+}) => {
+    const theme = createTheme({
+        palette: {
+            mode: modeTheme as PaletteMode,
+        },
+    });
     return (
-        <FormControlLabel
-            control={<IOSSwitch sx={{ m: 1 }} />}
-            label="On/Off"
-            sx={{ color: "#396593", }}
-            labelPlacement="bottom"
-        />
+        <ThemeProvider theme={theme}>
+            <FormControlLabel
+                control={
+                    <IOSSwitch
+                        sx={{ m: 1 }}
+                        checked={checked}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                            onChange(e);
+                        }}
+                    />
+                }
+                label="On/Off"
+                sx={{ color: "#396593" }}
+                labelPlacement="bottom"
+            />
+        </ThemeProvider>
     );
 };
 

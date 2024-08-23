@@ -400,7 +400,7 @@ const MainFormModal = ({
                                                 inputProps={{
                                                     readOnly: true,
                                                     required: true,
-                                                    name: "indicativeOne",
+                                                    name: "indicative",
                                                 }}
                                                 country={"co"}
                                                 specialLabel=""
@@ -410,7 +410,7 @@ const MainFormModal = ({
                                                     color: "black",
                                                     borderRadius: 12,
                                                 }}
-                                                value={data.indicativeOne}
+                                                value={data.indicative}
                                                 onChange={
                                                     indicativeOneChangeHandler
                                                 }
@@ -2049,7 +2049,7 @@ const MainFormModal = ({
                                         <div className="tw-flex tw-justify-center tw-items-center">
                                             <img
                                                 src={
-                                                    data.urlPhoto
+                                                    data.icon[0]
                                                         ? data.icon
                                                         : "http://via.placeholder.com/150x150"
                                                 }
