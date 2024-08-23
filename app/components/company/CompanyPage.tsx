@@ -19,9 +19,8 @@ type CompanyProps = {
     theme: string;
 };
 
-const CompanyPage = () => {
+const CompanyPage = ({ theme }: CompanyProps) => {
     const {
-        theme,
         data,
         handleChange,
         companyName,

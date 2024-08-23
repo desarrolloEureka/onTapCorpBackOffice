@@ -4,7 +4,7 @@ import HomeDash from "../dashBoard/homeDash/HomeDash";
 import DataTableComponent from "../dataTable/DataTableComponent";
 import Profile from "../profile/page";
 import HeaderContent from "./components/headerContent/HeaderContent";
-import CompanyPage from "../company/page";
+import CompanyPage from "../company/CompanyPage";
 import theme from "../../theme";
 import { useState } from "react";
 
@@ -179,7 +179,7 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     role="tabpanel"
                     eventKey="company"
                 >
-                    <CompanyPage />
+                    <CompanyPage theme={theme} />
                 </Tab.Pane>
 
                 {/* Vista del perfil */}

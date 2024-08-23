@@ -6,18 +6,11 @@ import {
 } from "@/queries/documentsQueries";
 import { MyStateType } from "@/types/company";
 import _ from "lodash";
-import {
-    ChangeEvent,
-    useCallback,
-    useEffect,
-    useState
-} from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 const CompanyHook = () => {
     const { companyData } = useAuth();
-
-    const [theme, setTheme] = useState<string>("");
 
     const [data, setData] = useState<any>();
     const [allChecked, setAllChecked] = useState<string>("none");
@@ -403,7 +396,6 @@ const CompanyHook = () => {
     // data && console.log(data, objToArrayItems);}
 
     return {
-        theme,
         data,
         handleChange,
         handleChangeMiuTel,
