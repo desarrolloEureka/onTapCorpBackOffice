@@ -128,9 +128,9 @@ const CompanyHook = () => {
 
     const handleChange = (value: string, name: string, isChecked?: boolean) => {
         if (isChecked === undefined) {
-            setData({ ...data, [name]: value });
+            setData({ ...data, [name]: (value || "-") ?? "-" });
         } else {
-            setData({ ...data, [name]: [value, !isChecked] });
+            setData({ ...data, [name]: [(value || "") ?? "", !isChecked] });
         }
     };
 
@@ -182,18 +182,29 @@ const CompanyHook = () => {
             // const currentItems = objToArrayItems[type ?? "phone"].map(
             //     (item) => item[0],
             // );
-            const itemIndex = objToArrayItems[type ?? "phone"].length
-                ? objToArrayItems[type ?? "phone"].length
-                : 0;
+            const itemIndex =
+                objToArrayItems[type ?? "phone"].length > 0
+                    ? objToArrayItems[type ?? "phone"].length
+                    : 0;
+
+            // const arrayFound = objToArrayItems[type ?? "phone"].map(
+            //     (item) => item[0],
+            // );
 
             listItemToChange.forEach((item) => {
-                item === "phone"
-                    ? (newItemPhone[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = ["", false])
-                    : (newItemPhone[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = item === "indicative" ? "57" : "");
+                const currentIndex = `${item}${itemIndex + 1}`;
+                // arrayFound.forEach((element) => {
+                // if (element !== currentIndex) {
+                newItemPhone[currentIndex] =
+                    item === "phone"
+                        ? ["", false]
+                        : item === "indicative"
+                        ? "57"
+                        : item === "ext"
+                        ? " "
+                        : " ";
+                // }
+                // });
             });
             setData({ ...data, ...newItemPhone });
         }
@@ -279,7 +290,6 @@ const CompanyHook = () => {
             //Obtiene solo los valores de cada propiedad
 
             const arrayWithKey = _.sortBy(Object.entries(keysFiltered));
-            const onlyKeys = _.sortBy(Object.keys(keysFiltered));
             //Agrega el elemento a ese array
             arrayWithKey.map(([key, value]: any, index: number) => {
                 if (_.isArray(value)) {
@@ -294,13 +304,13 @@ const CompanyHook = () => {
                             ) {
                                 const itemsFiltered = Object.fromEntries(
                                     Object.entries(_.cloneDeep(data)).filter(
-                                        ([key, value]) => {
+                                        ([subKey, value]) => {
                                             if (index === 0) {
-                                                return key === newItem;
+                                                return subKey === newItem;
                                             } else {
                                                 return (
-                                                    key ===
-                                                    `${newItem}${index + 1}`
+                                                    subKey.includes(newItem) &&
+                                                    subKey.at(-1) === key.at(-1)
                                                 );
                                             }
                                         },
@@ -348,13 +358,13 @@ const CompanyHook = () => {
                             ) {
                                 const itemsFiltered = Object.fromEntries(
                                     Object.entries(_.cloneDeep(data)).filter(
-                                        ([key, value]) => {
+                                        ([subKey, value]) => {
                                             if (index === 0) {
-                                                return key === newItem;
+                                                return subKey === newItem;
                                             } else {
                                                 return (
-                                                    key ===
-                                                    `${newItem}${index + 1}`
+                                                    subKey.includes(newItem) &&
+                                                    subKey.at(-1) === key.at(-1)
                                                 );
                                             }
                                         },
@@ -393,7 +403,6 @@ const CompanyHook = () => {
         }
     }, [companyData]);
 
-    // data && console.log(data, objToArrayItems);}
 
     return {
         data,

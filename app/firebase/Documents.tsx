@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import moment from "moment";
 import { db } from "shared/firebase/firebase";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const allRef = ({ ref }: AllRefPropsFirebase) => collection(db, ref);
 
@@ -146,17 +146,17 @@ export const updateCampusByIdFb = async (
         document,
         refExist
             ? {
-                availableAreas: data.includes(refArea)
-                    ? data.filter((item: string) => item !== refArea)
-                    : [...data],
-                timestamp: currentDate,
-            }
+                  availableAreas: data.includes(refArea)
+                      ? data.filter((item: string) => item !== refArea)
+                      : [...data],
+                  timestamp: currentDate,
+              }
             : {
-                availableAreas: !data.includes(refArea)
-                    ? [...data, refArea]
-                    : [...data],
-                timestamp: currentDate,
-            },
+                  availableAreas: !data.includes(refArea)
+                      ? [...data, refArea]
+                      : [...data],
+                  timestamp: currentDate,
+              },
     );
 };
 
@@ -165,12 +165,12 @@ export const saveNotification = async (dataSave: any) => {
         const notificationsRef = collection(db, "notifications");
 
         // Agregar un nuevo documento a la colección
-        const docRef = await addDoc(notificationsRef, dataSave)
+        const docRef = await addDoc(notificationsRef, dataSave);
 
-        return { success: true, message: 'Notification saved successfully' };
+        return { success: true, message: "Notification saved successfully" };
     } catch (error) {
-        console.error('Error saving notification:', error);
-        return { success: false, message: 'Error saving notification', error };
+        console.error("Error saving notification:", error);
+        return { success: false, message: "Error saving notification", error };
     }
 };
 
@@ -186,16 +186,16 @@ export const saveZone = async (dataSave: any) => {
         // Agrega el UID al objeto de datos
         const dataWithId = {
             ...dataSave,
-            uid: documentId // Incluye el UID como un campo en el documento
+            uid: documentId, // Incluye el UID como un campo en el documento
         };
 
         // Guarda el documento en Firestore
         await setDoc(docRef, dataWithId);
 
-        return { success: true, message: 'zone saved successfully' };
+        return { success: true, message: "zone saved successfully" };
     } catch (error) {
-        console.error('Error saving notification:', error);
-        return { success: false, message: 'Error saving zone', error };
+        console.error("Error saving notification:", error);
+        return { success: false, message: "Error saving zone", error };
     }
 };
 
@@ -204,10 +204,10 @@ export const updateZone = async (id: string, dataSave: any) => {
         const zoneRef = doc(db, "zones", id);
         await updateDoc(zoneRef, dataSave);
 
-        return { success: true, message: 'Zone updated successfully' };
+        return { success: true, message: "Zone updated successfully" };
     } catch (error) {
-        console.error('Error updating zone:', error);
-        return { success: false, message: 'Error updating zone', error };
+        console.error("Error updating zone:", error);
+        return { success: false, message: "Error updating zone", error };
     }
 };
 
@@ -215,12 +215,12 @@ export const getZonesByCompanyId = async (companyId: any) => {
     try {
         const q = query(
             collection(db, "zones"),
-            where("idCompany", "==", companyId)
+            where("idCompany", "==", companyId),
         );
 
         const querySnapshot = await getDocs(q);
 
-        const zones = querySnapshot.docs.map(doc => ({
+        const zones = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
         }));
@@ -235,16 +235,35 @@ export const getNotificationsByCompanyId = async (companyId: any) => {
     try {
         const q = query(
             collection(db, "notifications"),
-            where("idCompany", "==", companyId)
+            where("idCompany", "==", companyId),
         );
 
         const querySnapshot = await getDocs(q);
 
-        const notifications = querySnapshot.docs.map(doc => ({
+        const notifications = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
         }));
         return notifications;
+    } catch (error) {
+        console.error("Error fetching notifications:", error);
+        return [];
+    }
+};
+
+export const getWorkArasByCompanyId = async (companyId: any) => {
+    try {
+        const q = query(
+            collection(db, "workAreas"),
+            where("idCompany", "==", companyId),
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        const workAreas = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+        }));
+        return workAreas;
     } catch (error) {
         console.error("Error fetching notifications:", error);
         return [];

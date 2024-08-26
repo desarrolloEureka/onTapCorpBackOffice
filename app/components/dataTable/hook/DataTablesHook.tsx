@@ -4,7 +4,7 @@ import { countriesTable, idTypesTable } from "@/data/formConstant";
 import useAuth from "@/firebase/auth";
 import { allRef } from "@/firebase/campus";
 import { getAllCampusQuery } from "@/queries/campusQueries";
-import { getAllDocumentsQuery, getNotificationsByCompanyIdQuery, getZonesByCompanyIdQuery } from "@/queries/documentsQueries";
+import { getAllDocumentsQuery, getNotificationsByCompanyIdQuery, getWorkArasByCompanyIdQuery, getZonesByCompanyIdQuery } from "@/queries/documentsQueries";
 import { DataMainFormObject } from "@/types/mainForm";
 import { setDataTable } from "@/types/tables";
 import { onSnapshot } from "firebase/firestore";
@@ -88,16 +88,28 @@ const DataTablesHook = (reference: string) => {
             reference === "country"
                 ? countriesTable
                 : reference === "departments"
-                    ? colombianCitiesData
-                    : reference === "cities"
-                        ? transformCitiesData(colombianCitiesData)
-                        : reference === "documentTypes"
-                            ? idTypesTable
-                            : reference === "zones"
-                                ? formatZoneData(userData ? await getZonesByCompanyIdQuery(userData?.companyId) : [])
-                                : reference === "notifications"
-                                    ? (userData ? await getNotificationsByCompanyIdQuery(userData?.companyId) : [])
-                                    : await getAllDocumentsQuery(reference);
+                ? colombianCitiesData
+                : reference === "cities"
+                ? transformCitiesData(colombianCitiesData)
+                : reference === "documentTypes"
+                ? idTypesTable
+                : reference === "zones"
+                ? formatZoneData(
+                      userData
+                          ? await getZonesByCompanyIdQuery(userData?.companyId)
+                          : [],
+                  )
+                : reference === "notifications"
+                ? userData
+                    ? await getNotificationsByCompanyIdQuery(
+                          userData?.companyId,
+                      )
+                    : []
+                : reference === "workAreas"
+                ? userData
+                    ? await getWorkArasByCompanyIdQuery(userData?.companyId)
+                    : []
+                : await getAllDocumentsQuery(reference);
 
 
         const labelToDisplay = ["professionals", "patients", "functionary"];

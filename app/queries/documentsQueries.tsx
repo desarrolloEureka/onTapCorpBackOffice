@@ -3,6 +3,7 @@ import {
     getDocumentsByIdFb,
     getNotificationsByCompanyId,
     getReference,
+    getWorkArasByCompanyId,
     getZonesByCompanyId,
     saveDocumentsFb,
     saveNotification,
@@ -124,6 +125,11 @@ export const getZonesByCompanyIdQuery = async (idCompany: string) => {
 
 export const getNotificationsByCompanyIdQuery = async (idCompany: string) => {
     const documents = await getNotificationsByCompanyId(idCompany);
+    return documents;
+};
+
+export const getWorkArasByCompanyIdQuery = async (idCompany: string) => {
+    const documents = await getWorkArasByCompanyId(idCompany);
     return documents;
 };
 

@@ -61,7 +61,7 @@ const MainFormHook = ({
     title,
     reference,
 }: ModalParamsMainForm) => {
-    const { accessTokenUser } = useAuth();
+    const { accessTokenUser, userData } = useAuth();
 
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -533,6 +533,7 @@ const MainFormHook = ({
             currentDataObject.urlName = data.urlName;
             currentDataObject.urlLink = data.urlLink;
             currentDataObject.isActive = data.isActive;
+            userData && (currentDataObject.companyId = userData.companyId);
 
             for (const record of iconFile) {
                 const urlName = record.name.split(".")[0];

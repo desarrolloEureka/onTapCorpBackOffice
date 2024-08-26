@@ -20,8 +20,8 @@ const CustomTextField = (props: any) => {
         name: string,
         checked: boolean,
     ) => {
-        props.onChange(value, name, checked);
-        setValue(value);
+        props.onChange((value || "-") ?? "-", name, checked);
+        setValue((value || "-") ?? "-");
         setChecked(checked);
     };
 
@@ -63,9 +63,7 @@ const CustomTextField = (props: any) => {
                             fontSize: "20px",
                             fontWeight: "bold",
                             color:
-                                props.theme === "light"
-                                    ? "#396593"
-                                    : "#8bb8e7",
+                                props.theme === "light" ? "#396593" : "#8bb8e7",
                         },
                     }}
                 />

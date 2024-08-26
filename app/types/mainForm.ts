@@ -161,6 +161,7 @@ export type DataDiagnosesObject = {
 
 export type DataWorkAreasObject = {
     uid: string;
+    companyId: string;
     areaName: string;
     areaHead: string;
     urlName: [string, boolean];

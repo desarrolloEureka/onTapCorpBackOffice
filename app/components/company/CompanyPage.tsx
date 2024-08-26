@@ -430,7 +430,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                     )
                                                                 }
                                                                 name={item[0]}
-                                                                type="text"
+                                                                type="tel"
                                                                 switch="true"
                                                                 theme={theme}
                                                                 id={item[0]}
@@ -463,7 +463,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                 );
                                                             }}
                                                             name={item[3]}
-                                                            type="text"
+                                                            type="tel"
                                                             deleted={
                                                                 index !== 0
                                                                     ? "true"

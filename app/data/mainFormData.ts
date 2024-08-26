@@ -177,6 +177,7 @@ export const dataDiagnosesObject = {
 
 export const dataWorkAreasObject = {
     uid: "",
+    companyId: "",
     areaName: "",
     areaHead: "",
     urlName: ["", false],
