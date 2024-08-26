@@ -26,6 +26,14 @@ const CustomMUITelInput = (props: any) => {
                         props.onChange(value, props.name);
                         setValue(value);
                     }}
+                    InputLabelProps={{
+                        style: {
+                            fontSize: "20px",
+                            fontWeight: "bold",
+                            color:
+                                props.theme === "light" ? "#396593" : "#8bb8e7",
+                        },
+                    }}
                 />
             </ThemeProvider>
         </div>

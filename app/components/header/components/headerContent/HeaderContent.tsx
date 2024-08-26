@@ -104,13 +104,6 @@ const HeaderContent = ({
                                                     size={18}
                                                     className="tw-mb-1 tw-mr-1"
                                                 />
-                                                Áreas de Trabajo
-                                            </NavDropdown.Item>
-                                            <NavDropdown.Item eventKey="second">
-                                                <FaMapMarkerAlt
-                                                    size={18}
-                                                    className="tw-mb-1 tw-mr-1"
-                                                />
                                                 Sedes
                                             </NavDropdown.Item>
                                             <NavDropdown.Item eventKey="second">
@@ -192,6 +185,13 @@ const HeaderContent = ({
                                                     className="tw-mb-1 tw-mr-1"
                                                 />
                                                 Empresa
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="workAreas">
+                                                <FaMapMarkerAlt
+                                                    size={18}
+                                                    className="tw-mb-1 tw-mr-1"
+                                                />
+                                                Áreas de Trabajo
                                             </NavDropdown.Item>
                                             <NavDropdown.Item
                                                 href="#functionary"

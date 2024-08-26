@@ -44,6 +44,10 @@ export interface DataMainFormObject {
     availableAreas: string[];
     urlPhoto: string;
     timestamp: string;
+    areaName: string;
+    areaHead: string;
+    urlName: [string, boolean];
+    urlLink: string;
     isActive: boolean;
     isDeleted: boolean;
 }
@@ -151,6 +155,17 @@ export type DataDiagnosesObject = {
     uid: string;
     name: string;
     code: string;
+    isActive: boolean;
+    isDeleted: boolean;
+};
+
+export type DataWorkAreasObject = {
+    uid: string;
+    areaName: string;
+    areaHead: string;
+    urlName: [string, boolean];
+    urlLink: string;
+    icon: string;
     isActive: boolean;
     isDeleted: boolean;
 };

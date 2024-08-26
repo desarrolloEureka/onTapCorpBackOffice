@@ -132,6 +132,10 @@ const DataTablesHook = (reference: string) => {
                     city: "Ciudad",
                     webSite: "Sitio Web",
                     isActive: "Estado",
+                    areaName: "Nombre Área",
+                    areaHead: "Jefe de Área",
+                    urlName: "Nombre Url",
+                    urlLink: "Enlace",
                 };
             }
 

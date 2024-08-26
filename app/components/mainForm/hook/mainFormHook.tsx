@@ -12,6 +12,7 @@ import {
     dataPatientObject,
     dataProfessionalObject,
     dataSpecialtyObject,
+    dataWorkAreasObject,
 } from "@/data/mainFormData";
 // import { getDocumentRefById } from "@/firebase/Documents";
 // import { registerFirebase } from "@/firebase/user";
@@ -42,7 +43,13 @@ import { SpecialtySelector } from "@/types/specialty";
 import { handleSendWelcomeEmail } from "lib/brevo/handlers/actions";
 import _ from "lodash";
 import moment from "moment";
-import { SetStateAction, useCallback, useEffect, useState } from "react";
+import {
+    ChangeEvent,
+    SetStateAction,
+    useCallback,
+    useEffect,
+    useState,
+} from "react";
 import Swal from "sweetalert2";
 
 const MainFormHook = ({
@@ -68,7 +75,8 @@ const MainFormHook = ({
     const [errorDataUpload, setErrorDataUpload] = useState<ErrorDataForm[]>();
     const [showPassword, setShowPassword] = useState(false);
     const [files, setFiles] = useState<SetStateAction<any>[]>([]);
-    const [iconFile, setIconFile] = useState<SetStateAction<any>[]>([]);
+    const [fileName, setFileName] = useState<any>();
+    const [iconFile, setIconFile] = useState<any>([]);
     // const [urlPhoto, setUrlPhoto] = useState<string>("");
     const [campus, setCampus] = useState<CampusSelector[]>();
     const [specialties, setSpecialties] = useState<SpecialtySelector[]>();
@@ -157,6 +165,14 @@ const MainFormHook = ({
         //     );
         // }
         return roles;
+    };
+
+    const handleChange = (value: string, name: string, isChecked?: boolean) => {
+        if (isChecked === undefined) {
+            setData({ ...data, [name]: value });
+        } else {
+            setData({ ...data, [name]: [value, !isChecked] });
+        }
     };
 
     const changeHandler = (e: any) => {
@@ -268,8 +284,14 @@ const MainFormHook = ({
     const handleMultipleChange = (event: { target: any }) => {
         event.target.files && setFiles([...event.target.files]);
     };
-    const handleIconFileChange = (event: { target: any }) => {
-        event.target.files && setIconFile([...event.target.files]);
+    const handleIconFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setIconFile(e.target.files);
+            setFileName(e.target.files[0].name);
+        } else {
+            setIconFile(null);
+            setFileName(null);
+        }
     };
     const indicativeOneChangeHandler = (e: any) => {
         setData({ ...data, ["indicative"]: e });
@@ -496,6 +518,39 @@ const MainFormHook = ({
             currentDataObject.personType = data.personType;
             currentDataObject.discount = data.discount;
             currentDataObject.isActive = data.isActive;
+
+            newData = { ...currentDataObject };
+        }
+
+        if (reference === "workAreas") {
+            const currentDataObject = { ...dataWorkAreasObject };
+
+            handleShowMainFormEdit
+                ? (currentDataObject.uid = data.uid)
+                : (currentDataObject.uid = documentRef.id);
+            currentDataObject.areaName = data.areaName;
+            currentDataObject.areaHead = data.areaHead;
+            currentDataObject.urlName = data.urlName;
+            currentDataObject.urlLink = data.urlLink;
+            currentDataObject.isActive = data.isActive;
+
+            for (const record of iconFile) {
+                const urlName = record.name.split(".")[0];
+                await saveIconFile({
+                    urlName,
+                    record,
+                    uid: handleShowMainFormEdit ? data.uid : documentRef.id,
+                    reference,
+                })
+                    .then((result) => {
+                        currentDataObject.icon = result;
+                        // error.push(...result);
+                    })
+                    .catch((err) => {
+                        error.push({ success: false, urlName });
+                        // console.log(error);
+                    });
+            }
 
             newData = { ...currentDataObject };
         }
@@ -803,6 +858,13 @@ const MainFormHook = ({
 
     const diagnosesVal = reference === "diagnoses" && data.name && data.code;
 
+    const workAreasVal =
+        reference === "workAreas" &&
+        data.areaName &&
+        data.urlName &&
+        data.areaHead &&
+        data.urlLink;
+
     const areasVal =
         !itemExist &&
         reference === "areas" &&
@@ -849,6 +911,7 @@ const MainFormHook = ({
         // console.log(data);
         if (
             areasVal ||
+            workAreasVal ||
             companyVal ||
             companyAdminVal ||
             campusVal ||
@@ -1009,11 +1072,11 @@ const MainFormHook = ({
     }, [handleShowMainForm]);
 
     useEffect(() => {
-        const allCompanyData = getAdminCompanyData();
         if (handleShowMainFormEdit) {
             setShow(true);
-            if (allCompanyData && reference === "companies") {
-                setData(allCompanyData);
+            if (reference === "companies") {
+                const allCompanyData = getAdminCompanyData();
+                allCompanyData && setData(allCompanyData);
             } else {
                 setData(editData);
             }
@@ -1051,9 +1114,11 @@ const MainFormHook = ({
         theme: themeParsed?.dataThemeMode,
         nextStep,
         companyVal,
+        fileName,
         setErrorPass,
         setErrorValid,
         changeHandler,
+        handleChange,
         handleSendForm,
         handleClose,
         handleReset,

@@ -160,7 +160,7 @@ Width
     --card-header-text: #030124;
     --card-body-text: #fff;
     --card-body-add-item: #396593;
-    --card-body-add-hover:#396593;
+    --card-body-add-hover: #396593;
 }
 
 /*Font Family*/
@@ -241,8 +241,8 @@ Width
     /* Company colors */
     --card-header-text: #8bb8e7;
     --card-body-text: #8bb8e7;
-    --card-body-add-item:#fff;
-    --card-body-add-hover:rgba(255, 255, 255, 0.3);
+    --card-body-add-item: #fff;
+    --card-body-add-hover: rgba(255, 255, 255, 0.3);
 }
 
 /* Sidemenu Layout Syles */
@@ -51872,20 +51872,24 @@ ul.inbox-pagination {
 
 /* --------------------------------------------- */
 
-.custom-card .card-body .sub-card-body {
+.sub-card-body {
     background-color: var(--black-2);
     color: #fff;
 }
 
-.custom-card .card-body .main-title-sub-card {
+.main-title-sub-card {
     background-color: var(--default-company-border);
 }
 
-.custom-card .card-body .add-button-item {
+.url-label {
     color: var(--card-body-add-item);
 }
 
-.custom-card .card-body .add-button-item:hover {
+.add-button-item {
+    color: var(--card-body-add-item);
+}
+
+.add-button-item:hover {
     background-color: var(--card-body-add-hover);
     color: #fff;
 }
@@ -57527,9 +57531,9 @@ h4,
     color: var(--default-text-color) !important;
 }
 
-.MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium {
+/* .MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium {
     color: var(--default-text-color) !important;
-}
+} */
 
 .rdt_TableHeader {
     background-color: var(--custom-white) !important;
