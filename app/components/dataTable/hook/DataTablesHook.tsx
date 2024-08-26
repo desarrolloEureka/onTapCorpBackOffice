@@ -4,7 +4,12 @@ import { countriesTable, idTypesTable } from "@/data/formConstant";
 import useAuth from "@/firebase/auth";
 import { allRef } from "@/firebase/campus";
 import { getAllCampusQuery } from "@/queries/campusQueries";
-import { getAllDocumentsQuery, getNotificationsByCompanyIdQuery, getWorkArasByCompanyIdQuery, getZonesByCompanyIdQuery } from "@/queries/documentsQueries";
+import {
+    getAllDocumentsQuery,
+    getNotificationsByCompanyIdQuery,
+    getWorkArasByCompanyIdQuery,
+    getZonesByCompanyIdQuery,
+} from "@/queries/documentsQueries";
 import { DataMainFormObject } from "@/types/mainForm";
 import { setDataTable } from "@/types/tables";
 import { onSnapshot } from "firebase/firestore";
@@ -71,14 +76,14 @@ const DataTablesHook = (reference: string) => {
             // Extraer direcciones del array 'addresses'
             const addresses = doc.addresses || [];
             return {
-                zoneName: doc.zoneName || '-',
-                zoneManager: doc.zoneManager || '-',
-                AddressOne: addresses[0] || '-',
-                AddressTwo: addresses[1] || '-',
-                AddressThree: addresses[2] || '-',
-                AddressFour: addresses[3] || '-',
+                zoneName: doc.zoneName || "-",
+                zoneManager: doc.zoneManager || "-",
+                AddressOne: addresses[0] || "-",
+                AddressTwo: addresses[1] || "-",
+                AddressThree: addresses[2] || "-",
+                AddressFour: addresses[3] || "-",
                 addresses: addresses,
-                uid: doc.uid
+                uid: doc.uid,
             };
         });
     };
@@ -95,22 +100,21 @@ const DataTablesHook = (reference: string) => {
                 ? idTypesTable
                 : reference === "zones"
                 ? formatZoneData(
-                      userData
+                      userData && userData?.companyId
                           ? await getZonesByCompanyIdQuery(userData?.companyId)
                           : [],
                   )
                 : reference === "notifications"
-                ? userData
+                ? userData && userData?.companyId
                     ? await getNotificationsByCompanyIdQuery(
                           userData?.companyId,
                       )
                     : []
                 : reference === "workAreas"
-                ? userData
+                ? userData && userData?.companyId
                     ? await getWorkArasByCompanyIdQuery(userData?.companyId)
                     : []
                 : await getAllDocumentsQuery(reference);
-
 
         const labelToDisplay = ["professionals", "patients", "functionary"];
 
@@ -227,7 +231,13 @@ const DataTablesHook = (reference: string) => {
                     width:
                         val === "ext" || val === "idType"
                             ? "80px"
-                            : val === "content" ? "50%" : val === "issue" ? '20%' : val === "hour" || val === "issue" ? '15%' : "200px",
+                            : val === "content"
+                            ? "50%"
+                            : val === "issue"
+                            ? "20%"
+                            : val === "hour" || val === "issue"
+                            ? "15%"
+                            : "200px",
                     omit: !omittedColumns.includes(val),
                 };
 
