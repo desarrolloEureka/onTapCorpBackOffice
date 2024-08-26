@@ -6,6 +6,8 @@ import { ExportCSV } from "./dataTables/dataTables";
 import DataTablesHook from "./hook/DataTablesHook";
 import MainFormModal from "../mainForm/mainFormModal";
 import { DataTableComponentProps } from "@/types/tables";
+import NotificationsFormModal from "../notifications/notificationsFormModal";
+import ZonesFormModal from "../zones/zonesFormModal";
 
 const DataTableComponent = ({
     componentTitle,
@@ -83,15 +85,39 @@ const DataTableComponent = ({
                     title={tableTitle}
                     reference={reference}
                 />
-                <MainFormModal
-                    handleShowMainForm={handleShowMainForm}
-                    setHandleShowMainForm={setHandleShowMainForm}
-                    handleShowMainFormEdit={handleShowMainFormEdit}
-                    setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                    editData={editData}
-                    title={tableTitle}
-                    reference={reference}
-                />
+                {reference === 'notifications' ?
+                    <NotificationsFormModal
+                        handleShowMainForm={handleShowMainForm}
+                        setHandleShowMainForm={setHandleShowMainForm}
+                        handleShowMainFormEdit={handleShowMainFormEdit}
+                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                        editData={editData}
+                        title={tableTitle}
+                        reference={reference}
+                    />
+                    :
+                    reference === "zones" ?
+                        <ZonesFormModal
+                            handleShowMainForm={handleShowMainForm}
+                            setHandleShowMainForm={setHandleShowMainForm}
+                            handleShowMainFormEdit={handleShowMainFormEdit}
+                            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                            editData={editData}
+                            title={tableTitle}
+                            reference={reference}
+                        />
+                        :
+                        <MainFormModal
+                            handleShowMainForm={handleShowMainForm}
+                            setHandleShowMainForm={setHandleShowMainForm}
+                            handleShowMainFormEdit={handleShowMainFormEdit}
+                            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                            editData={editData}
+                            title={tableTitle}
+                            reference={reference}
+                        />
+                }
+
             </Row>
         )
     );

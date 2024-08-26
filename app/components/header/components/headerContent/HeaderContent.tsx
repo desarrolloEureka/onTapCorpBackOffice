@@ -500,6 +500,12 @@ const HeaderContent = ({
                                     >
                                         Roles
                                     </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        href="#roles"
+                                        eventKey="notifications"
+                                    >
+                                        Notificaciones
+                                    </NavDropdown.Item>
                                 </NavDropdown>
                             )}
                         </Nav>

@@ -66,8 +66,49 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         reference="functionary"
                     />
                 </Tab.Pane>
+                  {/* Vista de Notificaciones */}
+                  <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="notifications"
+                    role="tabpanel"
+                    eventKey="notifications"
+                >
+                    <BannerMenu
+                        seoTitle="Notificaciones"
+                        title="Notificaciones"
+                        item="Dashboard"
+                        activeItem="Registro de Notificaciones"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla del Listado de Notificaciones."
+                        componentDescription="En esta tabla se encuentran listados todos los usuarios para su administración."
+                        tableTitle="Notificaciones"
+                        reference="notifications"
+                    />
+                </Tab.Pane>
 
-                {/* Vista de Países */}
+                  {/* Vista de Zonas */}
+                  <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="zones"
+                    role="tabpanel"
+                    eventKey="zones"
+                >
+                    <BannerMenu
+                        seoTitle="Zonas"
+                        title="Zonas"
+                        item="Dashboard"
+                        activeItem="Registro de Zonas"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla del Listado de Zonas."
+                        componentDescription="En esta tabla se encuentran listados todos los usuarios para su administración."
+                        tableTitle="Zonas"
+                        reference="zones"
+                    />
+                </Tab.Pane>
+
+                {/* Vista de Paises */}
                 <Tab.Pane
                     className="tab-pane text-muted"
                     id="users"

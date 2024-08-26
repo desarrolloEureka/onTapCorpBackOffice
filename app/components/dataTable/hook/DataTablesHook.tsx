@@ -1,9 +1,10 @@
 "use client";
 import { colombianCitiesData } from "@/data/colombianCitiesData";
 import { countriesTable, idTypesTable } from "@/data/formConstant";
+import useAuth from "@/firebase/auth";
 import { allRef } from "@/firebase/campus";
 import { getAllCampusQuery } from "@/queries/campusQueries";
-import { getAllDocumentsQuery } from "@/queries/documentsQueries";
+import { getAllDocumentsQuery, getNotificationsByCompanyIdQuery, getZonesByCompanyIdQuery } from "@/queries/documentsQueries";
 import { DataMainFormObject } from "@/types/mainForm";
 import { setDataTable } from "@/types/tables";
 import { onSnapshot } from "firebase/firestore";
@@ -25,6 +26,7 @@ interface ColumnNamesToDisplay {
 }
 
 const DataTablesHook = (reference: string) => {
+    const { userData } = useAuth();
     const [handleShowCsv, setHandleShowCsv] = useState(false);
     const [handleShowPdf, setHandleShowPdf] = useState(false);
     const [isEmptyDataRef, setIsEmptyDataRef] = useState(true);
@@ -64,17 +66,39 @@ const DataTablesHook = (reference: string) => {
         return transformedData;
     };
 
+    const formatZoneData = (documents: any[]) => {
+        return documents.map((doc) => {
+            // Extraer direcciones del array 'addresses'
+            const addresses = doc.addresses || [];
+            return {
+                zoneName: doc.zoneName || '-',
+                zoneManager: doc.zoneManager || '-',
+                AddressOne: addresses[0] || '-',
+                AddressTwo: addresses[1] || '-',
+                AddressThree: addresses[2] || '-',
+                AddressFour: addresses[3] || '-',
+                addresses: addresses,
+                uid: doc.uid
+            };
+        });
+    };
+
     const getAllDocuments = useCallback(async () => {
         const documents =
             reference === "country"
                 ? countriesTable
                 : reference === "departments"
-                ? colombianCitiesData
-                : reference === "cities"
-                ? transformCitiesData(colombianCitiesData)
-                : reference === "documentTypes"
-                ? idTypesTable
-                : await getAllDocumentsQuery(reference);
+                    ? colombianCitiesData
+                    : reference === "cities"
+                        ? transformCitiesData(colombianCitiesData)
+                        : reference === "documentTypes"
+                            ? idTypesTable
+                            : reference === "zones"
+                                ? formatZoneData(userData ? await getZonesByCompanyIdQuery(userData?.companyId) : [])
+                                : reference === "notifications"
+                                    ? (userData ? await getNotificationsByCompanyIdQuery(userData?.companyId) : [])
+                                    : await getAllDocumentsQuery(reference);
+
 
         const labelToDisplay = ["professionals", "patients", "functionary"];
 
@@ -107,6 +131,22 @@ const DataTablesHook = (reference: string) => {
                     // uid: "Id",
                     name: "Nombre",
                     description: "Descripción",
+                };
+            } else if (reference === "notifications") {
+                columnNamesToDisplay = {
+                    date: "Fecha",
+                    hour: "Hora",
+                    issue: "Asunto",
+                    content: "Contenido",
+                };
+            } else if (reference === "zones") {
+                columnNamesToDisplay = {
+                    zoneName: "Nombre",
+                    zoneManager: "Jefe zona",
+                    AddressOne: "Dirección 1",
+                    AddressTwo: "Dirección 2",
+                    AddressThree: "Dirección 3",
+                    AddressFour: "Dirección 4",
                 };
             } else {
                 columnNamesToDisplay = {
@@ -173,11 +213,9 @@ const DataTablesHook = (reference: string) => {
                         ),
                     sortable: true,
                     width:
-                        val === "ext" ||
-                        // val === "indicativeOne" ||
-                        val === "idType"
+                        val === "ext" || val === "idType"
                             ? "80px"
-                            : "200px",
+                            : val === "content" ? "50%" : val === "issue" ? '20%' : val === "hour" || val === "issue" ? '15%' : "200px",
                     omit: !omittedColumns.includes(val),
                 };
 
@@ -205,7 +243,7 @@ const DataTablesHook = (reference: string) => {
             setDataTable(currentData); //obtain dataTable
             setGetDocuments(currentData.data); //obtain data
         }
-    }, [reference]);
+    }, [reference, userData]);
 
     const handleSearch = async (e: any) => {
         const value = e.target.value.toLowerCase();
@@ -223,7 +261,7 @@ const DataTablesHook = (reference: string) => {
                 } else if (Array.isArray(prop)) {
                     const dataFiltered =
                         reference === "areas"
-                            ? campusResult
+                            ? campusResult=
                                   .filter((item) => prop.includes(item.value))
                                   .map((campus) => campus.label)
                             : prop;

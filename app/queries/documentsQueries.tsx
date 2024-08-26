@@ -1,11 +1,16 @@
 import {
     getAllDocumentsFb,
     getDocumentsByIdFb,
+    getNotificationsByCompanyId,
     getReference,
+    getZonesByCompanyId,
     saveDocumentsFb,
+    saveNotification,
     saveOneDocumentFb,
+    saveZone,
     updateCampusByIdFb,
     updateDocumentsByIdFb,
+    updateZone,
 } from "@/firebase/Documents";
 import {
     uploadFile,
@@ -112,19 +117,29 @@ export const getAllDocumentsQuery = async (ref: string) => {
     return documents;
 };
 
-// export const getDocumentsByIdQuery = async (
-//     id: string,
-//     date: number,
-//     saleLimit: number | undefined,
-//     reference: string,
-// ) => {
-//     const dataResultArray: { id: string; coupon: DataObject }[] = [];
-//     const querySnapshot = await getDocumentsByIdFb(
-//         id,
-//         date,
-//         saleLimit,
-//         reference,
-//     );
+export const getZonesByCompanyIdQuery = async (idCompany: string) => {
+    const documents = await getZonesByCompanyId(idCompany);
+    return documents;
+};
+
+export const getNotificationsByCompanyIdQuery = async (idCompany: string) => {
+    const documents = await getNotificationsByCompanyId(idCompany);
+    return documents;
+};
+
+export const getDocumentsByIdQuery = async (
+    id: string,
+    date: number,
+    saleLimit: number | undefined,
+    reference: string,
+) => {
+    const dataResultArray: { id: string; coupon: DataObject }[] = [];
+    const querySnapshot = await getDocumentsByIdFb(
+        id,
+        date,
+        saleLimit,
+        reference,
+    );
 
 //     if (querySnapshot) {
 //         querySnapshot.forEach((doc: any) => {
@@ -211,3 +226,19 @@ export const saveAreasOnCampusQuery = async ({
     return queryResult;
     // return;
 };
+
+export const saveNotificationQuery = async (dataSave: any) => {
+    const result = await saveNotification(dataSave);
+    return result;
+};
+
+export const saveZoneQuery = async (dataSave: any) => {
+    const result = await saveZone(dataSave);
+    return result;
+};
+
+export const updateZoneQuery = async (dataSave: any, docId: string) => {
+    const result = await updateZone(docId, dataSave);
+    return result;
+};
+
