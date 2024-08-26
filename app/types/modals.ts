@@ -13,6 +13,7 @@ export interface ModalParamsMainForm {
     reference: string;
     title: string;
     editData: any;
+    data?: any;
 }
 
 export interface ModalParamsPdf {

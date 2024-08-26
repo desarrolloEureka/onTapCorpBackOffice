@@ -280,11 +280,10 @@ export const ExportCSV = ({
                     />
                 }
                 onRowClicked={(row: any, event) => {
-                    if (!["roles", "country", "departments", "cities", "documentTypes"].includes(reference) && !row.isDeleted) {
+                    if (reference === "zones" || (!["roles", "country", "departments", "cities", "documentTypes"].includes(reference) && !row.isDeleted)) {
                         onMainFormModalEdit(row);
                     }
                 }}
-                // onRowClicked={onMainFormModalEdit}
                 pointerOnHover={reference !== "roles"}
                 defaultSortFieldId={2}
                 columns={columns}

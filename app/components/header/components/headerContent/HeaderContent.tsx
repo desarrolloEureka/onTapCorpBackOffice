@@ -64,7 +64,7 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                                         <>
                                             <NavDropdown.Item eventKey="second">Áreas de Trabajo</NavDropdown.Item>
                                             <NavDropdown.Item eventKey="second">Sedes</NavDropdown.Item>
-                                            <NavDropdown.Item eventKey="second">Zonas</NavDropdown.Item>
+                                            <NavDropdown.Item eventKey="zones">Zonas</NavDropdown.Item>
                                             <NavDropdown.Item eventKey="second">Rutas</NavDropdown.Item>
                                             <NavDropdown.Item eventKey="second">Puntos Fijos</NavDropdown.Item>
                                         </>
@@ -260,6 +260,12 @@ const HeaderContent = ({ hamburger }: { hamburger?: boolean }) => {
                                         eventKey="second"
                                     >
                                         Roles
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        href="#roles"
+                                        eventKey="notifications"
+                                    >
+                                        Notificaciones
                                     </NavDropdown.Item>
                                 </NavDropdown>
                             )}

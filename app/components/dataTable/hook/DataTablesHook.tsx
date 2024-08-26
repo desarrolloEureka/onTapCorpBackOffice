@@ -1,9 +1,10 @@
 "use client";
 import { colombianCitiesData } from "@/data/colombianCitiesData";
 import { countriesTable, idTypesTable } from "@/data/formConstant";
+import useAuth from "@/firebase/auth";
 import { allRef } from "@/firebase/campus";
 import { getAllCampusQuery } from "@/queries/campusQueries";
-import { getAllDocumentsQuery } from "@/queries/documentsQueries";
+import { getAllDocumentsQuery, getNotificationsByCompanyIdQuery, getZonesByCompanyIdQuery } from "@/queries/documentsQueries";
 import { DataMainFormObject } from "@/types/mainForm";
 import { setDataTable } from "@/types/tables";
 import { onSnapshot } from "firebase/firestore";
@@ -25,6 +26,7 @@ interface ColumnNamesToDisplay {
 }
 
 const DataTablesHook = (reference: string) => {
+    const { userData } = useAuth();
     const [handleShowCsv, setHandleShowCsv] = useState(false);
     const [handleShowPdf, setHandleShowPdf] = useState(false);
     const [isEmptyDataRef, setIsEmptyDataRef] = useState(true);
@@ -43,7 +45,12 @@ const DataTablesHook = (reference: string) => {
     };
 
     const transformCitiesData = (data: any) => {
-        const transformedData: { id: any; ciudad: any; departamento: any; pais: string; }[] = [];
+        const transformedData: {
+            id: any;
+            ciudad: any;
+            departamento: any;
+            pais: string;
+        }[] = [];
         let uniqueId = 1;
 
         data.forEach((item: any) => {
@@ -52,15 +59,46 @@ const DataTablesHook = (reference: string) => {
                     id: uniqueId++,
                     ciudad: ciudad,
                     departamento: item.departamento,
-                    pais: 'Colombia',
+                    pais: "Colombia",
                 });
             });
         });
         return transformedData;
     };
 
+    const formatZoneData = (documents: any[]) => {
+        return documents.map((doc) => {
+            // Extraer direcciones del array 'addresses'
+            const addresses = doc.addresses || [];
+            return {
+                zoneName: doc.zoneName || '-',
+                zoneManager: doc.zoneManager || '-',
+                AddressOne: addresses[0] || '-',
+                AddressTwo: addresses[1] || '-',
+                AddressThree: addresses[2] || '-',
+                AddressFour: addresses[3] || '-',
+                addresses: addresses,
+                uid: doc.uid
+            };
+        });
+    };
+
     const getAllDocuments = useCallback(async () => {
-        const documents = reference === 'country' ? countriesTable : reference === 'departments' ? colombianCitiesData : reference === 'cities' ? transformCitiesData(colombianCitiesData) : reference === 'documentTypes' ? idTypesTable : await getAllDocumentsQuery(reference);
+        const documents =
+            reference === "country"
+                ? countriesTable
+                : reference === "departments"
+                    ? colombianCitiesData
+                    : reference === "cities"
+                        ? transformCitiesData(colombianCitiesData)
+                        : reference === "documentTypes"
+                            ? idTypesTable
+                            : reference === "zones"
+                                ? formatZoneData(userData ? await getZonesByCompanyIdQuery(userData?.companyId) : [])
+                                : reference === "notifications"
+                                    ? (userData ? await getNotificationsByCompanyIdQuery(userData?.companyId) : [])
+                                    : await getAllDocumentsQuery(reference);
+
 
         const labelToDisplay = ["professionals", "patients", "functionary"];
 
@@ -71,78 +109,83 @@ const DataTablesHook = (reference: string) => {
             // Define column names based on reference
             let columnNamesToDisplay: ColumnNamesToDisplay = {};
 
-            if (reference === 'documentTypes' || reference === 'country') {
+            if (reference === "documentTypes" || reference === "country") {
                 columnNamesToDisplay = {
                     id: "Id",
-                    label: "Nombre"
+                    label: "Nombre",
                 };
-            } else if (reference === 'departments') {
+            } else if (reference === "departments") {
                 columnNamesToDisplay = {
                     id: "Id",
-                    departamento: "Nombre"
+                    departamento: "Nombre",
                 };
-            } else if (reference === 'cities') {
+            } else if (reference === "cities") {
                 columnNamesToDisplay = {
                     id: "Id",
                     ciudad: "Ciudad",
                     departamento: "Departamento",
-                    pais: "País"
+                    pais: "País",
                 };
-            } else if (reference === 'roles') {
+            } else if (reference === "roles") {
                 columnNamesToDisplay = {
-                    uid: "Id",
+                    // uid: "Id",
                     name: "Nombre",
-                    description: "Descripción"
+                    description: "Descripción",
+                };
+            } else if (reference === "notifications") {
+                columnNamesToDisplay = {
+                    date: "Fecha",
+                    hour: "Hora",
+                    issue: "Asunto",
+                    content: "Contenido",
+                };
+            } else if (reference === "zones") {
+                columnNamesToDisplay = {
+                    zoneName: "Nombre",
+                    zoneManager: "Jefe zona",
+                    AddressOne: "Dirección 1",
+                    AddressTwo: "Dirección 2",
+                    AddressThree: "Dirección 3",
+                    AddressFour: "Dirección 4",
                 };
             } else {
                 columnNamesToDisplay = {
-                    // uid:"uid",
                     timestamp: "Fecha Registro",
                     idType: "Tipo",
+                    idType2: "Tipo",
                     id: "Documento",
-                    name: labelToDisplay.includes(reference) ? "Nombres" : "Nombre",
+                    businessName: "Razón Social",
+                    tradename: "Nombre Comercial",
+                    name: labelToDisplay.includes(reference)
+                        ? "Nombres"
+                        : "Nombre",
                     lastName: labelToDisplay.includes(reference)
                         ? "Apellidos"
                         : "Apellido",
-                    code: "Código",
                     email: "Correo",
+                    indicativeOne: "Indicativo",
                     phone: "Teléfono",
-                    phone2: "Teléfono fijo",
+                    ext: "Ext",
+                    phone2: "Teléfono Fijo",
                     address: "Dirección",
-                    description: "Descripción",
-                    age: "Edad",
-                    discount: "Descuento(%)",
-                    // "birthDate",
-                    // "country",
-                    // "state",
+                    sector: "Sector",
                     city: "Ciudad",
-                    // "password",
-                    // "confirmPassword",
-                    specialty: "Especialidad",
-                    contract: "Convenio",
-                    // rol: "Rol",
-                    campus: "Sede",
-                    availableCampus: "Sedes",
-                    // "area",
-                    // urlPhoto: "urlPhoto",
+                    webSite: "Sitio Web",
                     isActive: "Estado",
-                    // "isDeleted",
                 };
             }
 
-
             const omittedColumns = Object.keys(columnNamesToDisplay);
 
-            entries.filter((item) => omittedColumns.includes(item));
+            const entriesFiltered = entries.filter((item) =>
+                omittedColumns.includes(item),
+            );
 
-            entries.sort((a, b): number => {
+            const entriesSorted = entriesFiltered.sort((a, b): number => {
                 return omittedColumns.indexOf(a) - omittedColumns.indexOf(b);
             });
 
-            const campusResult = await getAllCampusQuery();
-
-            // entries.forEach((val, key) => {
-            entries.forEach((val) => {
+            entriesSorted.forEach((val) => {
                 const columnsData = {
                     name: columnNamesToDisplay[val],
                     selector: (row: any) =>
@@ -150,41 +193,24 @@ const DataTablesHook = (reference: string) => {
                             <CustomTitle row={row} />
                         ) : val === "timestamp" ? (
                             formatearFecha(row[val])
-                        ) : val === "campus" ? (
-                            [
-                                campusResult.find(
-                                    (item) => item.value === row[val],
-                                )?.label,
-                            ]
-                        ) : val === "availableCampus" ? (
-                            [
-                                campusResult
-                                    .filter((item) =>
-                                        row[val].includes(item.value),
-                                    )
-                                    .map((campus) => campus.label)
-                                    .join(", "),
-                            ]
-                        ) : val === "id" && reference === 'documentTypes' || reference === 'country' || reference === 'departments' || reference === 'cities' ? (
+                        ) : (val === "id" && reference === "documentTypes") ||
+                            reference === "country" ||
+                            reference === "departments" ||
+                            reference === "cities" ? (
                             row[val]
+                        ) : reference === "companies" ? (
+                            [row[val][0]]
                         ) : (
                             [row[val]]
                         ),
                     sortable: true,
                     width:
-                        val === "email" ||
-                            val === "address" ||
-                            val === "timestamp" ||
-                            val === "name" ||
-                            val === "lastName"
-                            ? "200px"
-                            : val === "id" ||
-                                val === "phone" ||
-                                val === "phone2"
-                                ? "150px"
-                                : undefined,
+                        val === "ext" || val === "idType"
+                            ? "80px"
+                            : val === "content" ? "50%" : val === "issue" ? '20%' : val === "hour" || val === "issue" ? '15%' : "200px",
                     omit: !omittedColumns.includes(val),
                 };
+
                 cols.push(columnsData);
             });
 
@@ -193,7 +219,7 @@ const DataTablesHook = (reference: string) => {
                 data: documents,
             };
 
-            //console.log("cols", cols);
+            // console.log("cols", cols);
             // console.log("currentData", currentData);
             // console.log("documents", documents);
 
@@ -201,7 +227,6 @@ const DataTablesHook = (reference: string) => {
             setDataTable(currentData); //obtain dataTable
             documents && setGetDocuments(currentData.data); //obtain data
         } else {
-            // console.log("dddddd");
             const currentData = {
                 columns: [],
                 data: [],
@@ -210,7 +235,7 @@ const DataTablesHook = (reference: string) => {
             setDataTable(currentData); //obtain dataTable
             setGetDocuments(currentData.data); //obtain data
         }
-    }, [reference]);
+    }, [reference, userData]);
 
     const handleSearch = async (e: any) => {
         const value = e.target.value.toLowerCase();
@@ -221,13 +246,17 @@ const DataTablesHook = (reference: string) => {
             return _.some(item, (prop, key) => {
                 if (reference === "departments") {
                     // Si reference es 'departments', filtra solo por el campo 'departamento'
-                    return key === "departamento" && prop.toString().toLowerCase().includes(value);
+                    return (
+                        key === "departamento" &&
+                        prop.toString().toLowerCase().includes(value)
+                    );
                 } else if (Array.isArray(prop)) {
-                    const dataFiltered = reference === "areas"
-                        ? campusResult
-                            .filter((item) => prop.includes(item.value))
-                            .map((campus) => campus.label)
-                        : prop;
+                    const dataFiltered =
+                        reference === "areas"
+                            ? campusResult
+                                .filter((item) => prop.includes(item.value))
+                                .map((campus) => campus.label)
+                            : prop;
                     return dataFiltered.some((subProp) =>
                         subProp.toString().toLowerCase().includes(value),
                     );
@@ -242,7 +271,6 @@ const DataTablesHook = (reference: string) => {
         };
         setDataTable(currentData);
     };
-
 
     const clearSearch = () => {
         setSearchTerm("");

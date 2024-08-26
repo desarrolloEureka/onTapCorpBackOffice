@@ -1,11 +1,16 @@
 import {
     getAllDocumentsFb,
     getDocumentsByIdFb,
+    getNotificationsByCompanyId,
     getReference,
+    getZonesByCompanyId,
     saveDocumentsFb,
+    saveNotification,
     saveOneDocumentFb,
+    saveZone,
     updateCampusByIdFb,
     updateDocumentsByIdFb,
+    updateZone,
 } from "@/firebase/Documents";
 import { uploadFile, uploadFiles, urlFile } from "@/firebase/files";
 import {
@@ -91,6 +96,17 @@ export const getAllDocumentsQuery = async (ref: string) => {
             documents.push(dataResult);
         });
     }
+    return documents;
+};
+
+
+export const getZonesByCompanyIdQuery = async (idCompany: string) => {
+    const documents = await getZonesByCompanyId(idCompany);
+    return documents;
+};
+
+export const getNotificationsByCompanyIdQuery = async (idCompany: string) => {
+    const documents = await getNotificationsByCompanyId(idCompany);
     return documents;
 };
 
@@ -193,3 +209,19 @@ export const saveAreasOnCampusQuery = async ({
     return queryResult;
     // return;
 };
+
+export const saveNotificationQuery = async (dataSave: any) => {
+    const result = await saveNotification(dataSave);
+    return result;
+};
+
+export const saveZoneQuery = async (dataSave: any) => {
+    const result = await saveZone(dataSave);
+    return result;
+};
+
+export const updateZoneQuery = async (dataSave: any, docId: string) => {
+    const result = await updateZone(docId, dataSave);
+    return result;
+};
+
