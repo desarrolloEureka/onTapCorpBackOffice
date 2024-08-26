@@ -58,6 +58,16 @@ const CustomTextField = (props: any) => {
                     variant="standard"
                     color="primary"
                     className={`tw-mb-4 ${props.deleted && "tw-w-full"}`}
+                    InputLabelProps={{
+                        style: {
+                            fontSize: "20px",
+                            fontWeight: "bold",
+                            color:
+                                props.theme === "light"
+                                    ? "#396593"
+                                    : "#8bb8e7",
+                        },
+                    }}
                 />
 
                 {props.switch && (

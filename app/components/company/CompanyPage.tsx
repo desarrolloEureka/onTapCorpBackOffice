@@ -302,7 +302,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                             type="text"
                                                             switch="true"
                                                             theme={theme}
-                                                            id="dataName"
+                                                            id={item[0]}
                                                             fullWidth
                                                             label="Nombre del Dato"
                                                             InputProps={{
@@ -338,7 +338,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                     : ""
                                                             }
                                                             theme={theme}
-                                                            id="data"
+                                                            id={item[3]}
                                                             fullWidth
                                                             label="Dato"
                                                         />
@@ -399,7 +399,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                 }
                                                                 name={item[5]}
                                                                 theme={theme}
-                                                                id="indicative"
+                                                                id={item[5]}
                                                                 variant="standard"
                                                                 // defaultCountry="CO"
                                                                 size="medium"
@@ -433,7 +433,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                 type="text"
                                                                 switch="true"
                                                                 theme={theme}
-                                                                id="phone"
+                                                                id={item[0]}
                                                                 fullWidth
                                                                 label="Teléfono"
                                                                 InputProps={{
@@ -470,7 +470,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                     : ""
                                                             }
                                                             theme={theme}
-                                                            id="ext"
+                                                            id={item[3]}
                                                             fullWidth
                                                             InputProps={{
                                                                 startAdornment:
@@ -540,7 +540,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                             }
                                                             switch="true"
                                                             theme={theme}
-                                                            id="address"
+                                                            id={item[0]}
                                                             fullWidth
                                                             label="Dirección"
                                                             InputProps={{
@@ -599,7 +599,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                             type="text"
                                                             switch="true"
                                                             theme={theme}
-                                                            id="url"
+                                                            id={item[0]}
                                                             fullWidth
                                                             label="Nombre del url"
                                                             InputProps={{
@@ -636,7 +636,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                     : ""
                                                             }
                                                             theme={theme}
-                                                            id="urlDato"
+                                                            id={item[3]}
                                                             fullWidth
                                                             label="Dato"
                                                             InputProps={{

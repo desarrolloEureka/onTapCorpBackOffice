@@ -25,6 +25,27 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     <HomeDash />
                 </Tab.Pane>
 
+                {/* Vista de Áreas de trabajo */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="workAreas"
+                    role="tabpanel"
+                    eventKey="workAreas"
+                >
+                    <BannerMenu
+                        seoTitle="Áreas de Trabajo"
+                        title="Áreas de Trabajo"
+                        item="Dashboard"
+                        activeItem="Registro de Áreas de Trabajo"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla del Listado de Áreas de Trabajo."
+                        componentDescription="En esta tabla se encuentran listados todas áreas de Trabajo para su administración."
+                        tableTitle="Áreas de Trabajo"
+                        reference="workAreas"
+                    />
+                </Tab.Pane>
+
                 {/* Vista de Funcionarios */}
                 <Tab.Pane
                     className="tab-pane text-muted"
