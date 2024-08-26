@@ -163,7 +163,7 @@ const DataTablesHook = (reference: string) => {
                         ? "Apellidos"
                         : "Apellido",
                     email: "Correo",
-                    indicativeOne: "Indicativo",
+                    indicative: "Indicativo",
                     phone: "Teléfono",
                     ext: "Ext",
                     phone2: "Teléfono Fijo",
@@ -172,6 +172,10 @@ const DataTablesHook = (reference: string) => {
                     city: "Ciudad",
                     webSite: "Sitio Web",
                     isActive: "Estado",
+                    areaName: "Nombre Área",
+                    areaHead: "Jefe de Área",
+                    urlName: "Nombre Url",
+                    urlLink: "Enlace",
                 };
             }
 
@@ -194,12 +198,16 @@ const DataTablesHook = (reference: string) => {
                         ) : val === "timestamp" ? (
                             formatearFecha(row[val])
                         ) : (val === "id" && reference === "documentTypes") ||
-                            reference === "country" ||
-                            reference === "departments" ||
-                            reference === "cities" ? (
+                          reference === "country" ||
+                          reference === "departments" ||
+                          reference === "cities" ? (
                             row[val]
                         ) : reference === "companies" ? (
-                            [row[val][0]]
+                            _.isArray(row[val]) ? (
+                                [row[val][0]]
+                            ) : (
+                                [row[val]]
+                            )
                         ) : (
                             [row[val]]
                         ),
@@ -253,9 +261,9 @@ const DataTablesHook = (reference: string) => {
                 } else if (Array.isArray(prop)) {
                     const dataFiltered =
                         reference === "areas"
-                            ? campusResult
-                                .filter((item) => prop.includes(item.value))
-                                .map((campus) => campus.label)
+                            ? campusResult=
+                                  .filter((item) => prop.includes(item.value))
+                                  .map((campus) => campus.label)
                             : prop;
                     return dataFiltered.some((subProp) =>
                         subProp.toString().toLowerCase().includes(value),

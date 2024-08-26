@@ -1,6 +1,6 @@
 import user from '@/assets/images/svgs/user.png';
 import logoDark from '@/assets/images/brand-logos/desktop-logo-dark.png';
-import logoLight from '@/assets/images/brand-logos/desktop-logo-dark.png';
+import logoLight from '@/assets/images/brand-logos/desktop-logo-light.png';
 import flag1 from '@/assets/images/flags/1.jpg';
 import flag2 from '@/assets/images/flags/2.jpg';
 import flag3 from '@/assets/images/flags/3.jpg';

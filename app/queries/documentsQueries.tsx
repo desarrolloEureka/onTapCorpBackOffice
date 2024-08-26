@@ -12,13 +12,13 @@ import {
     updateDocumentsByIdFb,
     updateZone,
 } from "@/firebase/Documents";
-import { uploadFile, uploadFiles, urlFile } from "@/firebase/files";
 import {
-    DataObject,
-    DocumentsById,
-    ErrorData,
-    ErrorDataForm,
-} from "@/types/documents";
+    uploadFile,
+    uploadFiles,
+    uploadIconFile,
+    urlFile,
+} from "@/firebase/files";
+import { ErrorData } from "@/types/documents";
 import {
     DownloadFileProps,
     saveFilesDocumentsProps,
@@ -78,13 +78,31 @@ export const saveFilesDocuments = async ({
         file: record,
         reference,
     });
-    // if (queryResult) {
-    //     dataError.push({ success: true, urlName });
-    // } else {
-    //     dataError.push({ success: false, urlName });
-    // }
-    // return dataError;
     return queryResult;
+};
+
+export const saveIconFile = async ({
+    urlName,
+    record,
+    uid,
+    reference,
+}: saveFilesDocumentsProps) => {
+    // let dataError: ErrorDataForm[] = [];
+    const queryResult = await uploadIconFile({
+        folder: uid,
+        fileName: urlName,
+        file: record,
+        reference,
+    });
+    return queryResult;
+};
+
+export const getDocumentsByIdQuery = async (ref: string, uid: string) => {
+    const querySnapshot = await getDocumentsByIdFb(ref, uid);
+    if (querySnapshot.exists()) {
+        return querySnapshot.data();
+    }
+    return;
 };
 
 export const getAllDocumentsQuery = async (ref: string) => {
@@ -98,7 +116,6 @@ export const getAllDocumentsQuery = async (ref: string) => {
     }
     return documents;
 };
-
 
 export const getZonesByCompanyIdQuery = async (idCompany: string) => {
     const documents = await getZonesByCompanyId(idCompany);
@@ -124,18 +141,18 @@ export const getDocumentsByIdQuery = async (
         reference,
     );
 
-    if (querySnapshot) {
-        querySnapshot.forEach((doc: any) => {
-            const dataResult = doc.data() as DataObject;
-            dataResultArray.push({
-                id: doc.id,
-                coupon: dataResult,
-            } as DocumentsById);
-        });
-    }
+//     if (querySnapshot) {
+//         querySnapshot.forEach((doc: any) => {
+//             const dataResult = doc.data() as DataObject;
+//             dataResultArray.push({
+//                 id: doc.id,
+//                 coupon: dataResult,
+//             } as DocumentsById);
+//         });
+//     }
 
-    return dataResultArray;
-};
+//     return dataResultArray;
+// };
 
 export const getUrlFile = async ({
     folder,
@@ -158,8 +175,8 @@ export const getDocumentReference = (ref: string) => {
 export const saveDataDocumentsQuery = async ({
     documentRef,
     data,
-    // accessTokenUser,
-}: {
+}: // accessTokenUser,
+{
     documentRef: any;
     data: any;
     // accessTokenUser: string;

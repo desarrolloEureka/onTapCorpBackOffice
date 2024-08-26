@@ -4,11 +4,12 @@ import {
     collection,
     doc,
     getDocs,
+    getDoc,
     limit,
     query,
     setDoc,
     updateDoc,
-    where
+    where,
 } from "firebase/firestore";
 import moment from "moment";
 import { db } from "shared/firebase/firebase";
@@ -26,46 +27,46 @@ export const getReference = (reference: string) => {
     return documentRef;
 };
 
-export const getDocumentRefById = (reference: string, uid: string) => {
+export const getDocumentsByIdFb = async (reference: string, uid: string) => {
     const documentRef = doc(db, reference, uid);
-    return documentRef;
+    return await getDoc(documentRef);
 };
 
 export const getAllDocumentsFb = async (ref: string) =>
     await getDocs(allRef({ ref }));
 
-export const getDocumentsByIdFb = async (
-    //only by coupons
-    id: string,
-    date: number,
-    saleLimit: number | undefined,
-    reference: string,
-) => {
-    if (saleLimit) {
-        return getDocs(
-            query(
-                collection(db, reference),
-                where("supplier_code", "==", id),
-                where("date_end", "<=", date),
-                where("is_active", "==", true),
-                where("redeemed", "==", false),
-                where("sold", "==", false),
-                limit(saleLimit),
-            ),
-        );
-    } else {
-        return getDocs(
-            query(
-                collection(db, reference),
-                where("supplier_code", "==", id),
-                where("date_end", "<=", date),
-                where("is_active", "==", true),
-                where("redeemed", "==", false),
-                where("sold", "==", false),
-            ),
-        );
-    }
-};
+// export const getDocumentsByIdFb = async (
+//     //only by coupons
+//     id: string,
+//     date: number,
+//     saleLimit: number | undefined,
+//     reference: string,
+// ) => {
+//     if (saleLimit) {
+//         return getDocs(
+//             query(
+//                 collection(db, reference),
+//                 where("supplier_code", "==", id),
+//                 where("date_end", "<=", date),
+//                 where("is_active", "==", true),
+//                 where("redeemed", "==", false),
+//                 where("sold", "==", false),
+//                 limit(saleLimit),
+//             ),
+//         );
+//     } else {
+//         return getDocs(
+//             query(
+//                 collection(db, reference),
+//                 where("supplier_code", "==", id),
+//                 where("date_end", "<=", date),
+//                 where("is_active", "==", true),
+//                 where("redeemed", "==", false),
+//                 where("sold", "==", false),
+//             ),
+//         );
+//     }
+// };
 
 export const saveDocumentsFb = async (data: any, reference: string) => {
     const documentRef = await addDoc(allRef({ ref: reference }), data);

@@ -11,6 +11,7 @@ import {
     DataDiagnosesObject,
     DataCompanyObject,
     DataAdminCompanyObject,
+    DataWorkAreasObject,
 } from "@/types/mainForm";
 
 export const dataMainFormObject = {
@@ -33,7 +34,7 @@ export const dataMainFormObject = {
     lastName: "",
     birthDate: "",
     age: "",
-    indicativeOne: "57",
+    indicative: "57",
     indicativeTwo: "57",
     phone: "",
     phoneAdmin: "",
@@ -59,6 +60,10 @@ export const dataMainFormObject = {
     availableAreas: [],
     urlPhoto: "",
     timestamp: "",
+    areaName: "",
+    areaHead: "",
+    urlName: ["", false],
+    urlLink: "",
     isActive: true,
     isDeleted: false,
 } as DataMainFormObject;
@@ -170,6 +175,17 @@ export const dataDiagnosesObject = {
     isDeleted: false,
 } as DataDiagnosesObject;
 
+export const dataWorkAreasObject = {
+    uid: "",
+    areaName: "",
+    areaHead: "",
+    urlName: ["", false],
+    urlLink: "",
+    icon: "",
+    isActive: false,
+    isDeleted: false,
+} as DataWorkAreasObject;
+
 export const dataAgreementsObject = {
     uid: "",
     name: "",
@@ -207,13 +223,11 @@ export const dataCompanyObject = {
     adminId: "",
     idType: "",
     id: "",
-    companyId: "",
     icon: "",
     businessName: "",
     tradename: "",
-    indicativeOne: "",
+    indicative: "",
     phone: "",
-    phone2: "",
     ext: "",
     webSite: "",
     sector: "",

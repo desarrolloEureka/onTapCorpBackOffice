@@ -11,6 +11,8 @@ import { MouseEvent, useMemo } from "react";
 import { Button, Form } from "react-bootstrap";
 import DataTable, { createTheme } from "react-data-table-component";
 import "react-data-table-component-extensions/dist/index.css";
+import { TfiClose, TfiExport } from "react-icons/tfi";
+import { VscAdd } from "react-icons/vsc";
 // import Swal from "sweetalert2";
 
 const DataTableExtensions: any = dynamic(
@@ -23,7 +25,7 @@ createTheme("solarized", "dark");
 const customStyles = {
     headCells: {
         style: {
-            color: "#e9a225",
+            color: "#8bb8e7",
         },
     },
 };
@@ -78,7 +80,7 @@ const Export = ({ onExport }: ExportProps) => (
             onExport(e.currentTarget.value)
         }
     >
-        Exportar
+        <TfiExport  size={18} className="" />
     </Button>
 );
 
@@ -93,7 +95,7 @@ const MainFormModal = ({
     campusIsEmpty,
 }: UploadDataButtonModalProps) => (
     <Button disabled={campusIsEmpty} onClick={onMainFormModal}>
-        Nuevo
+        <VscAdd size={18} className="" />
     </Button>
 );
 
@@ -165,16 +167,23 @@ export const ExportCSV = ({
                             className="tw-absolute tw-right-0 tw-bottom-0 text-gray-500 hover:text-gray-700"
                             onClick={clearSearch}
                         >
-                            Limpiar
+                            <TfiClose size={16} className="" />
                         </Button>
                     )}
                 </div>
-                {!["roles", "country", "departments", "cities", "documentTypes"].includes(reference) && onMainFormModal && (
-                    <MainFormModal
-                        campusIsEmpty={campusIsEmpty}
-                        onMainFormModal={onMainFormModal}
-                    />
-                )}
+                {![
+                    "roles",
+                    "country",
+                    "departments",
+                    "cities",
+                    "documentTypes",
+                ].includes(reference) &&
+                    onMainFormModal && (
+                        <MainFormModal
+                            campusIsEmpty={campusIsEmpty}
+                            onMainFormModal={onMainFormModal}
+                        />
+                    )}
                 {refToShowButtonCsv.includes(reference) &&
                     onUploadDataModalCsv && (
                         <UploadDataCsvModal

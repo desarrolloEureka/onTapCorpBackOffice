@@ -18,7 +18,7 @@ export interface DataMainFormObject {
     lastName: string;
     birthDate: string;
     age: string;
-    indicativeOne: string;
+    indicative: string;
     indicativeTwo: string;
     phone: string;
     phoneAdmin: string;
@@ -44,6 +44,10 @@ export interface DataMainFormObject {
     availableAreas: string[];
     urlPhoto: string;
     timestamp: string;
+    areaName: string;
+    areaHead: string;
+    urlName: [string, boolean];
+    urlLink: string;
     isActive: boolean;
     isDeleted: boolean;
 }
@@ -155,6 +159,17 @@ export type DataDiagnosesObject = {
     isDeleted: boolean;
 };
 
+export type DataWorkAreasObject = {
+    uid: string;
+    areaName: string;
+    areaHead: string;
+    urlName: [string, boolean];
+    urlLink: string;
+    icon: string;
+    isActive: boolean;
+    isDeleted: boolean;
+};
+
 export type DataAgreementsObject = {
     uid: string;
     name: string;
@@ -195,9 +210,8 @@ export type DataCompanyObject = {
     icon: string;
     businessName: string;
     tradename: string;
-    indicativeOne: string;
+    indicative: string;
     phone: string;
-    phone2: string;
     ext: string;
     webSite: string;
     sector: string;

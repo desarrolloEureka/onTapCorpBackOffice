@@ -11,5 +11,5 @@ app.use("/auth", authRouter);
 app.use(errorHandler);
 
 module.exports = {
-  backendApp: functions.https.onRequest(app),
+  oneTapApi: functions.https.onRequest(app),
 };

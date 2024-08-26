@@ -5,12 +5,13 @@ const Searchable = dynamic(() => import('react-searchable-dropdown'), {
 });
 
 export interface HeaderDropDownProps {
-  fulScreen?: boolean;
-  dark?: boolean;
-  multiLingual?: boolean;
-  notifications?: boolean;
-  logOut?: () => void;
-  data: any;
+    fulScreen?: boolean;
+    dark?: boolean;
+    multiLingual?: boolean;
+    notifications?: boolean;
+    logOut?: () => void;
+    setTheme: (e: any) => void;
+    data: any;
 }
 
 export default function SelectOptions() {
