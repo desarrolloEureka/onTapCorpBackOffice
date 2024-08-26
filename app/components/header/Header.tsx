@@ -66,8 +66,8 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         reference="functionary"
                     />
                 </Tab.Pane>
-                  {/* Vista de Notificaciones */}
-                  <Tab.Pane
+                {/* Vista de Notificaciones */}
+                <Tab.Pane
                     className="tab-pane text-muted"
                     id="notifications"
                     role="tabpanel"
@@ -87,8 +87,8 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
-                  {/* Vista de Zonas */}
-                  <Tab.Pane
+                {/* Vista de Zonas */}
+                <Tab.Pane
                     className="tab-pane text-muted"
                     id="zones"
                     role="tabpanel"

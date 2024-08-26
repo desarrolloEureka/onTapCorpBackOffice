@@ -261,7 +261,7 @@ const DataTablesHook = (reference: string) => {
                 } else if (Array.isArray(prop)) {
                     const dataFiltered =
                         reference === "areas"
-                            ? campusResult=
+                            ? campusResult
                                   .filter((item) => prop.includes(item.value))
                                   .map((campus) => campus.label)
                             : prop;

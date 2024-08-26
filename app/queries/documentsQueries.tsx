@@ -127,19 +127,19 @@ export const getNotificationsByCompanyIdQuery = async (idCompany: string) => {
     return documents;
 };
 
-export const getDocumentsByIdQuery = async (
-    id: string,
-    date: number,
-    saleLimit: number | undefined,
-    reference: string,
-) => {
-    const dataResultArray: { id: string; coupon: DataObject }[] = [];
-    const querySnapshot = await getDocumentsByIdFb(
-        id,
-        date,
-        saleLimit,
-        reference,
-    );
+// export const getDocumentsByIdQuery = async (
+//     id: string,
+//     date: number,
+//     saleLimit: number | undefined,
+//     reference: string,
+// ) => {
+//     const dataResultArray: { id: string; coupon: DataObject }[] = [];
+//     const querySnapshot = await getDocumentsByIdFb(
+//         id,
+//         date,
+//         saleLimit,
+//         reference,
+//     );
 
 //     if (querySnapshot) {
 //         querySnapshot.forEach((doc: any) => {
@@ -241,4 +241,3 @@ export const updateZoneQuery = async (dataSave: any, docId: string) => {
     const result = await updateZone(docId, dataSave);
     return result;
 };
-

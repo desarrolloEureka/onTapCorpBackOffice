@@ -106,7 +106,7 @@ const HeaderContent = ({
                                                 />
                                                 Sedes
                                             </NavDropdown.Item>
-                                            <NavDropdown.Item eventKey="second">
+                                            <NavDropdown.Item eventKey="zones">
                                                 <FaMapMarkerAlt
                                                     size={18}
                                                     className="tw-mb-1 tw-mr-1"

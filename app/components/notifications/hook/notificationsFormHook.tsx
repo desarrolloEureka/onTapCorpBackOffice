@@ -1,6 +1,7 @@
 "use client";
 import useAuth from "@/firebase/auth";
 import { saveNotificationQuery } from "@/queries/documentsQueries";
+import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
 import { useEffect, useState } from "react";
 
@@ -20,6 +21,9 @@ const NotificationsFormHook = ({
     // Errores
     const [issueError, setIssueError] = useState("");
     const [contentError, setContentError] = useState("");
+
+    const theme = localStorage.getItem("@theme");
+    const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
     const validateFields = () => {
         let valid = true;
@@ -114,6 +118,7 @@ const NotificationsFormHook = ({
     }, [handleShowMainForm, editData]);
 
     return {
+        modeTheme: themeParsed?.dataThemeMode,
         show,
         isLoading,
         isEdit,
