@@ -10,6 +10,8 @@ export interface DataMainFormObject {
     name: string;
     businessName: string;
     tradename: string;
+    cards: string;
+    cardGPS: string;
     description: string;
     personType: string;
     discount: string;
@@ -211,6 +213,8 @@ export type DataCompanyObject = {
     icon: string;
     businessName: string;
     tradename: string;
+    cards: string;
+    cardGPS: string;
     indicative: string;
     phone: string;
     ext: string;

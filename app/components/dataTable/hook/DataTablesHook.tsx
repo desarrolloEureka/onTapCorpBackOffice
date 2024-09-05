@@ -300,12 +300,14 @@ const DataTablesHook = (reference: string) => {
                         val === "ext" || val === "idType"
                             ? "80px"
                             : val === "content"
-                                ? "50%"
-                                : val === "issue"
-                                    ? "20%"
-                                    : val === "hour" || val === "issue"
-                                        ? "15%"
-                                        : "auto",
+                            ? "50%"
+                            : val === "issue"
+                            ? "20%"
+                            : val === "hour" || val === "issue"
+                            ? "15%"
+                            : reference === "companies"
+                            ? "200px"
+                            : "auto",
                     omit: !omittedColumns.includes(val),
                     center: reference != 'roles' && reference != 'notifications'
                 };
