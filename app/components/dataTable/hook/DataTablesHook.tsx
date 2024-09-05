@@ -237,7 +237,9 @@ const DataTablesHook = (reference: string) => {
                             ? "20%"
                             : val === "hour" || val === "issue"
                             ? "15%"
-                            : "200px",
+                            : reference === "companies"
+                            ? "200px"
+                            : "auto",
                     omit: !omittedColumns.includes(val),
                 };
 

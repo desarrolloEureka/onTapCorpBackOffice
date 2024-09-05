@@ -105,157 +105,155 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                 Datos empresa
                                             </h6>
 
-                                            <CustomTextField
-                                                checked={allChecked}
-                                                data={data.tradename}
-                                                onChange={(
-                                                    value: string,
-                                                    name: string,
-                                                    checked: boolean,
-                                                ) =>
-                                                    handleChange(
-                                                        value,
-                                                        name,
-                                                        checked,
-                                                    )
-                                                }
-                                                name="tradename"
-                                                type="text"
-                                                switch="true"
-                                                theme={theme}
-                                                id="tradename"
-                                                fullWidth
-                                                label="Nombre Comercial"
-                                                InputProps={{
-                                                    startAdornment: (
-                                                        <InputAdornment position="start">
-                                                            <PersonOutlineOutlinedIcon />
-                                                        </InputAdornment>
-                                                    ),
-                                                }}
-                                            />
-
-                                            <CustomTextField
-                                                checked={allChecked}
-                                                data={data.businessName}
-                                                onChange={(
-                                                    value: string,
-                                                    name: string,
-                                                    checked: boolean,
-                                                ) =>
-                                                    handleChange(
-                                                        value,
-                                                        name,
-                                                        checked,
-                                                    )
-                                                }
-                                                name="businessName"
-                                                type="text"
-                                                switch="true"
-                                                theme={theme}
-                                                id="businessName"
-                                                fullWidth
-                                                label="Razón Social"
-                                                InputProps={{
-                                                    startAdornment: (
-                                                        <InputAdornment position="start">
-                                                            <PersonOutlineOutlinedIcon />
-                                                        </InputAdornment>
-                                                    ),
-                                                }}
-                                            />
-
-                                            <CustomTextField
-                                                checked={allChecked}
-                                                data={data.id}
-                                                onChange={(
-                                                    value: string,
-                                                    name: string,
-                                                    checked: boolean,
-                                                ) =>
-                                                    handleChange(
-                                                        value,
-                                                        name,
-                                                        checked,
-                                                    )
-                                                }
-                                                name="id"
-                                                type="text"
-                                                switch="true"
-                                                theme={theme}
-                                                id="id"
-                                                fullWidth
-                                                label="Nit"
-                                                InputProps={{
-                                                    startAdornment: (
-                                                        <InputAdornment position="start">
-                                                            <PinOutlinedIcon />
-                                                        </InputAdornment>
-                                                    ),
-                                                }}
-                                            />
-
-                                            <CustomTextField
-                                                checked={allChecked}
-                                                data={data.sector}
-                                                onChange={(
-                                                    value: string,
-                                                    name: string,
-                                                    checked: boolean,
-                                                ) =>
-                                                    handleChange(
-                                                        value,
-                                                        name,
-                                                        checked,
-                                                    )
-                                                }
-                                                name="sector"
-                                                type="text"
-                                                switch="true"
-                                                theme={theme}
-                                                id="sector"
-                                                fullWidth
-                                                label="Sector"
-                                                InputProps={{
-                                                    startAdornment: (
-                                                        <InputAdornment position="start">
-                                                            <WorkOutlineOutlinedIcon />
-                                                        </InputAdornment>
-                                                    ),
-                                                }}
-                                            />
-
-                                            <CustomTextField
-                                                checked={allChecked}
-                                                data={data.webSite}
-                                                onChange={(
-                                                    value: string,
-                                                    name: string,
-                                                    checked: boolean,
-                                                ) =>
-                                                    handleChange(
-                                                        value,
-                                                        name,
-                                                        checked,
-                                                    )
-                                                }
-                                                name="webSite"
-                                                type="text"
-                                                switch="true"
-                                                theme={theme}
-                                                id="webSite"
-                                                fullWidth
-                                                label="Sitio Web"
-                                                InputProps={{
-                                                    startAdornment: (
-                                                        <InputAdornment position="start">
-                                                            <Typography className="tw-font-bold">
-                                                                URL
-                                                            </Typography>
-                                                        </InputAdornment>
-                                                    ),
-                                                }}
-                                            />
+                                            <div className="tw-px-3 tw-w-full">
+                                                <CustomTextField
+                                                    checked={allChecked}
+                                                    data={data.tradename}
+                                                    onChange={(
+                                                        value: string,
+                                                        name: string,
+                                                        checked: boolean,
+                                                    ) =>
+                                                        handleChange(
+                                                            value,
+                                                            name,
+                                                            checked,
+                                                        )
+                                                    }
+                                                    name="tradename"
+                                                    type="text"
+                                                    switch="true"
+                                                    theme={theme}
+                                                    id="tradename"
+                                                    fullWidth
+                                                    label="Nombre Comercial"
+                                                    InputProps={{
+                                                        startAdornment: (
+                                                            <InputAdornment position="start">
+                                                                <PersonOutlineOutlinedIcon />
+                                                            </InputAdornment>
+                                                        ),
+                                                    }}
+                                                />
+                                                <CustomTextField
+                                                    checked={allChecked}
+                                                    data={data.businessName}
+                                                    onChange={(
+                                                        value: string,
+                                                        name: string,
+                                                        checked: boolean,
+                                                    ) =>
+                                                        handleChange(
+                                                            value,
+                                                            name,
+                                                            checked,
+                                                        )
+                                                    }
+                                                    name="businessName"
+                                                    type="text"
+                                                    switch="true"
+                                                    theme={theme}
+                                                    id="businessName"
+                                                    fullWidth
+                                                    label="Razón Social"
+                                                    InputProps={{
+                                                        startAdornment: (
+                                                            <InputAdornment position="start">
+                                                                <PersonOutlineOutlinedIcon />
+                                                            </InputAdornment>
+                                                        ),
+                                                    }}
+                                                />
+                                                <CustomTextField
+                                                    checked={allChecked}
+                                                    data={data.id}
+                                                    onChange={(
+                                                        value: string,
+                                                        name: string,
+                                                        checked: boolean,
+                                                    ) =>
+                                                        handleChange(
+                                                            value,
+                                                            name,
+                                                            checked,
+                                                        )
+                                                    }
+                                                    name="id"
+                                                    type="text"
+                                                    switch="true"
+                                                    theme={theme}
+                                                    id="id"
+                                                    fullWidth
+                                                    label="Nit"
+                                                    InputProps={{
+                                                        startAdornment: (
+                                                            <InputAdornment position="start">
+                                                                <PinOutlinedIcon />
+                                                            </InputAdornment>
+                                                        ),
+                                                    }}
+                                                />
+                                                <CustomTextField
+                                                    checked={allChecked}
+                                                    data={data.sector}
+                                                    onChange={(
+                                                        value: string,
+                                                        name: string,
+                                                        checked: boolean,
+                                                    ) =>
+                                                        handleChange(
+                                                            value,
+                                                            name,
+                                                            checked,
+                                                        )
+                                                    }
+                                                    name="sector"
+                                                    type="text"
+                                                    switch="true"
+                                                    theme={theme}
+                                                    id="sector"
+                                                    fullWidth
+                                                    label="Sector"
+                                                    InputProps={{
+                                                        startAdornment: (
+                                                            <InputAdornment position="start">
+                                                                <WorkOutlineOutlinedIcon />
+                                                            </InputAdornment>
+                                                        ),
+                                                    }}
+                                                />
+                                                <CustomTextField
+                                                    checked={allChecked}
+                                                    data={data.webSite}
+                                                    onChange={(
+                                                        value: string,
+                                                        name: string,
+                                                        checked: boolean,
+                                                    ) =>
+                                                        handleChange(
+                                                            value,
+                                                            name,
+                                                            checked,
+                                                        )
+                                                    }
+                                                    name="webSite"
+                                                    type="text"
+                                                    switch="true"
+                                                    theme={theme}
+                                                    id="webSite"
+                                                    fullWidth
+                                                    label="Sitio Web"
+                                                    InputProps={{
+                                                        startAdornment: (
+                                                            <InputAdornment position="start">
+                                                                <Typography className="tw-font-bold">
+                                                                    URL
+                                                                </Typography>
+                                                            </InputAdornment>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div>
                                         </div>
                                         <div className="tw-flex tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-body">
                                             <div className="tw-flex tw-w-full tw-justify-between">
@@ -279,7 +277,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                 (item, index) => (
                                                     <div
                                                         key={index}
-                                                        className="tw-flex tw-flex-col tw-w-full"
+                                                        className="tw-flex tw-flex-col tw-px-3 tw-w-full"
                                                     >
                                                         <CustomTextField
                                                             checked={allChecked}
@@ -375,10 +373,11 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                 (item, index) => (
                                                     <div
                                                         key={index}
-                                                        className="tw-flex tw-flex-col tw-w-full"
+                                                        className="tw-flex tw-flex-col tw-px-3 tw-w-full"
                                                     >
-                                                        <div className="tw-flex tw-flex-row tw-px-3 tw-mt-4 tw-w-full">
+                                                        <div className="tw-flex tw-flex-row tw-mt-4 tw-w-full">
                                                             <CustomMUITelInput
+                                                                className="tw-mt-4 tw-w-1/4"
                                                                 value={
                                                                     item[6] &&
                                                                     item[6].includes(
@@ -507,7 +506,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                 (item, index) => (
                                                     <div
                                                         key={index}
-                                                        className="tw-flex tw-flex-col tw-w-full"
+                                                        className="tw-flex tw-flex-col tw-px-3 tw-w-full"
                                                     >
                                                         <CustomTextField
                                                             checked={allChecked}
@@ -576,7 +575,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                 (item, index) => (
                                                     <div
                                                         key={index}
-                                                        className="tw-flex tw-flex-col tw-w-full"
+                                                        className="tw-flex tw-flex-col tw-px-3 tw-w-full"
                                                     >
                                                         <CustomTextField
                                                             checked={allChecked}

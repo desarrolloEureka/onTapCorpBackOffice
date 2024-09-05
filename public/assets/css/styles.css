@@ -119,6 +119,7 @@ Width
     --header-prime-color: #536485;
     --header-border-color: #e8e8f7;
     --custom-white: #fff;
+    --custom-modal-white: #396593;
     --custom-black: #000;
     --bootstrap-card-border: #e8e8f7;
     --list-hover-focus-bg: #f1f2f9;
@@ -161,6 +162,12 @@ Width
     --card-body-text: #fff;
     --card-body-add-item: #396593;
     --card-body-add-hover: #396593;
+    --label-textFiel: #396593;
+    --custom-white-2: #fff;
+    --custom-gray: rgba(0, 0, 0, 0.1);
+    --custom-btn-cancel-admin: #fff;
+    --custom-btn-save-admin: #8bb8e7;
+
 }
 
 /*Font Family*/
@@ -191,6 +198,7 @@ Width
     --header-prime-color: rgba(255, 255, 255, 0.6);
     --header-border-color: rgba(255, 255, 255, 0.1);
     --custom-white: rgb(var(--body-bg-rgb));
+    --custom-modal-white: rgb(var(--body-bg-rgb));
     --custom-black: #fff;
     --default-border: rgba(255, 255, 255, 0.1);
     --default-company-border: rgb(12, 12, 12);
@@ -243,6 +251,11 @@ Width
     --card-body-text: #8bb8e7;
     --card-body-add-item: #fff;
     --card-body-add-hover: rgba(255, 255, 255, 0.3);
+    --label-textFiel: #8bb8e7;
+    --custom-white-2: rgba(255, 255, 255, 0.2);
+    --custom-gray: rgba(255, 255, 255, 0.2);
+    --custom-btn-cancel-admin: #5696d3;
+    --custom-btn-save-admin: #5696d3;
 }
 
 /* Sidemenu Layout Syles */
@@ -11576,7 +11589,7 @@ fieldset:disabled .btn {
 
 .btn-close {
     --bs-btn-close-color: #000;
-    --bs-btn-close-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e");
+    --bs-btn-close-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' height='32' width='32' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e");
     --bs-btn-close-opacity: 0.5;
     --bs-btn-close-hover-opacity: 0.75;
     --bs-btn-close-focus-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
@@ -11584,7 +11597,7 @@ fieldset:disabled .btn {
     --bs-btn-close-disabled-opacity: 0.25;
     --bs-btn-close-white-filter: invert(1) grayscale(100%) brightness(200%);
     box-sizing: content-box;
-    width: 1em;
+    width: 5em;
     height: 1em;
     padding: 0.25em 0.25em;
     color: var(--bs-btn-close-color);
@@ -25465,7 +25478,7 @@ label:is(.form-label) {
 .modal-content {
     color: var(--default-text-color);
     background-color: var(--custom-white);
-    border: 1px solid var(--default-border);
+    /* border: 1px solid var(--default-border); */
     border-radius: 0.688rem;
 }
 
@@ -51881,8 +51894,9 @@ ul.inbox-pagination {
 /* --------------------------------------------- */
 
 .sub-card-body {
-    background-color: var(--black-2);
+    background-color: var(--custom-gray);
     color: #fff;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
 }
 
 .main-title-sub-card {
@@ -51891,6 +51905,14 @@ ul.inbox-pagination {
 
 .url-label {
     color: var(--card-body-add-item);
+}
+
+.label-textfield {
+    color: var(--label-textFiel);
+}
+
+.text-textfield {
+    color: var(--custom-black);
 }
 
 .add-button-item {
@@ -51904,6 +51926,14 @@ ul.inbox-pagination {
 
 .custom-card .card-title {
     color: var(--card-header-text);
+}
+
+.modal-title {
+    color: var(--card-header-text);
+}
+
+.modal-title-admin {
+    color: var(--card-body-text);
 }
 
 .company-cover__img {
@@ -51954,6 +51984,36 @@ ul.inbox-pagination {
         }
     }
 }
+
+/*------------ admim custom css----*/
+
+.modal-admin {
+    background-color: var(--custom-modal-white);
+    color: var(--custom-black);
+    border-radius: 0.688rem;   
+}
+
+.modal-admin .modal-body .sub-card-admin-body {
+    background-color: var(--custom-white-2);
+    color: #fff;
+}
+
+.btn-cancel-admin {
+    background-color: var(--custom-btn-cancel-admin);
+}
+
+[data-theme-mode="dark"] .btn-cancel-admin:hover {
+    background-color: rgba(var(--light-rgb), 0.8);
+}
+
+.btn-save-admin:hover {
+    background-color: var(--custom-btn-save-admin) !important;
+}
+
+[data-theme-mode="dark"] .btn-save-admin:hover {
+    background-color: rgb(var(--primary-rgb));
+}
+
 
 /* --------------------------------- */
 
@@ -54962,6 +55022,10 @@ ul.inbox-pagination {
 
 .border-bottom {
     border-bottom: 1px solid var(--default-border) !important;
+}
+
+.custom-border-bottom {
+    border-bottom: 1px solid var(--custom-black) !important;
 }
 
 .border-bottom.border-block-end-dashed {

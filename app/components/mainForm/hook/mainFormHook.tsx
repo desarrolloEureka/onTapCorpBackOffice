@@ -167,12 +167,34 @@ const MainFormHook = ({
         return roles;
     };
 
-    const handleChange = (value: string, name: string, isChecked?: boolean) => {
-        if (isChecked === undefined) {
-            setData({ ...data, [name]: value });
-        } else {
-            setData({ ...data, [name]: [value, !isChecked] });
+    const handleChange = (
+        value: string | boolean,
+        name: string,
+        isChecked?: boolean,
+    ) => {
+        // Actualiza el campo "isActive" convirtiendo el valor a booleano.
+        if (name === "isActive") {
+            setData((prevData) => ({
+                ...prevData,
+                [name]: value as boolean,
+            }));
+            return;
         }
+
+        // Si `isChecked` está definido, actualiza como un array con el valor y su opuesto.
+        if (typeof isChecked !== "undefined") {
+            setData((prevData) => ({
+                ...prevData,
+                [name]: [value, !isChecked],
+            }));
+            return;
+        }
+
+        // Por defecto, actualiza el valor normalmente.
+        setData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
     };
 
     const changeHandler = (e: any) => {
@@ -576,16 +598,22 @@ const MainFormHook = ({
 
             handleShowMainFormEdit
                 ? ((currentDataObjectCompany.uid = data.uid),
+                  (currentDataObjectAdmin.uid = data.adminId),
                   (currentDataObjectCompany.adminId = data.adminId),
+                  (currentDataObjectAdmin.companyId = data.companyId),
                   (currentDataObjectCompany.icon = data.icon),
                   (currentDataObjectAdmin.urlPhoto = data.urlPhoto))
                 : ((currentDataObjectCompany.uid = documentRef.id),
-                  (currentDataObjectAdmin.uid = documentRefUser.id));
+                  (currentDataObjectCompany.adminId = documentRefUser.id),
+                  (currentDataObjectAdmin.uid = documentRefUser.id),
+                  (currentDataObjectAdmin.companyId = documentRef.id));
 
             currentDataObjectCompany.idType = data.idType;
             currentDataObjectCompany.id = data.id;
             currentDataObjectCompany.businessName = data.businessName;
             currentDataObjectCompany.tradename = data.tradename;
+            currentDataObjectCompany.cards = data.cards;
+            currentDataObjectCompany.cardGPS = data.cardGPS;
             currentDataObjectCompany.address = data.address;
             currentDataObjectCompany.indicative = data.indicative;
             currentDataObjectCompany.phone = data.phone;
@@ -595,7 +623,7 @@ const MainFormHook = ({
             currentDataObjectCompany.country = data.country;
             currentDataObjectCompany.state = data.state;
             currentDataObjectCompany.city = data.city;
-            currentDataObjectCompany.adminId = documentRefUser.id;
+
             currentDataObjectCompany.isActive = data.isActive;
 
             currentDataObjectAdmin.idTypeAdmin = data.idTypeAdmin;
@@ -605,7 +633,6 @@ const MainFormHook = ({
             currentDataObjectAdmin.email = data.email;
             currentDataObjectAdmin.indicativeTwo = data.indicativeTwo;
             currentDataObjectAdmin.phoneAdmin = data.phoneAdmin;
-            currentDataObjectAdmin.companyId = documentRef.id;
 
             for (const record of files) {
                 const urlName = record.name.split(".")[0];
@@ -667,14 +694,14 @@ const MainFormHook = ({
             };
         }
 
-        // console.log("newData", newData);
+        // console.log("newData", newData, "data");
         // console.log("reference", reference);
 
         handleShowMainFormEdit
             ? reference === "companies"
                 ? await saveEditDataDocumentsQuery({
                       id: data.adminId,
-                      data: { ...newData.admin, uid: data.adminId },
+                      data: newData.admin,
                       reference: "users",
                   }).then(async () => {
                       await saveEditDataDocumentsQuery({
@@ -688,78 +715,7 @@ const MainFormHook = ({
                       id: data.uid,
                       data: newData,
                       reference,
-                  })
-                      .then(() => {
-                          if (reference === "areas") {
-                              if (
-                                  editData.availableCampus.length >
-                                      data.availableCampus.length ||
-                                  !_.isEqual(
-                                      editData.availableCampus,
-                                      data.availableCampus.length,
-                                  )
-                              ) {
-                                  const currentData = _.difference(
-                                      editData.availableCampus,
-                                      data.availableCampus,
-                                  );
-                                  //   console.log("currentData", currentData);
-
-                                  currentData.forEach(
-                                      async (itemData: string) => {
-                                          await saveAreasOnCampusQuery({
-                                              id: itemData,
-                                              refArea: data.uid,
-                                              data:
-                                                  campus &&
-                                                  campus.find(
-                                                      (item) =>
-                                                          item.value ===
-                                                          itemData,
-                                                  )?.areas,
-                                              reference: "campus",
-                                              refExist: true,
-                                          });
-                                      },
-                                  );
-
-                                  data.availableCampus.forEach(
-                                      async (itemData: string) => {
-                                          await saveAreasOnCampusQuery({
-                                              id: itemData,
-                                              refArea: data.uid,
-                                              data:
-                                                  campus &&
-                                                  campus.find(
-                                                      (item) =>
-                                                          item.value ===
-                                                          itemData,
-                                                  )?.areas,
-                                              reference: "campus",
-                                          });
-                                      },
-                                  );
-                              } else {
-                                  data.availableCampus.forEach(
-                                      async (itemData: string) => {
-                                          await saveAreasOnCampusQuery({
-                                              id: itemData,
-                                              refArea: data.uid,
-                                              data:
-                                                  campus &&
-                                                  campus.find(
-                                                      (item) =>
-                                                          item.value ===
-                                                          itemData,
-                                                  )?.areas,
-                                              reference: "campus",
-                                          });
-                                      },
-                                  );
-                              }
-                          }
-                      })
-                      .then(confirmAlert)
+                  }).then(confirmAlert)
             : reference === "companies"
             ? await addUser({
                   email: data.email,
@@ -789,24 +745,7 @@ const MainFormHook = ({
             : await saveDataDocumentsQuery({
                   documentRef,
                   data: newData,
-              })
-                  .then(() => {
-                      if (reference === "areas") {
-                          data.availableCampus.forEach(async (element) => {
-                              await saveAreasOnCampusQuery({
-                                  id: element,
-                                  refArea: documentRef.id,
-                                  data:
-                                      campus &&
-                                      campus.find(
-                                          (item) => item.value === element,
-                                      )?.areas,
-                                  reference: "campus",
-                              });
-                          });
-                      }
-                  })
-                  .then(confirmAlert);
+              }).then(confirmAlert);
         return [...error];
     };
 
@@ -841,7 +780,9 @@ const MainFormHook = ({
         data.idType &&
         data.id &&
         data.businessName &&
-        // data.phone &&
+        data.cards &&
+        data.cardGPS &&
+        data.cards > data.cardGPS &&
         data.country &&
         data.state &&
         data.city;
@@ -958,11 +899,11 @@ const MainFormHook = ({
     };
 
     const handleClose = () => {
+        setData(dataMainFormObject);
         setShow(false);
         setHandleShowMainForm(false);
         setHandleShowMainFormEdit(false);
         setErrorValid("");
-        setData(dataMainFormObject);
         setIsLoading(false);
         setIsEdit(false);
         setShowPassword(false);
@@ -1012,10 +953,10 @@ const MainFormHook = ({
         return age;
     };
 
-    const getAdminCompanyData: any = useCallback(() => {
+    const getAdminAndCompanyData: any = useCallback(() => {
         const adminData = adminUsers?.find(
             (user) => user.uid === editData?.adminId,
-            adminUsers,
+            // adminUsers,
         );
 
         const newEditDataObj = {
@@ -1076,13 +1017,13 @@ const MainFormHook = ({
         if (handleShowMainFormEdit) {
             setShow(true);
             if (reference === "companies") {
-                const allCompanyData = getAdminCompanyData();
+                const allCompanyData = getAdminAndCompanyData();
                 allCompanyData && setData(allCompanyData);
             } else {
                 setData(editData);
             }
         }
-    }, [editData, getAdminCompanyData, handleShowMainFormEdit, reference]);
+    }, [editData, getAdminAndCompanyData, handleShowMainFormEdit, reference]);
 
     return {
         show,
@@ -1112,7 +1053,7 @@ const MainFormHook = ({
         contracts,
         areas,
         roles: getRolesByReference(),
-        theme: themeParsed?.dataThemeMode,
+        modeTheme: themeParsed?.dataThemeMode,
         nextStep,
         companyVal,
         fileName,
