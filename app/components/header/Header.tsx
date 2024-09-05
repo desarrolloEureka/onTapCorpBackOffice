@@ -1,12 +1,11 @@
+import { useState } from "react";
 import { Tab } from "react-bootstrap";
 import BannerMenu from "../bannerMenu/BannerMenu";
+import CompanyPage from "../company/CompanyPage";
 import HomeDash from "../dashBoard/homeDash/HomeDash";
 import DataTableComponent from "../dataTable/DataTableComponent";
 import Profile from "../profile/page";
 import HeaderContent from "./components/headerContent/HeaderContent";
-import CompanyPage from "../company/CompanyPage";
-import theme from "../../theme";
-import { useState } from "react";
 
 const Header = ({ hamburger }: { hamburger?: boolean }) => {
     const [theme, setTheme] = useState<string>("light");
@@ -54,16 +53,16 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     eventKey="second"
                 >
                     <BannerMenu
-                        seoTitle="Funcionarios"
-                        title="Funcionarios"
+                        seoTitle="Tabla limpia"
+                        title="Tabla limpia"
                         item="Dashboard"
-                        activeItem="Registro de Funcionarios"
+                        activeItem=""
                     />
                     <DataTableComponent
-                        componentTitle="Tabla del Listado de Funcionarios."
-                        componentDescription="En esta tabla se encuentran listados todos los usuarios para su administración."
-                        tableTitle="Funcionarios"
-                        reference="functionary"
+                        componentTitle=""
+                        componentDescription=""
+                        tableTitle="Tabla limpia"
+                        reference="emptyTable"
                     />
                 </Tab.Pane>
                 {/* Vista de Notificaciones */}
@@ -107,7 +106,6 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         reference="zones"
                     />
                 </Tab.Pane>
-
 
                 {/* Vista de Rutas */}
                 <Tab.Pane
@@ -317,7 +315,6 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         reference="logos"
                     />
                 </Tab.Pane>
-
             </Tab.Content>
         </Tab.Container>
     );

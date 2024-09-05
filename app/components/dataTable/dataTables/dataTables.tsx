@@ -149,7 +149,7 @@ export const ExportCSV = ({
 
     const actionsMemo = useMemo(() => {
         return (
-            <>
+            <div className="tw-flex tw-justify-between tw-w-full tw-space-x-4">
                 <div className="tw-flex tw-flex-1 tw-relative">
                     <Form.Control
                         value={searchTerm}
@@ -198,7 +198,7 @@ export const ExportCSV = ({
                 {data.length > 0 && (
                     <Export onExport={() => downloadCSV(data, tableTitle)} />
                 )}
-            </>
+            </div>
         );
     }, [searchTerm, handleSearch, clearSearch, reference, onMainFormModal, campusIsEmpty, onUploadDataModalCsv, onUploadDataModalPdf, data, tableTitle]);
 
