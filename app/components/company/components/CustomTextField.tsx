@@ -20,8 +20,8 @@ const CustomTextField = (props: any) => {
         name: string,
         checked: boolean,
     ) => {
-        props.onChange((value || "-") ?? "-", name, checked);
-        setValue((value || "-") ?? "-");
+        props.onChange((value || "") ?? "", name, checked);
+        setValue((value || "") ?? "");
         setChecked(checked);
     };
 
@@ -41,7 +41,7 @@ const CustomTextField = (props: any) => {
     }, [props.data]);
 
     return (
-        <div className="tw-flex tw-flex-row tw-px-3 tw-mt-4 tw-w-full">
+        <div className="tw-flex tw-flex-row tw-mt-4 tw-w-full">
             <ThemeProvider theme={theme}>
                 <TextField
                     {...props}

@@ -17,26 +17,25 @@ const CustomMUITelInput = (props: any) => {
     }, [props.value]);
 
     return (
-        <div className="tw-flex tw-flex-row tw-mt-4 tw-w-1/4">
-            <ThemeProvider theme={theme}>
-                <MuiTelInput
-                    {...props}
-                    value={value}
-                    onChange={(value) => {
-                        props.onChange(value, props.name);
-                        setValue(value);
-                    }}
-                    InputLabelProps={{
-                        style: {
-                            fontSize: "20px",
-                            fontWeight: "bold",
-                            color:
-                                props.theme === "light" ? "#396593" : "#8bb8e7",
-                        },
-                    }}
-                />
-            </ThemeProvider>
-        </div>
+        <ThemeProvider theme={theme}>
+            <MuiTelInput
+                {...props}
+                value={value}
+                onChange={(value) => {
+                    props.onChange(value, props.name);
+                    setValue(value);
+                }}
+                InputLabelProps={{
+                    style: {
+                        fontSize: "20px",
+                        fontWeight: "bold",
+                        color:
+                            props.theme === "light" ? "#396593" : "#8bb8e7",
+                        // paddingLeft: "16px"
+                    },
+                }}
+            />
+        </ThemeProvider>
     );
 };
 

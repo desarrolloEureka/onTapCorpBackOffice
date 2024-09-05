@@ -80,7 +80,7 @@ const Export = ({ onExport }: ExportProps) => (
             onExport(e.currentTarget.value)
         }
     >
-        <TfiExport  size={18} className="" />
+        <TfiExport size={18} className="" />
     </Button>
 );
 
@@ -288,12 +288,12 @@ export const ExportCSV = ({
                         reference={reference}
                     />
                 }
-                onRowClicked={(row: any, event) => {
+               /*  onRowClicked={(row: any, event) => {
                     if (reference === "zones" || (!["roles", "country", "departments", "cities", "documentTypes"].includes(reference) && !row.isDeleted)) {
                         onMainFormModalEdit(row);
                     }
-                }}
-                pointerOnHover={reference !== "roles"}
+                }} */
+                //pointerOnHover={reference !== "roles"}
                 defaultSortFieldId={2}
                 columns={columns}
                 data={data}

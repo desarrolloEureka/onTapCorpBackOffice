@@ -23,9 +23,13 @@ const HomeDash = () => {
     // ];
     return (
         <div className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-max-h-screen tw-h-[1440px]">
-            <h3 className="tw-text-8xl tw-text-[#5696d3] text-center">
+            <h3 className="tw-text-7xl tw-text-[#5696d3] text-center">
                 {/* Mensaje de bienvenida */}
-                Bienvenidos a One Tap Corp BackOffice
+                Bienvenidos a
+            </h3>
+            <h3 className="tw-text-7xl tw-text-[#5696d3] text-center">
+                {/* Mensaje de bienvenida */}
+                One Tap Corp BackOffice
             </h3>
         </div>
         // <>

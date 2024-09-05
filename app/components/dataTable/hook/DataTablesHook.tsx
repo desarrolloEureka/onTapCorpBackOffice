@@ -5,6 +5,8 @@ import useAuth from "@/firebase/auth";
 import { allRef } from "@/firebase/campus";
 import { getAllCampusQuery } from "@/queries/campusQueries";
 import {
+    deleteDocumentByIdQuery,
+    DeleteSocialNetwork,
     getAllDocumentsQuery,
     getNotificationsByCompanyIdQuery,
     getWorkArasByCompanyIdQuery,
@@ -12,10 +14,15 @@ import {
 } from "@/queries/documentsQueries";
 import { DataMainFormObject } from "@/types/mainForm";
 import { setDataTable } from "@/types/tables";
+import { IconButton } from "@mui/material";
 import { onSnapshot } from "firebase/firestore";
 import _ from "lodash";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
+import { FaTrashCan } from "react-icons/fa6";
+import { MdModeEdit } from "react-icons/md";
+import Swal from "sweetalert2";
+import Image from 'next/image';
 
 const CustomTitle = ({ row }: any) => (
     <div data-tag="allowRowEvents">
@@ -93,28 +100,28 @@ const DataTablesHook = (reference: string) => {
             reference === "country"
                 ? countriesTable
                 : reference === "departments"
-                ? colombianCitiesData
-                : reference === "cities"
-                ? transformCitiesData(colombianCitiesData)
-                : reference === "documentTypes"
-                ? idTypesTable
-                : reference === "zones"
-                ? formatZoneData(
-                      userData && userData?.companyId
-                          ? await getZonesByCompanyIdQuery(userData?.companyId)
-                          : [],
-                  )
-                : reference === "notifications"
-                ? userData && userData?.companyId
-                    ? await getNotificationsByCompanyIdQuery(
-                          userData?.companyId,
-                      )
-                    : []
-                : reference === "workAreas"
-                ? userData && userData?.companyId
-                    ? await getWorkArasByCompanyIdQuery(userData?.companyId)
-                    : []
-                : await getAllDocumentsQuery(reference);
+                    ? colombianCitiesData
+                    : reference === "cities"
+                        ? transformCitiesData(colombianCitiesData)
+                        : reference === "documentTypes"
+                            ? idTypesTable
+                            : reference === "zones"
+                                ? formatZoneData(
+                                    userData && userData?.companyId
+                                        ? await getZonesByCompanyIdQuery(userData?.companyId)
+                                        : [],
+                                )
+                                : reference === "notifications"
+                                    ? userData && userData?.companyId
+                                        ? await getNotificationsByCompanyIdQuery(
+                                            userData?.companyId,
+                                        )
+                                        : []
+                                    : reference === "workAreas"
+                                        ? userData && userData?.companyId
+                                            ? await getWorkArasByCompanyIdQuery(userData?.companyId)
+                                            : []
+                                        : await getAllDocumentsQuery(reference);
 
         const labelToDisplay = ["professionals", "patients", "functionary"];
 
@@ -157,6 +164,7 @@ const DataTablesHook = (reference: string) => {
                 };
             } else if (reference === "zones") {
                 columnNamesToDisplay = {
+                    uid: "Acciones",
                     zoneName: "Nombre",
                     zoneManager: "Jefe zona",
                     AddressOne: "Dirección 1",
@@ -164,8 +172,35 @@ const DataTablesHook = (reference: string) => {
                     AddressThree: "Dirección 3",
                     AddressFour: "Dirección 4",
                 };
+            } else if (reference === "employees") {
+                columnNamesToDisplay = {
+                    uid: "Acciones",
+                    firstName: "Nombre",
+                    lastName: "Apellido",
+                    documentType: "Tipo de Documento",
+                    documentNumber: "Número de Documento",
+                    position: "Cargo"
+                };
+            } else if (reference === "routes") {
+                columnNamesToDisplay = {
+                    uid: "Acciones",
+                    createdDate: "Fecha de creación",
+                    createdTime: "Hora de creación",
+                    routeName: "Nombre de la ruta",
+                    routeManager: "Jefe de la ruta",
+                    zoneName: "Zona a la que corresponde",
+                };
+            } else if (reference === "logos") {
+                columnNamesToDisplay = {
+                    uid: "Acciones",
+                    createdDate: "Fecha de creación",
+                    createdTime: "Hora de creación",
+                    logoName: "Nombre",
+                    imageUrl: "Imagen"
+                };
             } else {
                 columnNamesToDisplay = {
+                    uid: "Acciones",
                     timestamp: "Fecha Registro",
                     idType: "Tipo",
                     idType2: "Tipo",
@@ -207,16 +242,49 @@ const DataTablesHook = (reference: string) => {
 
             entriesSorted.forEach((val) => {
                 const columnsData = {
-                    name: columnNamesToDisplay[val],
+                    name: (
+                        <span className='title-header-table' style={{ fontSize: "15px" }}>
+                            {columnNamesToDisplay[val]}
+                        </span>
+                    ),
                     selector: (row: any) =>
                         val === "isActive" ? (
                             <CustomTitle row={row} />
+                        ) : val === "uid" ? (
+                            <div>
+                                {reference != "routes" && reference != "logos" ?
+                                    <>
+                                        <IconButton onClick={() => onMainFormModalEdit(row)}>
+                                            <MdModeEdit size={20} className="icon-actions-table" />
+                                        </IconButton>
+                                    </>
+                                    :
+                                    <>
+                                        <IconButton onClick={() => onMainFormModalEdit(row)}>
+                                            <MdModeEdit size={20} className="icon-actions-table" />
+                                        </IconButton>
+                                        <IconButton onClick={() => handleDeleteItem(row, reference)}>
+                                            <FaTrashCan size={20} className="icon-actions-table" />
+                                        </IconButton>
+                                    </>
+                                }
+
+                            </div>
                         ) : val === "timestamp" ? (
                             formatearFecha(row[val])
+                        ) : val === "imageUrl" ? (
+                            <div>
+                                <Image
+                                    src={row[val]}
+                                    alt="Facebook"
+                                    width={40}
+                                    height={40}
+                                />
+                            </div>
                         ) : (val === "id" && reference === "documentTypes") ||
-                          reference === "country" ||
-                          reference === "departments" ||
-                          reference === "cities" ? (
+                            reference === "country" ||
+                            reference === "departments" ||
+                            reference === "cities" ? (
                             row[val]
                         ) : reference === "companies" ? (
                             _.isArray(row[val]) ? (
@@ -237,8 +305,11 @@ const DataTablesHook = (reference: string) => {
                             ? "20%"
                             : val === "hour" || val === "issue"
                             ? "15%"
-                            : "200px",
+                            : reference === "companies"
+                            ? "200px"
+                            : "auto",
                     omit: !omittedColumns.includes(val),
+                    center: reference != 'roles' && reference != 'notifications'
                 };
 
                 cols.push(columnsData);
@@ -284,8 +355,8 @@ const DataTablesHook = (reference: string) => {
                     const dataFiltered =
                         reference === "areas"
                             ? campusResult
-                                  .filter((item) => prop.includes(item.value))
-                                  .map((campus) => campus.label)
+                                .filter((item) => prop.includes(item.value))
+                                .map((campus) => campus.label)
                             : prop;
                     return dataFiltered.some((subProp) =>
                         subProp.toString().toLowerCase().includes(value),
@@ -321,6 +392,29 @@ const DataTablesHook = (reference: string) => {
         setHandleShowMainFormEdit(true);
         setEditData(row);
         // console.log(row);
+    };
+
+    const handleDeleteItem = (row: any, reference: any) => {
+        Swal.fire({
+            title: "¿Está seguro de que desea eliminar este elemento?",
+            text: "Esta acción no se puede deshacer. Verifique que realmente quiere eliminarlo.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#dc3545",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "¡Sí, eliminar!",
+            cancelButtonText: "¡No, cancelar!",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                if (reference === 'logos') {
+                    await DeleteSocialNetwork(row?.logoName, row?.uid)
+                } else {
+                    await deleteDocumentByIdQuery(reference, row?.uid);
+                }
+
+                getAllDocuments();
+            }
+        });
     };
 
     useEffect(() => {
@@ -370,6 +464,7 @@ const DataTablesHook = (reference: string) => {
         handleSearch,
         searchTerm,
         clearSearch,
+        handleDeleteItem
     };
 };
 

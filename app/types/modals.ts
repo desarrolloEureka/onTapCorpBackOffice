@@ -14,6 +14,7 @@ export interface ModalParamsMainForm {
     title: string;
     editData: any;
     data?: any;
+    handleDeleteItem?:any
 }
 
 export interface ModalParamsPdf {

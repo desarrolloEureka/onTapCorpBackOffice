@@ -1,16 +1,27 @@
 import {
+    deleteDocumentById,
+    deleteSocialNetwork,
     getAllDocumentsFb,
+    getAreasByCompanyId,
     getDocumentsByIdFb,
+    getHeadquartersByCompanyId,
     getNotificationsByCompanyId,
     getReference,
+    getRoutesByCompanyId,
     getWorkArasByCompanyId,
+    getZoneById,
     getZonesByCompanyId,
     saveDocumentsFb,
+    saveEmployee,
     saveNotification,
     saveOneDocumentFb,
+    saveRoute,
+    saveSocialNetworkImage,
     saveZone,
     updateCampusByIdFb,
     updateDocumentsByIdFb,
+    updateRoute,
+    updateSocialNetwork,
     updateZone,
 } from "@/firebase/Documents";
 import {
@@ -123,6 +134,11 @@ export const getZonesByCompanyIdQuery = async (idCompany: string) => {
     return documents;
 };
 
+export const getZonesByIdQuery = async (idCompany: string) => {
+    const documents = await getZoneById(idCompany);
+    return documents;
+};
+
 export const getNotificationsByCompanyIdQuery = async (idCompany: string) => {
     const documents = await getNotificationsByCompanyId(idCompany);
     return documents;
@@ -130,6 +146,21 @@ export const getNotificationsByCompanyIdQuery = async (idCompany: string) => {
 
 export const getWorkArasByCompanyIdQuery = async (idCompany: string) => {
     const documents = await getWorkArasByCompanyId(idCompany);
+    return documents;
+};
+
+export const getRoutesByCompanyIdQuery = async (idCompany: string) => {
+    const documents = await getRoutesByCompanyId(idCompany);
+    return documents;
+};
+
+export const getAreasByCompanyIdQuery = async (idCompany: string) => {
+    const documents = await getAreasByCompanyId(idCompany);
+    return documents;
+};
+
+export const getHeadquartersByCompanyIdQuery = async (idCompany: string) => {
+    const documents = await getHeadquartersByCompanyId(idCompany);
     return documents;
 };
 
@@ -182,11 +213,11 @@ export const saveDataDocumentsQuery = async ({
     documentRef,
     data,
 }: // accessTokenUser,
-{
-    documentRef: any;
-    data: any;
-    // accessTokenUser: string;
-}) => {
+    {
+        documentRef: any;
+        data: any;
+        // accessTokenUser: string;
+    }) => {
     const queryResult = await saveOneDocumentFb(documentRef, data);
     // console.log("Nuevo");
     return queryResult;
@@ -246,4 +277,44 @@ export const saveZoneQuery = async (dataSave: any) => {
 export const updateZoneQuery = async (dataSave: any, docId: string) => {
     const result = await updateZone(docId, dataSave);
     return result;
+};
+
+export const saveEmployeeQuery = async (dataSave: any) => {
+    const result = await saveEmployee(dataSave);
+    return result;
+};
+
+export const saveRouteQuery = async (dataSave: any) => {
+    try {
+        const result = await saveRoute(dataSave);
+        return result;
+    } catch (error) {
+        console.error("Error in saveRouteQuery:", error);
+        return { success: false, message: "Error in saveRouteQuery", error };
+    }
+};
+
+export const updateRouteQuery = async (dataSave: any, docId: string) => {
+    const result = await updateRoute(docId, dataSave);
+    return result;
+};
+
+export const deleteDocumentByIdQuery = async (collectionName: string, documentId: string) => {
+    const result = await deleteDocumentById(collectionName, documentId);
+    return result;
+};
+
+export const SaveSocialNetwork = async (data: any, imageFile: File) => {
+    const res = await saveSocialNetworkImage(data, imageFile);
+    return res;
+};
+
+export const UpdateSocialNetwork = async (uid: any, oldImageName: string, newImageName: string, imageFile: any) => {
+    const res = await updateSocialNetwork(imageFile, oldImageName, newImageName, uid);
+    return res;
+};
+
+export const DeleteSocialNetwork = async (imageName: string, docId: any) => {
+    const res = await deleteSocialNetwork(imageName, docId);
+    return res;
 };

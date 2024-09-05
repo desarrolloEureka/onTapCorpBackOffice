@@ -199,10 +199,10 @@ const CompanyHook = () => {
                     item === "phone"
                         ? ["", false]
                         : item === "indicative"
-                        ? "57"
-                        : item === "ext"
-                        ? " "
-                        : " ";
+                            ? "57"
+                            : item === "ext"
+                                ? " "
+                                : " ";
                 // }
                 // });
             });
@@ -238,11 +238,11 @@ const CompanyHook = () => {
             listNewItem.forEach((item) => {
                 item === "additionalDataName"
                     ? (newItemDato[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = ["", false])
+                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                    ] = ["", false])
                     : (newItemDato[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = "");
+                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                    ] = "");
             });
             setData({ ...data, ...newItemDato });
         }
@@ -257,11 +257,11 @@ const CompanyHook = () => {
             listNewItem.forEach((item) => {
                 item === "urlName"
                     ? (newItemUrl[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = ["", false])
+                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                    ] = ["", false])
                     : (newItemUrl[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = "");
+                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                    ] = "");
             });
             setData({ ...data, ...newItemUrl });
         }
