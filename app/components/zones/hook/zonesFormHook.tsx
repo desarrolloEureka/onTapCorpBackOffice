@@ -23,7 +23,7 @@ const ZonesFormHook = ({
     // Datos
     const [zoneName, setZoneName] = useState("");
     const [zoneManager, setZoneManager] = useState("");
-    const [addresses, setAddresses] = useState<string[]>([]);
+    const [addresses, setAddresses] = useState(['']);
     const [idRow, setIdRow] = useState('');
 
     // Errores
@@ -58,7 +58,14 @@ const ZonesFormHook = ({
             setAddressesError("Debe agregar al menos una dirección");
             valid = false;
         } else {
-            setAddressesError("");
+            // Validar cada dirección
+            const invalidAddresses = addresses.some(address => !address.trim());
+            if (invalidAddresses) {
+                setAddressesError("Cada dirección debe ser válida");
+                valid = false;
+            } else {
+                setAddressesError("");
+            }
         }
 
         return valid;
@@ -118,7 +125,7 @@ const ZonesFormHook = ({
     const handleReset = () => {
         setZoneName("");
         setZoneManager("");
-        setAddresses([]);
+        setAddresses(['']);
         setZoneNameError("");
         setZoneManagerError("");
         setAddressesError("");

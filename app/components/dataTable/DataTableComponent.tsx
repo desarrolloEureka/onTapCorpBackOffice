@@ -8,6 +8,9 @@ import MainFormModal from "../mainForm/mainFormModal";
 import { DataTableComponentProps } from "@/types/tables";
 import NotificationsFormModal from "../notifications/notificationsFormModal";
 import ZonesFormModal from "../zones/zonesFormModal";
+import EmployeesFormModal from "../employees/employeesFormModal";
+import RoutesFormModal from "../routes/routesFormModal";
+import LogosFormModal from "../logos/logosFormModal";
 
 const DataTableComponent = ({
     componentTitle,
@@ -36,6 +39,7 @@ const DataTableComponent = ({
         handleSearch,
         searchTerm,
         clearSearch,
+        handleDeleteItem
     } = DataTablesHook(reference);
 
     return (
@@ -107,15 +111,50 @@ const DataTableComponent = ({
                             reference={reference}
                         />
                         :
-                        <MainFormModal
-                            handleShowMainForm={handleShowMainForm}
-                            setHandleShowMainForm={setHandleShowMainForm}
-                            handleShowMainFormEdit={handleShowMainFormEdit}
-                            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                            editData={editData}
-                            title={tableTitle}
-                            reference={reference}
-                        />
+                        reference === "employees" ?
+                            <EmployeesFormModal
+                                handleShowMainForm={handleShowMainForm}
+                                setHandleShowMainForm={setHandleShowMainForm}
+                                handleShowMainFormEdit={handleShowMainFormEdit}
+                                setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                                editData={editData}
+                                title={tableTitle}
+                                reference={reference}
+                            />
+                            :
+                            reference === "routes" ?
+                                <RoutesFormModal
+                                    handleShowMainForm={handleShowMainForm}
+                                    handleDeleteItem={handleDeleteItem}
+                                    setHandleShowMainForm={setHandleShowMainForm}
+                                    handleShowMainFormEdit={handleShowMainFormEdit}
+                                    setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                                    editData={editData}
+                                    title={tableTitle}
+                                    reference={reference}
+                                />
+                                :
+                                reference === "logos" ?
+                                    <LogosFormModal
+                                        handleShowMainForm={handleShowMainForm}
+                                        handleDeleteItem={handleDeleteItem}
+                                        setHandleShowMainForm={setHandleShowMainForm}
+                                        handleShowMainFormEdit={handleShowMainFormEdit}
+                                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                                        editData={editData}
+                                        title={tableTitle}
+                                        reference={reference}
+                                    />
+                                    :
+                                    <MainFormModal
+                                        handleShowMainForm={handleShowMainForm}
+                                        setHandleShowMainForm={setHandleShowMainForm}
+                                        handleShowMainFormEdit={handleShowMainFormEdit}
+                                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                                        editData={editData}
+                                        title={tableTitle}
+                                        reference={reference}
+                                    />
                 }
 
             </Row>

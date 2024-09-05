@@ -51889,6 +51889,10 @@ ul.inbox-pagination {
     background-color: var(--default-company-border);
 }
 
+.title-header-table{
+    color: var(--custom-black);
+}
+
 .url-label {
     color: var(--card-body-add-item);
 }

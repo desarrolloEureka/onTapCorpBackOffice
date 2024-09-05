@@ -108,6 +108,28 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
+
+                {/* Vista de Rutas */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="routes"
+                    role="tabpanel"
+                    eventKey="routes"
+                >
+                    <BannerMenu
+                        seoTitle="Rutas"
+                        title="Rutas"
+                        item="Dashboard"
+                        activeItem="Registro de Rutas"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla del Listado de Rutas."
+                        componentDescription="En esta tabla se encuentran listados todos los usuarios para su administración."
+                        tableTitle="Rutas"
+                        reference="routes"
+                    />
+                </Tab.Pane>
+
                 {/* Vista de Paises */}
                 <Tab.Pane
                     className="tab-pane text-muted"
@@ -253,6 +275,49 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                 >
                     <Profile />
                 </Tab.Pane>
+
+                {/* Vista del Empleados */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="Empleados"
+                    role="tabpanel"
+                    eventKey="employees"
+                >
+                    <BannerMenu
+                        seoTitle="Empleados"
+                        title="Empleados"
+                        item="Dashboard"
+                        activeItem="Empleados"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla del Listado de Empleados."
+                        componentDescription="En esta tabla se encuentran los Empleados disponibles."
+                        tableTitle="Empleados"
+                        reference="employees"
+                    />
+                </Tab.Pane>
+
+                {/* Vista del Logos */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="logos"
+                    role="tabpanel"
+                    eventKey="logos"
+                >
+                    <BannerMenu
+                        seoTitle="Logos"
+                        title="Logos"
+                        item="Dashboard"
+                        activeItem="Registro de Logos"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla del Listado de Logos."
+                        componentDescription="En esta tabla se encuentran listados todos los usuarios para su administración."
+                        tableTitle="Logos"
+                        reference="logos"
+                    />
+                </Tab.Pane>
+
             </Tab.Content>
         </Tab.Container>
     );

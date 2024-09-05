@@ -125,3 +125,17 @@ export const updateProfileFirebase = async (
         photoURL,
     });
 };
+
+export const getEmployeeDataById = async (uid: any) => {
+    const docRef = doc(db, "employees", uid);
+    const docSnap = await getDoc(docRef);
+    let userData = {};
+
+    if (docSnap.exists()) {
+        // console.log("Document data:", docSnap.data());
+        userData = docSnap.data();
+    } else {
+        console.log("No such document!");
+    }
+    return userData;
+};

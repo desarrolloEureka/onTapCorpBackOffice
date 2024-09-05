@@ -1,13 +1,19 @@
-/**@type {import('next').NextConfig} */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  // output: 'export',
   reactStrictMode: true,
   trailingSlash: true,
   swcMinify: true,
   images: {
-    loader: 'imgix',
-    path: '/',
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
   transpilePackages: ['mui-tel-input'],
 };
+
 export default nextConfig;
