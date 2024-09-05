@@ -261,7 +261,8 @@ const MainFormModal = ({
                                     : "Nuevo Registro"}
                             </span>
                             <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-center tw-items-center -tw-mt-2">
-                                <Button
+                                <button
+                                    type="button"
                                     onClick={handleClose}
                                     className="tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center"
                                     style={{
@@ -278,7 +279,7 @@ const MainFormModal = ({
                                                 : "white"
                                         }
                                     />
-                                </Button>
+                                </button>
                             </div>
                         </Modal.Title>
                         {reference === "workAreas" && (
