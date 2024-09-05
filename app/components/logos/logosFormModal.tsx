@@ -7,11 +7,12 @@ import {
     Typography
 } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Button, Card, Form, Modal } from "react-bootstrap";
+import { Button, Card, Col, Form, Modal } from "react-bootstrap";
 import { IoMdClose } from "react-icons/io";
 import { VscSave } from "react-icons/vsc";
 import { ImCancelCircle } from "react-icons/im";
 import LogosFormHook from "./hook/logosFormHook";
+import { FiEdit } from "react-icons/fi";
 
 const LogosFormModal = ({
     handleShowMainForm,
@@ -55,133 +56,157 @@ const LogosFormModal = ({
     });
 
     return (
-        <Modal size="lg" centered show={show} onHide={handleClose}>
-            <Form onReset={handleReset} onSubmit={!isEdit && handleShowMainFormEdit ? handleEditForm : handleSendForm}>
-                <Modal.Body style={{ padding: 0, margin: 0 }}>
-                    <Card className="custom-card tw-w-full tw-bg-[#396593]" style={{ padding: 0, margin: 0 }}>
-                        <Card.Body style={{ padding: 0, margin: 0 }}>
-                            <div className="tw-flex tw-w-full tw-flex-row tw-px-8 tw-pt-5 tw-pb-3">
-                                <div className="tw-flex tw-w-[93%] tw-flex-col">
-                                    <Card.Title className="tw-font-bold tw-text-white">
-                                        Agregar los datos del logo
-                                    </Card.Title>
-                                </div>
-                                <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-start tw-items-center -tw-mt-2">
-                                    <Button
-                                        onClick={handleClose}
-                                        className="tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent"
-                                        style={{ padding: 0, background: 'transparent', border: 'none' }}
-                                    >
-                                        <IoMdClose size={35} color="white" />
-                                    </Button>
-                                </div>
-                            </div>
+        <Modal
+            size={reference === "companies" ? "xl" : "lg"}
+            centered
+            show={show}
+            onHide={handleClose}
+            aria-hidden="false"
+            aria-modal="true"
+            contentClassName={
+                reference !== "companies" ? "modal-admin" : ""
+            }
+        >
+            <Form onReset={handleReset} onSubmit={handleSendForm}>
+                <ThemeProvider theme={theme}>
 
+                    <Modal.Title
+                        className={`modal-title-admin tw-pt-5 tw-px-8 tw-flex tw-flex-row tw-justify-between`}
+                        as="h6"
+                    >
+                        <span>
+                            Agregar los datos del logo
+                        </span>
+                        <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-center tw-items-center -tw-mt-2">
+                            <Button
+                                onClick={handleClose}
+                                className="tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center"
+                                style={{
+                                    padding: 0,
+                                    background: "transparent",
+                                    border: "none",
+                                }}
+                            >
+                                <IoMdClose
+                                    size={35}
+                                    color={"white"}
+                                />
+                            </Button>
+                        </div>
+                    </Modal.Title>
 
-                            <div className="tw-flex tw-flex-col lg:tw-flex-row tw-space-x-0 lg:tw-space-x-4 tw-space-y-4 lg:tw-space-y-0 tw-px-9 tw-pb-8">
-                                <div className="tw-flex tw-w-full tw-flex-col tw-space-y-4">
-                                    <div className="tw-flex tw-p-2 tw-pb-8 tw-rounded tw-flex-col tw-justify-center tw-items-start tw-bg-white">
-                                        <div className="tw-flex tw-flex-col tw-px-3 tw-w-full">
-                                            <ThemeProvider theme={theme}>
-                                                <div className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full">
-                                                    <TextField
-                                                        value={logoName}
-                                                        onChange={handleLogoNameChange}
-                                                        type="text"
-                                                        id="logoName"
-                                                        fullWidth
-                                                        label="Nombre del Logo"
-                                                        variant="standard"
-                                                        color="primary"
-                                                        helperText={logoNameError}
-                                                        error={!!logoNameError}
-                                                        InputProps={{
-                                                            startAdornment: (
-                                                                <InputAdornment position="start">
-                                                                    <FilePresentIcon />
-                                                                </InputAdornment>
-                                                            ),
-                                                        }}
-                                                        InputLabelProps={{
-                                                            style: {
-                                                                fontSize: "20px",
-                                                                fontWeight: "bold",
-                                                                color: modeTheme === "light" ? "#396593" : "#8bb8e7",
-                                                            },
-                                                        }}
-                                                    />
-                                                </div>
-
-                                                {/* Vista previa de la imagen seleccionada */}
-                                                {selectedImage && (
-                                                    <div className="tw-mt-4">
-                                                        <img
-                                                            src={!isEdit && handleShowMainFormEdit ? isUpdateImage ? URL.createObjectURL(selectedImage) : selectedImage + "" : URL.createObjectURL(selectedImage)}
-                                                            alt="Vista previa"
-                                                            className="tw-w-[150px] tw-h-[150px] tw-object-cover tw-rounded tw-mt-4 tw-mb-1"
-                                                        />
-                                                    </div>
-                                                )}
-
-
-                                                {/* Campo para seleccionar la imagen */}
-                                                <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-px-3 tw-w-full">
-                                                    <label
-                                                        htmlFor="iconButton"
-                                                        className="tw-flex tw-flex-col tw-items-start tw-justify-center"
-                                                    >
-                                                        <div className="tw-flex tw-flex-row tw-items-center tw-justify-center tw-h-10 tw-w-36 tw-rounded-3xl tw-bg-[#396593] tw-mt-7 -tw-ml-2">
-                                                            <Typography className="tw-font-bold tw-text-sm url-label tw-text-white">
-                                                                Seleccionar Logo
-                                                            </Typography>
-                                                        </div>
-
-                                                        <Typography className="tw-font-bold tw-text-sm url-label tw-mt-2">
-                                                            {selectedImage ? selectedImage.name : ""}
-                                                        </Typography>
-
-                                                        <input
-                                                            type="file"
-                                                            name="icon"
-                                                            id="iconButton"
-                                                            accept=".jpg, .jpeg, .png"
-                                                            hidden
-                                                            onChange={
-                                                                handleImageChange
-                                                            }
-                                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                                        />
-                                                    </label>
-                                                </div>
-
-
-
-                                                {imageError && (
-                                                    <div className="tw-text-[#d32f2f] tw-mt-2 tw-ml-2" style={{ fontSize: "12px" }}>
-                                                        {imageError}
-                                                    </div>
-                                                )}
-                                            </ThemeProvider>
-                                        </div>
+                    <Modal.Body className="tw-px-8">
+                        <div className="tw-flex tw-w-full tw-flex-col tw-space-y-4">
+                            <div className="tw-flex tw-w-full tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-admin-body">
+                                <div className="tw-flex tw-flex-col tw-px-3 tw-w-full">
+                                    <div className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full">
+                                        <TextField
+                                            value={logoName}
+                                            onChange={handleLogoNameChange}
+                                            type="text"
+                                            id="logoName"
+                                            fullWidth
+                                            label="Nombre del Logo"
+                                            variant="standard"
+                                            color="primary"
+                                            helperText={logoNameError}
+                                            error={!!logoNameError}
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <FilePresentIcon />
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                            InputLabelProps={{
+                                                style: {
+                                                    fontSize: "20px",
+                                                    fontWeight: "bold",
+                                                    color: modeTheme === "light" ? "#396593" : "#8bb8e7",
+                                                },
+                                            }}
+                                        />
                                     </div>
+
+                                    {/* Vista previa de la imagen seleccionada */}
+                                    {selectedImage && (
+                                        <div className="tw-mt-4">
+                                            <img
+                                                src={!isEdit && handleShowMainFormEdit ? isUpdateImage ? URL.createObjectURL(selectedImage) : selectedImage + "" : URL.createObjectURL(selectedImage)}
+                                                alt="Vista previa"
+                                                className="tw-w-[150px] tw-h-[150px] tw-object-cover tw-rounded tw-mt-4 tw-mb-1"
+                                            />
+                                        </div>
+                                    )}
+
+
+                                    {/* Campo para seleccionar la imagen */}
+                                    <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-px-3 tw-w-full">
+                                        <label
+                                            htmlFor="iconButton"
+                                            className="tw-flex tw-flex-col tw-items-start tw-justify-center"
+                                        >
+                                            <div className="tw-flex tw-flex-row tw-items-center tw-justify-center tw-h-10 tw-w-36 tw-rounded-3xl tw-bg-[#396593] tw-mt-7 -tw-ml-2">
+                                                <Typography className="tw-font-bold tw-text-sm url-label tw-text-white">
+                                                    Seleccionar Logo
+                                                </Typography>
+                                            </div>
+
+                                            <Typography className="tw-font-bold tw-text-sm url-label tw-mt-2">
+                                                {selectedImage ? selectedImage.name : ""}
+                                            </Typography>
+
+                                            <input
+                                                type="file"
+                                                name="icon"
+                                                id="iconButton"
+                                                accept=".jpg, .jpeg, .png"
+                                                hidden
+                                                onChange={
+                                                    handleImageChange
+                                                }
+                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                            />
+                                        </label>
+                                    </div>
+
+
+
+                                    {imageError && (
+                                        <div className="tw-text-[#d32f2f] tw-mt-2 tw-ml-2" style={{ fontSize: "12px" }}>
+                                            {imageError}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                        </Card.Body>
+                        </div>
+                    </Modal.Body>
 
-                        <Card.Footer className="text-muted tw-flex tw-justify-end tw-items-center">
-                            <div className="tw-flex tw-flex-row w-full mx-16">
-                                <Button
-                                    className="tw-flex tw-items-center"
-                                    variant="light"
-                                    onClick={handleClose}
-                                >
-                                    <ImCancelCircle size={20} />
-                                    {/* Cancelar */}
-                                </Button>
+                </ThemeProvider>
 
+                <Modal.Footer className="tw-flex tw-flex-row tw-justify-between">
+                    <Col className="tw-flex tw-flex-row tw-space-x-2 tw-items-center tw-justify-end">
+                        <Button
+                            className="tw-flex tw-items-center btn-admin"
+                            variant="light"
+                            onClick={handleClose}
+                        >
+                            <ImCancelCircle size={20} />
+                            {/* Cancelar */}
+                        </Button>
+
+                        {!isEdit && handleShowMainFormEdit ? (
+                            <Button
+                                variant="primary"
+                                onClick={handleEditForm}
+                            >
+                                <FiEdit size={20} />
+                            </Button>
+                        ) : (
+                            <>
                                 <Button
-                                    variant="primary"
-                                    className={`btn ${isLoading && "btn-loader"} tw-ml-5`}
+                                    className={`${isLoading && "btn-loader"
+                                        } tw-ml-5 btn-save-admin`}
                                     type="submit"
                                 >
                                     {isLoading ? (
@@ -194,10 +219,11 @@ const LogosFormModal = ({
                                         </span>
                                     )}
                                 </Button>
-                            </div>
-                        </Card.Footer>
-                    </Card>
-                </Modal.Body>
+                            </>
+                        )}
+                    </Col>
+                </Modal.Footer>
+
             </Form>
         </Modal>
     );

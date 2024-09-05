@@ -293,7 +293,7 @@ export const ExportCSV = ({
                         onMainFormModalEdit(row);
                     }
                 }} */
-                pointerOnHover={reference !== "roles"}
+                //pointerOnHover={reference !== "roles"}
                 defaultSortFieldId={2}
                 columns={columns}
                 data={data}

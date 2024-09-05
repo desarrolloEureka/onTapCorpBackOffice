@@ -460,7 +460,7 @@ const EmployeesFormModal = ({
                             <div className="tw-flex tw-flex-row tw-px-3 tw-mt-1 tw-w-full">
                                 <div className="tw-flex tw-w-[50%] tw-flex-col">
                                     <div className="tw-flex tw-w-28 tw-flex-col ">
-                                        <h6 className=" tw-m-0 tw-p-2 tw-rounded">
+                                        <h6 className=" tw-m-0 tw-p-2 tw-rounded icon-actions-table">
                                             Paso {step}/2
                                         </h6>
                                     </div>
@@ -476,10 +476,10 @@ const EmployeesFormModal = ({
                                                 className="tw-flex tw-flex-row tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent tw-mb-1"
                                                 style={{ padding: 0, background: 'transparent', border: 'none', color: 'black' }}
                                             >
-                                                <h6 className=" tw-m-0 tw-p-1 tw-rounded" style={{ color: 'black' }}>
+                                                <h6 className=" tw-m-0 tw-p-1 tw-rounded icon-actions-table" style={{ color: 'black' }}>
                                                     Siguiente
                                                 </h6>
-                                                <GrNext size={25} color="#646464" />
+                                                <GrNext size={25} color="#646464" className="icon-actions-table"/>
                                             </Button>
 
                                         </div>

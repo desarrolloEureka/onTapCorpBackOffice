@@ -164,13 +164,13 @@ const DataTablesHook = (reference: string) => {
                 };
             } else if (reference === "zones") {
                 columnNamesToDisplay = {
+                    uid: "Acciones",
                     zoneName: "Nombre",
                     zoneManager: "Jefe zona",
                     AddressOne: "Dirección 1",
                     AddressTwo: "Dirección 2",
                     AddressThree: "Dirección 3",
                     AddressFour: "Dirección 4",
-                    uid: "Acciones",
                 };
             } else if (reference === "employees") {
                 columnNamesToDisplay = {
@@ -200,6 +200,7 @@ const DataTablesHook = (reference: string) => {
                 };
             } else {
                 columnNamesToDisplay = {
+                    uid: "Acciones",
                     timestamp: "Fecha Registro",
                     idType: "Tipo",
                     idType2: "Tipo",
@@ -254,16 +255,16 @@ const DataTablesHook = (reference: string) => {
                                 {reference != "routes" && reference != "logos" ?
                                     <>
                                         <IconButton onClick={() => onMainFormModalEdit(row)}>
-                                            <MdModeEdit size={20} />
+                                            <MdModeEdit size={20} className="icon-actions-table" />
                                         </IconButton>
                                     </>
                                     :
                                     <>
                                         <IconButton onClick={() => onMainFormModalEdit(row)}>
-                                            <MdModeEdit size={20} />
+                                            <MdModeEdit size={20} className="icon-actions-table" />
                                         </IconButton>
                                         <IconButton onClick={() => handleDeleteItem(row, reference)}>
-                                            <FaTrashCan size={20} />
+                                            <FaTrashCan size={20} className="icon-actions-table" />
                                         </IconButton>
                                     </>
                                 }
@@ -306,6 +307,7 @@ const DataTablesHook = (reference: string) => {
                                         ? "15%"
                                         : "auto",
                     omit: !omittedColumns.includes(val),
+                    center: reference != 'roles' && reference != 'notifications'
                 };
 
                 cols.push(columnsData);
