@@ -2,17 +2,22 @@ import { AllRefPropsFirebase, RefPropsFirebase } from "@/types/userFirebase";
 import {
     addDoc,
     collection,
+    deleteDoc,
     doc,
-    getDocs,
     getDoc,
-    limit,
+    getDocs,
     query,
     setDoc,
     updateDoc,
-    where,
-    deleteDoc,
+    where
 } from "firebase/firestore";
-import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import {
+    deleteObject,
+    getDownloadURL,
+    getStorage,
+    ref,
+    uploadBytes,
+} from "firebase/storage";
 import moment from "moment";
 import { db } from "shared/firebase/firebase";
 import { v4 as uuidv4 } from "uuid";
@@ -106,11 +111,7 @@ export const saveDocumentByIdFb = async (
 
     // console.log("document", document);
 
-    await setDoc(
-        document,
-        // doc(db, "cities", "0irK7kDetSMJJTLgAxww"),
-        data,
-    );
+    await setDoc(document, data);
     return document;
 };
 
@@ -148,17 +149,17 @@ export const updateCampusByIdFb = async (
         document,
         refExist
             ? {
-                availableAreas: data.includes(refArea)
-                    ? data.filter((item: string) => item !== refArea)
-                    : [...data],
-                timestamp: currentDate,
-            }
+                  availableAreas: data.includes(refArea)
+                      ? data.filter((item: string) => item !== refArea)
+                      : [...data],
+                  timestamp: currentDate,
+              }
             : {
-                availableAreas: !data.includes(refArea)
-                    ? [...data, refArea]
-                    : [...data],
-                timestamp: currentDate,
-            },
+                  availableAreas: !data.includes(refArea)
+                      ? [...data, refArea]
+                      : [...data],
+                  timestamp: currentDate,
+              },
     );
 };
 
@@ -213,6 +214,30 @@ export const updateZone = async (id: string, dataSave: any) => {
     }
 };
 
+export const saveMeeting = async (dataToSave: any, docRef: any) => {
+    try {
+        // Guarda el documento en Firestore
+        await setDoc(docRef, { ...dataToSave, timestamp: currentDate });
+
+        return { success: true, message: "Data saved successfully" };
+    } catch (error) {
+        console.error("Error saving notification:", error);
+        return { success: false, message: "Error saving data", error };
+    }
+};
+
+export const updateMeeting = async (id: string, dataSave: any) => {
+    try {
+        const docRef = doc(db, "meetingStatus", id);
+        await updateDoc(docRef, dataSave);
+
+        return { success: true, message: "Data updated successfully" };
+    } catch (error) {
+        console.error("Error updating data:", error);
+        return { success: false, message: "Error updating data", error };
+    }
+};
+
 export const getZonesByCompanyId = async (companyId: any) => {
     try {
         const q = query(
@@ -243,7 +268,7 @@ export const getZoneById = async (zoneId: any) => {
         console.log("No such document!");
         return null; // O retorna un valor que indique que el documento no existe
     }
-}
+};
 
 export const getNotificationsByCompanyId = async (companyId: any) => {
     try {
@@ -279,7 +304,26 @@ export const getWorkArasByCompanyId = async (companyId: any) => {
         }));
         return workAreas;
     } catch (error) {
-        console.error("Error fetching notifications:", error);
+        console.error("Error fetching Work Areas:", error);
+        return [];
+    }
+};
+
+export const getMeetingStatusByCompanyId = async (companyId: any) => {
+    try {
+        const q = query(
+            collection(db, "meetingStatus"),
+            where("idCompany", "==", companyId),
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        const meetingStatus = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+        }));
+        return meetingStatus;
+    } catch (error) {
+        console.error("Error fetching Meeting Status:", error);
         return [];
     }
 };
@@ -353,7 +397,7 @@ export const saveEmployee = async (dataSave: any) => {
             uid: documentId,
         };
 
-        console.log('dataWithId ', dataWithId);
+        console.log("dataWithId ", dataWithId);
         // Guarda el documento en Firestore
         await setDoc(docRef, dataWithId);
 
@@ -398,15 +442,22 @@ export const updateRoute = async (id: string, dataSave: any) => {
     }
 };
 
-export const deleteDocumentById = async (collectionName: string, documentId: string) => {
+export const deleteDocumentById = async (
+    collectionName: string,
+    documentId: string,
+) => {
     const docRef = doc(db, collectionName, documentId); // Crea una referencia al documento
 
     try {
         await deleteDoc(docRef); // Elimina el documento
-        return { success: true, message: 'Documento eliminado con éxito' };
+        return { success: true, message: "Documento eliminado con éxito" };
     } catch (error) {
-        console.error('Error al eliminar el documento:', error);
-        return { success: false, message: 'Error al eliminar el documento', error };
+        console.error("Error al eliminar el documento:", error);
+        return {
+            success: false,
+            message: "Error al eliminar el documento",
+            error,
+        };
     }
 };
 
@@ -445,7 +496,7 @@ export const saveSocialNetworkImage = async (data: any, imageFile: File) => {
         const newUid = uuidv4();
 
         // Crear una referencia de documento usando el UID
-        const docRef = doc(db, 'logos', newUid);
+        const docRef = doc(db, "logos", newUid);
 
         // Registrar su referencia en Firestore
         await setDoc(docRef, {
@@ -454,19 +505,27 @@ export const saveSocialNetworkImage = async (data: any, imageFile: File) => {
             uid: newUid, // Asignar el UID al nuevo documento
         });
 
-        return { success: true, message: 'Documento registrado con éxito', docId: newUid };
+        return {
+            success: true,
+            message: "Documento registrado con éxito",
+            docId: newUid,
+        };
     } catch (error) {
-        console.error('Error al cargar la imagen en Firebase Storage: ', error);
-        return { success: false, message: 'Error al registrar el documento', error };
+        console.error("Error al cargar la imagen en Firebase Storage: ", error);
+        return {
+            success: false,
+            message: "Error al registrar el documento",
+            error,
+        };
     }
 };
 
 // Actualizar una red social,
 export const updateSocialNetwork = async (
-    imageFile: any,       // Archivo de imagen nuevo
-    oldImageName: string,  // Nombre de la imagen antigua (para eliminarla)
-    newImageName: string,  // Nombre de la nueva imagen
-    docId: string          // ID del documento en Firestore
+    imageFile: any, // Archivo de imagen nuevo
+    oldImageName: string, // Nombre de la imagen antigua (para eliminarla)
+    newImageName: string, // Nombre de la nueva imagen
+    docId: string, // ID del documento en Firestore
 ) => {
     const storage = getStorage();
     // Crear referencias para la imagen nueva y la antigua
@@ -474,14 +533,13 @@ export const updateSocialNetwork = async (
     const oldImageRef = ref(storage, `social_networks/${oldImageName}`);
 
     try {
-        let newImageUrl = ''
+        let newImageUrl = "";
 
         if (imageFile) {
             // Subir la nueva imagen al path especificado
             const snapshot = await uploadBytes(newImageRef, imageFile);
             newImageUrl = await getDownloadURL(snapshot.ref);
         }
-
 
         // Eliminar la imagen antigua si el nombre ha cambiado
         if (newImageName !== oldImageName && newImageUrl) {
@@ -492,27 +550,29 @@ export const updateSocialNetwork = async (
                 // Puedes decidir si quieres continuar o detenerte aquí.
             }
         }
-        const docRef = doc(db, 'logos', docId);
+        const docRef = doc(db, "logos", docId);
 
         // Actualizar la referencia en Firestore con la nueva URL y el nuevo nombre
         if (newImageUrl) {
             await updateDoc(docRef, {
                 imageName: newImageName,
-                imageUrl: newImageUrl,  // Actualiza la URL de la nueva imagen
-                logoName: newImageName  // Actualiza el nombre de la imagen
+                imageUrl: newImageUrl, // Actualiza la URL de la nueva imagen
+                logoName: newImageName, // Actualiza el nombre de la imagen
             });
         } else {
             await updateDoc(docRef, {
-                logoName: newImageName  // Actualiza el nombre de la imagen
+                logoName: newImageName, // Actualiza el nombre de la imagen
             });
         }
 
-
-
-        return { success: true, message: 'Documento actualizado con éxito' };
+        return { success: true, message: "Documento actualizado con éxito" };
     } catch (error) {
         console.error("Error during update operation:", error);
-        return { success: false, message: 'Error al actualizar el documento', error };
+        return {
+            success: false,
+            message: "Error al actualizar el documento",
+            error,
+        };
     }
 };
 
@@ -528,12 +588,16 @@ export const deleteSocialNetwork = async (imageName: string, docId: string) => {
         await deleteObject(imageRef);
 
         // Eliminar el documento en Firestore que contiene la referencia a la imagen
-        const docRef = doc(db, 'logos', docId);  // Ajusta 'logos' si es necesario
+        const docRef = doc(db, "logos", docId); // Ajusta 'logos' si es necesario
         await deleteDoc(docRef);
 
-        return { success: true, message: 'Red social eliminada con éxito' };
+        return { success: true, message: "Red social eliminada con éxito" };
     } catch (error) {
         console.error("Error during the delete process: ", error);
-        return { success: false, message: 'Error al eliminar la red social', error };
+        return {
+            success: false,
+            message: "Error al eliminar la red social",
+            error,
+        };
     }
 };

@@ -364,7 +364,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                         <IoAddCircle
                                                             size={25}
                                                         />
-                                                        Agregar Dato Adicional
+                                                        Agregar Teléfono Adicional
                                                     </div>
                                                 )}
                                             </div>
@@ -498,7 +498,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                     className="add-button-item tw-flex tw-justify-center tw-items-center tw-rounded tw-px-2 tw-text-md tw-cursor-pointer"
                                                 >
                                                     <IoAddCircle size={25} />
-                                                    Agregar Dato Adicional
+                                                    Agregar Dirección Adicional
                                                 </div>
                                             </div>
 
@@ -567,7 +567,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                     className="add-button-item tw-flex tw-justify-center tw-items-center tw-rounded tw-px-2 tw-text-md tw-cursor-pointer"
                                                 >
                                                     <IoAddCircle size={25} />
-                                                    Agregar Dato Adicional
+                                                    Agregar Url Adicional
                                                 </div>
                                             </div>
 

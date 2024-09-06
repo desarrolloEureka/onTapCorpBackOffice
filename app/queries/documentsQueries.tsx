@@ -5,6 +5,7 @@ import {
     getAreasByCompanyId,
     getDocumentsByIdFb,
     getHeadquartersByCompanyId,
+    getMeetingStatusByCompanyId,
     getNotificationsByCompanyId,
     getReference,
     getRoutesByCompanyId,
@@ -13,6 +14,7 @@ import {
     getZonesByCompanyId,
     saveDocumentsFb,
     saveEmployee,
+    saveMeeting,
     saveNotification,
     saveOneDocumentFb,
     saveRoute,
@@ -20,6 +22,7 @@ import {
     saveZone,
     updateCampusByIdFb,
     updateDocumentsByIdFb,
+    updateMeeting,
     updateRoute,
     updateSocialNetwork,
     updateZone,
@@ -149,6 +152,11 @@ export const getWorkArasByCompanyIdQuery = async (idCompany: string) => {
     return documents;
 };
 
+export const getMeetingStatusByCompanyIdQuery = async (idCompany: string) => {
+    const documents = await getMeetingStatusByCompanyId(idCompany);
+    return documents;
+};
+
 export const getRoutesByCompanyIdQuery = async (idCompany: string) => {
     const documents = await getRoutesByCompanyId(idCompany);
     return documents;
@@ -213,11 +221,11 @@ export const saveDataDocumentsQuery = async ({
     documentRef,
     data,
 }: // accessTokenUser,
-    {
-        documentRef: any;
-        data: any;
-        // accessTokenUser: string;
-    }) => {
+{
+    documentRef: any;
+    data: any;
+    // accessTokenUser: string;
+}) => {
     const queryResult = await saveOneDocumentFb(documentRef, data);
     // console.log("Nuevo");
     return queryResult;
@@ -279,6 +287,16 @@ export const updateZoneQuery = async (dataSave: any, docId: string) => {
     return result;
 };
 
+export const saveMeetingQuery = async (dataSave: any, docRef: any) => {
+    const result = await saveMeeting(dataSave, docRef);
+    return result;
+};
+
+export const updateMeetingQuery = async (dataSave: any, docId: string) => {
+    const result = await updateMeeting(docId, dataSave);
+    return result;
+};
+
 export const saveEmployeeQuery = async (dataSave: any) => {
     const result = await saveEmployee(dataSave);
     return result;
@@ -299,7 +317,10 @@ export const updateRouteQuery = async (dataSave: any, docId: string) => {
     return result;
 };
 
-export const deleteDocumentByIdQuery = async (collectionName: string, documentId: string) => {
+export const deleteDocumentByIdQuery = async (
+    collectionName: string,
+    documentId: string,
+) => {
     const result = await deleteDocumentById(collectionName, documentId);
     return result;
 };
@@ -309,8 +330,18 @@ export const SaveSocialNetwork = async (data: any, imageFile: File) => {
     return res;
 };
 
-export const UpdateSocialNetwork = async (uid: any, oldImageName: string, newImageName: string, imageFile: any) => {
-    const res = await updateSocialNetwork(imageFile, oldImageName, newImageName, uid);
+export const UpdateSocialNetwork = async (
+    uid: any,
+    oldImageName: string,
+    newImageName: string,
+    imageFile: any,
+) => {
+    const res = await updateSocialNetwork(
+        imageFile,
+        oldImageName,
+        newImageName,
+        uid,
+    );
     return res;
 };
 
