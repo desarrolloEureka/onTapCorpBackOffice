@@ -8,6 +8,7 @@ import {
     deleteDocumentByIdQuery,
     DeleteSocialNetwork,
     getAllDocumentsQuery,
+    getMeetingStatusByCompanyIdQuery,
     getNotificationsByCompanyIdQuery,
     getWorkArasByCompanyIdQuery,
     getZonesByCompanyIdQuery,
@@ -22,7 +23,7 @@ import { useCallback, useEffect, useState } from "react";
 import { FaTrashCan } from "react-icons/fa6";
 import { MdModeEdit } from "react-icons/md";
 import Swal from "sweetalert2";
-import Image from 'next/image';
+import Image from "next/image";
 
 const CustomTitle = ({ row }: any) => (
     <div data-tag="allowRowEvents">
@@ -100,28 +101,34 @@ const DataTablesHook = (reference: string) => {
             reference === "country"
                 ? countriesTable
                 : reference === "departments"
-                    ? colombianCitiesData
-                    : reference === "cities"
-                        ? transformCitiesData(colombianCitiesData)
-                        : reference === "documentTypes"
-                            ? idTypesTable
-                            : reference === "zones"
-                                ? formatZoneData(
-                                    userData && userData?.companyId
-                                        ? await getZonesByCompanyIdQuery(userData?.companyId)
-                                        : [],
-                                )
-                                : reference === "notifications"
-                                    ? userData && userData?.companyId
-                                        ? await getNotificationsByCompanyIdQuery(
-                                            userData?.companyId,
-                                        )
-                                        : []
-                                    : reference === "workAreas"
-                                        ? userData && userData?.companyId
-                                            ? await getWorkArasByCompanyIdQuery(userData?.companyId)
-                                            : []
-                                        : await getAllDocumentsQuery(reference);
+                ? colombianCitiesData
+                : reference === "cities"
+                ? transformCitiesData(colombianCitiesData)
+                : reference === "documentTypes"
+                ? idTypesTable
+                : reference === "zones"
+                ? formatZoneData(
+                      userData && userData?.companyId
+                          ? await getZonesByCompanyIdQuery(userData?.companyId)
+                          : [],
+                  )
+                : reference === "notifications"
+                ? userData && userData?.companyId
+                    ? await getNotificationsByCompanyIdQuery(
+                          userData?.companyId,
+                      )
+                    : []
+                : reference === "workAreas"
+                ? userData && userData?.companyId
+                    ? await getWorkArasByCompanyIdQuery(userData?.companyId)
+                    : []
+                : reference === "meetingStatus"
+                ? userData && userData?.companyId
+                    ? await getMeetingStatusByCompanyIdQuery(
+                          userData?.companyId,
+                      )
+                    : []
+                : await getAllDocumentsQuery(reference);
 
         const labelToDisplay = ["professionals", "patients", "functionary"];
 
@@ -179,7 +186,7 @@ const DataTablesHook = (reference: string) => {
                     lastName: "Apellido",
                     documentType: "Tipo de Documento",
                     documentNumber: "Número de Documento",
-                    position: "Cargo"
+                    position: "Cargo",
                 };
             } else if (reference === "routes") {
                 columnNamesToDisplay = {
@@ -196,7 +203,13 @@ const DataTablesHook = (reference: string) => {
                     createdDate: "Fecha de creación",
                     createdTime: "Hora de creación",
                     logoName: "Nombre",
-                    imageUrl: "Imagen"
+                    imageUrl: "Imagen",
+                };
+            } else if (reference === "meetingStatus") {
+                columnNamesToDisplay = {
+                    uid: "Acciones",
+                    timestamp: "Fecha Registro",
+                    name: "Nombre Estado Reunión",
                 };
             } else {
                 columnNamesToDisplay = {
@@ -243,7 +256,10 @@ const DataTablesHook = (reference: string) => {
             entriesSorted.forEach((val) => {
                 const columnsData = {
                     name: (
-                        <span className='title-header-table' style={{ fontSize: "15px" }}>
+                        <span
+                            className="title-header-table"
+                            style={{ fontSize: "15px" }}
+                        >
                             {columnNamesToDisplay[val]}
                         </span>
                     ),
@@ -252,23 +268,45 @@ const DataTablesHook = (reference: string) => {
                             <CustomTitle row={row} />
                         ) : val === "uid" ? (
                             <div>
-                                {reference != "routes" && reference != "logos" ?
+                                {reference !== "routes" &&
+                                reference !== "logos" &&
+                                reference !== "meetingStatus" ? (
                                     <>
-                                        <IconButton onClick={() => onMainFormModalEdit(row)}>
-                                            <MdModeEdit size={20} className="icon-actions-table" />
+                                        <IconButton
+                                            onClick={() =>
+                                                onMainFormModalEdit(row)
+                                            }
+                                        >
+                                            <MdModeEdit
+                                                size={20}
+                                                className="icon-actions-table"
+                                            />
                                         </IconButton>
                                     </>
-                                    :
+                                ) : (
                                     <>
-                                        <IconButton onClick={() => onMainFormModalEdit(row)}>
-                                            <MdModeEdit size={20} className="icon-actions-table" />
+                                        <IconButton
+                                            onClick={() =>
+                                                onMainFormModalEdit(row)
+                                            }
+                                        >
+                                            <MdModeEdit
+                                                size={20}
+                                                className="icon-actions-table"
+                                            />
                                         </IconButton>
-                                        <IconButton onClick={() => handleDeleteItem(row, reference)}>
-                                            <FaTrashCan size={20} className="icon-actions-table" />
+                                        <IconButton
+                                            onClick={() =>
+                                                handleDeleteItem(row, reference)
+                                            }
+                                        >
+                                            <FaTrashCan
+                                                size={20}
+                                                className="icon-actions-table"
+                                            />
                                         </IconButton>
                                     </>
-                                }
-
+                                )}
                             </div>
                         ) : val === "timestamp" ? (
                             formatearFecha(row[val])
@@ -282,9 +320,9 @@ const DataTablesHook = (reference: string) => {
                                 />
                             </div>
                         ) : (val === "id" && reference === "documentTypes") ||
-                            reference === "country" ||
-                            reference === "departments" ||
-                            reference === "cities" ? (
+                          reference === "country" ||
+                          reference === "departments" ||
+                          reference === "cities" ? (
                             row[val]
                         ) : reference === "companies" ? (
                             _.isArray(row[val]) ? (
@@ -309,7 +347,8 @@ const DataTablesHook = (reference: string) => {
                             ? "200px"
                             : "auto",
                     omit: !omittedColumns.includes(val),
-                    center: reference != 'roles' && reference != 'notifications'
+                    center:
+                        reference != "roles" && reference != "notifications",
                 };
 
                 cols.push(columnsData);
@@ -355,8 +394,8 @@ const DataTablesHook = (reference: string) => {
                     const dataFiltered =
                         reference === "areas"
                             ? campusResult
-                                .filter((item) => prop.includes(item.value))
-                                .map((campus) => campus.label)
+                                  .filter((item) => prop.includes(item.value))
+                                  .map((campus) => campus.label)
                             : prop;
                     return dataFiltered.some((subProp) =>
                         subProp.toString().toLowerCase().includes(value),
@@ -394,6 +433,16 @@ const DataTablesHook = (reference: string) => {
         // console.log(row);
     };
 
+    const confirmAlert = () => {
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Se elimino correctamente el elemento",
+            showConfirmButton: false,
+            timer: 2000,
+        });
+    };
+
     const handleDeleteItem = (row: any, reference: any) => {
         Swal.fire({
             title: "¿Está seguro de que desea eliminar este elemento?",
@@ -406,10 +455,12 @@ const DataTablesHook = (reference: string) => {
             cancelButtonText: "¡No, cancelar!",
         }).then(async (result) => {
             if (result.isConfirmed) {
-                if (reference === 'logos') {
-                    await DeleteSocialNetwork(row?.logoName, row?.uid)
+                if (reference === "logos") {
+                    await DeleteSocialNetwork(row?.logoName, row?.uid);
                 } else {
-                    await deleteDocumentByIdQuery(reference, row?.uid);
+                    await deleteDocumentByIdQuery(reference, row?.uid).then(
+                        confirmAlert,
+                    );
                 }
 
                 getAllDocuments();
@@ -464,7 +515,7 @@ const DataTablesHook = (reference: string) => {
         handleSearch,
         searchTerm,
         clearSearch,
-        handleDeleteItem
+        handleDeleteItem,
     };
 };
 

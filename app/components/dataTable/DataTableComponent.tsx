@@ -11,6 +11,7 @@ import ZonesFormModal from "../zones/zonesFormModal";
 import EmployeesFormModal from "../employees/employeesFormModal";
 import RoutesFormModal from "../routes/routesFormModal";
 import LogosFormModal from "../logos/logosFormModal";
+import MeetingStatusesModal from "../meetings/MeetingStatusesModal";
 
 const DataTableComponent = ({
     componentTitle,
@@ -89,7 +90,7 @@ const DataTableComponent = ({
                     title={tableTitle}
                     reference={reference}
                 />
-                {reference === 'notifications' ?
+                {reference === "notifications" ? (
                     <NotificationsFormModal
                         handleShowMainForm={handleShowMainForm}
                         setHandleShowMainForm={setHandleShowMainForm}
@@ -99,64 +100,70 @@ const DataTableComponent = ({
                         title={tableTitle}
                         reference={reference}
                     />
-                    :
-                    reference === "zones" ?
-                        <ZonesFormModal
-                            handleShowMainForm={handleShowMainForm}
-                            setHandleShowMainForm={setHandleShowMainForm}
-                            handleShowMainFormEdit={handleShowMainFormEdit}
-                            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                            editData={editData}
-                            title={tableTitle}
-                            reference={reference}
-                        />
-                        :
-                        reference === "employees" ?
-                            <EmployeesFormModal
-                                handleShowMainForm={handleShowMainForm}
-                                setHandleShowMainForm={setHandleShowMainForm}
-                                handleShowMainFormEdit={handleShowMainFormEdit}
-                                setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                                editData={editData}
-                                title={tableTitle}
-                                reference={reference}
-                            />
-                            :
-                            reference === "routes" ?
-                                <RoutesFormModal
-                                    handleShowMainForm={handleShowMainForm}
-                                    handleDeleteItem={handleDeleteItem}
-                                    setHandleShowMainForm={setHandleShowMainForm}
-                                    handleShowMainFormEdit={handleShowMainFormEdit}
-                                    setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                                    editData={editData}
-                                    title={tableTitle}
-                                    reference={reference}
-                                />
-                                :
-                                reference === "logos" ?
-                                    <LogosFormModal
-                                        handleShowMainForm={handleShowMainForm}
-                                        handleDeleteItem={handleDeleteItem}
-                                        setHandleShowMainForm={setHandleShowMainForm}
-                                        handleShowMainFormEdit={handleShowMainFormEdit}
-                                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                                        editData={editData}
-                                        title={tableTitle}
-                                        reference={reference}
-                                    />
-                                    :
-                                    <MainFormModal
-                                        handleShowMainForm={handleShowMainForm}
-                                        setHandleShowMainForm={setHandleShowMainForm}
-                                        handleShowMainFormEdit={handleShowMainFormEdit}
-                                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                                        editData={editData}
-                                        title={tableTitle}
-                                        reference={reference}
-                                    />
-                }
-
+                ) : reference === "zones" ? (
+                    <ZonesFormModal
+                        handleShowMainForm={handleShowMainForm}
+                        setHandleShowMainForm={setHandleShowMainForm}
+                        handleShowMainFormEdit={handleShowMainFormEdit}
+                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                        editData={editData}
+                        title={tableTitle}
+                        reference={reference}
+                    />
+                ) : reference === "employees" ? (
+                    <EmployeesFormModal
+                        handleShowMainForm={handleShowMainForm}
+                        setHandleShowMainForm={setHandleShowMainForm}
+                        handleShowMainFormEdit={handleShowMainFormEdit}
+                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                        editData={editData}
+                        title={tableTitle}
+                        reference={reference}
+                    />
+                ) : reference === "routes" ? (
+                    <RoutesFormModal
+                        handleShowMainForm={handleShowMainForm}
+                        handleDeleteItem={handleDeleteItem}
+                        setHandleShowMainForm={setHandleShowMainForm}
+                        handleShowMainFormEdit={handleShowMainFormEdit}
+                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                        editData={editData}
+                        title={tableTitle}
+                        reference={reference}
+                    />
+                ) : reference === "logos" ? (
+                    <LogosFormModal
+                        handleShowMainForm={handleShowMainForm}
+                        handleDeleteItem={handleDeleteItem}
+                        setHandleShowMainForm={setHandleShowMainForm}
+                        handleShowMainFormEdit={handleShowMainFormEdit}
+                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                        editData={editData}
+                        title={tableTitle}
+                        reference={reference}
+                    />
+                ) : reference === "meetingStatus" ? (
+                    <MeetingStatusesModal
+                        handleShowMainForm={handleShowMainForm}
+                        handleDeleteItem={handleDeleteItem}
+                        setHandleShowMainForm={setHandleShowMainForm}
+                        handleShowMainFormEdit={handleShowMainFormEdit}
+                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                        editData={editData}
+                        title={tableTitle}
+                        reference={reference}
+                    />
+                ) : (
+                    <MainFormModal
+                        handleShowMainForm={handleShowMainForm}
+                        setHandleShowMainForm={setHandleShowMainForm}
+                        handleShowMainFormEdit={handleShowMainFormEdit}
+                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                        editData={editData}
+                        title={tableTitle}
+                        reference={reference}
+                    />
+                )}
             </Row>
         )
     );

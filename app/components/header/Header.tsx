@@ -45,6 +45,27 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
+                {/* Vista de Estados de Reunión */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="meetingStatus"
+                    role="tabpanel"
+                    eventKey="meetingStatus"
+                >
+                    <BannerMenu
+                        seoTitle="Estados de Reunión"
+                        title="Estados de Reunión"
+                        item="Dashboard"
+                        activeItem="Registro de Estados de Reunión"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla de Estados de Reunión."
+                        componentDescription="En esta tabla se encuentran los Estados de Reunión para su administración."
+                        tableTitle="Estados de Reunión"
+                        reference="meetingStatus"
+                    />
+                </Tab.Pane>
+
                 {/* Vista de Funcionarios */}
                 <Tab.Pane
                     className="tab-pane text-muted"
