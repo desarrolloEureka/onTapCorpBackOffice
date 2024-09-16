@@ -99,14 +99,20 @@ const HeaderContent = ({
                                     {userRole === "operativo" ||
                                     userRole === "administrativo" ? (
                                         <>
-                                            <NavDropdown.Item eventKey="second">
+                                            <NavDropdown.Item
+                                                href="#campus"
+                                                eventKey="campus"
+                                            >
                                                 <FaMapMarkerAlt
                                                     size={18}
                                                     className="tw-mb-1 tw-mr-1"
                                                 />
                                                 Sedes
                                             </NavDropdown.Item>
-                                            <NavDropdown.Item eventKey="zones">
+                                            <NavDropdown.Item
+                                                href="#zones"
+                                                eventKey="zones"
+                                            >
                                                 <FaMapMarkerAlt
                                                     size={18}
                                                     className="tw-mb-1 tw-mr-1"
@@ -114,7 +120,10 @@ const HeaderContent = ({
                                                 Zonas
                                             </NavDropdown.Item>
 
-                                            <NavDropdown.Item eventKey="routes">
+                                            <NavDropdown.Item
+                                                href="#routes"
+                                                eventKey="routes"
+                                            >
                                                 <FaMapMarkerAlt
                                                     size={18}
                                                     className="tw-mb-1 tw-mr-1"
@@ -122,7 +131,10 @@ const HeaderContent = ({
                                                 Rutas
                                             </NavDropdown.Item>
 
-                                            <NavDropdown.Item eventKey="second">
+                                            <NavDropdown.Item
+                                                href="#fixedPoints"
+                                                eventKey="second"
+                                            >
                                                 <FaMapMarkerAlt
                                                     size={18}
                                                     className="tw-mb-1 tw-mr-1"
@@ -188,14 +200,20 @@ const HeaderContent = ({
                                                 />
                                                 Empresa
                                             </NavDropdown.Item>
-                                            <NavDropdown.Item eventKey="workAreas">
+                                            <NavDropdown.Item
+                                                href="#meetingStatus"
+                                                eventKey="workAreas"
+                                            >
                                                 <FaMapMarkerAlt
                                                     size={18}
                                                     className="tw-mb-1 tw-mr-1"
                                                 />
                                                 Áreas de Trabajo
                                             </NavDropdown.Item>
-                                            <NavDropdown.Item eventKey="meetingStatus">
+                                            <NavDropdown.Item
+                                                href="#meetingStatus"
+                                                eventKey="meetingStatus"
+                                            >
                                                 <MdOutlineChecklist
                                                     size={20}
                                                     className="tw-mb-1 tw-mr-1"
@@ -205,7 +223,7 @@ const HeaderContent = ({
                                                 </span>
                                             </NavDropdown.Item>
                                             <NavDropdown.Item
-                                                href="#functionary"
+                                                // href="#functionary"
                                                 eventKey="second"
                                             >
                                                 <IoPerson
@@ -215,7 +233,7 @@ const HeaderContent = ({
                                                 Funcionarios
                                             </NavDropdown.Item>
                                             <NavDropdown.Item
-                                                //href="#functionary"
+                                                href="#functionary"
                                                 eventKey="employees"
                                             >
                                                 <IoPerson

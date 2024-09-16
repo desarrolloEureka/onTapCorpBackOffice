@@ -12,6 +12,7 @@ import EmployeesFormModal from "../employees/employeesFormModal";
 import RoutesFormModal from "../routes/routesFormModal";
 import LogosFormModal from "../logos/logosFormModal";
 import MeetingStatusesModal from "../meetings/MeetingStatusesModal";
+import CampusModal from "../campus/CampusModal";
 
 const DataTableComponent = ({
     componentTitle,
@@ -40,7 +41,7 @@ const DataTableComponent = ({
         handleSearch,
         searchTerm,
         clearSearch,
-        handleDeleteItem
+        handleDeleteItem,
     } = DataTablesHook(reference);
 
     return (
@@ -144,6 +145,17 @@ const DataTableComponent = ({
                     />
                 ) : reference === "meetingStatus" ? (
                     <MeetingStatusesModal
+                        handleShowMainForm={handleShowMainForm}
+                        handleDeleteItem={handleDeleteItem}
+                        setHandleShowMainForm={setHandleShowMainForm}
+                        handleShowMainFormEdit={handleShowMainFormEdit}
+                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                        editData={editData}
+                        title={tableTitle}
+                        reference={reference}
+                    />
+                ) : reference === "campus" ? (
+                    <CampusModal
                         handleShowMainForm={handleShowMainForm}
                         handleDeleteItem={handleDeleteItem}
                         setHandleShowMainForm={setHandleShowMainForm}

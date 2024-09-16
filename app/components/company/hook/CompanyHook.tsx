@@ -199,10 +199,10 @@ const CompanyHook = () => {
                     item === "phone"
                         ? ["", false]
                         : item === "indicative"
-                            ? "57"
-                            : item === "ext"
-                                ? " "
-                                : " ";
+                        ? "57"
+                        : item === "ext"
+                        ? " "
+                        : " ";
                 // }
                 // });
             });
@@ -238,11 +238,11 @@ const CompanyHook = () => {
             listNewItem.forEach((item) => {
                 item === "additionalDataName"
                     ? (newItemDato[
-                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                    ] = ["", false])
+                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                      ] = ["", false])
                     : (newItemDato[
-                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                    ] = "");
+                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                      ] = "");
             });
             setData({ ...data, ...newItemDato });
         }
@@ -257,11 +257,11 @@ const CompanyHook = () => {
             listNewItem.forEach((item) => {
                 item === "urlName"
                     ? (newItemUrl[
-                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                    ] = ["", false])
+                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                      ] = ["", false])
                     : (newItemUrl[
-                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                    ] = "");
+                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                      ] = "");
             });
             setData({ ...data, ...newItemUrl });
         }
@@ -279,9 +279,7 @@ const CompanyHook = () => {
 
         //Recorre las lista para validar
         keysNameSelected.forEach((element) => {
-            // Valida que en el objeto haya una propiedad que coincida los elementos de keysNameSelected
-            // if (Object.keys(_.cloneDeep(data)).includes(element)) {
-            //Verifica que en esa key este la palabra
+            //Verifica que en esa key coincida o este en la palabra
             const keysFiltered = Object.fromEntries(
                 Object.entries(_.cloneDeep(data)).filter(([key, value]) =>
                     key.includes(element),
@@ -380,14 +378,9 @@ const CompanyHook = () => {
                 }
             });
 
-            newObject[element] =
-                // element === "additionalDataName"
-                //     ? [[element, "", false, "additionalData", ""]]
-                //     : element === "urlName"
-                //     ? [[element, "", false, "urlLink", ""]]
-                //         :
-                arrayWithKey.map((item) => _.uniq(item.flat()));
-            // }
+            newObject[element] = arrayWithKey.map((item) =>
+                _.uniq(item.flat()),
+            );
         });
 
         return newObject;
@@ -402,7 +395,6 @@ const CompanyHook = () => {
             setData(companyData);
         }
     }, [companyData]);
-
 
     return {
         data,

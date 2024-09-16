@@ -118,10 +118,6 @@ const MeetingStatusesHook = ({
 
         setIsLoading(true);
         try {
-            const now = new Date();
-            const date = now.toISOString().split("T")[0]; // Formato YYYY-MM-DD
-            const hour = now.toTimeString().split(" ")[0]; // Formato HH:MM:SS
-
             if (userData?.companyId && idRow) {
                 const updatedData = {
                     uid: idRow,

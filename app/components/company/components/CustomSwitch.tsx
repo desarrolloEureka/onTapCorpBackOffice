@@ -79,6 +79,7 @@ const CustomSwitch = ({
     return (
         <ThemeProvider theme={theme}>
             <FormControlLabel
+                className="tw-mx-1"
                 control={
                     <IOSSwitch
                         sx={{ m: 1 }}

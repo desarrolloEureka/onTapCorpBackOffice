@@ -40,7 +40,6 @@ export const idTypesTable = [
 
 export const countries = [{ value: "CO", label: "Colombia" }];
 
-
 export const countriesTable = [{ id: 1, label: "Colombia" }];
 
 export const personTypes = [
@@ -77,11 +76,7 @@ export const isActiveData = [
         color: "#dc3545",
     },
 ];
-export const campus = [
-    { value: "Marly", label: "Marly" },
-    { value: "Santa Barbara", label: "Santa Barbara" },
-    { value: "Country", label: "Country" },
-];
+
 export const areas = [
     { value: "Administrativo", label: "Administrativo" },
     { value: "Despachos", label: "Despachos" },

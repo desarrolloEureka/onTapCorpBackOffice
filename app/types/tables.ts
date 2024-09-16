@@ -21,7 +21,6 @@ export interface UploadDataButtonModalProps {
     onUploadDataModalPdf?: () => void;
     onUploadDataModalCsv?: () => void;
     onMainFormModal?: () => void;
-    campusIsEmpty?: boolean;
 }
 export interface TableDataItemOld {
     id: string;
@@ -79,7 +78,6 @@ export interface TableDataObject {
     specialty: string;
     contract: string;
     rol: string;
-    campus: string;
     area: string;
     urlPhoto: string;
     timestamp: Date;

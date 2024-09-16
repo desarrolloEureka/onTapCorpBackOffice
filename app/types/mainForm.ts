@@ -41,7 +41,6 @@ export interface DataMainFormObject {
     contract: string;
     rol: string;
     campus: string;
-    availableCampus: string[];
     area: string;
     availableAreas: string[];
     urlPhoto: string;
@@ -70,7 +69,6 @@ export type DataFunctionaryObject = {
     password: string;
     confirmPassword: string;
     rol: string;
-    campus: string;
     area: string;
     urlPhoto: string;
     timestamp: Date;
@@ -178,15 +176,6 @@ export type DataAgreementsObject = {
     name: string;
     personType: string;
     discount: string;
-    isActive: boolean;
-    isDeleted: boolean;
-};
-
-export type DataAreasObject = {
-    uid: string;
-    name: string;
-    description: string;
-    availableCampus: string[];
     isActive: boolean;
     isDeleted: boolean;
 };

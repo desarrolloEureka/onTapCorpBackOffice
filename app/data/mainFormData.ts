@@ -1,17 +1,16 @@
 import {
+    DataAdminCompanyObject,
+    DataAgreementsObject,
+    DataCampusObject,
+    DataCompanyObject,
+    DataDiagnosesObject,
+    DataDiagnosticianObject,
     DataFunctionaryObject,
     DataMainFormObject,
     DataPatientObject,
     DataProfessionalObject,
-    DataCampusObject,
     DataSpecialtyObject,
-    DataDiagnosticianObject,
-    DataAgreementsObject,
-    DataAreasObject,
-    DataDiagnosesObject,
-    DataCompanyObject,
-    DataAdminCompanyObject,
-    DataWorkAreasObject,
+    DataWorkAreasObject
 } from "@/types/mainForm";
 
 export const dataMainFormObject = {
@@ -27,7 +26,7 @@ export const dataMainFormObject = {
     businessName: "",
     tradename: "",
     cards: "",
-    cardGPS:"",
+    cardGPS: "",
     description: "",
     personType: "",
     discount: "",
@@ -57,7 +56,6 @@ export const dataMainFormObject = {
     contract: "",
     rol: "",
     campus: "",
-    availableCampus: [],
     area: "",
     availableAreas: [],
     urlPhoto: "",
@@ -86,7 +84,6 @@ export const dataFunctionaryObject = {
     password: "",
     confirmPassword: "",
     rol: "",
-    campus: "",
     area: "",
     urlPhoto: "",
     timestamp: new Date(),
@@ -197,15 +194,6 @@ export const dataAgreementsObject = {
     isActive: false,
     isDeleted: false,
 } as DataAgreementsObject;
-
-export const dataAreasObject = {
-    uid: "",
-    name: "",
-    description: "",
-    availableCampus: [],
-    isActive: false,
-    isDeleted: false,
-} as DataAreasObject;
 
 export const dataAdminCompanyObject = {
     uid: "",

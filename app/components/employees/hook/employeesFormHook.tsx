@@ -1,9 +1,19 @@
 "use client";
 import useAuth from "@/firebase/auth";
-import { getAreasByCompanyIdQuery, getHeadquartersByCompanyIdQuery, getRoutesByCompanyIdQuery } from "@/queries/documentsQueries";
+import {
+    getAreasByCompanyIdQuery,
+    getHeadquartersByCompanyIdQuery,
+    getRoutesByCompanyIdQuery,
+} from "@/queries/documentsQueries";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
-import { DataAdditional, DataEmail, DataPhone, FormValues, FormValuesData } from "@/types/user";
+import {
+    DataAdditional,
+    DataEmail,
+    DataPhone,
+    FormValues,
+    FormValuesData,
+} from "@/types/user";
 import { SelectChangeEvent } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -16,43 +26,38 @@ const EmployeesFormHook = ({
     title,
     reference,
 }: ModalParamsMainForm) => {
-
     const initialPhones: FormValues = {
-        phones: [
-            { text: '', checked: false }
-        ]
+        phones: [{ text: "", checked: false }],
     };
 
     const initialEmails: FormValues = {
-        emails: [
-            { text: '', checked: false }
-        ]
+        emails: [{ text: "", checked: false }],
     };
 
     const initialAdditional: FormValues = {
-        dataAdditional: [{ autodato: '', dato: '', checked: false }]
+        dataAdditional: [{ autodato: "", dato: "", checked: false }],
     };
 
     const initialData: FormValuesData = {
-        firstName: '',
-        lastName: '',
-        documentNumber: '',
-        dateOfBirth: '',
-        position: '',
-        phones: [{ text: '', checked: false }],
-        emails: [{ text: '', checked: false }],
-        additional: [{ autodato: '', dato: '', checked: false }],
+        firstName: "",
+        lastName: "",
+        documentNumber: "",
+        dateOfBirth: "",
+        position: "",
+        phones: [{ text: "", checked: false }],
+        emails: [{ text: "", checked: false }],
+        additional: [{ autodato: "", dato: "", checked: false }],
         ImageProfile: null,
-        mondayRoute: '',
-        tuesdayRoute: '',
-        wednesdayRoute: '',
-        thursdayRoute: '',
-        fridayRoute: '',
-        saturdayRoute: '',
-        sundayRoute: '',
+        mondayRoute: "",
+        tuesdayRoute: "",
+        wednesdayRoute: "",
+        thursdayRoute: "",
+        fridayRoute: "",
+        saturdayRoute: "",
+        sundayRoute: "",
         routeApplicable: false,
-        selectedArea: '',
-        selectedHeadquarter: '',
+        selectedArea: "",
+        selectedHeadquarter: "",
         employeeCardStatus: false,
     };
     const { userData } = useAuth();
@@ -70,51 +75,60 @@ const EmployeesFormHook = ({
     const [step, setStep] = useState(1);
 
     //Datos Paso 2
-    const [selectedArea, setSelectedArea] = useState('');
+    const [selectedArea, setSelectedArea] = useState("");
 
-    const [selectedHeadquarter, setSelectedHeadquarter] = useState('');
+    const [selectedHeadquarter, setSelectedHeadquarter] = useState("");
 
     //const [routeApplicable, setRouteApplicable] = useState('');
     const [routeApplicable, setRouteApplicable] = useState<boolean>(false); // Estado booleano
 
-
-    const [mondayRoute, setMondayRoute] = useState('');
-    const [tuesdayRoute, setTuesdayRoute] = useState('');
-    const [wednesdayRoute, setWednesdayRoute] = useState('');
-    const [thursdayRoute, setThursdayRoute] = useState('');
-    const [fridayRoute, setFridayRoute] = useState('');
-    const [saturdayRoute, setSaturdayRoute] = useState('');
-    const [sundayRoute, setSundayRoute] = useState('');
+    const [mondayRoute, setMondayRoute] = useState("");
+    const [tuesdayRoute, setTuesdayRoute] = useState("");
+    const [wednesdayRoute, setWednesdayRoute] = useState("");
+    const [thursdayRoute, setThursdayRoute] = useState("");
+    const [fridayRoute, setFridayRoute] = useState("");
+    const [saturdayRoute, setSaturdayRoute] = useState("");
+    const [sundayRoute, setSundayRoute] = useState("");
 
     const [employeeCardStatus, setEmployeeCardStatus] = useState(false);
 
     //
-    const [headquartersData, setHeadquartersData] = useState<any[] | null>(null);
+    const [headquartersData, setHeadquartersData] = useState<any[] | null>(
+        null,
+    );
     const [areaData, setAreaData] = useState<any[] | null>(null);
     const [routeData, setRouteData] = useState<any[] | null>(null);
-
 
     const theme = localStorage.getItem("@theme");
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
-    const handleAddData = (type: 'phone' | 'email' | 'additional') => {
-        setData(prevData => {
+    const handleAddData = (type: "phone" | "email" | "additional") => {
+        setData((prevData) => {
             const maxItems = 3;
             let newData = { ...prevData };
 
-            if (type === 'phone') {
+            if (type === "phone") {
                 if ((prevData.phones || []).length < maxItems) {
-                    const updatedPhones: DataPhone[] = [...(prevData.phones || []), { text: '', checked: false }];
+                    const updatedPhones: DataPhone[] = [
+                        ...(prevData.phones || []),
+                        { text: "", checked: false },
+                    ];
                     newData = { ...newData, phones: updatedPhones };
                 }
-            } else if (type === 'email') {
+            } else if (type === "email") {
                 if ((prevData.emails || []).length < maxItems) {
-                    const updatedEmails: DataEmail[] = [...(prevData.emails || []), { text: '', checked: false }];
+                    const updatedEmails: DataEmail[] = [
+                        ...(prevData.emails || []),
+                        { text: "", checked: false },
+                    ];
                     newData = { ...newData, emails: updatedEmails };
                 }
-            } else if (type === 'additional') {
+            } else if (type === "additional") {
                 if ((prevData.additional || []).length < maxItems) {
-                    const updatedAdditional: DataAdditional[] = [...(prevData.additional || []), { autodato: '', dato: '', checked: false }];
+                    const updatedAdditional: DataAdditional[] = [
+                        ...(prevData.additional || []),
+                        { autodato: "", dato: "", checked: false },
+                    ];
                     newData = { ...newData, additional: updatedAdditional };
                 }
             }
@@ -127,13 +141,16 @@ const EmployeesFormHook = ({
         field: keyof FormValuesData,
         index: number,
         key: string,
-        value: string | boolean
+        value: string | boolean,
     ) => {
-        setData(prevData => {
+        setData((prevData) => {
             const fieldArray = prevData[field] as any[];
             if (fieldArray && fieldArray[index]) {
                 const updatedFieldArray = [...fieldArray];
-                updatedFieldArray[index] = { ...updatedFieldArray[index], [key]: value };
+                updatedFieldArray[index] = {
+                    ...updatedFieldArray[index],
+                    [key]: value,
+                };
 
                 return {
                     ...prevData,
@@ -152,7 +169,11 @@ const EmployeesFormHook = ({
         }
     };
 
-    function resizeImage(file: File, maxWidth: number, maxHeight: number): Promise<File> {
+    function resizeImage(
+        file: File,
+        maxWidth: number,
+        maxHeight: number,
+    ): Promise<File> {
         return new Promise((resolve, reject) => {
             const image = new Image();
             image.src = URL.createObjectURL(file);
@@ -172,25 +193,29 @@ const EmployeesFormHook = ({
                     }
                 }
 
-                const canvas = document.createElement('canvas');
+                const canvas = document.createElement("canvas");
                 canvas.width = width;
                 canvas.height = height;
-                const ctx = canvas.getContext('2d');
+                const ctx = canvas.getContext("2d");
                 ctx && ctx.drawImage(image, 0, 0, width, height);
-                canvas.toBlob(blob => {
-                    if (blob) {
-                        const resizedFile = new File([blob], file.name, {
-                            type: blob.type || 'image/jpeg',
-                            lastModified: Date.now()
-                        });
-                        resolve(resizedFile); // Aquí aseguramos que estamos devolviendo un File
-                    } else {
-                        reject(new Error("Failed to create Blob"));
-                    }
-                }, file.type || 'image/jpeg', 0.35);
+                canvas.toBlob(
+                    (blob) => {
+                        if (blob) {
+                            const resizedFile = new File([blob], file.name, {
+                                type: blob.type || "image/jpeg",
+                                lastModified: Date.now(),
+                            });
+                            resolve(resizedFile); // Aquí aseguramos que estamos devolviendo un File
+                        } else {
+                            reject(new Error("Failed to create Blob"));
+                        }
+                    },
+                    file.type || "image/jpeg",
+                    0.35,
+                );
             };
             image.onerror = () => {
-                reject(new Error('Could not load image'));
+                reject(new Error("Could not load image"));
             };
         });
     }
@@ -199,20 +224,24 @@ const EmployeesFormHook = ({
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => {
-                if (typeof reader.result === 'string') {
+                if (typeof reader.result === "string") {
                     resolve(reader.result);
                 } else {
-                    reject(new Error('Failed to convert file to base64 string.'));
+                    reject(
+                        new Error("Failed to convert file to base64 string."),
+                    );
                 }
             };
-            reader.onerror = () => reject(new Error('Error reading file.'));
+            reader.onerror = () => reject(new Error("Error reading file."));
             reader.readAsDataURL(file);
         });
     };
 
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
         const file = event.target.files ? event.target.files[0] : null;
-        console.log()
+        console.log();
         if (file && file instanceof File) {
             try {
                 const resizedImage = await resizeImage(file, 750, 750);
@@ -226,12 +255,9 @@ const EmployeesFormHook = ({
         }
     };
 
-    const handleChangeSwitch = () => {
-    };
+    const handleChangeSwitch = () => {};
 
-    const handleSendForm = async (e?: any) => {
-        
-    };
+    const handleSendForm = async (e?: any) => {};
 
     const handleEditForm = async (e?: any) => {
         setStep(2);
@@ -253,53 +279,53 @@ const EmployeesFormHook = ({
         setEmails(initialEmails);
         setAdditional(initialAdditional);
         setSelectedImage(null);
-        setMondayRoute('');
-        setTuesdayRoute('');
-        setWednesdayRoute('');
-        setThursdayRoute('');
-        setFridayRoute('');
-        setSaturdayRoute('');
-        setSundayRoute('');
+        setMondayRoute("");
+        setTuesdayRoute("");
+        setWednesdayRoute("");
+        setThursdayRoute("");
+        setFridayRoute("");
+        setSaturdayRoute("");
+        setSundayRoute("");
         setRouteApplicable(false);
-        setSelectedArea('');
-        setSelectedHeadquarter('');
+        setSelectedArea("");
+        setSelectedHeadquarter("");
     };
 
     const getDataEmployee = async (editData: any) => {
         setData(editData);
     };
 
-    const handleChangeSelect = () => {
+    const handleChangeSelect = () => {};
 
-    };
+    const handleRouteChange = (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {};
 
-    const handleRouteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAreaChange = (event: any) => {};
 
-    };
-
-    const handleAreaChange = (event: any) => {
-
-    };
-
-    const handleHeadquartersChange = (event: any) => {
-
-    };
+    const handleHeadquartersChange = (event: any) => {};
 
     const getRouteData = async () => {
         if (userData?.companyId) {
-            const dataRoutes = await getRoutesByCompanyIdQuery(userData.companyId);
-            const dataAreas = await getAreasByCompanyIdQuery(userData.companyId);
-            const dataHeadquarters = await getHeadquartersByCompanyIdQuery(userData.companyId);
+            const dataRoutes = await getRoutesByCompanyIdQuery(
+                userData.companyId,
+            );
+            const dataAreas = await getAreasByCompanyIdQuery(
+                userData.companyId,
+            );
+            const dataHeadquarters = await getHeadquartersByCompanyIdQuery(
+                userData.companyId,
+            );
             setHeadquartersData(dataHeadquarters);
             setRouteData(dataRoutes);
             setAreaData(dataAreas);
         }
-    }
+    };
 
     useEffect(() => {
         getRouteData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userData])
+    }, [userData]);
 
     useEffect(() => {
         handleShowMainForm && (setShow(true), setIsEdit(true));
@@ -348,7 +374,7 @@ const EmployeesFormHook = ({
         handleHeadquartersChange,
         handleEditForm,
         handleFileChange,
-        selectedImage
+        selectedImage,
     };
 };
 

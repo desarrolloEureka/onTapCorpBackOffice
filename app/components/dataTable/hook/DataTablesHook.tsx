@@ -2,12 +2,11 @@
 import { colombianCitiesData } from "@/data/colombianCitiesData";
 import { countriesTable, idTypesTable } from "@/data/formConstant";
 import useAuth from "@/firebase/auth";
-import { allRef } from "@/firebase/campus";
-import { getAllCampusQuery } from "@/queries/campusQueries";
 import {
     deleteDocumentByIdQuery,
     DeleteSocialNetwork,
     getAllDocumentsQuery,
+    getHeadquartersByCompanyIdQuery,
     getMeetingStatusByCompanyIdQuery,
     getNotificationsByCompanyIdQuery,
     getWorkArasByCompanyIdQuery,
@@ -24,6 +23,7 @@ import { FaTrashCan } from "react-icons/fa6";
 import { MdModeEdit } from "react-icons/md";
 import Swal from "sweetalert2";
 import Image from "next/image";
+import { allRef } from "@/firebase/Documents";
 
 const CustomTitle = ({ row }: any) => (
     <div data-tag="allowRowEvents">
@@ -128,6 +128,10 @@ const DataTablesHook = (reference: string) => {
                           userData?.companyId,
                       )
                     : []
+                : reference === "campus"
+                ? userData && userData?.companyId
+                    ? await getHeadquartersByCompanyIdQuery(userData?.companyId)
+                    : []
                 : await getAllDocumentsQuery(reference);
 
         const labelToDisplay = ["professionals", "patients", "functionary"];
@@ -210,6 +214,15 @@ const DataTablesHook = (reference: string) => {
                     uid: "Acciones",
                     timestamp: "Fecha Registro",
                     name: "Nombre Estado Reunión",
+                };
+            } else if (reference === "campus") {
+                columnNamesToDisplay = {
+                    uid: "Acciones",
+                    timestamp: "Fecha Registro",
+                    name: "Nombre Sede",
+                    address: "Dirección",
+                    url: "Url Locación",
+                    isActive: "Estado",
                 };
             } else {
                 columnNamesToDisplay = {
@@ -380,7 +393,6 @@ const DataTablesHook = (reference: string) => {
     const handleSearch = async (e: any) => {
         const value = e.target.value.toLowerCase();
         setSearchTerm(value);
-        const campusResult = await getAllCampusQuery();
 
         const filtered = getDocuments?.filter((item) => {
             return _.some(item, (prop, key) => {
@@ -391,12 +403,7 @@ const DataTablesHook = (reference: string) => {
                         prop.toString().toLowerCase().includes(value)
                     );
                 } else if (Array.isArray(prop)) {
-                    const dataFiltered =
-                        reference === "areas"
-                            ? campusResult
-                                  .filter((item) => prop.includes(item.value))
-                                  .map((campus) => campus.label)
-                            : prop;
+                    const dataFiltered = prop;
                     return dataFiltered.some((subProp) =>
                         subProp.toString().toLowerCase().includes(value),
                     );
@@ -471,15 +478,6 @@ const DataTablesHook = (reference: string) => {
     useEffect(() => {
         getAllDocuments();
     }, [getAllDocuments]);
-
-    useEffect(() => {
-        const unSubCampus = onSnapshot(allRef({ ref: "campus" }), (doc) => {
-            setIsEmptyDataRef(doc.empty);
-        });
-        return () => {
-            unSubCampus();
-        };
-    }, []);
 
     useEffect(() => {
         if (!handleShowMainForm || !handleShowMainFormEdit || !isEmptyDataRef) {

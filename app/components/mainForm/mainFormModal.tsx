@@ -5,7 +5,6 @@ import {
     idTypes,
     isActiveData,
 } from "@/data/formConstant";
-import { showPasswordParams } from "@/types/mainForm";
 import { ModalParamsMainForm } from "@/types/modals";
 import AddCardOutlinedIcon from "@mui/icons-material/AddCardOutlined";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
@@ -21,26 +20,19 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import _ from "lodash";
 import moment from "moment";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import {
-    Alert,
-    Button,
-    Col,
-    Form,
-    Modal,
-    OverlayTrigger,
-    Row,
-    Tooltip,
-} from "react-bootstrap";
+import { Alert, Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { BsFillTelephoneForwardFill, BsPersonVcard } from "react-icons/bs";
 import { FaPhone } from "react-icons/fa6";
 import { FiEdit } from "react-icons/fi";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import { HiOutlineCheckCircle } from "react-icons/hi";
 import { ImCancelCircle } from "react-icons/im";
+import { IoMdClose } from "react-icons/io";
 import { IoBusinessSharp, IoPersonSharp } from "react-icons/io5";
 import {
     MdAccessTime,
@@ -49,14 +41,10 @@ import {
     MdLocationPin,
 } from "react-icons/md";
 import { VscSave } from "react-icons/vsc";
-import { components } from "react-select";
-import makeAnimated from "react-select/animated";
 import CustomMUITelInput from "../company/components/CustomMUITelInput";
 import CustomSelect from "../company/components/CustomSelect";
 import CustomTextField from "../company/components/CustomTextField";
 import MainFormHook from "./hook/mainFormHook";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { IoMdClose } from "react-icons/io";
 
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
@@ -145,28 +133,10 @@ const MainFormModal = ({
     const {
         show,
         errorForm,
-        showPassword,
         isLoading,
         data,
-        selectedRol,
-        selectedIdType,
-        selectedIdTypeAdmin,
-        selectedState,
-        selectedCountry,
-        selectedCity,
-        selectedSpecialty,
-        selectedContract,
-        selectedStatus,
-        selectedCampus,
-        selectedAvailableCampus,
-        selectedArea,
         isEdit,
         errorPass,
-        campus,
-        specialties,
-        contracts,
-        areas,
-        roles,
         modeTheme,
         errorValid,
         nextStep,
@@ -179,31 +149,11 @@ const MainFormModal = ({
         handleClose,
         handleReset,
         setErrorForm,
-        changeHandler,
-        handleChange,
-        clearSelectFields,
-        dateChangeHandler,
-        selectChangeHandlerIdType,
-        setShowPassword,
-        selectChangeHandlerRol,
-        selectChangeHandlerCampus,
-        selectChangeHandlerAvailableCampus,
-        selectChangeHandlerArea,
-        selectChangeHandlerStatus,
-        selectChangeHandlerContract,
-        selectChangeHandlerSpecialty,
-        selectChangeHandlerCity,
-        selectChangeHandlerCountry,
-        selectChangeHandlerState,
-        indicativeOneChangeHandler,
-        indicativeTwoChangeHandler,
+        handleChange,        
         findValue,
         handleEditForm,
         handleMultipleChange,
-        handleIconFileChange,
-        selectChangeHandlerPersonType,
-        selectChangeHandlerIdTypeAdmin,
-        areasByCampus,
+        handleIconFileChange,       
     } = MainFormHook({
         handleShowMainForm,
         setHandleShowMainForm,
@@ -2399,7 +2349,6 @@ const MainFormModal = ({
                                                 <>
                                                     <Col
                                                         md={12}
-                                                        // lg={reference !== "campus" && 4}
                                                         className="tw-mb-5"
                                                     >
                                                         <div className="tw-flex tw-w-full">

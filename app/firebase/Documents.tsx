@@ -9,7 +9,7 @@ import {
     query,
     setDoc,
     updateDoc,
-    where
+    where,
 } from "firebase/firestore";
 import {
     deleteObject,
@@ -22,7 +22,7 @@ import moment from "moment";
 import { db } from "shared/firebase/firebase";
 import { v4 as uuidv4 } from "uuid";
 
-const allRef = ({ ref }: AllRefPropsFirebase) => collection(db, ref);
+export const allRef = ({ ref }: AllRefPropsFirebase) => collection(db, ref);
 
 const currentDate = moment().format();
 
@@ -136,33 +136,6 @@ export const updateDocumentsByIdFb = async (
     });
 };
 
-export const updateCampusByIdFb = async (
-    id: string,
-    refArea: string,
-    reference: string,
-    data: any,
-    refExist?: boolean,
-) => {
-    const document = docRef({ ref: reference, collection: id });
-
-    return await updateDoc(
-        document,
-        refExist
-            ? {
-                  availableAreas: data.includes(refArea)
-                      ? data.filter((item: string) => item !== refArea)
-                      : [...data],
-                  timestamp: currentDate,
-              }
-            : {
-                  availableAreas: !data.includes(refArea)
-                      ? [...data, refArea]
-                      : [...data],
-                  timestamp: currentDate,
-              },
-    );
-};
-
 export const saveNotification = async (dataSave: any) => {
     try {
         const notificationsRef = collection(db, "notifications");
@@ -230,6 +203,30 @@ export const updateMeeting = async (id: string, dataSave: any) => {
     try {
         const docRef = doc(db, "meetingStatus", id);
         await updateDoc(docRef, dataSave);
+
+        return { success: true, message: "Data updated successfully" };
+    } catch (error) {
+        console.error("Error updating data:", error);
+        return { success: false, message: "Error updating data", error };
+    }
+};
+
+export const saveCampus = async (dataToSave: any, docRef: any) => {
+    try {
+        // Guarda el documento en Firestore
+        await setDoc(docRef, { ...dataToSave, timestamp: currentDate });
+
+        return { success: true, message: "Data saved successfully" };
+    } catch (error) {
+        console.error("Error saving notification:", error);
+        return { success: false, message: "Error saving data", error };
+    }
+};
+
+export const updateCampus = async (dataSave: any) => {
+    try {
+        const docRef = doc(db, "campus", dataSave.uid);
+        await updateDoc(docRef, { ...dataSave, timestamp: currentDate });
 
         return { success: true, message: "Data updated successfully" };
     } catch (error) {
@@ -351,7 +348,7 @@ export const getAreasByCompanyId = async (companyId: any) => {
     try {
         const q = query(
             collection(db, "workAreas"),
-            where("companyId", "==", companyId),
+            where("idCompany", "==", companyId),
         );
 
         const querySnapshot = await getDocs(q);
@@ -367,10 +364,10 @@ export const getAreasByCompanyId = async (companyId: any) => {
 };
 
 export const getHeadquartersByCompanyId = async (companyId: any) => {
-    /* try {
+    try {
         const q = query(
-            collection(db, "workAreas"),
-            where("companyId", "==", companyId),
+            collection(db, "campus"),
+            where("idCompany", "==", companyId),
         );
 
         const querySnapshot = await getDocs(q);
@@ -380,10 +377,9 @@ export const getHeadquartersByCompanyId = async (companyId: any) => {
         }));
         return Routes;
     } catch (error) {
-        console.error("Error fetching areas", error);
+        console.error("Error fetching Campus", error);
         return [];
-    } */
-    return [];
+    }
 };
 
 export const saveEmployee = async (dataSave: any) => {

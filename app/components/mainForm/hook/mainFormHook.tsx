@@ -2,8 +2,6 @@
 import {
     dataAdminCompanyObject,
     dataAgreementsObject,
-    dataAreasObject,
-    dataCampusObject,
     dataCompanyObject,
     dataDiagnosesObject,
     dataDiagnosticianObject,
@@ -12,19 +10,15 @@ import {
     dataPatientObject,
     dataProfessionalObject,
     dataSpecialtyObject,
-    dataWorkAreasObject,
+    dataWorkAreasObject
 } from "@/data/mainFormData";
 // import { getDocumentRefById } from "@/firebase/Documents";
 // import { registerFirebase } from "@/firebase/user";
 import useAuth from "@/firebase/auth";
 import { addUser } from "@/firebase/user";
-import { getAllAgreementsQuery } from "@/queries/AgreementsQueries";
-import { getAllAreasQuery } from "@/queries/AreasQueries";
-import { getAllCampusQuery } from "@/queries/campusQueries";
 import {
     getAllDocumentsQuery,
     getDocumentReference,
-    saveAreasOnCampusQuery,
     saveDataDocumentsQuery,
     saveEditDataDocumentsQuery,
     saveFilesDocuments,
@@ -32,9 +26,6 @@ import {
 } from "@/queries/documentsQueries";
 import { getAllRolesQuery } from "@/queries/RolesQueries";
 import { getAllSpecialtiesQuery } from "@/queries/SpecialtiesQueries";
-import { AgreementSelector } from "@/types/agreements";
-import { AreasSelector } from "@/types/areas";
-import { CampusSelector } from "@/types/campus";
 import { ErrorDataForm } from "@/types/documents";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
@@ -42,7 +33,6 @@ import { RolesSelector } from "@/types/roles";
 import { SpecialtySelector } from "@/types/specialty";
 import { handleSendWelcomeEmail } from "lib/brevo/handlers/actions";
 import _ from "lodash";
-import moment from "moment";
 import {
     ChangeEvent,
     SetStateAction,
@@ -72,49 +62,18 @@ const MainFormHook = ({
     const [errorPass, setErrorPass] = useState(false);
     const [itemExist, setItemExist] = useState(false);
     const [nextStep, setNextStep] = useState(true);
-    const [errorDataUpload, setErrorDataUpload] = useState<ErrorDataForm[]>();
-    const [showPassword, setShowPassword] = useState(false);
     const [files, setFiles] = useState<SetStateAction<any>[]>([]);
     const [fileName, setFileName] = useState<any>();
     const [iconFile, setIconFile] = useState<any>([]);
-    // const [urlPhoto, setUrlPhoto] = useState<string>("");
-    const [campus, setCampus] = useState<CampusSelector[]>();
     const [specialties, setSpecialties] = useState<SpecialtySelector[]>();
-    const [contracts, setContract] = useState<AgreementSelector[]>();
-    const [areas, setAreas] = useState<AreasSelector[]>();
     const [roles, setRoles] = useState<RolesSelector[]>();
     const [diagnostician, setDiagnostician] = useState<any[]>();
     const [adminUsers, setAdminUsers] = useState<any[]>();
-
-    const [selectedIdType, setSelectedIdType] = useState<any>(null);
-    const [selectedIdTypeAdmin, setSelectedIdTypeAdmin] = useState<any>(null);
-    const [selectedState, setSelectedState] = useState<any>(null);
-    const [selectedCountry, setSelectedCountry] = useState<any>(null);
-    const [selectedCity, setSelectedCity] = useState<any>(null);
-
-    const [selectedSpecialty, setSelectedSpecialty] = useState<any>(null);
-    const [selectedContract, setSelectedContract] = useState<any>(null);
-    const [selectedStatus, setSelectedStatus] = useState<any>(null);
-    const [selectedRol, setSelectedRol] = useState<any>(null);
-    const [selectedCampus, setSelectedCampus] = useState<any>(null);
-    const [selectedAvailableCampus, setSelectedAvailableCampus] =
-        useState<any>(null);
-    const [selectedArea, setSelectedArea] = useState<any>(null);
 
     const theme = localStorage.getItem("@theme");
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
     // console.log("theme", themeParsed?.dataThemeMode);
-
-    const generateGUID = () => {
-        const S4 = (): string => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        };
-
-        return S4() + S4();
-    };
 
     const handleEditForm = (e: any) => {
         e.preventDefault();
@@ -133,39 +92,6 @@ const MainFormHook = ({
     };
 
     const findValue = (item: any, dataValue: any) => item.value === dataValue;
-
-    const areasByCampus = (idCampus: string) => {
-        const filteredIdAreas = campus?.find(
-            (item) => item.value === idCampus,
-        )?.areas;
-
-        const result = areas?.filter((area) =>
-            filteredIdAreas?.includes(area.value),
-        );
-        return result;
-    };
-
-    const getRolesByReference = () => {
-        const noFunctionaryRolesIds: string[] = [
-            "1cxJ0a8uCX7OTesEHT2G",
-            "FHSly0jguw1lwYSj8EHV",
-            "ShHQKRuKJfxHcV70XSvC",
-            "ZWb0Zs42lnKOjetXH5lq",
-        ];
-        // const referenceList: string[] = ["","",""]
-        if (reference === "functionary") {
-            const rolesFiltered = roles?.filter(
-                (rol) => !noFunctionaryRolesIds.includes(rol.value),
-            );
-            return rolesFiltered;
-        }
-        // else {
-        //     const rolesFiltered = roles?.filter(
-        //         (rol) => !noFunctionaryRolesIds.includes(rol.value),
-        //     );
-        // }
-        return roles;
-    };
 
     const handleChange = (
         value: string | boolean,
@@ -197,112 +123,6 @@ const MainFormHook = ({
         }));
     };
 
-    const changeHandler = (e: any) => {
-        setData({ ...data, [e.target.name]: e.target.value });
-
-        const diagnosticianFound = diagnostician?.find(
-            (user) => user.id === e.target.value,
-        );
-
-        reference === "diagnostician" &&
-            e.target.name === "id" &&
-            diagnosticianFound &&
-            // console.log("Este usuario ya existe!!");
-            (setErrorValid(
-                "¡Este documento ya está vinculado con un usuario existente!",
-            ),
-            setItemExist(true));
-
-        const campusFound = campus?.find(
-            (item) =>
-                item.label.toLocaleLowerCase() ===
-                e.target.value.toLocaleLowerCase(),
-        );
-        const specialtiesFound = specialties?.find(
-            (item) =>
-                item.label.toLocaleLowerCase() ===
-                e.target.value.toLocaleLowerCase(),
-        );
-        const areasFound = areas?.find(
-            (item) =>
-                item.label.toLocaleLowerCase() ===
-                e.target.value.toLocaleLowerCase(),
-        );
-
-        (reference === "areas" ||
-            reference === "campus" ||
-            reference === "specialties") &&
-            e.target.name === "name" &&
-            (campusFound || specialtiesFound || areasFound) &&
-            (setErrorValid(`¡Este nombre ya existe: -> ${e.target.value} !`),
-            setItemExist(true));
-    };
-
-    const dateChangeHandler = (e: any) => {
-        const dateFormat = moment(e.target.value).format("YYYY-MM-DD");
-        setData({
-            ...data,
-            [e.target.name]: dateFormat,
-            ["age"]: `${calculateAge(dateFormat)}`,
-        });
-    };
-
-    const selectChangeHandlerIdType = (e: any) => {
-        setData({ ...data, ["idType"]: e?.value });
-        setSelectedIdType(e);
-    };
-    const selectChangeHandlerIdTypeAdmin = (e: any) => {
-        setData({ ...data, ["idTypeAdmin"]: e?.value });
-        setSelectedIdTypeAdmin(e);
-    };
-    const selectChangeHandlerState = (e: any) => {
-        setData({ ...data, ["state"]: e?.value });
-        setSelectedState(e);
-    };
-    const selectChangeHandlerCountry = (e: any) => {
-        setData({ ...data, ["country"]: e?.value });
-        setSelectedCountry(e);
-    };
-    const selectChangeHandlerCity = (e: any) => {
-        setData({ ...data, ["city"]: e?.value });
-        setSelectedCity(e);
-    };
-    const selectChangeHandlerSpecialty = (e: any) => {
-        setData({ ...data, ["specialty"]: e?.value });
-        setSelectedSpecialty(e);
-    };
-    const selectChangeHandlerContract = (e: any) => {
-        setData({ ...data, ["contract"]: e?.value });
-        setSelectedContract(e);
-    };
-    const selectChangeHandlerRol = (e: any) => {
-        setData({ ...data, ["rol"]: e?.value });
-        setSelectedRol(e);
-    };
-    const selectChangeHandlerCampus = (e: any) => {
-        setData({ ...data, ["campus"]: e?.value });
-        setSelectedCampus(e);
-    };
-
-    const selectChangeHandlerAvailableCampus = (e: any) => {
-        setData({
-            ...data,
-            ["availableCampus"]: e?.map((item: any) => item.value),
-        });
-        setSelectedAvailableCampus(e);
-    };
-    const selectChangeHandlerArea = (e: any) => {
-        setData({ ...data, ["area"]: e?.value });
-        setSelectedArea(e);
-    };
-    const selectChangeHandlerStatus = (e: any) => {
-        setData({ ...data, ["isActive"]: e?.value });
-        setSelectedStatus(e);
-    };
-    const selectChangeHandlerPersonType = (e: any) => {
-        setData({ ...data, ["personType"]: e?.value });
-        setSelectedStatus(e);
-    };
     const handleMultipleChange = (event: { target: any }) => {
         event.target.files && setFiles([...event.target.files]);
     };
@@ -314,12 +134,6 @@ const MainFormHook = ({
             setIconFile(null);
             setFileName(null);
         }
-    };
-    const indicativeOneChangeHandler = (e: any) => {
-        setData({ ...data, ["indicative"]: e });
-    };
-    const indicativeTwoChangeHandler = (e: any) => {
-        setData({ ...data, ["indicativeTwo"]: e });
     };
 
     const uploadHandle = async () => {
@@ -348,7 +162,6 @@ const MainFormHook = ({
             currentDataObject.rol = data.rol;
             // currentDataObject.password = data.password;
             // currentDataObject.confirmPassword = data.confirmPassword;
-            currentDataObject.campus = data.campus;
             currentDataObject.area = data.area;
             currentDataObject.isActive = data.isActive;
 
@@ -462,25 +275,6 @@ const MainFormHook = ({
             newData = { ...currentDataObject };
         }
 
-        if (reference === "campus") {
-            const currentDataObject = { ...dataCampusObject };
-
-            handleShowMainFormEdit
-                ? (currentDataObject.uid = data.uid)
-                : (currentDataObject.uid = documentRef.id);
-            currentDataObject.name = data.name;
-            currentDataObject.description = data.description;
-            currentDataObject.phone2 = data.phone2;
-            currentDataObject.address = data.address;
-            currentDataObject.country = data.country;
-            currentDataObject.state = data.state;
-            currentDataObject.city = data.city;
-            currentDataObject.availableAreas = data.availableAreas;
-            currentDataObject.isActive = data.isActive;
-
-            newData = { ...currentDataObject };
-        }
-
         if (reference === "specialties") {
             const currentDataObject = { ...dataSpecialtyObject };
 
@@ -574,20 +368,6 @@ const MainFormHook = ({
                         // console.log(error);
                     });
             }
-
-            newData = { ...currentDataObject };
-        }
-
-        if (reference === "areas") {
-            const currentDataObject = { ...dataAreasObject };
-
-            handleShowMainFormEdit
-                ? (currentDataObject.uid = data.uid)
-                : (currentDataObject.uid = documentRef.id);
-            currentDataObject.name = data.name;
-            currentDataObject.description = data.description;
-            currentDataObject.availableCampus = data.availableCampus;
-            currentDataObject.isActive = data.isActive;
 
             newData = { ...currentDataObject };
         }
@@ -760,10 +540,7 @@ const MainFormHook = ({
         data.rol &&
         // data.password &&
         // data.confirmPassword &&
-        data.campus &&
         data.area;
-
-    const campusVal = !itemExist && reference === "campus" && data.name;
 
     const diagnosticianVal =
         reference === "diagnostician" &&
@@ -807,12 +584,6 @@ const MainFormHook = ({
         data.areaHead &&
         data.urlLink;
 
-    const areasVal =
-        !itemExist &&
-        reference === "areas" &&
-        data.name &&
-        data.availableCampus.length > 0;
-
     const specialtyVal =
         !itemExist && reference === "specialties" && data.name.length > 1;
 
@@ -852,11 +623,9 @@ const MainFormHook = ({
     const handleSendForm = async (e?: any) => {
         // console.log(data);
         if (
-            areasVal ||
             workAreasVal ||
             companyVal ||
             companyAdminVal ||
-            campusVal ||
             specialtyVal ||
             diagnosticianVal ||
             diagnosesVal ||
@@ -869,7 +638,6 @@ const MainFormHook = ({
             console.log("Entró");
             setIsLoading(true);
             const dataUpload = await uploadHandle();
-            setErrorDataUpload(dataUpload);
             setIsLoading(false);
             const errorFound = dataUpload.find((value) => !value.success);
             !errorFound && handleClose();
@@ -888,9 +656,7 @@ const MainFormHook = ({
                 setErrorValid(
                     `¡Ya existe un usuario con ese documento: -> ${data.id}!`,
                 );
-            (reference === "areas" ||
-                reference === "campus" ||
-                reference === "specialties") &&
+            (reference === "areas" || reference === "specialties") &&
                 itemExist &&
                 setErrorValid(
                     `¡Ya existe un registro con ese nombre: -> ${data.name}!`,
@@ -906,7 +672,6 @@ const MainFormHook = ({
         setErrorValid("");
         setIsLoading(false);
         setIsEdit(false);
-        setShowPassword(false);
         // setUrlPhoto("");
         clearSelectFields();
         setItemExist(false);
@@ -914,16 +679,6 @@ const MainFormHook = ({
     };
 
     const clearSelectFields = () => {
-        setSelectedIdType(null);
-        setSelectedState(null);
-        setSelectedCountry(null);
-        setSelectedCity(null);
-        setSelectedSpecialty(null);
-        setSelectedContract(null);
-        setSelectedStatus(null);
-        setSelectedRol(null);
-        setSelectedCampus(null);
-        setSelectedArea(null);
         setData(dataMainFormObject);
     };
 
@@ -933,24 +688,6 @@ const MainFormHook = ({
 
     const handleGetBirthDate = (e: any) => {
         // setSelectedAge(e.target.value);
-    };
-
-    const calculateAge = (birthDate: Date | string): number => {
-        const today = new Date();
-        const birthDay = new Date(birthDate);
-        let age = today.getFullYear() - birthDay.getFullYear();
-        const monthsDiff = today.getMonth() - birthDay.getMonth();
-        const daysDiff: number = today.getDate() - birthDay.getDate();
-
-        if (monthsDiff < 0 || (monthsDiff === 0 && daysDiff <= 0)) {
-            age--;
-        }
-
-        if (age < 0) {
-            age = 0;
-        }
-
-        return age;
     };
 
     const getAdminAndCompanyData: any = useCallback(() => {
@@ -986,20 +723,17 @@ const MainFormHook = ({
 
     const getAllSelectOptions = useCallback(async () => {
         if (handleShowMainForm || handleShowMainFormEdit) {
-            const campusResult = await getAllCampusQuery();
-            campusResult && setCampus(campusResult);
             const specialtyResult = await getAllSpecialtiesQuery();
             specialtyResult && setSpecialties(specialtyResult);
-            const agreementResult = await getAllAgreementsQuery();
-            agreementResult && setContract(agreementResult);
-            const areasResult = await getAllAreasQuery();
-            areasResult && setAreas(areasResult);
+
             const rolesResult = await getAllRolesQuery();
             rolesResult && setRoles(rolesResult);
+
             const diagnosticianResult = await getAllDocumentsQuery(
                 "diagnostician",
             );
             diagnosticianResult && setDiagnostician(diagnosticianResult);
+
             const usersResult = await getAllDocumentsQuery("users");
             usersResult && setAdminUsers(usersResult);
         }
@@ -1026,72 +760,29 @@ const MainFormHook = ({
     }, [editData, getAdminAndCompanyData, handleShowMainFormEdit, reference]);
 
     return {
+        modeTheme: themeParsed?.dataThemeMode,
         show,
-        isLoading,
         errorForm,
-        errorDataUpload,
-        errorValid,
+        isLoading,
         data,
-        selectedIdType,
-        selectedIdTypeAdmin,
-        selectedState,
-        selectedCountry,
-        selectedCity,
-        selectedSpecialty,
-        selectedContract,
-        selectedStatus,
-        selectedRol,
-        selectedCampus,
-        selectedAvailableCampus,
-        selectedArea,
-        files,
-        showPassword,
         isEdit,
         errorPass,
-        campus,
-        specialties,
-        contracts,
-        areas,
-        roles: getRolesByReference(),
-        modeTheme: themeParsed?.dataThemeMode,
+        errorValid,
         nextStep,
         companyVal,
         fileName,
+        setNextStep,
         setErrorPass,
         setErrorValid,
-        changeHandler,
-        handleChange,
         handleSendForm,
         handleClose,
         handleReset,
         setErrorForm,
-        clearSelectFields,
-        calculateAge,
-        handleGetBirthDate,
-        dateChangeHandler,
-        selectChangeHandlerIdType,
-        setShowPassword,
-        setFiles,
-        selectChangeHandlerRol,
-        selectChangeHandlerCampus,
-        selectChangeHandlerAvailableCampus,
-        selectChangeHandlerArea,
-        selectChangeHandlerStatus,
-        selectChangeHandlerContract,
-        selectChangeHandlerSpecialty,
-        selectChangeHandlerCity,
-        selectChangeHandlerCountry,
-        selectChangeHandlerState,
-        indicativeOneChangeHandler,
-        indicativeTwoChangeHandler,
+        handleChange,
         findValue,
         handleEditForm,
         handleMultipleChange,
         handleIconFileChange,
-        selectChangeHandlerPersonType,
-        selectChangeHandlerIdTypeAdmin,
-        areasByCampus,
-        setNextStep,
     };
 };
 

@@ -90,11 +90,8 @@ const UploadDataCsvModal = ({
     <Button onClick={onUploadDataModalCsv}>Subir Csv</Button>
 );
 
-const MainFormModal = ({
-    onMainFormModal,
-    campusIsEmpty,
-}: UploadDataButtonModalProps) => (
-    <Button disabled={campusIsEmpty} onClick={onMainFormModal}>
+const MainFormModal = ({ onMainFormModal }: UploadDataButtonModalProps) => (
+    <Button onClick={onMainFormModal}>
         <VscAdd size={18} className="" />
     </Button>
 );
@@ -141,12 +138,6 @@ export const ExportCSV = ({
     searchTerm,
     clearSearch,
 }: UploadDataModalProps) => {
-    // const [selectedRows, setSelectedRows] = React.useState([]);
-    // const [toggleCleared, setToggleCleared] = React.useState(false);
-    // const [dataTable, setDataTable] = React.useState(data);
-
-    const campusIsEmpty = isEmptyDataRef && reference === "areas";
-
     const actionsMemo = useMemo(() => {
         return (
             <div className="tw-flex tw-justify-between tw-w-full tw-space-x-4">
@@ -179,10 +170,7 @@ export const ExportCSV = ({
                     "documentTypes",
                 ].includes(reference) &&
                     onMainFormModal && (
-                        <MainFormModal
-                            campusIsEmpty={campusIsEmpty}
-                            onMainFormModal={onMainFormModal}
-                        />
+                        <MainFormModal onMainFormModal={onMainFormModal} />
                     )}
                 {refToShowButtonCsv.includes(reference) &&
                     onUploadDataModalCsv && (
@@ -200,15 +188,17 @@ export const ExportCSV = ({
                 )}
             </div>
         );
-    }, [searchTerm, handleSearch, clearSearch, reference, onMainFormModal, campusIsEmpty, onUploadDataModalCsv, onUploadDataModalPdf, data, tableTitle]);
-
-    // const handleRowSelected = React.useCallback((state: any) => {
-    //     setSelectedRows(state.selectedRows);
-    // }, []);
-
-    const handleRowEdit = (row: any, event: any) => {
-        // console.log(row);
-    };
+    }, [
+        searchTerm,
+        handleSearch,
+        clearSearch,
+        reference,
+        onMainFormModal,
+        onUploadDataModalCsv,
+        onUploadDataModalPdf,
+        data,
+        tableTitle,
+    ]);
 
     const conditionalRowStyles = [
         {
@@ -226,84 +216,28 @@ export const ExportCSV = ({
         selectAllRowsItemText: "Todos",
     };
 
-    // const contextActionsMemo = React.useMemo(() => {
-    //     const handleDelete = () => {
-    //         Swal.fire({
-    //             title: `Are you sure you want to delete:\r ${selectedRows.map(
-    //                 (r: TableDataItemOld) => r.SNO,
-    //             )}?`,
-    //             text: "You won't be able to revert this!",
-    //             icon: "warning",
-    //             showCancelButton: true,
-    //             // confirmButtonColor: "#3085d6",
-    //             // cancelButtonColor: "#d33",
-    //             confirmButtonText: "Yes, delete it!",
-    //         }).then((result) => {
-    //             if (result.isConfirmed) {
-    //                 Swal.fire(
-    //                     "Deleted!",
-    //                     "Your file has been deleted.",
-    //                     "success",
-    //                 );
-    //                 setToggleCleared(!toggleCleared);
-    //                 setDataTable(differenceBy(dataTable, selectedRows, "SNO"));
-    //             } else {
-    //                 setToggleCleared(!toggleCleared);
-    //             }
-    //         });
-    //     };
-
-    //     return (
-    //         <Button key="delete" onClick={handleDelete}>
-    //             Delete
-    //         </Button>
-    //     );
-    // }, [dataTable, selectedRows, toggleCleared]);
-
-    const tableDatas = campusIsEmpty
-        ? {
-            columns: [],
-            data: [],
-        }
-        : tableData;
-
     return (
         <DataTableExtensions
             export={false}
             print={false}
             filter={false}
-            {...tableDatas}
+            {...tableData}
             filterPlaceholder="Buscar"
         >
             <DataTable
-                // selectableRows
-                // contextActions={contextActionsMemo}
-                // clearSelectedRows={toggleCleared}
-                // onRowClicked={handleRowEdit}
-                // onSelectedRowsChange={handleRowSelected}
-                // conditionalRowStyles={conditionalRowStyles}
                 noDataComponent={
                     <NoDataCard
                         emptyRef={isEmptyDataRef}
                         reference={reference}
                     />
                 }
-               /*  onRowClicked={(row: any, event) => {
-                    if (reference === "zones" || (!["roles", "country", "departments", "cities", "documentTypes"].includes(reference) && !row.isDeleted)) {
-                        onMainFormModalEdit(row);
-                    }
-                }} */
-                //pointerOnHover={reference !== "roles"}
                 defaultSortFieldId={2}
                 columns={columns}
                 data={data}
-                // data={dataTable}
                 actions={actionsMemo}
                 pagination
                 paginationComponentOptions={paginationComponentOptions}
                 highlightOnHover
-                // title={tableTitle}
-                // progressPending={dataTable ? false : true}
                 theme="solarized"
                 customStyles={customStyles}
             />

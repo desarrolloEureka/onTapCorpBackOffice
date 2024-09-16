@@ -12,6 +12,7 @@ import {
     getWorkArasByCompanyId,
     getZoneById,
     getZonesByCompanyId,
+    saveCampus,
     saveDocumentsFb,
     saveEmployee,
     saveMeeting,
@@ -20,7 +21,7 @@ import {
     saveRoute,
     saveSocialNetworkImage,
     saveZone,
-    updateCampusByIdFb,
+    updateCampus,
     updateDocumentsByIdFb,
     updateMeeting,
     updateRoute,
@@ -247,31 +248,6 @@ export const saveEditDataDocumentsQuery = async ({
     // return;
 };
 
-export const saveAreasOnCampusQuery = async ({
-    id,
-    refArea,
-    reference,
-    data,
-    refExist = false,
-}: {
-    id: string;
-    refArea: string;
-    reference: string;
-    data: any;
-    refExist?: boolean;
-}) => {
-    const queryResult = await updateCampusByIdFb(
-        id,
-        refArea,
-        reference,
-        data,
-        refExist,
-    );
-    // console.log("Guardó área");
-    return queryResult;
-    // return;
-};
-
 export const saveNotificationQuery = async (dataSave: any) => {
     const result = await saveNotification(dataSave);
     return result;
@@ -294,6 +270,16 @@ export const saveMeetingQuery = async (dataSave: any, docRef: any) => {
 
 export const updateMeetingQuery = async (dataSave: any, docId: string) => {
     const result = await updateMeeting(docId, dataSave);
+    return result;
+};
+
+export const saveCampusQuery = async (dataSave: any, docRef: any) => {
+    const result = await saveCampus(dataSave, docRef);
+    return result;
+};
+
+export const updateCampusQuery = async (dataSave: any) => {
+    const result = await updateCampus(dataSave);
     return result;
 };
 
