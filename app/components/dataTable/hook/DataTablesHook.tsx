@@ -6,6 +6,7 @@ import {
     deleteDocumentByIdQuery,
     DeleteSocialNetwork,
     getAllDocumentsQuery,
+    getDocsByCompanyIdQuery,
     getHeadquartersByCompanyIdQuery,
     getMeetingStatusByCompanyIdQuery,
     getNotificationsByCompanyIdQuery,
@@ -15,15 +16,13 @@ import {
 import { DataMainFormObject } from "@/types/mainForm";
 import { setDataTable } from "@/types/tables";
 import { IconButton } from "@mui/material";
-import { onSnapshot } from "firebase/firestore";
 import _ from "lodash";
 import moment from "moment";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { FaTrashCan } from "react-icons/fa6";
 import { MdModeEdit } from "react-icons/md";
 import Swal from "sweetalert2";
-import Image from "next/image";
-import { allRef } from "@/firebase/Documents";
 
 const CustomTitle = ({ row }: any) => (
     <div data-tag="allowRowEvents">
@@ -132,6 +131,17 @@ const DataTablesHook = (reference: string) => {
                 ? userData && userData?.companyId
                     ? await getHeadquartersByCompanyIdQuery(userData?.companyId)
                     : []
+                : reference === "circular" ||
+                  reference === "events" ||
+                  reference === "policy" ||
+                  reference === "forms" ||
+                  reference === "news"
+                ? userData && userData?.companyId
+                    ? await getDocsByCompanyIdQuery(
+                          userData?.companyId,
+                          reference,
+                      )
+                    : []
                 : await getAllDocumentsQuery(reference);
 
         const labelToDisplay = ["professionals", "patients", "functionary"];
@@ -224,6 +234,20 @@ const DataTablesHook = (reference: string) => {
                     url: "Url Locación",
                     isActive: "Estado",
                 };
+            } else if (
+                reference === "circular" ||
+                reference === "events" ||
+                reference === "policy" ||
+                reference === "forms" ||
+                reference === "news"
+            ) {
+                columnNamesToDisplay = {
+                    uid: "Acciones",
+                    timestamp: "Fecha Registro",
+                    subject: "Asunto",
+                    url: "Enlace",
+                    isActive: "Estado",
+                };
             } else {
                 columnNamesToDisplay = {
                     uid: "Acciones",
@@ -283,7 +307,12 @@ const DataTablesHook = (reference: string) => {
                             <div>
                                 {reference !== "routes" &&
                                 reference !== "logos" &&
-                                reference !== "meetingStatus" ? (
+                                reference !== "meetingStatus" &&
+                                reference !== "circular" &&
+                                reference !== "events" &&
+                                reference !== "policy" &&
+                                reference !== "forms" &&
+                                reference !== "news" ? (
                                     <>
                                         <IconButton
                                             onClick={() =>

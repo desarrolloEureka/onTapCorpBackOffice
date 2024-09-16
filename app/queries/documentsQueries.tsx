@@ -3,6 +3,7 @@ import {
     deleteSocialNetwork,
     getAllDocumentsFb,
     getAreasByCompanyId,
+    getDocsByCompanyId,
     getDocumentsByIdFb,
     getHeadquartersByCompanyId,
     getMeetingStatusByCompanyId,
@@ -133,6 +134,14 @@ export const getAllDocumentsQuery = async (ref: string) => {
     return documents;
 };
 
+export const getDocsByCompanyIdQuery = async (
+    idCompany: string,
+    reference: string,
+) => {
+    const documents = await getDocsByCompanyId(idCompany, reference);
+    return documents;
+};
+
 export const getZonesByCompanyIdQuery = async (idCompany: string) => {
     const documents = await getZonesByCompanyId(idCompany);
     return documents;
@@ -221,16 +230,12 @@ export const getDocumentReference = (ref: string) => {
 export const saveDataDocumentsQuery = async ({
     documentRef,
     data,
-}: // accessTokenUser,
-{
+}: {
     documentRef: any;
     data: any;
-    // accessTokenUser: string;
 }) => {
     const queryResult = await saveOneDocumentFb(documentRef, data);
-    // console.log("Nuevo");
     return queryResult;
-    // return;
 };
 
 export const saveEditDataDocumentsQuery = async ({

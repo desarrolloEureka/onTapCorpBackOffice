@@ -9,14 +9,27 @@ import {
 } from "react-bootstrap";
 import { BiSpreadsheet } from "react-icons/bi";
 import { BsPersonCircle } from "react-icons/bs";
+import { CgLoadbarDoc } from "react-icons/cg";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { FaMapLocationDot, FaRegAddressCard } from "react-icons/fa6";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { ImHome3 } from "react-icons/im";
 import { IoMdBusiness } from "react-icons/io";
-import { IoDocumentOutline, IoPerson } from "react-icons/io5";
-import { MdList, MdOutlineChecklist, MdOutlinePersonPin } from "react-icons/md";
+import {
+    IoDocumentLockOutline,
+    IoDocumentOutline,
+    IoNewspaperSharp,
+    IoPerson,
+} from "react-icons/io5";
+import {
+    MdList,
+    MdOutlineChecklist,
+    MdOutlineEventNote,
+    MdOutlinePersonPin,
+} from "react-icons/md";
 import { PiGpsDuotone, PiMapPinSimpleFill } from "react-icons/pi";
+import { RiNewsLine } from "react-icons/ri";
+import { SiGoogleforms } from "react-icons/si";
 import { VscSettings } from "react-icons/vsc";
 
 const HeadDropDown = dynamic(
@@ -260,7 +273,7 @@ const HeaderContent = ({
                                 </NavDropdown>
                             )}
 
-                            {/*  Configuraciónes */}
+                            {/*  Configuraciones */}
                             {(userRole === "superadmin" ||
                                 userRole === "operativo" ||
                                 userRole === "administrativo") && (
@@ -296,6 +309,77 @@ const HeaderContent = ({
                                             className="tw-mb-1 tw-mr-1"
                                         />
                                         Tipos Documento
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                            )}
+
+                            {/*  Comunicaciones */}
+                            {(userRole === "superadmin" ||
+                                userRole === "operativo" ||
+                                userRole === "administrativo") && (
+                                <NavDropdown
+                                    title={
+                                        <>
+                                            <IoNewspaperSharp
+                                                size={20}
+                                                className="tw-mb-1 tw-mr-1"
+                                            />
+                                            Comunicaciones
+                                        </>
+                                    }
+                                    id="nav-dropdown"
+                                    className="nav-item dropdown"
+                                >
+                                    <NavDropdown.Item
+                                        href="#circularNews"
+                                        eventKey="circular"
+                                    >
+                                        <CgLoadbarDoc
+                                            size={20}
+                                            className="tw-mb-1 tw-mr-1"
+                                        />
+                                        Circulares
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        href="#events"
+                                        eventKey="events"
+                                    >
+                                        <MdOutlineEventNote
+                                            size={20}
+                                            className="tw-mb-1 tw-mr-1"
+                                        />
+                                        Eventos
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        href="#policy"
+                                        eventKey="policy"
+                                    >
+                                        <IoDocumentLockOutline
+                                            size={20}
+                                            className="tw-mb-1 tw-mr-1"
+                                        />
+                                        Políticas
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        href="#formsAndRequests"
+                                        eventKey="forms"
+                                        className="tw-flex tw-flex-row tw-items-center tw-justify-center"
+                                    >
+                                        <SiGoogleforms
+                                            size={28}
+                                            className="tw-mb-1 tw-mr-1"
+                                        />
+                                        <span>Formularios y Solicitudes</span>
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        href="#news"
+                                        eventKey="news"
+                                    >
+                                        <RiNewsLine
+                                            size={20}
+                                            className="tw-mb-1 tw-mr-1"
+                                        />
+                                        Noticias
                                     </NavDropdown.Item>
                                 </NavDropdown>
                             )}

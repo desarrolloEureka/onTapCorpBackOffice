@@ -13,6 +13,7 @@ import RoutesFormModal from "../routes/routesFormModal";
 import LogosFormModal from "../logos/logosFormModal";
 import MeetingStatusesModal from "../meetings/MeetingStatusesModal";
 import CampusModal from "../campus/CampusModal";
+import NewsModal from "../News/NewsModal";
 
 const DataTableComponent = ({
     componentTitle,
@@ -124,7 +125,6 @@ const DataTableComponent = ({
                 ) : reference === "routes" ? (
                     <RoutesFormModal
                         handleShowMainForm={handleShowMainForm}
-                        handleDeleteItem={handleDeleteItem}
                         setHandleShowMainForm={setHandleShowMainForm}
                         handleShowMainFormEdit={handleShowMainFormEdit}
                         setHandleShowMainFormEdit={setHandleShowMainFormEdit}
@@ -135,7 +135,6 @@ const DataTableComponent = ({
                 ) : reference === "logos" ? (
                     <LogosFormModal
                         handleShowMainForm={handleShowMainForm}
-                        handleDeleteItem={handleDeleteItem}
                         setHandleShowMainForm={setHandleShowMainForm}
                         handleShowMainFormEdit={handleShowMainFormEdit}
                         setHandleShowMainFormEdit={setHandleShowMainFormEdit}
@@ -146,7 +145,6 @@ const DataTableComponent = ({
                 ) : reference === "meetingStatus" ? (
                     <MeetingStatusesModal
                         handleShowMainForm={handleShowMainForm}
-                        handleDeleteItem={handleDeleteItem}
                         setHandleShowMainForm={setHandleShowMainForm}
                         handleShowMainFormEdit={handleShowMainFormEdit}
                         setHandleShowMainFormEdit={setHandleShowMainFormEdit}
@@ -157,7 +155,20 @@ const DataTableComponent = ({
                 ) : reference === "campus" ? (
                     <CampusModal
                         handleShowMainForm={handleShowMainForm}
-                        handleDeleteItem={handleDeleteItem}
+                        setHandleShowMainForm={setHandleShowMainForm}
+                        handleShowMainFormEdit={handleShowMainFormEdit}
+                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                        editData={editData}
+                        title={tableTitle}
+                        reference={reference}
+                    />
+                ) : reference === "circular" ||
+                  reference === "events" ||
+                  reference === "policy" ||
+                  reference === "forms" ||
+                  reference === "news" ? (
+                    <NewsModal
+                        handleShowMainForm={handleShowMainForm}
                         setHandleShowMainForm={setHandleShowMainForm}
                         handleShowMainFormEdit={handleShowMainFormEdit}
                         setHandleShowMainFormEdit={setHandleShowMainFormEdit}

@@ -80,21 +80,19 @@ export const saveDocumentsFb = async (data: any, reference: string) => {
     return documentRef;
 };
 
-export const saveOneDocumentFb = async (
-    documentRef: any,
-    data: any,
-    // reference: string,
-) => {
-    // const documentRef = doc(allRef({ ref: reference }));
-    await setDoc(documentRef, {
-        ...data,
-        // uid: documentRef.id,
-        timestamp: currentDate,
-    });
+export const saveOneDocumentFb = async (documentRef: any, data: any) => {
+    try {
+        // Guarda el documento en Firestore
+        await setDoc(documentRef, {
+            ...data,
+            timestamp: currentDate,
+        });
 
-    // console.log({ ...data, uid: documentRef.id, timestamp: new Date() });
-    // console.log(currentDate);
-    return documentRef;
+        return { success: true, message: "Data saved successfully" };
+    } catch (error) {
+        console.error("Error saving notification:", error);
+        return { success: false, message: "Error saving data", error };
+    }
 };
 
 export const saveDocumentByIdFb = async (
@@ -129,11 +127,17 @@ export const updateDocumentsByIdFb = async (
     newData: any,
     reference: string,
 ) => {
-    const document = docRef({ ref: reference, collection: id });
-    return await updateDoc(document, {
-        ...newData,
-        timestamp: currentDate,
-    });
+    try {
+        const document = docRef({ ref: reference, collection: id });
+        await updateDoc(document, {
+            ...newData,
+            timestamp: currentDate,
+        });
+        return { success: true, message: "Data updated successfully" };
+    } catch (error) {
+        console.error("Error updating data:", error);
+        return { success: false, message: "Error updating data", error };
+    }
 };
 
 export const saveNotification = async (dataSave: any) => {
@@ -232,6 +236,26 @@ export const updateCampus = async (dataSave: any) => {
     } catch (error) {
         console.error("Error updating data:", error);
         return { success: false, message: "Error updating data", error };
+    }
+};
+
+export const getDocsByCompanyId = async (companyId: any, reference: string) => {
+    try {
+        const q = query(
+            collection(db, reference),
+            where("idCompany", "==", companyId),
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        const docs = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        return docs;
+    } catch (error) {
+        console.error("Error fetching Docs:", error);
+        return [];
     }
 };
 

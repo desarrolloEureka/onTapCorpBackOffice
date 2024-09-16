@@ -9,9 +9,7 @@ import useAuth from "@/firebase/auth";
 import {
     getDocumentReference,
     saveCampusQuery,
-    saveMeetingQuery,
     updateCampusQuery,
-    updateMeetingQuery,
 } from "@/queries/documentsQueries";
 import {
     CampusDataPhone,
@@ -48,16 +46,6 @@ const CampusHook = ({
 
     const theme = localStorage.getItem("@theme");
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
-
-    // const orderedDays = [
-    //     "Monday",
-    //     "Tuesday",
-    //     "Wednesday",
-    //     "Thursday",
-    //     "Friday",
-    //     "Saturday",
-    //     "Sunday",
-    // ];
 
     const orderedDays = Object.keys(daysInSpanish);
 
@@ -215,8 +203,6 @@ const CampusHook = ({
         setIsLoading(true);
         try {
             if (userData?.companyId) {
-                console.log({ ...data, idCompany: userData.companyId });
-
                 const formData = {
                     ...data,
                     idCompany: userData.companyId,
@@ -273,7 +259,6 @@ const CampusHook = ({
         setIsLoading(true);
         try {
             if (userData?.companyId) {
-                console.log(data);
                 const campusQueryResult = await updateCampusQuery(data);
 
                 if (campusQueryResult.success) {

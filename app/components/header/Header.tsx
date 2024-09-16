@@ -87,6 +87,113 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
+                {/* >------ Comunicaciones -------< */}
+
+                {/* Vista Circulares */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="circular"
+                    role="tabpanel"
+                    eventKey="circular"
+                >
+                    <BannerMenu
+                        seoTitle="Circulares"
+                        title="Circulares"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <DataTableComponent
+                        componentTitle=""
+                        componentDescription=""
+                        tableTitle="Circulares"
+                        reference="circular"
+                    />
+                </Tab.Pane>
+
+                {/* Vista Eventos */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="events"
+                    role="tabpanel"
+                    eventKey="events"
+                >
+                    <BannerMenu
+                        seoTitle="Eventos"
+                        title="Eventos"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <DataTableComponent
+                        componentTitle=""
+                        componentDescription=""
+                        tableTitle="Eventos"
+                        reference="events"
+                    />
+                </Tab.Pane>
+
+                {/* Vista Políticas */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="policy"
+                    role="tabpanel"
+                    eventKey="policy"
+                >
+                    <BannerMenu
+                        seoTitle="Políticas"
+                        title="Políticas"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <DataTableComponent
+                        componentTitle=""
+                        componentDescription=""
+                        tableTitle="Políticas"
+                        reference="policy"
+                    />
+                </Tab.Pane>
+
+                {/* Vista Formularios y Solicitudes */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="forms"
+                    role="tabpanel"
+                    eventKey="forms"
+                >
+                    <BannerMenu
+                        seoTitle="Formularios y Solicitudes"
+                        title="Formularios y Solicitudes"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <DataTableComponent
+                        componentTitle=""
+                        componentDescription=""
+                        tableTitle="Formularios y Solicitudes"
+                        reference="forms"
+                    />
+                </Tab.Pane>
+
+                {/* Vista Noticias */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="news"
+                    role="tabpanel"
+                    eventKey="news"
+                >
+                    <BannerMenu
+                        seoTitle="Noticias"
+                        title="Noticias"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <DataTableComponent
+                        componentTitle=""
+                        componentDescription=""
+                        tableTitle="Noticias"
+                        reference="news"
+                    />
+                </Tab.Pane>
+
                 {/* Vista de Funcionarios */}
                 <Tab.Pane
                     className="tab-pane text-muted"
@@ -107,6 +214,7 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         reference="emptyTable"
                     />
                 </Tab.Pane>
+
                 {/* Vista de Notificaciones */}
                 <Tab.Pane
                     className="tab-pane text-muted"
@@ -170,7 +278,7 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
-                {/* Vista de Paises */}
+                {/* Vista de Países */}
                 <Tab.Pane
                     className="tab-pane text-muted"
                     id="users"

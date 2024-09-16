@@ -2,7 +2,7 @@
 import { PaletteMode } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch, { SwitchProps } from "@mui/material/Switch";
-import { styled, ThemeProvider, createTheme } from "@mui/material/styles";
+import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
 import { ChangeEvent } from "react";
 
 const IOSSwitch = styled((props: SwitchProps) => (
@@ -90,7 +90,7 @@ const CustomSwitch = ({
                     />
                 }
                 label="On/Off"
-                sx={{ color: "#396593" }}
+                sx={{ color: modeTheme === "light" ? "#396593" : "#8bb8e7" }}
                 labelPlacement="bottom"
             />
         </ThemeProvider>
