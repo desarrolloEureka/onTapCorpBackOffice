@@ -98,11 +98,15 @@ const TemplateContainer = ({
   userData,
   companyData,
   headquarterData,
+  companyDataUrls,
+  headquarterDataUrls,
   color,
 }: {
   userData: any;
   companyData: any;
   headquarterData: any;
+  companyDataUrls: any;
+  headquarterDataUrls: any;
   color: string;
 }) => {
   const finalArray = orderArray(userData, headquarterData);
@@ -229,8 +233,8 @@ const TemplateContainer = ({
         <SaveContactButtonColor
           colorButton={color}
           userData={userData}
-          companyData={companyData}
-          headquarterData={headquarterData}
+          companyData={companyDataUrls}
+          headquarterData={headquarterDataUrls}
           second={false}
         />
         <Container

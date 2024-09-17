@@ -123,6 +123,8 @@ const ThemeOne = ({
           userData={userData}
           companyData={companyData}
           headquarterData={headquarterData}
+          companyDataUrls={companyDataUrls.urls}
+          headquarterDataUrls={areaDataUrls?.urls}
           color="#030124"
         />
         <Footer socialNetworks={companyDataUrls.urls} />{" "}

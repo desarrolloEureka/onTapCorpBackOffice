@@ -83,14 +83,20 @@ const SaveContactButtonColor = ({
       // vCardData += `NOTE:${userData.professional_profile?.text ?? ''}\n`;
 
       // Agregar cada URL social si están disponibles
-      /*
-userData.urls?.forEach((url, index) => {
+
+      companyData?.forEach((url: any, index: any) => {
         if (url.checked) {
           vCardData += `item${index}.URL:${url.url}\n`;
           vCardData += `item${index}.X-ABLabel:${url.name}\n`;
         }
       });
-*/
+
+      headquarterData?.forEach((url: any, index: any) => {
+        if (url.checked) {
+          vCardData += `item${index}.URL:${url.url}\n`;
+          vCardData += `item${index}.X-ABLabel:${url.name}\n`;
+        }
+      });
 
       // Agregar la imagen en formato base64
       // vCardData += `PHOTO;ENCODING=b;TYPE=JPEG:${imageData}\n`;
