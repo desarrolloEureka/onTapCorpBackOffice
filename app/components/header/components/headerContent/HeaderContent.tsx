@@ -342,8 +342,10 @@ const HeaderContent = ({
                                     </NavDropdown>
                                 )}
 
-                            {/*  Plantillas */}
-                            {(userRole === "operativo" ||
+                            {/*  Plantillas, quitar userRole === "superadmin" || despues del desarrollo */}
+                            {(
+                                userRole === "superadmin" ||
+                                userRole === "operativo" ||
                                 userRole === "administrativo") && (
                                     <NavDropdown
                                         title={
@@ -371,7 +373,7 @@ const HeaderContent = ({
 
                                         <NavDropdown.Item
                                             //href="#functionary"
-                                            eventKey="second"
+                                            eventKey="tarjetas"
                                         >
                                             <FaRegAddressCard
                                                 size={20}

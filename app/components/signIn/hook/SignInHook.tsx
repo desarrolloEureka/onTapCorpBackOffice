@@ -1,6 +1,6 @@
 import { LoginData } from "@/data/user";
 import useAuth from "@/firebase/auth";
-import { loginFirebase } from "@/firebase/user";
+import { loginFirebase, getProfileDataByIdFb } from "@/firebase/user";
 import { LoginParams } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -27,16 +27,19 @@ const SignUpHook = () => {
 
     const handleSignIn = async ({ email, password }: LoginParams) => {
         setError("");
-        await loginFirebase(email, password)
-            .then((result) => {
-                setError("");
-                setSignIn(true);
-            })
-            .catch((error) => {
-                // ErrorAlert();
-                setError("Las credenciales son incorrectas, intenta de nuevo.");
-                setSignIn(false);
-            });
+        try {
+            const result = await loginFirebase(email, password);
+            setError("");
+            setSignIn(true);
+    
+            if (result && result.user) {
+                const user = await getProfileDataByIdFb(result.user.uid);
+                await localStorage.setItem('@user', JSON.stringify(user));
+            }
+        } catch (error) {
+            setError("Las credenciales son incorrectas, intenta de nuevo.");
+            setSignIn(false);
+        }
     };
 
     const changeHandler = (e: any) => {
