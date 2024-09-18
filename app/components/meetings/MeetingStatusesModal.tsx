@@ -1,15 +1,13 @@
 import { ModalParamsMainForm } from "@/types/modals";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
-import FilePresentIcon from "@mui/icons-material/FilePresent";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { InputAdornment, PaletteMode, TextField } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Button, Col, Form, Modal } from "react-bootstrap";
-import MeetingStatusesHook from "./hook/MeetingStatusesHook";
-import { IoMdClose } from "react-icons/io";
-import { ImCancelCircle } from "react-icons/im";
-import { VscSave } from "react-icons/vsc";
+import { Col, Form, Modal } from "react-bootstrap";
 import { FiEdit } from "react-icons/fi";
+import { ImCancelCircle } from "react-icons/im";
+import { IoMdClose } from "react-icons/io";
+import { RiSave2Fill } from "react-icons/ri";
+import MeetingStatusesHook from "./hook/MeetingStatusesHook";
 
 const MeetingStatusesModal = ({
     handleShowMainForm,
@@ -66,7 +64,8 @@ const MeetingStatusesModal = ({
                     >
                         <span>Nuevo Estado de Reunión</span>
                         <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-center tw-items-center -tw-mt-2">
-                            <Button
+                            <button
+                                type="button"
                                 onClick={handleClose}
                                 className="tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center"
                                 style={{
@@ -76,7 +75,7 @@ const MeetingStatusesModal = ({
                                 }}
                             >
                                 <IoMdClose size={35} color={"white"} />
-                            </Button>
+                            </button>
                         </div>
                     </Modal.Title>
 
@@ -125,42 +124,40 @@ const MeetingStatusesModal = ({
 
                 <Modal.Footer className="tw-flex tw-flex-row tw-justify-between">
                     <Col className="tw-flex tw-flex-row tw-space-x-2 tw-items-center tw-justify-end">
-                        <Button
-                            className="tw-flex tw-items-center btn-admin"
-                            variant="light"
+                        <button
+                            type="button"
+                            className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
                             onClick={handleClose}
                         >
-                            <ImCancelCircle size={20} />
+                            <ImCancelCircle size={28} />
                             {/* Cancelar */}
-                        </Button>
+                        </button>
 
                         {!isEdit && handleShowMainFormEdit ? (
-                            <Button
-                                variant="primary"
-                                className="btn-save-admin"
+                            <button
+                                type="submit"
+                                className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
                                 onClick={handleEditForm}
                             >
-                                <FiEdit size={20} />
-                            </Button>
+                                <FiEdit size={28} />
+                            </button>
                         ) : (
-                            <>
-                                <Button
-                                    className={`${
-                                        isLoading && "btn-loader"
-                                    } tw-ml-5 btn-save-admin`}
-                                    type="submit"
-                                >
-                                    {isLoading ? (
-                                        <span className="ml-2 loading">
-                                            <i className="ri-loader-2-fill"></i>
-                                        </span>
-                                    ) : (
-                                        <span className="">
-                                            <VscSave size={18} />
-                                        </span>
-                                    )}
-                                </Button>
-                            </>
+                            <button
+                                type="submit"
+                                className={`${
+                                    isLoading && "btn-loader"
+                                } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
+                            >
+                                {isLoading ? (
+                                    <span className="ml-2 loading">
+                                        <i className="ri-loader-2-fill"></i>
+                                    </span>
+                                ) : (
+                                    <span className="tw-text-white">
+                                        <RiSave2Fill size={28} />
+                                    </span>
+                                )}
+                            </button>
                         )}
                     </Col>
                 </Modal.Footer>

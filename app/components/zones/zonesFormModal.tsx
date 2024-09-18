@@ -2,18 +2,14 @@ import { ModalParamsMainForm } from "@/types/modals";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import FilePresentIcon from "@mui/icons-material/FilePresent";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import {
-    InputAdornment,
-    PaletteMode,
-    TextField
-} from "@mui/material";
+import { InputAdornment, PaletteMode, TextField } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Button, Col, Form, Modal } from "react-bootstrap";
-import ZonesFormHook from "./hook/zonesFormHook";
-import { IoMdClose } from "react-icons/io";
-import { ImCancelCircle } from "react-icons/im";
-import { VscSave } from "react-icons/vsc";
 import { FiEdit } from "react-icons/fi";
+import { ImCancelCircle } from "react-icons/im";
+import { IoMdClose } from "react-icons/io";
+import { RiSave2Fill } from "react-icons/ri";
+import ZonesFormHook from "./hook/zonesFormHook";
 
 const ZonesFormModal = ({
     handleShowMainForm,
@@ -22,7 +18,7 @@ const ZonesFormModal = ({
     setHandleShowMainFormEdit,
     editData,
     title,
-    reference
+    reference,
 }: ModalParamsMainForm) => {
     const {
         modeTheme,
@@ -42,7 +38,7 @@ const ZonesFormModal = ({
         handleAddressChange,
         handleAddAddress,
         isEdit,
-        handleEditForm
+        handleEditForm,
     } = ZonesFormHook({
         handleShowMainForm,
         setHandleShowMainForm,
@@ -67,22 +63,18 @@ const ZonesFormModal = ({
             onHide={handleClose}
             aria-hidden="false"
             aria-modal="true"
-            contentClassName={
-                reference !== "companies" ? "modal-admin" : ""
-            }
+            contentClassName={reference !== "companies" ? "modal-admin" : ""}
         >
             <Form onReset={handleReset} onSubmit={handleSendForm}>
                 <ThemeProvider theme={theme}>
-
                     <Modal.Title
                         className={`modal-title-admin tw-pt-5 tw-px-8 tw-flex tw-flex-row tw-justify-between`}
                         as="h6"
                     >
-                        <span>
-                            Zona nueva
-                        </span>
+                        <span>Zona nueva</span>
                         <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-center tw-items-center -tw-mt-2">
-                            <Button
+                            <button
+                                type="button"
                                 onClick={handleClose}
                                 className="tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center"
                                 style={{
@@ -91,11 +83,8 @@ const ZonesFormModal = ({
                                     border: "none",
                                 }}
                             >
-                                <IoMdClose
-                                    size={35}
-                                    color={"white"}
-                                />
-                            </Button>
+                                <IoMdClose size={35} color={"white"} />
+                            </button>
                         </div>
                     </Modal.Title>
 
@@ -107,9 +96,7 @@ const ZonesFormModal = ({
                                         <TextField
                                             value={zoneName}
                                             onChange={(e) =>
-                                                setZoneName(
-                                                    e.target.value,
-                                                )
+                                                setZoneName(e.target.value)
                                             }
                                             type="text"
                                             id="zoneName"
@@ -117,9 +104,7 @@ const ZonesFormModal = ({
                                             label="Nombre Zona"
                                             variant="standard"
                                             color="primary"
-                                            helperText={
-                                                zoneNameError
-                                            }
+                                            helperText={zoneNameError}
                                             error={!!zoneNameError}
                                             InputProps={{
                                                 startAdornment: (
@@ -130,13 +115,10 @@ const ZonesFormModal = ({
                                             }}
                                             InputLabelProps={{
                                                 style: {
-                                                    fontSize:
-                                                        "20px",
-                                                    fontWeight:
-                                                        "bold",
+                                                    fontSize: "20px",
+                                                    fontWeight: "bold",
                                                     color:
-                                                        modeTheme ===
-                                                            "light"
+                                                        modeTheme === "light"
                                                             ? "#396593"
                                                             : "#8bb8e7",
                                                 },
@@ -147,9 +129,7 @@ const ZonesFormModal = ({
                                         <TextField
                                             value={zoneManager}
                                             onChange={(e) =>
-                                                setZoneManager(
-                                                    e.target.value,
-                                                )
+                                                setZoneManager(e.target.value)
                                             }
                                             type="text"
                                             id="zoneManager"
@@ -157,12 +137,8 @@ const ZonesFormModal = ({
                                             label="Jefe Zona"
                                             variant="standard"
                                             color="primary"
-                                            helperText={
-                                                zoneManagerError
-                                            }
-                                            error={
-                                                !!zoneManagerError
-                                            }
+                                            helperText={zoneManagerError}
+                                            error={!!zoneManagerError}
                                             InputProps={{
                                                 startAdornment: (
                                                     <InputAdornment position="start">
@@ -172,86 +148,74 @@ const ZonesFormModal = ({
                                             }}
                                             InputLabelProps={{
                                                 style: {
-                                                    fontSize:
-                                                        "20px",
-                                                    fontWeight:
-                                                        "bold",
+                                                    fontSize: "20px",
+                                                    fontWeight: "bold",
                                                     color:
-                                                        modeTheme ===
-                                                            "light"
+                                                        modeTheme === "light"
                                                             ? "#396593"
                                                             : "#8bb8e7",
                                                 },
                                             }}
                                         />
                                     </div>
-                                    {addresses.map(
-                                        (address, index) => (
-                                            <div
-                                                key={index}
-                                                className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full"
-                                            >
-                                                <TextField
-                                                    value={address}
-                                                    onChange={(e) =>
-                                                        handleAddressChange(
-                                                            index,
-                                                            e.target
-                                                                .value,
-                                                        )
-                                                    }
-                                                    type="text"
-                                                    id={`address-${index}`}
-                                                    fullWidth
-                                                    label={`Dirección ${index + 1
-                                                        } (Opcional)`}
-                                                    variant="standard"
-                                                    color="primary"
-                                                    helperText={
-                                                        index ===
-                                                            addresses.length -
-                                                            1
-                                                            ? addressesError
-                                                            : ""
-                                                    }
-                                                    error={
-                                                        index ===
-                                                        addresses.length -
-                                                        1 &&
-                                                        !!addressesError
-                                                    }
-                                                    InputProps={{
-                                                        startAdornment:
-                                                            (
-                                                                <InputAdornment position="start">
-                                                                    <ExploreOutlinedIcon />
-                                                                </InputAdornment>
-                                                            ),
-                                                    }}
-                                                    InputLabelProps={{
-                                                        style: {
-                                                            fontSize:
-                                                                "20px",
-                                                            fontWeight:
-                                                                "bold",
-                                                            color:
-                                                                modeTheme ===
-                                                                    "light"
-                                                                    ? "#396593"
-                                                                    : "#8bb8e7",
-                                                        },
-                                                    }}
-                                                />
-                                            </div>
-                                        ),
-                                    )}
+                                    {addresses.map((address, index) => (
+                                        <div
+                                            key={index}
+                                            className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full"
+                                        >
+                                            <TextField
+                                                value={address}
+                                                onChange={(e) =>
+                                                    handleAddressChange(
+                                                        index,
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                type="text"
+                                                id={`address-${index}`}
+                                                fullWidth
+                                                label={`Dirección ${
+                                                    index + 1
+                                                } (Opcional)`}
+                                                variant="standard"
+                                                color="primary"
+                                                helperText={
+                                                    index ===
+                                                    addresses.length - 1
+                                                        ? addressesError
+                                                        : ""
+                                                }
+                                                error={
+                                                    index ===
+                                                        addresses.length - 1 &&
+                                                    !!addressesError
+                                                }
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <ExploreOutlinedIcon />
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                                InputLabelProps={{
+                                                    style: {
+                                                        fontSize: "20px",
+                                                        fontWeight: "bold",
+                                                        color:
+                                                            modeTheme ===
+                                                            "light"
+                                                                ? "#396593"
+                                                                : "#8bb8e7",
+                                                    },
+                                                }}
+                                            />
+                                        </div>
+                                    ))}
                                     <div className="tw-flex tw-flex-row tw-px-3 tw-mt-7 tw-mb-4 tw-w-full">
                                         <div className="tw-flex tw-flex-row tw-w-38 tw-rounded-3xl tw-bg-[#396593]">
                                             <Button
                                                 variant="outlined"
-                                                onClick={
-                                                    handleAddAddress
-                                                }
+                                                onClick={handleAddAddress}
                                                 className="tw-text-white"
                                             >
                                                 Añadir Dirección
@@ -262,45 +226,44 @@ const ZonesFormModal = ({
                             </div>
                         </div>
                     </Modal.Body>
-
                 </ThemeProvider>
 
                 <Modal.Footer className="tw-flex tw-flex-row tw-justify-between">
                     <Col className="tw-flex tw-flex-row tw-space-x-2 tw-items-center tw-justify-end">
-                        <Button
-                            className="tw-flex tw-items-center btn-admin"
-                            variant="light"
+                        <button
+                            type="button"
+                            className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
                             onClick={handleClose}
                         >
-                            <ImCancelCircle size={20} />
+                            <ImCancelCircle size={28} />
                             {/* Cancelar */}
-                        </Button>
+                        </button>
 
                         {!isEdit && handleShowMainFormEdit ? (
-                            <Button
-                                variant="primary"
+                            <button
+                                type="submit"
+                                className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
                                 onClick={handleEditForm}
                             >
-                                <FiEdit size={20} />
-                            </Button>
+                                <FiEdit size={28} />
+                            </button>
                         ) : (
-                            <>
-                                <Button
-                                    className={`${isLoading && "btn-loader"
-                                        } tw-ml-5 btn-save-admin`}
-                                    type="submit"
-                                >
-                                    {isLoading ? (
-                                        <span className="ml-2 loading">
-                                            <i className="ri-loader-2-fill"></i>
-                                        </span>
-                                    ) : (
-                                        <span className="">
-                                            <VscSave size={18} />
-                                        </span>
-                                    )}
-                                </Button>
-                            </>
+                            <button
+                                type="submit"
+                                className={`${
+                                    isLoading && "btn-loader"
+                                } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
+                            >
+                                {isLoading ? (
+                                    <span className="ml-2 loading">
+                                        <i className="ri-loader-2-fill"></i>
+                                    </span>
+                                ) : (
+                                    <span className="tw-text-white">
+                                        <RiSave2Fill size={28} />
+                                    </span>
+                                )}
+                            </button>
                         )}
                     </Col>
                 </Modal.Footer>

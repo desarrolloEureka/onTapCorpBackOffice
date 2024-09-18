@@ -141,7 +141,7 @@ export const ExportCSV = ({
     const actionsMemo = useMemo(() => {
         return (
             <div className="tw-flex tw-justify-between tw-w-full tw-space-x-4">
-                <div className="tw-flex tw-flex-1 tw-relative">
+                <div className="tw-flex tw-w-1/2 tw-relative">
                     <Form.Control
                         value={searchTerm}
                         name="search"
@@ -162,30 +162,34 @@ export const ExportCSV = ({
                         </Button>
                     )}
                 </div>
-                {![
-                    "roles",
-                    "country",
-                    "departments",
-                    "cities",
-                    "documentTypes",
-                ].includes(reference) &&
-                    onMainFormModal && (
-                        <MainFormModal onMainFormModal={onMainFormModal} />
-                    )}
-                {refToShowButtonCsv.includes(reference) &&
-                    onUploadDataModalCsv && (
-                        <UploadDataCsvModal
-                            onUploadDataModalCsv={onUploadDataModalCsv}
+                <div className="tw-space-x-4">
+                    {![
+                        "roles",
+                        "country",
+                        "departments",
+                        "cities",
+                        "documentTypes",
+                    ].includes(reference) &&
+                        onMainFormModal && (
+                            <MainFormModal onMainFormModal={onMainFormModal} />
+                        )}
+                    {refToShowButtonCsv.includes(reference) &&
+                        onUploadDataModalCsv && (
+                            <UploadDataCsvModal
+                                onUploadDataModalCsv={onUploadDataModalCsv}
+                            />
+                        )}
+                    {onUploadDataModalPdf && (
+                        <UploadDataPdfModal
+                            onUploadDataModalPdf={onUploadDataModalPdf}
                         />
                     )}
-                {onUploadDataModalPdf && (
-                    <UploadDataPdfModal
-                        onUploadDataModalPdf={onUploadDataModalPdf}
-                    />
-                )}
-                {data.length > 0 && (
-                    <Export onExport={() => downloadCSV(data, tableTitle)} />
-                )}
+                    {data.length > 0 && (
+                        <Export
+                            onExport={() => downloadCSV(data, tableTitle)}
+                        />
+                    )}
+                </div>
             </div>
         );
     }, [

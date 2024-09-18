@@ -40,6 +40,7 @@ import {
     MdEmail,
     MdLocationPin,
 } from "react-icons/md";
+import { RiSave2Fill } from "react-icons/ri";
 import { VscSave } from "react-icons/vsc";
 import CustomMUITelInput from "../company/components/CustomMUITelInput";
 import CustomSelect from "../company/components/CustomSelect";
@@ -149,11 +150,11 @@ const MainFormModal = ({
         handleClose,
         handleReset,
         setErrorForm,
-        handleChange,        
+        handleChange,
         findValue,
         handleEditForm,
         handleMultipleChange,
-        handleIconFileChange,       
+        handleIconFileChange,
     } = MainFormHook({
         handleShowMainForm,
         setHandleShowMainForm,
@@ -2503,79 +2504,127 @@ const MainFormModal = ({
                             reference === "companies" && (
                                 <Col>{nextStep ? "Paso 1/2" : "Paso 2/2"}</Col>
                             )}
-                        <Col className="tw-flex tw-flex-row tw-space-x-2 tw-items-center tw-justify-end">
-                            <Button
-                                className="tw-flex tw-items-center btn-admin"
-                                variant="light"
-                                onClick={handleClose}
-                            >
-                                <ImCancelCircle size={20} />
-                                {/* Cancelar */}
-                            </Button>
-                            {!isEdit && handleShowMainFormEdit ? (
-                                <Button
-                                    variant="primary"
-                                    onClick={handleEditForm}
+
+                        {reference === "workAreas" ? (
+                            <Col className="tw-flex tw-flex-row tw-space-x-2 tw-items-center tw-justify-end">
+                                <button
+                                    type="button"
+                                    className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
+                                    onClick={handleClose}
                                 >
-                                    <FiEdit size={20} />
+                                    <ImCancelCircle size={28} />
+                                    {/* Cancelar */}
+                                </button>
+
+                                {!isEdit && handleShowMainFormEdit ? (
+                                    <button
+                                        type="submit"
+                                        className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
+                                        onClick={handleEditForm}
+                                    >
+                                        <FiEdit size={28} />
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="submit"
+                                        className={`${
+                                            isLoading && "btn-loader"
+                                        } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
+                                    >
+                                        {isLoading ? (
+                                            <span className="ml-2 loading">
+                                                <i className="ri-loader-2-fill"></i>
+                                            </span>
+                                        ) : (
+                                            <span className="tw-text-white">
+                                                <RiSave2Fill size={28} />
+                                            </span>
+                                        )}
+                                    </button>
+                                )}
+                            </Col>
+                        ) : (
+                            <Col className="tw-flex tw-flex-row tw-space-x-2 tw-items-center tw-justify-end">
+                                <Button
+                                    className="tw-flex tw-items-center btn-admin"
+                                    variant="light"
+                                    onClick={handleClose}
+                                >
+                                    <ImCancelCircle size={20} />
+                                    {/* Cancelar */}
                                 </Button>
-                            ) : (
-                                <>
-                                    {reference === "companies" && nextStep ? (
-                                        <Button
-                                            className=""
-                                            type={
-                                                companyVal ? "button" : "submit"
-                                            }
-                                            variant="primary"
-                                            onClick={() =>
-                                                companyVal && setNextStep(false)
-                                            }
-                                        >
-                                            {/* Siguiente &nbsp; */}
-                                            <GrNext size={17} />
-                                        </Button>
-                                    ) : (
-                                        <div className="tw-flex tw-flex-row w-full mx-16">
-                                            {reference === "companies" && (
-                                                <Button
-                                                    className=""
-                                                    type="button"
-                                                    variant="primary"
-                                                    onClick={() =>
-                                                        setNextStep(true)
-                                                    }
-                                                >
-                                                    <GrPrevious size={17} />
-                                                    {/* &nbsp; Regresar */}
-                                                </Button>
-                                            )}
+                                {!isEdit && handleShowMainFormEdit ? (
+                                    <Button
+                                        variant="primary"
+                                        onClick={handleEditForm}
+                                    >
+                                        <FiEdit size={20} />
+                                    </Button>
+                                ) : (
+                                    <>
+                                        {reference === "companies" &&
+                                        nextStep ? (
                                             <Button
-                                                // variant="primary"
-                                                className={`${
-                                                    isLoading && "btn-loader"
-                                                } tw-ml-5 btn-save-admin`}
-                                                type="submit"
+                                                className=""
+                                                type={
+                                                    companyVal
+                                                        ? "button"
+                                                        : "submit"
+                                                }
+                                                variant="primary"
+                                                onClick={() =>
+                                                    companyVal &&
+                                                    setNextStep(false)
+                                                }
                                             >
-                                                {isLoading ? (
-                                                    <span className="ml-2 loading">
-                                                        <i className="ri-loader-2-fill"></i>
-                                                    </span>
-                                                ) : (
-                                                    <span className="">
-                                                        <VscSave size={18} />
-                                                        {/* {handleShowMainFormEdit ? (
+                                                {/* Siguiente &nbsp; */}
+                                                <GrNext size={17} />
+                                            </Button>
+                                        ) : (
+                                            <div className="tw-flex tw-flex-row w-full mx-16">
+                                                {reference === "companies" && (
+                                                    <Button
+                                                        className=""
+                                                        type="button"
+                                                        variant="primary"
+                                                        onClick={() =>
+                                                            setNextStep(true)
+                                                        }
+                                                    >
+                                                        <GrPrevious size={17} />
+                                                        {/* &nbsp; Regresar */}
+                                                    </Button>
+                                                )}
+                                                <Button
+                                                    // variant="primary"
+                                                    className={`${
+                                                        isLoading &&
+                                                        "btn-loader"
+                                                    } tw-ml-5 btn-save-admin`}
+                                                    type="submit"
+                                                >
+                                                    {isLoading ? (
+                                                        <span className="ml-2 loading">
+                                                            <i className="ri-loader-2-fill"></i>
+                                                        </span>
+                                                    ) : (
+                                                        <span className="">
+                                                            <VscSave
+                                                                size={18}
+                                                            />
+                                                            {/* {handleShowMainFormEdit ? (
                                             ) : (
                                                 "Crear"
                                             )} */}
-                                                    </span>
-                                                )}
-                                            </Button>
-                                        </div>
-                                    )}
-                                </>
-                            )}
-                        </Col>
+                                                        </span>
+                                                    )}
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                            </Col>
+                        )}
                     </Modal.Footer>
                 </Form>
             </Modal>

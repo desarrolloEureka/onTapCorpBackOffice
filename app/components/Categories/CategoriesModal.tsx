@@ -2,22 +2,19 @@ import { colorList } from "@/data/formConstant";
 import { ModalParamsMainForm } from "@/types/modals";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import {
-    IconButton,
     InputAdornment,
     PaletteMode,
     TextField,
-    Typography,
+    Typography
 } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Circle from "@uiw/react-color-circle";
-import { Button, Col, Form, Modal } from "react-bootstrap";
-import { FaTrashCan } from "react-icons/fa6";
+import { Col, Form, Modal } from "react-bootstrap";
 import { FiEdit } from "react-icons/fi";
 import { ImCancelCircle } from "react-icons/im";
 import { IoIosArrowDown, IoMdClose } from "react-icons/io";
-import { IoAddCircle } from "react-icons/io5";
+import { RiSave2Fill } from "react-icons/ri";
 import { TbCategory, TbMapPin } from "react-icons/tb";
-import { VscSave } from "react-icons/vsc";
 import CategoriesHook from "./hook/CategoriesHook";
 
 const CategoriesModal = ({
@@ -85,7 +82,8 @@ const CategoriesModal = ({
                             {handleShowMainFormEdit ? "Editar" : "Nuevo"}
                         </span>
                         <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-center tw-items-center -tw-mt-2">
-                            <Button
+                            <button
+                                type="button"
                                 onClick={handleClose}
                                 className="tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center"
                                 style={{
@@ -95,7 +93,7 @@ const CategoriesModal = ({
                                 }}
                             >
                                 <IoMdClose size={35} color={"white"} />
-                            </Button>
+                            </button>
                         </div>
                     </Modal.Title>
 
@@ -116,7 +114,7 @@ const CategoriesModal = ({
                                         name="name"
                                         id="name"
                                         fullWidth
-                                        label="Nombre de la Categoría *"
+                                        label="Nombre"
                                         variant="standard"
                                         color="primary"
                                         helperText={nameError}
@@ -142,7 +140,7 @@ const CategoriesModal = ({
                                 </div>
                                 <div className="tw-px-5 tw-py-3 tw-w-full">
                                     <Typography className="tw-font-bold tw-text-sm url-label">
-                                        Seleccionar Color de la Categoría
+                                        Seleccione el Color:
                                     </Typography>
                                 </div>
                                 <div className="tw-relative tw-px-5 tw-py-3 tw-w-full tw-flex tw-items-start tw-justify-start">
@@ -189,7 +187,7 @@ const CategoriesModal = ({
                                     <h6 className="main-title-sub-card tw-m-0 tw-p-2 tw-rounded">
                                         Direcciones
                                     </h6>
-                                    {data.directions &&
+                                    {/* {data.directions &&
                                         data.directions.length < 3 && (
                                             <div
                                                 onClick={() =>
@@ -200,7 +198,7 @@ const CategoriesModal = ({
                                                 <IoAddCircle size={25} />
                                                 Agregar Otra Dirección
                                             </div>
-                                        )}
+                                        )} */}
                                 </div>
 
                                 <div className="tw-flex tw-flex-col tw-w-full tw-h-full">
@@ -230,19 +228,13 @@ const CategoriesModal = ({
                                                             name="pointName"
                                                             id="pointName"
                                                             fullWidth
-                                                            label={
-                                                                index === 0
-                                                                    ? "Nombre Punto *"
-                                                                    : "Nombre Punto"
-                                                            }
+                                                            label="Nombre Punto"
                                                             variant="standard"
                                                             color="primary"
                                                             helperText={
-                                                                index == 0 &&
                                                                 pointNameError
                                                             }
                                                             error={
-                                                                index == 0 &&
                                                                 !!pointNameError
                                                             }
                                                             InputProps={{
@@ -285,19 +277,13 @@ const CategoriesModal = ({
                                                             name="address"
                                                             id="address"
                                                             fullWidth
-                                                            label={
-                                                                index === 0
-                                                                    ? "Dirección *"
-                                                                    : "Dirección"
-                                                            }
+                                                            label="Dirección"
                                                             variant="standard"
                                                             color="primary"
                                                             helperText={
-                                                                index == 0 &&
                                                                 addressError
                                                             }
                                                             error={
-                                                                index == 0 &&
                                                                 !!addressError
                                                             }
                                                             InputProps={{
@@ -328,7 +314,7 @@ const CategoriesModal = ({
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="tw-flex tw-flex-col tw-px-3 tw-my-6 tw-w-auto tw-space-y-4 tw-justify-center tw-items-center">
+                                                {/* <div className="tw-flex tw-flex-col tw-px-3 tw-my-6 tw-w-auto tw-space-y-4 tw-justify-center tw-items-center">
                                                     <div className="tw-flex tw-w-1/5  tw-items-center tw-justify-center">
                                                         <IconButton
                                                             onClick={() =>
@@ -344,7 +330,7 @@ const CategoriesModal = ({
                                                             />
                                                         </IconButton>
                                                     </div>
-                                                </div>
+                                                </div> */}
                                             </div>
                                         ))}
                                 </div>
@@ -355,42 +341,40 @@ const CategoriesModal = ({
 
                 <Modal.Footer className="tw-flex tw-flex-row tw-justify-between">
                     <Col className="tw-flex tw-flex-row tw-space-x-2 tw-items-center tw-justify-end">
-                        <Button
-                            className="tw-flex tw-items-center btn-admin"
-                            variant="light"
+                        <button
+                            type="button"
+                            className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
                             onClick={handleClose}
                         >
-                            <ImCancelCircle size={20} />
+                            <ImCancelCircle size={28} />
                             {/* Cancelar */}
-                        </Button>
+                        </button>
 
                         {!isEdit && handleShowMainFormEdit ? (
-                            <Button
-                                variant="primary"
-                                className="btn-save-admin"
+                            <button
+                                type="submit"
+                                className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
                                 onClick={handleEditForm}
                             >
-                                <FiEdit size={20} />
-                            </Button>
+                                <FiEdit size={28} />
+                            </button>
                         ) : (
-                            <>
-                                <Button
-                                    className={`${
-                                        isLoading && "btn-loader"
-                                    } tw-ml-5 btn-save-admin`}
-                                    type="submit"
-                                >
-                                    {isLoading ? (
-                                        <span className="ml-2 loading">
-                                            <i className="ri-loader-2-fill"></i>
-                                        </span>
-                                    ) : (
-                                        <span className="">
-                                            <VscSave size={18} />
-                                        </span>
-                                    )}
-                                </Button>
-                            </>
+                            <button
+                                type="submit"
+                                className={`${
+                                    isLoading && "btn-loader"
+                                } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
+                            >
+                                {isLoading ? (
+                                    <span className="ml-2 loading">
+                                        <i className="ri-loader-2-fill"></i>
+                                    </span>
+                                ) : (
+                                    <span className="tw-text-white">
+                                        <RiSave2Fill size={28} />
+                                    </span>
+                                )}
+                            </button>
                         )}
                     </Col>
                 </Modal.Footer>

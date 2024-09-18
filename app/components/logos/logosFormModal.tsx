@@ -4,15 +4,15 @@ import {
     InputAdornment,
     PaletteMode,
     TextField,
-    Typography
+    Typography,
 } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Button, Card, Col, Form, Modal } from "react-bootstrap";
-import { IoMdClose } from "react-icons/io";
-import { VscSave } from "react-icons/vsc";
-import { ImCancelCircle } from "react-icons/im";
-import LogosFormHook from "./hook/logosFormHook";
+import { Col, Form, Modal } from "react-bootstrap";
 import { FiEdit } from "react-icons/fi";
+import { ImCancelCircle } from "react-icons/im";
+import { IoMdClose } from "react-icons/io";
+import { RiSave2Fill } from "react-icons/ri";
+import LogosFormHook from "./hook/logosFormHook";
 
 const LogosFormModal = ({
     handleShowMainForm,
@@ -38,7 +38,7 @@ const LogosFormModal = ({
         logoNameError,
         imageError,
         handleLogoNameChange,
-        isUpdateImage
+        isUpdateImage,
     } = LogosFormHook({
         handleShowMainForm,
         setHandleShowMainForm,
@@ -63,22 +63,18 @@ const LogosFormModal = ({
             onHide={handleClose}
             aria-hidden="false"
             aria-modal="true"
-            contentClassName={
-                reference !== "companies" ? "modal-admin" : ""
-            }
+            contentClassName={reference !== "companies" ? "modal-admin" : ""}
         >
             <Form onReset={handleReset} onSubmit={handleSendForm}>
                 <ThemeProvider theme={theme}>
-
                     <Modal.Title
                         className={`modal-title-admin tw-pt-5 tw-px-8 tw-flex tw-flex-row tw-justify-between`}
                         as="h6"
                     >
-                        <span>
-                            Agregar los datos del logo
-                        </span>
+                        <span>Agregar los datos del logo</span>
                         <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-center tw-items-center -tw-mt-2">
-                            <Button
+                            <button
+                                type="button"
                                 onClick={handleClose}
                                 className="tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center"
                                 style={{
@@ -87,11 +83,8 @@ const LogosFormModal = ({
                                     border: "none",
                                 }}
                             >
-                                <IoMdClose
-                                    size={35}
-                                    color={"white"}
-                                />
-                            </Button>
+                                <IoMdClose size={35} color={"white"} />
+                            </button>
                         </div>
                     </Modal.Title>
 
@@ -122,7 +115,10 @@ const LogosFormModal = ({
                                                 style: {
                                                     fontSize: "20px",
                                                     fontWeight: "bold",
-                                                    color: modeTheme === "light" ? "#396593" : "#8bb8e7",
+                                                    color:
+                                                        modeTheme === "light"
+                                                            ? "#396593"
+                                                            : "#8bb8e7",
                                                 },
                                             }}
                                         />
@@ -132,13 +128,23 @@ const LogosFormModal = ({
                                     {selectedImage && (
                                         <div className="tw-mt-4">
                                             <img
-                                                src={!isEdit && handleShowMainFormEdit ? isUpdateImage ? URL.createObjectURL(selectedImage) : selectedImage + "" : URL.createObjectURL(selectedImage)}
+                                                src={
+                                                    !isEdit &&
+                                                    handleShowMainFormEdit
+                                                        ? isUpdateImage
+                                                            ? URL.createObjectURL(
+                                                                  selectedImage,
+                                                              )
+                                                            : selectedImage + ""
+                                                        : URL.createObjectURL(
+                                                              selectedImage,
+                                                          )
+                                                }
                                                 alt="Vista previa"
                                                 className="tw-w-[150px] tw-h-[150px] tw-object-cover tw-rounded tw-mt-4 tw-mb-1"
                                             />
                                         </div>
                                     )}
-
 
                                     {/* Campo para seleccionar la imagen */}
                                     <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-px-3 tw-w-full">
@@ -153,7 +159,9 @@ const LogosFormModal = ({
                                             </div>
 
                                             <Typography className="tw-font-bold tw-text-sm url-label tw-mt-2">
-                                                {selectedImage ? selectedImage.name : ""}
+                                                {selectedImage
+                                                    ? selectedImage.name
+                                                    : ""}
                                             </Typography>
 
                                             <input
@@ -162,18 +170,17 @@ const LogosFormModal = ({
                                                 id="iconButton"
                                                 accept=".jpg, .jpeg, .png"
                                                 hidden
-                                                onChange={
-                                                    handleImageChange
-                                                }
+                                                onChange={handleImageChange}
                                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                             />
                                         </label>
                                     </div>
 
-
-
                                     {imageError && (
-                                        <div className="tw-text-[#d32f2f] tw-mt-2 tw-ml-2" style={{ fontSize: "12px" }}>
+                                        <div
+                                            className="tw-text-[#d32f2f] tw-mt-2 tw-ml-2"
+                                            style={{ fontSize: "12px" }}
+                                        >
                                             {imageError}
                                         </div>
                                     )}
@@ -181,49 +188,47 @@ const LogosFormModal = ({
                             </div>
                         </div>
                     </Modal.Body>
-
                 </ThemeProvider>
 
                 <Modal.Footer className="tw-flex tw-flex-row tw-justify-between">
                     <Col className="tw-flex tw-flex-row tw-space-x-2 tw-items-center tw-justify-end">
-                        <Button
-                            className="tw-flex tw-items-center btn-admin"
-                            variant="light"
+                        <button
+                            type="button"
+                            className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
                             onClick={handleClose}
                         >
-                            <ImCancelCircle size={20} />
+                            <ImCancelCircle size={28} />
                             {/* Cancelar */}
-                        </Button>
+                        </button>
 
                         {!isEdit && handleShowMainFormEdit ? (
-                            <Button
-                                variant="primary"
+                            <button
+                                type="submit"
+                                className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
                                 onClick={handleEditForm}
                             >
-                                <FiEdit size={20} />
-                            </Button>
+                                <FiEdit size={28} />
+                            </button>
                         ) : (
-                            <>
-                                <Button
-                                    className={`${isLoading && "btn-loader"
-                                        } tw-ml-5 btn-save-admin`}
-                                    type="submit"
-                                >
-                                    {isLoading ? (
-                                        <span className="ml-2 loading">
-                                            <i className="ri-loader-2-fill"></i>
-                                        </span>
-                                    ) : (
-                                        <span className="">
-                                            <VscSave size={18} />
-                                        </span>
-                                    )}
-                                </Button>
-                            </>
+                            <button
+                                type="submit"
+                                className={`${
+                                    isLoading && "btn-loader"
+                                } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
+                            >
+                                {isLoading ? (
+                                    <span className="ml-2 loading">
+                                        <i className="ri-loader-2-fill"></i>
+                                    </span>
+                                ) : (
+                                    <span className="tw-text-white">
+                                        <RiSave2Fill size={28} />
+                                    </span>
+                                )}
+                            </button>
                         )}
                     </Col>
                 </Modal.Footer>
-
             </Form>
         </Modal>
     );
