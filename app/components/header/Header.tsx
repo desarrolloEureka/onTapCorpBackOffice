@@ -87,6 +87,27 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
+                {/* Vista de Categorías/Puntos Fijos */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="fixedPoints"
+                    role="tabpanel"
+                    eventKey="fixedPoints"
+                >
+                    <BannerMenu
+                        seoTitle="Puntos Fijos"
+                        title="Puntos Fijos"
+                        item="Dashboard"
+                        activeItem="Registro de Puntos Fijos"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla de Puntos Fijos."
+                        componentDescription="En esta tabla se encuentran los Puntos Fijos para su administración."
+                        tableTitle="Puntos Fijos"
+                        reference="fixedPoints"
+                    />
+                </Tab.Pane>
+
                 {/* >------ Comunicaciones -------< */}
 
                 {/* Vista Circulares */}

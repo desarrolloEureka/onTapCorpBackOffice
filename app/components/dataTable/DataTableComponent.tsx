@@ -1,19 +1,20 @@
 "use client";
+import { DataTableComponentProps } from "@/types/tables";
 import { Card, Col, Row } from "react-bootstrap";
+import CampusModal from "../campus/CampusModal";
+import CategoriesModal from "../Categories/CategoriesModal";
+import EmployeesFormModal from "../employees/employeesFormModal";
+import LogosFormModal from "../logos/logosFormModal";
+import MainFormModal from "../mainForm/mainFormModal";
+import MeetingStatusesModal from "../meetings/MeetingStatusesModal";
 import FormModal from "../modal/formModal/FormModal";
+import NewsModal from "../News/NewsModal";
+import NotificationsFormModal from "../notifications/notificationsFormModal";
+import RoutesFormModal from "../routes/routesFormModal";
 import CSVReader from "../uploadCsv/UploadCsv";
+import ZonesFormModal from "../zones/zonesFormModal";
 import { ExportCSV } from "./dataTables/dataTables";
 import DataTablesHook from "./hook/DataTablesHook";
-import MainFormModal from "../mainForm/mainFormModal";
-import { DataTableComponentProps } from "@/types/tables";
-import NotificationsFormModal from "../notifications/notificationsFormModal";
-import ZonesFormModal from "../zones/zonesFormModal";
-import EmployeesFormModal from "../employees/employeesFormModal";
-import RoutesFormModal from "../routes/routesFormModal";
-import LogosFormModal from "../logos/logosFormModal";
-import MeetingStatusesModal from "../meetings/MeetingStatusesModal";
-import CampusModal from "../campus/CampusModal";
-import NewsModal from "../News/NewsModal";
 
 const DataTableComponent = ({
     componentTitle,
@@ -154,6 +155,16 @@ const DataTableComponent = ({
                     />
                 ) : reference === "campus" ? (
                     <CampusModal
+                        handleShowMainForm={handleShowMainForm}
+                        setHandleShowMainForm={setHandleShowMainForm}
+                        handleShowMainFormEdit={handleShowMainFormEdit}
+                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                        editData={editData}
+                        title={tableTitle}
+                        reference={reference}
+                    />
+                ) : reference === "fixedPoints" ? (
+                    <CategoriesModal
                         handleShowMainForm={handleShowMainForm}
                         setHandleShowMainForm={setHandleShowMainForm}
                         handleShowMainFormEdit={handleShowMainFormEdit}

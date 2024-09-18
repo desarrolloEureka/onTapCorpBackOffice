@@ -158,7 +158,7 @@ const NewsModal = ({
                                         }
                                         checked={!data.isActive}
                                         modeTheme={modeTheme as string}
-                                    ></CustomSwitch>
+                                    />
                                 </div>
                             </div>
                         </div>

@@ -146,7 +146,7 @@ const HeaderContent = ({
 
                                             <NavDropdown.Item
                                                 href="#fixedPoints"
-                                                eventKey="second"
+                                                eventKey="fixedPoints"
                                             >
                                                 <FaMapMarkerAlt
                                                     size={18}
