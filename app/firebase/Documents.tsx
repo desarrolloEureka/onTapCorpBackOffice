@@ -353,7 +353,6 @@ export const saveEmployee = async (dataSave: any) => {
             uid: documentId,
         };
 
-        console.log('dataWithId ', dataWithId);
         // Guarda el documento en Firestore
         await setDoc(docRef, dataWithId);
 
@@ -361,6 +360,18 @@ export const saveEmployee = async (dataSave: any) => {
     } catch (error) {
         console.error("Error saving notification:", error);
         return { success: false, message: "Error saving employees", error };
+    }
+};
+
+export const updateEmployee = async (id: string, dataSave: any) => {
+    try {
+        const zoneRef = doc(db, "employees", id);
+        await updateDoc(zoneRef, dataSave);
+
+        return { success: true, message: "Employee updated successfully" };
+    } catch (error) {
+        console.error("Error updating employee:", error);
+        return { success: false, message: "Error updating route", error };
     }
 };
 

@@ -20,6 +20,7 @@ import {
     saveZone,
     updateCampusByIdFb,
     updateDocumentsByIdFb,
+    updateEmployee,
     updateRoute,
     updateSocialNetwork,
     updateZone,
@@ -281,6 +282,11 @@ export const updateZoneQuery = async (dataSave: any, docId: string) => {
 
 export const saveEmployeeQuery = async (dataSave: any) => {
     const result = await saveEmployee(dataSave);
+    return result;
+};
+
+export const editEmployeeQuery = async (dataSave: any, docId: string) => {
+    const result = await updateEmployee(docId, dataSave);
     return result;
 };
 

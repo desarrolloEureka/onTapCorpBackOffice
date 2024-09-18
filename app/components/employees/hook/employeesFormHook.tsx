@@ -1,11 +1,12 @@
 "use client";
 import useAuth from "@/firebase/auth";
-import { getAreasByCompanyIdQuery, getHeadquartersByCompanyIdQuery, getRoutesByCompanyIdQuery } from "@/queries/documentsQueries";
+import { editEmployeeQuery, getAreasByCompanyIdQuery, getHeadquartersByCompanyIdQuery, getRoutesByCompanyIdQuery, saveEmployeeQuery, saveRouteQuery } from "@/queries/documentsQueries";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
-import { DataAdditional, DataEmail, DataPhone, FormValues, FormValuesData } from "@/types/user";
+import { DataAdditional, DataEmail, DataPhone, FormValuesData } from "@/types/user";
 import { SelectChangeEvent } from "@mui/material";
 import { useEffect, useState } from "react";
+import _ from "lodash";
 
 const EmployeesFormHook = ({
     handleShowMainForm,
@@ -13,36 +14,24 @@ const EmployeesFormHook = ({
     handleShowMainFormEdit,
     setHandleShowMainFormEdit,
     editData,
-    title,
-    reference,
 }: ModalParamsMainForm) => {
-
-    const initialPhones: FormValues = {
-        phones: [
-            { text: '', checked: false }
-        ]
-    };
-
-    const initialEmails: FormValues = {
-        emails: [
-            { text: '', checked: false }
-        ]
-    };
-
-    const initialAdditional: FormValues = {
-        dataAdditional: [{ autodato: '', dato: '', checked: false }]
-    };
-
     const initialData: FormValuesData = {
-        firstName: '',
-        lastName: '',
-        documentNumber: '',
-        dateOfBirth: '',
-        position: '',
+        //firstName: '',
+        firstName: ['', false],
+        lastName: ['', false],
+        documentType: ['', false],
+        documentNumber: ['', false],
+        dateOfBirth: ['', false],
+        position: ['', false],
         phones: [{ text: '', checked: false }],
         emails: [{ text: '', checked: false }],
         additional: [{ autodato: '', dato: '', checked: false }],
-        ImageProfile: null,
+    };
+
+    const initialErrors = {
+        selectedArea: '',
+        selectedHeadquarter: '',
+        routeApplicable: '',
         mondayRoute: '',
         tuesdayRoute: '',
         wednesdayRoute: '',
@@ -50,52 +39,62 @@ const EmployeesFormHook = ({
         fridayRoute: '',
         saturdayRoute: '',
         sundayRoute: '',
-        routeApplicable: false,
-        selectedArea: '',
-        selectedHeadquarter: '',
-        employeeCardStatus: false,
+        employeeCardStatus: '',
     };
+
     const { userData } = useAuth();
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
+    const [idRow, setIdRow] = useState('');
+    const theme = localStorage.getItem("@theme");
+    const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
-    // Datos
+    // Datos Paso 1
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [data, setData] = useState<FormValuesData>(initialData);
-    const [phones, setPhones] = useState<FormValues>(initialPhones);
-    const [emails, setEmails] = useState<FormValues>(initialEmails);
-    const [additional, setAdditional] = useState<FormValues>(initialAdditional);
     const [allChecked, setAllChecked] = useState<string>("none");
     const [step, setStep] = useState(1);
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     //Datos Paso 2
     const [selectedArea, setSelectedArea] = useState('');
+    const [selectedAreaError, setSelectedAreaError] = useState('');
 
     const [selectedHeadquarter, setSelectedHeadquarter] = useState('');
+    const [selectedHeadquarterError, setSelectedHeadquarterError] = useState('');
 
-    //const [routeApplicable, setRouteApplicable] = useState('');
-    const [routeApplicable, setRouteApplicable] = useState<boolean>(false); // Estado booleano
-
+    const [routeApplicable, setRouteApplicable] = useState<boolean>(true);
+    const [routeApplicableError, setRouteApplicableError] = useState('');
 
     const [mondayRoute, setMondayRoute] = useState('');
+    const [mondayRouteError, setMondayRouteError] = useState('');
+
     const [tuesdayRoute, setTuesdayRoute] = useState('');
+    const [tuesdayRouteError, setTuesdayRouteError] = useState('');
+
     const [wednesdayRoute, setWednesdayRoute] = useState('');
+    const [wednesdayRouteError, setWednesdayRouteError] = useState('');
+
     const [thursdayRoute, setThursdayRoute] = useState('');
+    const [thursdayRouteError, setThursdayRouteError] = useState('');
+
     const [fridayRoute, setFridayRoute] = useState('');
+    const [fridayRouteError, setFridayRouteError] = useState('');
+
     const [saturdayRoute, setSaturdayRoute] = useState('');
+    const [saturdayRouteError, setSaturdayRouteError] = useState('');
+
     const [sundayRoute, setSundayRoute] = useState('');
+    const [sundayRouteError, setSundayRouteError] = useState('');
 
     const [employeeCardStatus, setEmployeeCardStatus] = useState(false);
+    const [employeeCardStatusError, setEmployeeCardStatusError] = useState('');
 
-    //
+    //Data Selects
     const [headquartersData, setHeadquartersData] = useState<any[] | null>(null);
     const [areaData, setAreaData] = useState<any[] | null>(null);
     const [routeData, setRouteData] = useState<any[] | null>(null);
-
-
-    const theme = localStorage.getItem("@theme");
-    const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
     const handleAddData = (type: 'phone' | 'email' | 'additional') => {
         setData(prevData => {
@@ -118,7 +117,6 @@ const EmployeesFormHook = ({
                     newData = { ...newData, additional: updatedAdditional };
                 }
             }
-
             return newData;
         });
     };
@@ -127,7 +125,8 @@ const EmployeesFormHook = ({
         field: keyof FormValuesData,
         index: number,
         key: string,
-        value: string | boolean
+        value: string | boolean,
+        checked?: boolean
     ) => {
         setData(prevData => {
             const fieldArray = prevData[field] as any[];
@@ -146,11 +145,20 @@ const EmployeesFormHook = ({
 
     const handleChange = (value: string, name: string, isChecked?: boolean) => {
         if (isChecked === undefined) {
-            setData({ ...data, [name]: (value || "-") ?? "-" });
+            setData({ ...data, [name]: (value || "") ?? "" });
         } else {
             setData({ ...data, [name]: [(value || "") ?? "", !isChecked] });
         }
     };
+
+    const handleChangeMiuTel = (value: string, name: string) => {
+        setData({ ...data, [name]: value });
+    };
+
+    const handleDeleteItem = (item: any) => {
+
+    };
+
 
     function resizeImage(file: File, maxWidth: number, maxHeight: number): Promise<File> {
         return new Promise((resolve, reject) => {
@@ -183,7 +191,7 @@ const EmployeesFormHook = ({
                             type: blob.type || 'image/jpeg',
                             lastModified: Date.now()
                         });
-                        resolve(resizedFile); // Aquí aseguramos que estamos devolviendo un File
+                        resolve(resizedFile);
                     } else {
                         reject(new Error("Failed to create Blob"));
                     }
@@ -217,9 +225,7 @@ const EmployeesFormHook = ({
             try {
                 const resizedImage = await resizeImage(file, 750, 750);
                 const base64String = await convertFileToBase64(resizedImage);
-
-                const imageUrl = URL.createObjectURL(file);
-                setSelectedImage(imageUrl);
+                setSelectedImage(base64String);
             } catch (error) {
                 console.error("Error handling the image:", error);
             }
@@ -227,15 +233,247 @@ const EmployeesFormHook = ({
     };
 
     const handleChangeSwitch = () => {
+        setEmployeeCardStatus(!employeeCardStatus);
     };
 
+    const handleChangeStep = () => {
+        if (!validateFields()) return;
+        setStep(2);
+    };
+
+    const validateFields = () => {
+        const newErrors: { [key: string]: string } = {};
+        if (!data.firstName[0]?.trim()) {
+            newErrors.firstName = 'El nombre es obligatorio';
+        }
+
+        if (!data.lastName[0]?.trim()) {
+            newErrors.lastName = 'El apellido es obligatorio';
+        }
+
+        if (!data.documentType[0]?.trim()) {
+            newErrors.documentType = 'El tipo de documento es obligatorio';
+        }
+
+        if (!data.documentNumber[0]?.trim()) {
+            newErrors.documentNumber = 'El número de documento es obligatorio';
+        }
+
+        if (!data.dateOfBirth[0]?.trim()) {
+            newErrors.dateOfBirth = 'La fecha de nacimiento es obligatoria';
+        }
+
+        if (!data.position[0]?.trim()) {
+            newErrors.position = 'El cargo es obligatoria';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const validateSaveData = () => {
+        let valid = true;
+
+        if (!selectedArea) {
+            setSelectedAreaError('El área seleccionada es requerida.');
+            valid = false;
+        } else {
+            setSelectedAreaError('');
+        }
+
+        if (!selectedHeadquarter) {
+            setSelectedHeadquarterError('La sede seleccionada es requerida.');
+            valid = false;
+        } else {
+            setSelectedHeadquarterError('');
+        }
+
+        // Validación de booleanos y rutas (puedes ajustar la validación según tus reglas)
+        if (routeApplicable === null) {
+            setRouteApplicableError('El campo de ruta aplicable es requerido.');
+            valid = false;
+        } else {
+            setRouteApplicableError('');
+        }
+
+        if (!mondayRoute) {
+            setMondayRouteError('La ruta del lunes es requerida.');
+            valid = false;
+        } else {
+            setMondayRouteError('');
+        }
+
+        // Validación para la ruta del martes
+        if (!tuesdayRoute) {
+            setTuesdayRouteError('La ruta del martes es requerida.');
+            valid = false;
+        } else {
+            setTuesdayRouteError('');
+        }
+
+        // Validación para la ruta del miércoles
+        if (!wednesdayRoute) {
+            setWednesdayRouteError('La ruta del miércoles es requerida.');
+            valid = false;
+        } else {
+            setWednesdayRouteError('');
+        }
+
+        // Validación para la ruta del jueves
+        if (!thursdayRoute) {
+            setThursdayRouteError('La ruta del jueves es requerida.');
+            valid = false;
+        } else {
+            setThursdayRouteError('');
+        }
+
+        // Validación para la ruta del viernes
+        if (!fridayRoute) {
+            setFridayRouteError('La ruta del viernes es requerida.');
+            valid = false;
+        } else {
+            setFridayRouteError('');
+        }
+
+        // Validación para la ruta del sábado
+        if (!saturdayRoute) {
+            setSaturdayRouteError('La ruta del sábado es requerida.');
+            valid = false;
+        } else {
+            setSaturdayRouteError('');
+        }
+
+        // Validación para la ruta del domingo
+        if (!sundayRoute) {
+            setSundayRouteError('La ruta del domingo es requerida.');
+            valid = false;
+        } else {
+            setSundayRouteError('');
+        }
+
+
+        if (!employeeCardStatus) {
+            setEmployeeCardStatusError('El estado de la tarjeta del empleado es requerido.');
+            valid = false;
+        } else {
+            setEmployeeCardStatusError('');
+        }
+
+        return valid;
+    };
+
+    //Enviar la data para guardar en BD
     const handleSendForm = async (e?: any) => {
-        
+        e.preventDefault();
+
+        // Validar los campos antes de continuar
+        //if (!validateSaveData()) return;
+
+        setIsLoading(true);
+
+        // Estructura Data
+        const updatedData = {
+            ...data,
+            ImageProfile: selectedImage,
+            mondayRoute: mondayRoute,
+            tuesdayRoute: tuesdayRoute,
+            wednesdayRoute: wednesdayRoute,
+            thursdayRoute: thursdayRoute,
+            fridayRoute: fridayRoute,
+            saturdayRoute: saturdayRoute,
+            sundayRoute: sundayRoute,
+            routeApplicable: routeApplicable,
+            selectedArea: selectedArea,
+            selectedHeadquarter: selectedHeadquarter,
+            employeeCardStatus: employeeCardStatus,
+        };
+
+        try {
+            const now = new Date();
+            const date = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+            const hour = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+
+            if (userData?.companyId) {
+                const formData = {
+                    ...updatedData,
+                    createdDate: date,
+                    createdTime: hour,
+                    idCompany: userData?.companyId
+                };
+
+                console.log(formData);
+                const zoneQueryResult = await saveEmployeeQuery(formData);
+
+                if (zoneQueryResult.success) {
+                    console.log("Route saved successfully");
+                } else {
+                    console.error("Failed to save route:", zoneQueryResult.message);
+                }
+
+            } else {
+                console.log("No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.");
+                return;
+            }
+
+        } catch (error) {
+            console.error("Error al enviar el formulario:", error);
+        } finally {
+            setIsLoading(false);
+            handleClose();
+        }
     };
 
     const handleEditForm = async (e?: any) => {
-        setStep(2);
         e.preventDefault();
+        e.stopPropagation();
+
+        // Validar los campos antes de continuar
+        //if (!validateSaveData()) return;
+
+        setIsLoading(true);
+
+        // Actualiza el objeto data
+        const updatedData = {
+            ...data,
+            ImageProfile: selectedImage,
+            mondayRoute: mondayRoute,
+            tuesdayRoute: tuesdayRoute,
+            wednesdayRoute: wednesdayRoute,
+            thursdayRoute: thursdayRoute,
+            fridayRoute: fridayRoute,
+            saturdayRoute: saturdayRoute,
+            sundayRoute: sundayRoute,
+            routeApplicable: routeApplicable,
+            selectedArea: selectedArea,
+            selectedHeadquarter: selectedHeadquarter,
+            employeeCardStatus: employeeCardStatus,
+        };
+
+        try {
+            if (userData?.companyId) {
+                const formData = {
+                    ...updatedData,
+                    idCompany: userData?.companyId
+                };
+                const employeeQueryResult = await editEmployeeQuery(formData, idRow);
+
+                if (employeeQueryResult.success) {
+                    console.log("Employee saved successfully");
+                } else {
+                    console.error("Failed to save employee:", employeeQueryResult.message);
+                }
+
+            } else {
+                console.log("No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.");
+                return;
+            }
+
+        } catch (error) {
+            console.error("Error al enviar el formulario:", error);
+        } finally {
+            setIsLoading(false);
+            handleClose();
+        }
     };
 
     const handleClose = () => {
@@ -249,9 +487,6 @@ const EmployeesFormHook = ({
 
     const handleReset = () => {
         setData(initialData);
-        setPhones(initialPhones);
-        setEmails(initialEmails);
-        setAdditional(initialAdditional);
         setSelectedImage(null);
         setMondayRoute('');
         setTuesdayRoute('');
@@ -263,26 +498,70 @@ const EmployeesFormHook = ({
         setRouteApplicable(false);
         setSelectedArea('');
         setSelectedHeadquarter('');
+        // Restablece los errores de validación de cada campo
+        setErrors(initialErrors);
+        setSelectedAreaError('');
+        setSelectedHeadquarterError('');
+        setRouteApplicableError('');
+        setMondayRouteError('');
+        setTuesdayRouteError('');
+        setWednesdayRouteError('');
+        setThursdayRouteError('');
+        setFridayRouteError('');
+        setSaturdayRouteError('');
+        setSundayRouteError('');
+        setEmployeeCardStatusError('');
     };
 
     const getDataEmployee = async (editData: any) => {
         setData(editData);
     };
 
-    const handleChangeSelect = () => {
-
+    // Función para manejar el cambio de selección
+    const handleChangeSelect = (day: string, event: SelectChangeEvent<unknown>) => {
+        const newValue = event.target.value;
+        switch (day) {
+            case 'monday':
+                setMondayRoute(newValue as string);
+                break;
+            case 'tuesday':
+                setTuesdayRoute(newValue as string);
+                break;
+            case 'wednesday':
+                setWednesdayRoute(newValue as string);
+                break;
+            case 'thursday':
+                setThursdayRoute(newValue as string);
+                break;
+            case 'friday':
+                setFridayRoute(newValue as string);
+                break;
+            case 'saturday':
+                setSaturdayRoute(newValue as string);
+                break;
+            case 'sunday':
+                setSundayRoute(newValue as string);
+                break;
+            default:
+                break;
+        }
     };
 
+    // Función para manejar el cambio en el RadioGroup
     const handleRouteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-
+        const value = event.target.value;
+        const isApplicable = value === 'true';
+        setRouteApplicable(isApplicable);
     };
 
+    // Función para manejar el cambio en el CustomSelect
     const handleAreaChange = (event: any) => {
-
+        setSelectedArea(event.target.value);
     };
 
+    // Función para manejar el cambio en el CustomSelect
     const handleHeadquartersChange = (event: any) => {
-
+        setSelectedHeadquarter(event.target.value);
     };
 
     const getRouteData = async () => {
@@ -303,10 +582,32 @@ const EmployeesFormHook = ({
 
     useEffect(() => {
         handleShowMainForm && (setShow(true), setIsEdit(true));
+        getRouteData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [handleShowMainForm]);
 
     useEffect(() => {
-        handleShowMainFormEdit && (setShow(true), getDataEmployee(editData));
+        handleShowMainFormEdit && (
+            setShow(true),
+            setIdRow(editData?.uid),
+            //console.log('editData ', editData),
+            //Paso 1
+            getDataEmployee(editData),
+            setSelectedImage(editData?.ImageProfile),
+            //Paso 2
+            setSelectedArea(editData?.selectedArea || ''),
+            setSelectedHeadquarter(''),
+            setRouteApplicable(editData?.routeApplicable || false),
+            setMondayRoute(editData?.mondayRoute || ''),
+            setTuesdayRoute(editData?.tuesdayRoute || ''),
+            setWednesdayRoute(editData?.wednesdayRoute || ''),
+            setThursdayRoute(editData?.thursdayRoute || ''),
+            setFridayRoute(editData?.fridayRoute || ''),
+            setSaturdayRoute(editData?.saturdayRoute || ''),
+            setSundayRoute(editData?.sundayRoute || '')
+        );
+        getRouteData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editData, handleShowMainFormEdit]);
 
     return {
@@ -319,15 +620,11 @@ const EmployeesFormHook = ({
         handleClose,
         allChecked,
         handleChange,
-        phones,
         handleAddData,
-        emails,
-        additional,
         handleReset,
         handleChangeItem,
         step,
         employeeCardStatus,
-        theme: themeParsed?.dataThemeMode,
         handleChangeSwitch,
         routeData,
         areaData,
@@ -348,7 +645,23 @@ const EmployeesFormHook = ({
         handleHeadquartersChange,
         handleEditForm,
         handleFileChange,
-        selectedImage
+        selectedImage,
+        setStep,
+        handleChangeMiuTel,
+        handleDeleteItem,
+        errors,
+        handleChangeStep,
+        selectedAreaError,
+        selectedHeadquarterError,
+        routeApplicableError,
+        mondayRouteError,
+        tuesdayRouteError,
+        wednesdayRouteError,
+        thursdayRouteError,
+        fridayRouteError,
+        saturdayRouteError,
+        sundayRouteError,
+        employeeCardStatusError
     };
 };
 
