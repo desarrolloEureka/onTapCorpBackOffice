@@ -4,6 +4,7 @@ import BannerMenu from "../bannerMenu/BannerMenu";
 import CompanyPage from "../company/CompanyPage";
 import HomeDash from "../dashBoard/homeDash/HomeDash";
 import DataTableComponent from "../dataTable/DataTableComponent";
+import HomeContent from "../views/home/components/homeContent/HomeContent";
 import Profile from "../profile/page";
 import HeaderContent from "./components/headerContent/HeaderContent";
 
@@ -486,6 +487,23 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         reference="logos"
                     />
                 </Tab.Pane>
+
+                {/* Vista de Tarjetas */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="tarjetas"
+                    role="tabpanel"
+                    eventKey="tarjetas"
+                >
+                    <BannerMenu
+                        seoTitle="Tarjetas"
+                        title="Tarjetas"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                     <HomeContent />
+                </Tab.Pane>
+
             </Tab.Content>
         </Tab.Container>
     );

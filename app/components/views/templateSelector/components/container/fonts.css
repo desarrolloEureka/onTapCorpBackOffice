@@ -1,0 +1,9 @@
+/* src/styles/fonts.css */
+@font-face {
+    font-family: 'Canto';
+    src: url('../assets/fonts/Canto-Light.woff2') format('woff2'),
+         url('../assets/fonts/Canto-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+  }
+  
