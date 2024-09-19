@@ -4,9 +4,9 @@ import BannerMenu from "../bannerMenu/BannerMenu";
 import CompanyPage from "../company/CompanyPage";
 import HomeDash from "../dashBoard/homeDash/HomeDash";
 import DataTableComponent from "../dataTable/DataTableComponent";
-import HomeContent from "../views/home/components/homeContent/HomeContent";
 import Profile from "../profile/page";
 import HeaderContent from "./components/headerContent/HeaderContent";
+import HomeContent from "../views/home/HomeContent";
 
 const Header = ({ hamburger }: { hamburger?: boolean }) => {
     const [theme, setTheme] = useState<string>("light");
