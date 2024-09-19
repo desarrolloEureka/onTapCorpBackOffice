@@ -14,7 +14,7 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 import { FaMapLocationDot, FaRegAddressCard } from "react-icons/fa6";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { ImHome3 } from "react-icons/im";
-import { IoMdBusiness } from "react-icons/io";
+import { IoMdBusiness, IoMdNotifications } from "react-icons/io";
 import {
     IoDocumentLockOutline,
     IoDocumentOutline,
@@ -22,7 +22,6 @@ import {
     IoPerson,
 } from "react-icons/io5";
 import {
-    MdList,
     MdOutlineChecklist,
     MdOutlineEventNote,
     MdOutlinePersonPin,
@@ -30,6 +29,7 @@ import {
 import { PiGpsDuotone, PiMapPinSimpleFill } from "react-icons/pi";
 import { RiNewsLine } from "react-icons/ri";
 import { SiGoogleforms } from "react-icons/si";
+import { TbCategory } from "react-icons/tb";
 import { VscSettings } from "react-icons/vsc";
 
 const HeadDropDown = dynamic(
@@ -146,7 +146,7 @@ const HeaderContent = ({
 
                                             <NavDropdown.Item
                                                 href="#fixedPoints"
-                                                eventKey="second"
+                                                eventKey="fixedPoints"
                                             >
                                                 <FaMapMarkerAlt
                                                     size={18}
@@ -217,7 +217,7 @@ const HeaderContent = ({
                                                 href="#meetingStatus"
                                                 eventKey="workAreas"
                                             >
-                                                <FaMapMarkerAlt
+                                                <TbCategory
                                                     size={18}
                                                     className="tw-mb-1 tw-mr-1"
                                                 />
@@ -232,10 +232,10 @@ const HeaderContent = ({
                                                     className="tw-mb-1 tw-mr-1"
                                                 />
                                                 <span className="tw-text-nowrap">
-                                                    Estados
+                                                    Estados Reunión
                                                 </span>
                                             </NavDropdown.Item>
-                                            <NavDropdown.Item
+                                            {/* <NavDropdown.Item
                                                 // href="#functionary"
                                                 eventKey="second"
                                             >
@@ -244,7 +244,7 @@ const HeaderContent = ({
                                                     className="tw-mb-1 tw-mr-1"
                                                 />
                                                 Funcionarios
-                                            </NavDropdown.Item>
+                                            </NavDropdown.Item> */}
                                             <NavDropdown.Item
                                                 href="#functionary"
                                                 eventKey="employees"
@@ -310,12 +310,21 @@ const HeaderContent = ({
                                         />
                                         Tipos Documento
                                     </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        href="#roles"
+                                        eventKey="notifications"
+                                    >
+                                        <IoMdNotifications
+                                            size={20}
+                                            className="tw-mb-1 tw-mr-1"
+                                        />
+                                        Notificaciones
+                                    </NavDropdown.Item>
                                 </NavDropdown>
                             )}
 
                             {/*  Comunicaciones */}
-                            {(userRole === "superadmin" ||
-                                userRole === "operativo" ||
+                            {(userRole === "operativo" ||
                                 userRole === "administrativo") && (
                                 <NavDropdown
                                     title={
@@ -402,7 +411,7 @@ const HeaderContent = ({
                                 >
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="areas"
                                     >
                                         <PiMapPinSimpleFill
                                             size={20}
@@ -412,7 +421,7 @@ const HeaderContent = ({
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="headquarters"
                                     >
                                         <PiMapPinSimpleFill
                                             size={20}
@@ -422,7 +431,7 @@ const HeaderContent = ({
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="employeesMaps"
                                     >
                                         <PiMapPinSimpleFill
                                             size={20}
@@ -432,7 +441,7 @@ const HeaderContent = ({
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="tutesMaps"
                                     >
                                         <PiMapPinSimpleFill
                                             size={20}
@@ -442,7 +451,7 @@ const HeaderContent = ({
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="fixedPointsMaps"
                                     >
                                         <PiMapPinSimpleFill
                                             size={20}
@@ -453,8 +462,9 @@ const HeaderContent = ({
                                 </NavDropdown>
                             )}
 
-                            {/*  Plantillas */}
-                            {(userRole === "operativo" ||
+                            {/*  Plantillas, quitar userRole === "superadmin" || despues del desarrollo */}
+                            {(userRole === "superadmin" ||
+                                userRole === "operativo" ||
                                 userRole === "administrativo") && (
                                 <NavDropdown
                                     title={
@@ -482,23 +492,13 @@ const HeaderContent = ({
 
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="tarjetas"
                                     >
                                         <FaRegAddressCard
                                             size={20}
                                             className="tw-mb-1 tw-mr-1"
                                         />
                                         Tarjetas
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        //href="#functionary"
-                                        eventKey="second"
-                                    >
-                                        <FaRegAddressCard
-                                            size={20}
-                                            className="tw-mb-1 tw-mr-1"
-                                        />
-                                        Empleados
                                     </NavDropdown.Item>
                                 </NavDropdown>
                             )}
@@ -521,47 +521,7 @@ const HeaderContent = ({
                                 >
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
-                                    >
-                                        <IoDocumentOutline
-                                            size={20}
-                                            className="tw-mb-1 tw-mr-1"
-                                        />
-                                        Rutas
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        //href="#functionary"
-                                        eventKey="second"
-                                    >
-                                        <IoDocumentOutline
-                                            size={20}
-                                            className="tw-mb-1 tw-mr-1"
-                                        />
-                                        Zonas
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        //href="#functionary"
-                                        eventKey="second"
-                                    >
-                                        <IoDocumentOutline
-                                            size={20}
-                                            className="tw-mb-1 tw-mr-1"
-                                        />
-                                        Sedes
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        //href="#functionary"
-                                        eventKey="second"
-                                    >
-                                        <IoDocumentOutline
-                                            size={20}
-                                            className="tw-mb-1 tw-mr-1"
-                                        />
-                                        Áreas
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="metrics"
                                     >
                                         <IoDocumentOutline
                                             size={20}
@@ -571,7 +531,7 @@ const HeaderContent = ({
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="visits"
                                     >
                                         <IoDocumentOutline
                                             size={20}
@@ -581,44 +541,13 @@ const HeaderContent = ({
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="clics"
                                     >
                                         <IoDocumentOutline
                                             size={20}
                                             className="tw-mb-1 tw-mr-1"
                                         />
                                         Clics
-                                    </NavDropdown.Item>
-                                </NavDropdown>
-                            )}
-
-                            {/*  General */}
-                            {(userRole === "operativo" ||
-                                userRole === "administrativo") && (
-                                <NavDropdown
-                                    title={
-                                        <>
-                                            <MdList
-                                                size={20}
-                                                className="tw-mb-1 tw-mr-1"
-                                            />
-                                            General
-                                        </>
-                                    }
-                                    id="nav-dropdown"
-                                    className="nav-item dropdown"
-                                >
-                                    <NavDropdown.Item
-                                        href="#roles"
-                                        eventKey="second"
-                                    >
-                                        Roles
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        href="#roles"
-                                        eventKey="notifications"
-                                    >
-                                        Notificaciones
                                     </NavDropdown.Item>
                                 </NavDropdown>
                             )}

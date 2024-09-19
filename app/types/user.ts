@@ -9,6 +9,8 @@ export interface DemoChangerElement extends HTMLElement {
 export type DataPhone = {
     text: '',
     checked: false,
+    indicative: string,
+    ext: string,
 };
 
 export type DataAdditional = {
@@ -58,24 +60,13 @@ export type DataEmail = {
 };
 
 export type FormValuesData = {
-    firstName: string;
-    lastName: string;
-    documentNumber: string;
-    dateOfBirth: string;
-    position: string;
+    firstName: [string, boolean];
+    lastName: [string, boolean];
+    documentType: [string, boolean];
+    documentNumber: [string, boolean];
+    dateOfBirth: [string, boolean];
+    position: [string, boolean];
     phones?: DataPhone[];
     emails?: DataEmail[];
     additional?: DataAdditional[];
-    ImageProfile: string | null;  // Tipo añadido a FormValuesData
-    mondayRoute: string;          // Campo añadido
-    tuesdayRoute: string;         // Campo añadido
-    wednesdayRoute: string;       // Campo añadido
-    thursdayRoute: string;        // Campo añadido
-    fridayRoute: string;          // Campo añadido
-    saturdayRoute: string;        // Campo añadido
-    sundayRoute: string;          // Campo añadido
-    routeApplicable: boolean;      // Campo añadido
-    selectedArea: string;         // Campo añadido
-    selectedHeadquarter: string;  // Campo añadido
-    employeeCardStatus: boolean;  // Campo añadido
 };

@@ -33,6 +33,17 @@ const CustomTitle = ({ row }: any) => (
     </div>
 );
 
+const CustomColor = ({ row }: any) => (
+    <div>
+        <div
+            className={`tw-w-5 tw-h-5 tw-rounded-full`}
+            style={{
+                backgroundColor: row.color,
+            }}
+        />
+    </div>
+);
+
 interface ColumnNamesToDisplay {
     [key: string]: string;
 }
@@ -125,6 +136,13 @@ const DataTablesHook = (reference: string) => {
                 ? userData && userData?.companyId
                     ? await getMeetingStatusByCompanyIdQuery(
                           userData?.companyId,
+                      )
+                    : []
+                : reference === "fixedPoints"
+                ? userData && userData?.companyId
+                    ? await getDocsByCompanyIdQuery(
+                          userData?.companyId,
+                          reference,
                       )
                     : []
                 : reference === "campus"
@@ -234,6 +252,13 @@ const DataTablesHook = (reference: string) => {
                     url: "Url Locación",
                     isActive: "Estado",
                 };
+            } else if (reference === "fixedPoints") {
+                columnNamesToDisplay = {
+                    uid: "Acciones",
+                    timestamp: "Fecha Registro",
+                    name: "Nombre Categoría",
+                    color: "Color",
+                };
             } else if (
                 reference === "circular" ||
                 reference === "events" ||
@@ -272,11 +297,11 @@ const DataTablesHook = (reference: string) => {
                     sector: "Sector",
                     city: "Ciudad",
                     webSite: "Sitio Web",
-                    isActive: "Estado",
                     areaName: "Nombre Área",
                     areaHead: "Jefe de Área",
                     urlName: "Nombre Url",
                     urlLink: "Enlace",
+                    isActive: "Estado",
                 };
             }
 
@@ -303,6 +328,8 @@ const DataTablesHook = (reference: string) => {
                     selector: (row: any) =>
                         val === "isActive" ? (
                             <CustomTitle row={row} />
+                        ) : val === "color" ? (
+                            <CustomColor row={row} />
                         ) : val === "uid" ? (
                             <div>
                                 {reference !== "routes" &&
@@ -389,8 +416,8 @@ const DataTablesHook = (reference: string) => {
                             ? "200px"
                             : "auto",
                     omit: !omittedColumns.includes(val),
-                    center:
-                        reference != "roles" && reference != "notifications",
+                    center: val === "uid",
+                    // reference != "roles" && reference != "notifications",
                 };
 
                 cols.push(columnsData);

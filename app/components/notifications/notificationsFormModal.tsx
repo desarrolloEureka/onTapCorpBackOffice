@@ -1,7 +1,4 @@
 import { ModalParamsMainForm } from "@/types/modals";
-import _ from "lodash";
-import { Button, Form, Modal } from "react-bootstrap";
-import NotificationsFormHook from "./hook/notificationsFormHook";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import {
     createTheme,
@@ -11,11 +8,12 @@ import {
     TextField,
     ThemeProvider,
 } from "@mui/material";
-import { Card } from "react-bootstrap";
+import { Button, Card, Form, Modal } from "react-bootstrap";
 import { FaTrashCan } from "react-icons/fa6";
-import { IoMdClose } from "react-icons/io";
 import { ImCancelCircle } from "react-icons/im";
+import { IoMdClose } from "react-icons/io";
 import { VscSave } from "react-icons/vsc";
+import NotificationsFormHook from "./hook/notificationsFormHook";
 
 const NotificationsFormModal = ({
     handleShowMainForm,
@@ -59,7 +57,10 @@ const NotificationsFormModal = ({
         <Modal size="lg" centered show={show} onHide={handleClose}>
             <Form onReset={handleReset} onSubmit={handleSendForm}>
                 <Modal.Body style={{ padding: 0, margin: 0 }}>
-                    <Card className="custom-card tw-w-full" style={{ padding: 0, margin: 0 }}>
+                    <Card
+                        className="custom-card tw-w-full"
+                        style={{ padding: 0, margin: 0 }}
+                    >
                         <Card.Body style={{ padding: 0, margin: 0 }}>
                             <div className="tw-flex tw-w-full tw-flex-row tw-px-8 tw-pt-5 tw-pb-3">
                                 <div className="tw-flex tw-w-[93%] tw-flex-col">
@@ -68,13 +69,18 @@ const NotificationsFormModal = ({
                                     </Card.Title>
                                 </div>
                                 <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-start tw-items-center -tw-mt-2">
-                                    <Button
+                                    <button
+                                        type="button"
                                         onClick={handleClose}
                                         className="tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent"
-                                        style={{ padding: 0, background: 'transparent', border: 'none' }}
+                                        style={{
+                                            padding: 0,
+                                            background: "transparent",
+                                            border: "none",
+                                        }}
                                     >
                                         <IoMdClose size={35} color="#646464" />
-                                    </Button>
+                                    </button>
                                 </div>
                             </div>
                             <div className="tw-flex tw-flex-col lg:tw-flex-row tw-space-x-0 lg:tw-space-x-4 tw-space-y-4 lg:tw-space-y-0 tw-px-9 tw-pb-8">
@@ -84,21 +90,14 @@ const NotificationsFormModal = ({
                                             Notificaciones empleados
                                         </h6>
                                         <div className="tw-flex tw-flex-row tw-px-3 tw-w-full">
-                                            <ThemeProvider
-                                                theme={theme}
-                                            >
+                                            <ThemeProvider theme={theme}>
                                                 <div className="tw-flex tw-flex-col tw-w-[80%]">
                                                     <div className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full">
                                                         <TextField
-                                                            value={
-                                                                issue
-                                                            }
-                                                            onChange={(
-                                                                e,
-                                                            ) =>
+                                                            value={issue}
+                                                            onChange={(e) =>
                                                                 setIssue(
-                                                                    e
-                                                                        .target
+                                                                    e.target
                                                                         .value,
                                                                 )
                                                             }
@@ -111,9 +110,7 @@ const NotificationsFormModal = ({
                                                             helperText={
                                                                 issueError
                                                             }
-                                                            error={
-                                                                !!issueError
-                                                            }
+                                                            error={!!issueError}
                                                             InputProps={{
                                                                 startAdornment:
                                                                     (
@@ -130,7 +127,7 @@ const NotificationsFormModal = ({
                                                                         "bold",
                                                                     color:
                                                                         modeTheme ===
-                                                                            "light"
+                                                                        "light"
                                                                             ? "#396593"
                                                                             : "#8bb8e7",
                                                                 },
@@ -139,15 +136,10 @@ const NotificationsFormModal = ({
                                                     </div>
                                                     <div className="tw-flex tw-flex-row tw-px-3 tw-mt-9 tw-w-full tw-h-full">
                                                         <TextField
-                                                            value={
-                                                                content
-                                                            }
-                                                            onChange={(
-                                                                e,
-                                                            ) =>
+                                                            value={content}
+                                                            onChange={(e) =>
                                                                 setContent(
-                                                                    e
-                                                                        .target
+                                                                    e.target
                                                                         .value,
                                                                 )
                                                             }
@@ -188,7 +180,7 @@ const NotificationsFormModal = ({
                                                                         "bold",
                                                                     color:
                                                                         modeTheme ===
-                                                                            "light"
+                                                                        "light"
                                                                             ? "#396593"
                                                                             : "#8bb8e7",
                                                                 },
@@ -202,18 +194,11 @@ const NotificationsFormModal = ({
                                                             marginTop: 30,
                                                         }}
                                                         onClick={() => {
-                                                            setIssue(
-                                                                "",
-                                                            );
-                                                            setContent(
-                                                                "",
-                                                            );
+                                                            setIssue("");
+                                                            setContent("");
                                                         }}
                                                     >
-
-                                                        <FaTrashCan
-                                                            size={25}
-                                                        />
+                                                        <FaTrashCan size={25} />
                                                     </IconButton>
                                                 </div>
                                             </ThemeProvider>
@@ -235,8 +220,9 @@ const NotificationsFormModal = ({
 
                                 <Button
                                     variant="primary"
-                                    className={`btn  ${isLoading && "btn-loader"
-                                        } tw-ml-5`}
+                                    className={`btn  ${
+                                        isLoading && "btn-loader"
+                                    } tw-ml-5`}
                                     type="submit"
                                 >
                                     {isLoading ? (

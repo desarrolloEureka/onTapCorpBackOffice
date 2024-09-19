@@ -24,6 +24,7 @@ import {
     saveZone,
     updateCampus,
     updateDocumentsByIdFb,
+    updateEmployee,
     updateMeeting,
     updateRoute,
     updateSocialNetwork,
@@ -290,6 +291,11 @@ export const updateCampusQuery = async (dataSave: any) => {
 
 export const saveEmployeeQuery = async (dataSave: any) => {
     const result = await saveEmployee(dataSave);
+    return result;
+};
+
+export const editEmployeeQuery = async (dataSave: any, docId: string) => {
+    const result = await updateEmployee(docId, dataSave);
     return result;
 };
 

@@ -1,25 +1,39 @@
 import { ModalParamsMainForm } from "@/types/modals";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
+import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
+import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import AttachFileIcon from '@mui/icons-material/AttachFile';
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import {
+    FormControlLabel,
     IconButton,
     InputAdornment,
+    Radio,
+    RadioGroup,
     Select,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
 } from "@mui/material";
-import { Button, Card, Form, Modal } from "react-bootstrap";
-import EmployeesFormHook from "./hook/employeesFormHook";
-import { IoMdClose } from "react-icons/io";
-import CustomTextField from "../company/components/CustomTextField";
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import { IoAddCircle } from "react-icons/io5";
-import { GrNext } from "react-icons/gr";
+import FormControl from "@mui/material/FormControl";
+import MenuItem from "@mui/material/MenuItem";
+import { styled } from "@mui/system";
+import { Button, Col, Form, Modal } from "react-bootstrap";
+import { GrNext, GrPrevious } from "react-icons/gr";
 import { ImCancelCircle } from "react-icons/im";
+import { IoMdClose } from "react-icons/io";
+import { IoAddCircle } from "react-icons/io5";
 import { VscSave } from "react-icons/vsc";
-
+import CustomMUITelInput from "../company/components/CustomMUITelInput";
+import CustomTextField from "../company/components/CustomTextField";
+import CustomSelectSwitch from "./components/CustomSelectSwitch";
+import SwitchForm from "./components/SwitchForm";
+import EmployeesFormHook from "./hook/employeesFormHook";
 
 const EmployeesFormModal = ({
     handleShowMainForm,
@@ -32,6 +46,7 @@ const EmployeesFormModal = ({
     data,
 }: ModalParamsMainForm) => {
     const {
+        modeTheme,
         show,
         dataForm,
         isLoading,
@@ -44,10 +59,44 @@ const EmployeesFormModal = ({
         handleAddData,
         handleChangeItem,
         step,
-        theme,
+        employeeCardStatus,
+        handleChangeSwitch,
+        routeData,
+        areaData,
+        mondayRoute,
+        tuesdayRoute,
+        wednesdayRoute,
+        thursdayRoute,
+        fridayRoute,
+        saturdayRoute,
+        sundayRoute,
+        handleChangeSelect,
+        handleRouteChange,
+        routeApplicable,
+        selectedArea,
+        handleAreaChange,
+        headquartersData,
+        selectedHeadquarter,
+        handleHeadquartersChange,
         handleEditForm,
         handleFileChange,
-        selectedImage
+        selectedImage,
+        setStep,
+        handleDeleteItem,
+        errors,
+        handleChangeStep,
+        selectedAreaError,
+        selectedHeadquarterError,
+        routeApplicableError,
+        mondayRouteError,
+        tuesdayRouteError,
+        wednesdayRouteError,
+        thursdayRouteError,
+        fridayRouteError,
+        saturdayRouteError,
+        sundayRouteError,
+        employeeCardStatusError,
+        handleChangeItemAditional,
     } = EmployeesFormHook({
         handleShowMainForm,
         setHandleShowMainForm,
@@ -55,59 +104,144 @@ const EmployeesFormModal = ({
         setHandleShowMainFormEdit,
         editData,
         title,
-        reference
+        reference,
     });
 
-    return dataForm && (
-        <Modal size="lg" centered show={show} onHide={handleClose}>
-            <Form onReset={handleReset} onSubmit={!isEdit && handleShowMainFormEdit ? handleEditForm : handleSendForm}>
-                <Modal.Body style={{ padding: 0, margin: 0 }}>
-                    <Card className="custom-card tw-w-full" style={{ padding: 0, margin: 0 }}>
-                        <Card.Body style={{ padding: 0, margin: 0 }}>
+    const CustomSelect = styled(Select)({
+        backgroundColor: "#396593",
+        width: 250,
+        height: 40,
+        color: "#fff",
+        "& .MuiSelect-icon": {
+            color: "#fff",
+        },
+        "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "transparent",
+        },
+        "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "transparent",
+        },
+        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "transparent",
+        },
+    });
 
+    // Estilizando el Radio
+    const CustomRadio = styled(Radio)(({ theme }) => ({
+        color: "#396593",
+        "&.Mui-checked": {
+            color: "#396593",
+        },
+    }));
 
-                            <div className="tw-flex tw-w-full tw-flex-row tw-px-8 tw-pt-5 tw-pb-3" style={{ borderBottom: '2px solid #396593', marginBottom: 25 }}>
-                                <div className="tw-flex tw-w-[93%] tw-flex-col">
-                                    <Card.Title className="tw-font-bold">
-                                        Agregar los datos del empleado
-                                    </Card.Title>
-                                </div>
-                                <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-start tw-items-center -tw-mt-2">
-                                    <Button
-                                        onClick={handleClose}
-                                        className="tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent"
-                                        style={{ padding: 0, background: 'transparent', border: 'none' }}
-                                    >
-                                        <IoMdClose size={35} color="#646464" />
-                                    </Button>
-                                </div>
-                            </div>
+    return (
+        dataForm && (
+            <Modal
+                size={"lg"}
+                centered
+                show={show}
+                onHide={handleClose}
+                aria-hidden="false"
+                aria-modal="true"
+            >
+                <Form
+                    onReset={handleReset}
+                    onSubmit={
+                        !isEdit && handleShowMainFormEdit
+                            ? handleEditForm
+                            : handleSendForm
+                    }
+                >
+                    <Modal.Title
+                        className={`modal-title tw-pt-5 tw-px-8 tw-flex tw-flex-row tw-justify-between`}
+                        as="h6"
+                    >
+                        <span>Agregar los datos del empleado</span>
+                        <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-center tw-items-center -tw-mt-2">
+                            <Button
+                                onClick={handleClose}
+                                className="tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center"
+                                style={{
+                                    padding: 0,
+                                    background: "transparent",
+                                    border: "none",
+                                }}
+                            >
+                                <IoMdClose size={35} color={"gray"} />
+                            </Button>
+                        </div>
+                    </Modal.Title>
 
-
-                            {step && step === 1 ?
-                                (<div className="tw-flex tw-flex-col lg:tw-flex-row tw-space-x-0 lg:tw-space-x-4 tw-space-y-4 lg:tw-space-y-0 tw-px-9 tw-pb-8">
+                    <Modal.Body
+                        className="tw-px-8"
+                        style={{ borderTop: "2px solid #396593", marginTop: 6 }}
+                    >
+                        <div className="tw-flex tw-w-full tw-flex-col tw-space-y-4">
+                            <div className="tw-flex tw-w-full tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-admin-body">
+                                {step && step === 1 ? (
                                     <div className="tw-flex tw-w-full tw-flex-col tw-space-y-4">
                                         <div className="tw-flex tw-w-full tw-flex-col tw-space-y-4">
-                                            <h6 className="h5">Datos personales</h6>
+                                            <h6 className="h5">
+                                                Datos personales
+                                            </h6>
                                         </div>
                                         <div className="tw-flex tw-w-full tw-flex-col tw-space-y-4 tw-justify-start tw-items-center tw-pb-2">
                                             <div className="tw-flex tw-w-full tw-flex-col tw-justify-center tw-items-center">
-                                                <img
+                                                <div
                                                     style={{
-                                                        width: '200px',
-                                                        height: '200px',
-                                                        objectFit: 'cover',
-                                                        border: '10px solid #396593',
-                                                        borderRadius: '50%'
+                                                        width: "162px",
+                                                        height: "162px",
+                                                        border: "11px solid #396593",
+                                                        borderRadius: "50%",
+                                                        backgroundColor:
+                                                            selectedImage
+                                                                ? "transparent"
+                                                                : "#396593",
+                                                        display: "flex",
+                                                        justifyContent:
+                                                            "center",
+                                                        alignItems: "center",
+                                                        color: "white",
+                                                        fontSize: "16px",
+                                                        textAlign: "center",
                                                     }}
-                                                    className="tw-rounded-full tw-w-[150px] tw-h-[150px] tw-object-cover"
-                                                    src={selectedImage ? selectedImage : ''}
-                                                    alt="Profile Photo"
-                                                />
+                                                >
+                                                    {selectedImage ? (
+                                                        <img
+                                                            style={{
+                                                                width: "101%",
+                                                                height: "101%",
+                                                                objectFit:
+                                                                    "cover",
+                                                                borderRadius:
+                                                                    "50%",
+                                                            }}
+                                                            className="tw-rounded-full tw-object-cover"
+                                                            src={
+                                                                selectedImage
+                                                                    ? selectedImage
+                                                                    : ""
+                                                            }
+                                                            alt="Profile Photo"
+                                                        />
+                                                    ) : (
+                                                        <span>
+                                                            Agregar foto
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
-                                            <div className="tw-flex tw-w-full tw-flex-col tw-justify-center tw-items-center" style={{ position: 'absolute' }}>
-                                                <div className="tw-flex tw-w-48 tw-h-14 tw-flex-col tw-justify-start tw-items-end tw-mr-0">
-                                                    <div className="tw-flex tw-w-10 tw-h-10 tw-flex-col tw-justify-center tw-items-center tw-bg-[#396593]" style={{ borderRadius: 20 }}>
+                                            <div
+                                                className="tw-flex tw-w-full tw-flex-col tw-justify-center tw-items-center"
+                                                style={{ position: "absolute" }}
+                                            >
+                                                <div className="tw-flex tw-w-48 tw-h-14 tw-flex-col tw-justify-start tw-items-end -tw-mr-2">
+                                                    <div
+                                                        className="tw-flex tw-w-10 tw-h-10 tw-flex-col tw-justify-center tw-items-center tw-bg-[#396593]"
+                                                        style={{
+                                                            borderRadius: 20,
+                                                        }}
+                                                    >
                                                         <label
                                                             htmlFor="dropzone-file"
                                                             className="tw-absolute"
@@ -117,40 +251,61 @@ const EmployeesFormModal = ({
                                                                 component="span"
                                                                 className="tw-absolute tw-inset-0"
                                                             >
-                                                                <AddOutlinedIcon style={{ fontSize: 25, color: 'white' }} />
+                                                                <AddOutlinedIcon
+                                                                    style={{
+                                                                        fontSize: 25,
+                                                                        color: "white",
+                                                                    }}
+                                                                />
                                                             </IconButton>
                                                             <input
                                                                 type="file"
                                                                 id="dropzone-file"
                                                                 accept=".jpg, .jpeg, .png"
-                                                                onChange={handleFileChange}
+                                                                onChange={
+                                                                    handleFileChange
+                                                                }
                                                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                                             />
                                                         </label>
-
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div className="tw-flex tw-p-2 tw-pb-8 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-body">
-                                            <h6 className="main-title-sub-card tw-m-0 tw-p-2 tw-rounded"> Datos empleado</h6>
+                                            <h6 className="main-title-sub-card tw-m-0 tw-p-2 tw-rounded">
+                                                {" "}
+                                                Datos empleado
+                                            </h6>
                                             <div className="tw-flex tw-flex-col tw-px-3 tw-w-full">
-
                                                 <div className="tw-flex tw-flex-row tw-px-3 tw-mt-1 tw-w-full">
                                                     <CustomTextField
                                                         checked={allChecked}
-                                                        data={dataForm.firstName}
-                                                        onChange={(value: string, name: string, checked: boolean) =>
-                                                            handleChange(value, name, checked)
+                                                        data={
+                                                            dataForm.firstName
                                                         }
+                                                        onChange={(
+                                                            value: string,
+                                                            name: string,
+                                                            checked: boolean,
+                                                        ) =>
+                                                            handleChange(
+                                                                value,
+                                                                name,
+                                                                checked,
+                                                            )
+                                                        }
+                                                        required
                                                         name="firstName"
                                                         type="text"
                                                         switch="true"
-                                                        theme={theme}
+                                                        theme={modeTheme}
                                                         id="firstName"
                                                         fullWidth
                                                         label="Nombre"
+                                                        errorShow={
+                                                            errors.firstName
+                                                        }
                                                         InputProps={{
                                                             startAdornment: (
                                                                 <InputAdornment position="start">
@@ -165,15 +320,27 @@ const EmployeesFormModal = ({
                                                     <CustomTextField
                                                         checked={allChecked}
                                                         data={dataForm.lastName}
-                                                        onChange={(value: string, name: string, checked: boolean) =>
-                                                            handleChange(value, name, checked)
+                                                        onChange={(
+                                                            value: string,
+                                                            name: string,
+                                                            checked: boolean,
+                                                        ) =>
+                                                            handleChange(
+                                                                value,
+                                                                name,
+                                                                checked,
+                                                            )
                                                         }
+                                                        required
                                                         name="lastName"
                                                         type="text"
                                                         switch="true"
-                                                        theme={theme}
+                                                        theme={modeTheme}
                                                         id="lastName"
                                                         fullWidth
+                                                        errorShow={
+                                                            errors.lastName
+                                                        }
                                                         label="Apellido"
                                                         InputProps={{
                                                             startAdornment: (
@@ -186,44 +353,32 @@ const EmployeesFormModal = ({
                                                 </div>
 
                                                 <div className="tw-flex tw-flex-row tw-px-3 tw-mt-1 tw-w-full">
-                                                    <FormControl variant="standard" sx={{ m: 1, minWidth: '100%' }}>
-                                                        <InputLabel id="demo-simple-select-standard-label" style={{ color: '#396593', fontSize: '20px', fontWeight: 'bold' }}>Tipo de Documento</InputLabel>
-                                                        <Select
-                                                            labelId="demo-simple-select-standard-label"
-                                                            id="demo-simple-select-standard"
-                                                            startAdornment={
-                                                                <InputAdornment position="start">
-                                                                    <AttachFileIcon />
-                                                                </InputAdornment>
-                                                            }
-                                                        >
-                                                            <MenuItem value="AS">AS</MenuItem>
-                                                            <MenuItem value="CC">CC</MenuItem>
-                                                            <MenuItem value="CD">CD</MenuItem>
-                                                            <MenuItem value="CE">CE</MenuItem>
-                                                            <MenuItem value="CN">CN</MenuItem>
-                                                            <MenuItem value="MS">MS</MenuItem>
-                                                            <MenuItem value="NIT">NIT</MenuItem>
-                                                            <MenuItem value="PA">PA</MenuItem>
-                                                            <MenuItem value="PE">PE</MenuItem>
-                                                            <MenuItem value="RC">RC</MenuItem>
-                                                        </Select>
-                                                    </FormControl>
-                                                </div>
-
-                                                <div className="tw-flex tw-flex-row tw-px-3 tw-mt-1 tw-w-full">
-                                                    <CustomTextField
+                                                    <CustomSelectSwitch
                                                         checked={allChecked}
-                                                        data={dataForm.documentNumber}
-                                                        onChange={(value: string, name: string, checked: boolean) =>
-                                                            handleChange(value, name, checked)
+                                                        data={
+                                                            dataForm.documentType
                                                         }
-                                                        name="documentNumber"
+                                                        onChange={(
+                                                            value: string,
+                                                            name: string,
+                                                            checked: boolean,
+                                                        ) =>
+                                                            handleChange(
+                                                                value,
+                                                                name,
+                                                                checked,
+                                                            )
+                                                        }
+                                                        theme={modeTheme}
+                                                        required
+                                                        name="documentType"
                                                         type="text"
                                                         switch="true"
-                                                        theme={theme}
-                                                        id="documentNumber"
+                                                        id="documentType"
                                                         fullWidth
+                                                        errorShow={
+                                                            errors.documentType
+                                                        }
                                                         label="Número de Documento"
                                                         InputProps={{
                                                             startAdornment: (
@@ -238,16 +393,68 @@ const EmployeesFormModal = ({
                                                 <div className="tw-flex tw-flex-row tw-px-3 tw-mt-1 tw-w-full">
                                                     <CustomTextField
                                                         checked={allChecked}
-                                                        data={dataForm.dateOfBirth}
-                                                        onChange={(value: string, name: string, checked: boolean) =>
-                                                            handleChange(value, name, checked)
+                                                        data={
+                                                            dataForm.documentNumber
                                                         }
+                                                        onChange={(
+                                                            value: string,
+                                                            name: string,
+                                                            checked: boolean,
+                                                        ) =>
+                                                            handleChange(
+                                                                value,
+                                                                name,
+                                                                checked,
+                                                            )
+                                                        }
+                                                        required
+                                                        name="documentNumber"
+                                                        type="text"
+                                                        switch="true"
+                                                        theme={modeTheme}
+                                                        id="documentNumber"
+                                                        fullWidth
+                                                        label="Número de Documento"
+                                                        errorShow={
+                                                            errors.documentNumber
+                                                        }
+                                                        InputProps={{
+                                                            startAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <AttachFileIcon />
+                                                                </InputAdornment>
+                                                            ),
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                <div className="tw-flex tw-flex-row tw-px-3 tw-mt-1 tw-w-full">
+                                                    <CustomTextField
+                                                        checked={allChecked}
+                                                        data={
+                                                            dataForm.dateOfBirth
+                                                        }
+                                                        onChange={(
+                                                            value: string,
+                                                            name: string,
+                                                            checked: boolean,
+                                                        ) =>
+                                                            handleChange(
+                                                                value,
+                                                                name,
+                                                                checked,
+                                                            )
+                                                        }
+                                                        required
                                                         name="dateOfBirth"
                                                         type="date"
                                                         switch="true"
-                                                        theme={theme}
+                                                        theme={modeTheme}
                                                         id="dateOfBirth"
                                                         fullWidth
+                                                        errorShow={
+                                                            errors.dateOfBirth
+                                                        }
                                                         label="Fecha de Nacimiento"
                                                         InputProps={{
                                                             startAdornment: (
@@ -263,15 +470,27 @@ const EmployeesFormModal = ({
                                                     <CustomTextField
                                                         checked={allChecked}
                                                         data={dataForm.position}
-                                                        onChange={(value: string, name: string, checked: boolean) =>
-                                                            handleChange(value, name, checked)
+                                                        onChange={(
+                                                            value: string,
+                                                            name: string,
+                                                            checked: boolean,
+                                                        ) =>
+                                                            handleChange(
+                                                                value,
+                                                                name,
+                                                                checked,
+                                                            )
                                                         }
+                                                        required
                                                         name="position"
                                                         type="text"
                                                         switch="true"
-                                                        theme={theme}
+                                                        theme={modeTheme}
                                                         id="position"
                                                         fullWidth
+                                                        errorShow={
+                                                            errors.position
+                                                        }
                                                         label="Cargo"
                                                         InputProps={{
                                                             startAdornment: (
@@ -289,42 +508,150 @@ const EmployeesFormModal = ({
                                             <div className="tw-flex tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-body">
                                                 <div className="tw-flex tw-w-full tw-justify-between">
                                                     <h6 className="main-title-sub-card tw-m-0 tw-p-2 tw-rounded">
-                                                        Correo de Contacto
+                                                        Teléfonos de Contacto
                                                     </h6>
                                                     <div
-                                                        onClick={() => handleAddData('phone')}
+                                                        onClick={() =>
+                                                            handleAddData(
+                                                                "phone",
+                                                            )
+                                                        }
                                                         className="add-button-item tw-flex tw-justify-center tw-items-center tw-rounded tw-px-2 tw-text-md tw-cursor-pointer"
                                                     >
-                                                        <IoAddCircle size={25} />
+                                                        <IoAddCircle
+                                                            size={25}
+                                                        />
                                                         Agregar otro teléfono
                                                     </div>
                                                 </div>
-
                                                 <div className="tw-flex tw-flex-col tw-w-full">
-                                                    {dataForm.phones && dataForm.phones.map((item, index) => (
-                                                        <CustomTextField
-                                                            key={index}
-                                                            checked={item.checked}
-                                                            data={item.text}
-                                                            onChange={(value: string, name: string, checked: boolean) =>
-                                                                handleChangeItem('phones', index, name, value)
-                                                            }
-                                                            name={`text`}
-                                                            type="text"
-                                                            switch="true"
-                                                            theme={theme}
-                                                            id={`phone-${index}`}
-                                                            fullWidth
-                                                            label="Teléfono"
-                                                            InputProps={{
-                                                                startAdornment: (
-                                                                    <InputAdornment position="start">
-                                                                        <AttachFileIcon />
-                                                                    </InputAdornment>
-                                                                ),
-                                                            }}
-                                                        />
-                                                    ))}
+                                                    {dataForm.phones &&
+                                                        dataForm.phones.map(
+                                                            (item, index) => (
+                                                                <div
+                                                                    key={index}
+                                                                    className="tw-flex tw-flex-col tw-px-3 tw-w-full"
+                                                                >
+                                                                    <div className="tw-flex tw-flex-row tw-mt-4 tw-w-full">
+                                                                        <CustomMUITelInput
+                                                                            className="tw-mt-4 tw-w-1/3"
+                                                                            value={
+                                                                                item.indicative &&
+                                                                                item.indicative.includes(
+                                                                                    "+",
+                                                                                )
+                                                                                    ? item.indicative
+                                                                                    : "+" +
+                                                                                      item.indicative
+                                                                            }
+                                                                            onChange={(
+                                                                                value: string,
+                                                                                name: string,
+                                                                            ) =>
+                                                                                handleChangeItem(
+                                                                                    "phones",
+                                                                                    index,
+                                                                                    name,
+                                                                                    value,
+                                                                                )
+                                                                            }
+                                                                            name="indicative"
+                                                                            theme={
+                                                                                modeTheme
+                                                                            }
+                                                                            id={`indicative-${index}`}
+                                                                            variant="standard"
+                                                                            size="medium"
+                                                                            label="Indicativo"
+                                                                            InputProps={{
+                                                                                readOnly:
+                                                                                    true,
+                                                                            }}
+                                                                        />
+
+                                                                        <CustomTextField
+                                                                            data={[
+                                                                                item.text,
+                                                                                item.checked,
+                                                                            ]}
+                                                                            onChange={(
+                                                                                value: string,
+                                                                                name: string,
+                                                                                checked: boolean,
+                                                                            ) =>
+                                                                                handleChangeItem(
+                                                                                    "phones",
+                                                                                    index,
+                                                                                    name,
+                                                                                    value,
+                                                                                    checked,
+                                                                                )
+                                                                            }
+                                                                            name="text"
+                                                                            type="tel"
+                                                                            switch="true"
+                                                                            theme={
+                                                                                modeTheme
+                                                                            }
+                                                                            id={`phone-${index}`}
+                                                                            fullWidth
+                                                                            label="Teléfono"
+                                                                            InputProps={{
+                                                                                startAdornment:
+                                                                                    (
+                                                                                        <InputAdornment position="start">
+                                                                                            <LocalPhoneOutlinedIcon />
+                                                                                        </InputAdornment>
+                                                                                    ),
+                                                                            }}
+                                                                        />
+                                                                    </div>
+
+                                                                    <CustomTextField
+                                                                        data={
+                                                                            item.ext
+                                                                        }
+                                                                        onChange={(
+                                                                            value: string,
+                                                                            name: string,
+                                                                        ) =>
+                                                                            handleChangeItem(
+                                                                                "phones",
+                                                                                index,
+                                                                                name,
+                                                                                value,
+                                                                            )
+                                                                        }
+                                                                        onClick={() => {
+                                                                            handleDeleteItem(
+                                                                                index,
+                                                                                "phones",
+                                                                            );
+                                                                        }}
+                                                                        name="ext"
+                                                                        type="tel"
+                                                                        deleted={
+                                                                            "true"
+                                                                        }
+                                                                        theme={
+                                                                            modeTheme
+                                                                        }
+                                                                        id="ext"
+                                                                        fullWidth
+                                                                        InputProps={{
+                                                                            startAdornment:
+                                                                                (
+                                                                                    <InputAdornment position="start">
+                                                                                        <Typography className="tw-font-bold">
+                                                                                            EXT
+                                                                                        </Typography>
+                                                                                    </InputAdornment>
+                                                                                ),
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            ),
+                                                        )}
                                                 </div>
                                             </div>
                                         </div>
@@ -336,45 +663,82 @@ const EmployeesFormModal = ({
                                                         Correo de Contacto
                                                     </h6>
                                                     <div
-                                                        onClick={() => handleAddData('email')}
+                                                        onClick={() =>
+                                                            handleAddData(
+                                                                "email",
+                                                            )
+                                                        }
                                                         className="add-button-item tw-flex tw-justify-center tw-items-center tw-rounded tw-px-2 tw-text-md tw-cursor-pointer"
                                                     >
-                                                        <IoAddCircle size={25} />
+                                                        <IoAddCircle
+                                                            size={25}
+                                                        />
                                                         Agregar otro correo
                                                     </div>
                                                 </div>
 
                                                 <div className="tw-flex tw-flex-col tw-w-full">
-                                                    {dataForm.emails && dataForm.emails.map((item, index) => (
-                                                        <CustomTextField
-                                                            key={index}
-                                                            data={item.text}
-                                                            onChange={(value: string, name: string, checked: boolean) =>
-                                                                handleChangeItem('emails', index, name, value)
-                                                            }
-                                                            name={`text`}
-                                                            type="text"
-                                                            switch="true"
-                                                            theme={theme}
-                                                            id={`email-${index}`}
-                                                            fullWidth
-                                                            label="Correo"
-                                                            InputProps={{
-                                                                startAdornment: (
-                                                                    <InputAdornment position="start">
-                                                                        <AttachFileIcon />
-                                                                    </InputAdornment>
-                                                                ),
-                                                            }}
-                                                        />
-                                                    ))}
+                                                    {dataForm.emails &&
+                                                        dataForm.emails.map(
+                                                            (item, index) => (
+                                                                <div
+                                                                    key={index}
+                                                                    className="tw-flex tw-flex-col tw-px-3 tw-w-full"
+                                                                >
+                                                                    <CustomTextField
+                                                                        checked={
+                                                                            allChecked
+                                                                        }
+                                                                        data={[
+                                                                            item.text,
+                                                                            item.checked,
+                                                                        ]}
+                                                                        onChange={(
+                                                                            value: string,
+                                                                            name: string,
+                                                                            checked: boolean,
+                                                                        ) =>
+                                                                            handleChangeItem(
+                                                                                "emails",
+                                                                                index,
+                                                                                name,
+                                                                                value,
+                                                                                checked,
+                                                                            )
+                                                                        }
+                                                                        onClick={() => {
+                                                                            handleDeleteItem(
+                                                                                index,
+                                                                                "emails",
+                                                                            );
+                                                                        }}
+                                                                        name="text"
+                                                                        type="text"
+                                                                        deleted={
+                                                                            "true"
+                                                                        }
+                                                                        switch="true"
+                                                                        theme={
+                                                                            modeTheme
+                                                                        }
+                                                                        id={`email-${index}`}
+                                                                        fullWidth
+                                                                        label="Correo"
+                                                                        InputProps={{
+                                                                            startAdornment:
+                                                                                (
+                                                                                    <InputAdornment position="start">
+                                                                                        <ExploreOutlinedIcon />
+                                                                                    </InputAdornment>
+                                                                                ),
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            ),
+                                                        )}
                                                 </div>
                                             </div>
                                         </div>
-
-
-
-
 
                                         <div className="tw-flex tw-w-[85%] tw-flex-col tw-space-y-4">
                                             <div className="tw-flex tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-body">
@@ -383,7 +747,11 @@ const EmployeesFormModal = ({
                                                         Datos Adicionales
                                                     </h6>
                                                     <div
-                                                        onClick={() => handleAddData('additional')}
+                                                        onClick={() =>
+                                                            handleAddData(
+                                                                "additional",
+                                                            )
+                                                        }
                                                         className="add-button-item tw-flex tw-justify-center tw-items-center tw-rounded tw-px-2 tw-text-md tw-cursor-pointer"
                                                     >
                                                         <IoAddCircle
@@ -394,150 +762,962 @@ const EmployeesFormModal = ({
                                                 </div>
 
                                                 <div className="tw-flex tw-flex-col tw-w-full">
-                                                    {dataForm.additional && dataForm.additional.map((item, index) => (
-                                                        <div key={index} className="tw-flex tw-flex-col tw-space-y-2">
-                                                            <CustomTextField
-                                                                checked={allChecked}
-                                                                data={item.autodato}
-                                                                onChange={(value: string, name: string, checked: boolean) =>
-                                                                    handleChange(value, name, checked)
-                                                                }
-                                                                name={`additional-${index}-autodato`}
-                                                                type="text"
-                                                                id={`additional-${index}-autodato`}
-                                                                switch="true"
-                                                                theme={theme}
-                                                                fullWidth
-                                                                label="Nombre del dato"
-                                                                InputProps={{
-                                                                    startAdornment: (
-                                                                        <InputAdornment position="start">
-                                                                            <AttachFileIcon />
-                                                                        </InputAdornment>
-                                                                    ),
-                                                                }}
-                                                            />
-                                                            <CustomTextField
-                                                                checked={allChecked}
-                                                                data={item.dato}
-                                                                onChange={(value: string, name: string, checked: boolean) =>
-                                                                    handleChange(value, name, checked)
-                                                                }
-                                                                name={`additional-${index}-autodato`}
-                                                                type="text"
-                                                                id={`additional-${index}-autodato`}
-                                                                theme={theme}
-                                                                fullWidth
-                                                                label="Dato"
-                                                                deleted={"true"}
-                                                                InputProps={{
-                                                                    startAdornment: (
-                                                                        <InputAdornment position="start">
-                                                                            <AttachFileIcon />
-                                                                        </InputAdornment>
-                                                                    ),
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    ))}
+                                                    {dataForm.additional &&
+                                                        dataForm.additional.map(
+                                                            (item, index) => (
+                                                                <div
+                                                                    key={index}
+                                                                    className="tw-flex tw-flex-col tw-space-y-2 tw-mt-5"
+                                                                >
+                                                                    <CustomTextField
+                                                                        checked={
+                                                                            allChecked
+                                                                        }
+                                                                        data={[
+                                                                            item.autodato,
+                                                                            item.checked,
+                                                                        ]}
+                                                                        onChange={(
+                                                                            value: string,
+                                                                            name: string,
+                                                                            checked: boolean,
+                                                                        ) =>
+                                                                            handleChangeItemAditional(
+                                                                                "additional",
+                                                                                index,
+                                                                                name,
+                                                                                value,
+                                                                                checked,
+                                                                            )
+                                                                        }
+                                                                        name={`autodato`}
+                                                                        type="text"
+                                                                        id={`additional-${index}-autodato`}
+                                                                        switch="true"
+                                                                        theme={
+                                                                            modeTheme
+                                                                        }
+                                                                        fullWidth
+                                                                        label="Nombre del dato"
+                                                                        InputProps={{
+                                                                            startAdornment:
+                                                                                (
+                                                                                    <InputAdornment position="start">
+                                                                                        <AttachFileIcon />
+                                                                                    </InputAdornment>
+                                                                                ),
+                                                                        }}
+                                                                    />
+                                                                    <CustomTextField
+                                                                        checked={
+                                                                            allChecked
+                                                                        }
+                                                                        data={
+                                                                            item.dato
+                                                                        }
+                                                                        onChange={(
+                                                                            value: string,
+                                                                            name: string,
+                                                                            checked: boolean,
+                                                                        ) =>
+                                                                            handleChangeItemAditional(
+                                                                                "additional",
+                                                                                index,
+                                                                                name,
+                                                                                value,
+                                                                                checked,
+                                                                            )
+                                                                        }
+                                                                        name={`dato`}
+                                                                        type="text"
+                                                                        id={`additional-${index}-dato`}
+                                                                        theme={
+                                                                            modeTheme
+                                                                        }
+                                                                        fullWidth
+                                                                        label="Dato"
+                                                                        deleted={
+                                                                            "true"
+                                                                        }
+                                                                        onClick={() => {
+                                                                            handleDeleteItem(
+                                                                                index,
+                                                                                "additional",
+                                                                            );
+                                                                        }}
+                                                                        InputProps={{
+                                                                            startAdornment:
+                                                                                (
+                                                                                    <InputAdornment position="start">
+                                                                                        <AttachFileIcon />
+                                                                                    </InputAdornment>
+                                                                                ),
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            ),
+                                                        )}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>)
-                                :
-                                (
+                                ) : (
                                     <div className="tw-flex tw-flex-col  tw-justify-center tw-items-center tw-px-8 tw-pb-3">
-
-                                    </div>
-                                )
-                            }
-
-
-                        </Card.Body>
-
-                        <Card.Footer className="text-muted tw-flex tw-justify-end tw-items-center">
-                            <div className="tw-flex tw-flex-row tw-px-3 tw-mt-1 tw-w-full">
-                                <div className="tw-flex tw-w-[50%] tw-flex-col">
-                                    <div className="tw-flex tw-w-28 tw-flex-col ">
-                                        <h6 className=" tw-m-0 tw-p-2 tw-rounded icon-actions-table">
-                                            Paso {step}/2
-                                        </h6>
-                                    </div>
-                                </div>
-                                <div className="tw-flex tw-w-[50%] tw-flex-col tw-justify-center tw-items-end">
-
-
-                                    {step && step === 1 ?
-                                        <div className="tw-flex tw-w-28 tw-flex-col">
-
-                                            <Button
-                                                onClick={handleSendForm}
-                                                className="tw-flex tw-flex-row tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent tw-mb-1"
-                                                style={{ padding: 0, background: 'transparent', border: 'none', color: 'black' }}
-                                            >
-                                                <h6 className=" tw-m-0 tw-p-1 tw-rounded icon-actions-table" style={{ color: 'black' }}>
-                                                    Siguiente
+                                        <div className="tw-flex tw-w-full tw-flex-col">
+                                            <div className="tw-flex tw-w-full tw-flex-col">
+                                                <h6 className="h5">
+                                                    Datos Laborales
                                                 </h6>
-                                                <GrNext size={25} color="#646464" className="icon-actions-table"/>
-                                            </Button>
-
-                                        </div>
-                                        :
-                                        <div className="tw-flex tw-w-40 tw-flex-col">
-
-                                            {/*   <Button
-                                                onClick={handleSendForm}
-                                                className="tw-flex tw-flex-row tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent tw-mb-1"
-                                                style={{ padding: 0, background: 'transparent', border: 'none', color: 'black' }}
-                                            >
-                                                <IoAddCircle
-                                                    size={28}
-                                                    color="#396593"
-                                                />
-                                                <h6 className=" tw-m-0 tw-p-1 tw-rounded" style={{ color: 'black' }}>
-                                                    Agregar empleado
+                                            </div>
+                                            <div className="tw-flex tw-pt-4 tw-rounded tw-flex-col tw-justify-center tw-items-start">
+                                                <h6 className="h5">
+                                                    Elige un área de trabajo:
                                                 </h6>
-                                            </Button> */}
+                                                <div className="tw-flex tw-flex-col tw-w-full tw-h-8 tw-justify-center">
+                                                    <p className="tw-text-left">
+                                                        Todos los datos del área
+                                                        seleccionada serán
+                                                        visibles por el
+                                                        empleado.
+                                                    </p>
+                                                </div>
+                                            </div>
 
-                                            <div className="tw-flex tw-flex-row w-full mx-16">
-                                                <Button
-                                                    className="tw-flex tw-items-center"
-                                                    variant="light"
-                                                    onClick={handleClose}
-                                                >
-                                                    <ImCancelCircle size={20} />
-                                                    {/* Cancelar */}
-                                                </Button>
-
-                                                <Button
-                                                    variant="primary"
-                                                    className={`btn  ${isLoading && "btn-loader"
-                                                        } tw-ml-5`}
-                                                    type="submit"
-                                                >
-                                                    {isLoading ? (
-                                                        <span className="ml-2 loading">
-                                                            <i className="ri-loader-2-fill"></i>
-                                                        </span>
-                                                    ) : (
-                                                        <span className="">
-                                                            <VscSave size={18} />
-                                                        </span>
-                                                    )}
-                                                </Button>
+                                            <div className="tw-flex tw-h-14 tw-rounded tw-flex-col tw-justify-center tw-items-start">
+                                                <div className="tw-flex tw-rounded tw-flex-col tw-justify-center tw-items-start tw-w-60">
+                                                    <CustomSelect
+                                                        labelId="area-label"
+                                                        value={selectedArea}
+                                                        onChange={
+                                                            handleAreaChange
+                                                        }
+                                                        label=""
+                                                    >
+                                                        {areaData &&
+                                                            areaData.map(
+                                                                (
+                                                                    area,
+                                                                    index,
+                                                                ) => (
+                                                                    <MenuItem
+                                                                        key={
+                                                                            index
+                                                                        }
+                                                                        value={
+                                                                            area.uid
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            area.areaName
+                                                                        }
+                                                                    </MenuItem>
+                                                                ),
+                                                            )}
+                                                    </CustomSelect>
+                                                    {selectedAreaError ? (
+                                                        <div
+                                                            style={{
+                                                                color: "#d32f2f",
+                                                                fontSize:
+                                                                    "12px",
+                                                            }}
+                                                        >
+                                                            {selectedAreaError}
+                                                        </div>
+                                                    ) : null}
+                                                </div>
                                             </div>
                                         </div>
-                                    }
+                                        <div className="tw-flex tw-w-full tw-flex-col tw-mt-5">
+                                            <div className="tw-flex tw-pt-4 tw-rounded tw-flex-col tw-justify-center tw-items-start">
+                                                <h6 className="h5">
+                                                    Elige una sede:
+                                                </h6>
+                                                <div className="tw-flex tw-flex-col tw-w-full tw-h-8 tw-justify-center">
+                                                    <p className="tw-text-left">
+                                                        Todos los datos de la
+                                                        sede seleccionada serán
+                                                        visibles por el
+                                                        empleado.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="tw-flex tw-h-14 tw-rounded tw-flex-col tw-justify-center tw-items-start">
+                                                <div className="tw-flex tw-rounded tw-flex-col tw-justify-center tw-items-start tw-w-60">
+                                                    <CustomSelect
+                                                        labelId="headquarters-label"
+                                                        value={
+                                                            selectedHeadquarter
+                                                        }
+                                                        onChange={
+                                                            handleHeadquartersChange
+                                                        }
+                                                        label="Sede"
+                                                    >
+                                                        {headquartersData &&
+                                                            headquartersData.map(
+                                                                (
+                                                                    area,
+                                                                    index,
+                                                                ) => (
+                                                                    <MenuItem
+                                                                        key={
+                                                                            index
+                                                                        }
+                                                                        value={
+                                                                            area.uid
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            area
+                                                                                .name[0]
+                                                                        }
+                                                                    </MenuItem>
+                                                                ),
+                                                            )}
+                                                    </CustomSelect>
 
+                                                    {selectedHeadquarterError ? (
+                                                        <div
+                                                            style={{
+                                                                color: "#d32f2f",
+                                                                fontSize:
+                                                                    "12px",
+                                                            }}
+                                                        >
+                                                            {
+                                                                selectedHeadquarterError
+                                                            }
+                                                        </div>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="tw-flex tw-w-full tw-flex-col tw-mt-5">
+                                            <div className="tw-flex tw-pt-4 tw-rounded tw-flex-col tw-justify-center tw-items-start">
+                                                <h6 className="h5">Ruta:</h6>
+                                                <div className="tw-flex tw-flex-col tw-w-full tw-h-8 tw-justify-center">
+                                                    <p className="tw-text-left">
+                                                        ¿Este empleado aplica
+                                                        para ruta?
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="tw-flex tw-h-14 tw-rounded tw-flex-col tw-justify-center tw-items-start tw-mb-5">
+                                                <div className="tw-flex tw-rounded tw-flex-col tw-justify-center tw-items-start tw-w-60">
+                                                    <RadioGroup
+                                                        row
+                                                        value={routeApplicable.toString()}
+                                                        onChange={
+                                                            handleRouteChange
+                                                        }
+                                                    >
+                                                        <FormControlLabel
+                                                            value="true"
+                                                            control={
+                                                                <CustomRadio />
+                                                            }
+                                                            label="Sí"
+                                                        />
+                                                        <FormControlLabel
+                                                            value="false"
+                                                            control={
+                                                                <CustomRadio />
+                                                            }
+                                                            label="No"
+                                                        />
+                                                    </RadioGroup>
+                                                    {routeApplicableError ? (
+                                                        <div
+                                                            style={{
+                                                                color: "#d32f2f",
+                                                                fontSize:
+                                                                    "12px",
+                                                            }}
+                                                        >
+                                                            {
+                                                                routeApplicableError
+                                                            }
+                                                        </div>
+                                                    ) : null}
+                                                </div>
+                                            </div>
 
-                                </div>
+                                            <div className="tw-flex  tw-rounded tw-flex-col tw-justify-center tw-items-start">
+                                                <div className="tw-flex tw-rounded tw-flex-col tw-justify-center tw-items-start tw-w-100">
+                                                    <TableContainer>
+                                                        <Table>
+                                                            <TableHead>
+                                                                <TableRow>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            width: "80px",
+                                                                            border: "1px solid #DFDFDF",
+                                                                            textAlign:
+                                                                                "center",
+                                                                            color:
+                                                                                modeTheme ===
+                                                                                "light"
+                                                                                    ? "#000000"
+                                                                                    : "#8bb8e7",
+                                                                        }}
+                                                                    >
+                                                                        Día
+                                                                    </TableCell>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            border: "1px solid #DFDFDF",
+                                                                            textAlign:
+                                                                                "center",
+                                                                            color:
+                                                                                modeTheme ===
+                                                                                "light"
+                                                                                    ? "#000000"
+                                                                                    : "#8bb8e7",
+                                                                        }}
+                                                                    >
+                                                                        Ruta
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            </TableHead>
+                                                            <TableBody>
+                                                                <TableRow>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            width: "80px",
+                                                                            border: "1px solid #DFDFDF",
+                                                                            textAlign:
+                                                                                "center",
+                                                                            color:
+                                                                                modeTheme ===
+                                                                                "light"
+                                                                                    ? "#000000"
+                                                                                    : "#8bb8e7",
+                                                                        }}
+                                                                    >
+                                                                        L
+                                                                    </TableCell>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            border: "1px solid #DFDFDF",
+                                                                        }}
+                                                                    >
+                                                                        <FormControl
+                                                                            variant="outlined"
+                                                                            fullWidth
+                                                                        >
+                                                                            <CustomSelect
+                                                                                labelId="area-label"
+                                                                                value={
+                                                                                    mondayRoute
+                                                                                }
+                                                                                onChange={(
+                                                                                    event,
+                                                                                ) =>
+                                                                                    handleChangeSelect(
+                                                                                        "monday",
+                                                                                        event,
+                                                                                    )
+                                                                                }
+                                                                                label=""
+                                                                            >
+                                                                                {routeData &&
+                                                                                    routeData.map(
+                                                                                        (
+                                                                                            route,
+                                                                                            index,
+                                                                                        ) => (
+                                                                                            <MenuItem
+                                                                                                key={
+                                                                                                    index
+                                                                                                }
+                                                                                                value={
+                                                                                                    route.uid
+                                                                                                }
+                                                                                            >
+                                                                                                {
+                                                                                                    route.routeName
+                                                                                                }
+                                                                                            </MenuItem>
+                                                                                        ),
+                                                                                    )}
+                                                                            </CustomSelect>
+                                                                            {mondayRouteError ? (
+                                                                                <div
+                                                                                    style={{
+                                                                                        color: "#d32f2f",
+                                                                                        fontSize:
+                                                                                            "12px",
+                                                                                    }}
+                                                                                >
+                                                                                    {
+                                                                                        mondayRouteError
+                                                                                    }
+                                                                                </div>
+                                                                            ) : null}
+                                                                        </FormControl>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            width: "80px",
+                                                                            border: "1px solid #DFDFDF",
+                                                                            textAlign:
+                                                                                "center",
+                                                                            color:
+                                                                                modeTheme ===
+                                                                                "light"
+                                                                                    ? "#000000"
+                                                                                    : "#8bb8e7",
+                                                                        }}
+                                                                    >
+                                                                        M
+                                                                    </TableCell>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            border: "1px solid #DFDFDF",
+                                                                        }}
+                                                                    >
+                                                                        <FormControl
+                                                                            variant="outlined"
+                                                                            fullWidth
+                                                                        >
+                                                                            <CustomSelect
+                                                                                labelId="area-label"
+                                                                                value={
+                                                                                    tuesdayRoute
+                                                                                }
+                                                                                onChange={(
+                                                                                    event,
+                                                                                ) =>
+                                                                                    handleChangeSelect(
+                                                                                        "tuesday",
+                                                                                        event,
+                                                                                    )
+                                                                                }
+                                                                                label=""
+                                                                            >
+                                                                                {routeData &&
+                                                                                    routeData.map(
+                                                                                        (
+                                                                                            route,
+                                                                                            index,
+                                                                                        ) => (
+                                                                                            <MenuItem
+                                                                                                key={
+                                                                                                    index
+                                                                                                }
+                                                                                                value={
+                                                                                                    route.uid
+                                                                                                }
+                                                                                            >
+                                                                                                {
+                                                                                                    route.routeName
+                                                                                                }
+                                                                                            </MenuItem>
+                                                                                        ),
+                                                                                    )}
+                                                                            </CustomSelect>
+                                                                            {tuesdayRouteError ? (
+                                                                                <div
+                                                                                    style={{
+                                                                                        color: "#d32f2f",
+                                                                                        fontSize:
+                                                                                            "12px",
+                                                                                    }}
+                                                                                >
+                                                                                    {
+                                                                                        tuesdayRouteError
+                                                                                    }
+                                                                                </div>
+                                                                            ) : null}
+                                                                        </FormControl>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            width: "80px",
+                                                                            border: "1px solid #DFDFDF",
+                                                                            textAlign:
+                                                                                "center",
+                                                                            color:
+                                                                                modeTheme ===
+                                                                                "light"
+                                                                                    ? "#000000"
+                                                                                    : "#8bb8e7",
+                                                                        }}
+                                                                    >
+                                                                        X
+                                                                    </TableCell>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            border: "1px solid #DFDFDF",
+                                                                        }}
+                                                                    >
+                                                                        <FormControl
+                                                                            variant="outlined"
+                                                                            fullWidth
+                                                                        >
+                                                                            <CustomSelect
+                                                                                labelId="area-label"
+                                                                                value={
+                                                                                    wednesdayRoute
+                                                                                }
+                                                                                onChange={(
+                                                                                    event,
+                                                                                ) =>
+                                                                                    handleChangeSelect(
+                                                                                        "wednesday",
+                                                                                        event,
+                                                                                    )
+                                                                                }
+                                                                                label=""
+                                                                            >
+                                                                                {routeData &&
+                                                                                    routeData.map(
+                                                                                        (
+                                                                                            route,
+                                                                                            index,
+                                                                                        ) => (
+                                                                                            <MenuItem
+                                                                                                key={
+                                                                                                    index
+                                                                                                }
+                                                                                                value={
+                                                                                                    route.uid
+                                                                                                }
+                                                                                            >
+                                                                                                {
+                                                                                                    route.routeName
+                                                                                                }
+                                                                                            </MenuItem>
+                                                                                        ),
+                                                                                    )}
+                                                                            </CustomSelect>
+                                                                            {wednesdayRouteError ? (
+                                                                                <div
+                                                                                    style={{
+                                                                                        color: "#d32f2f",
+                                                                                        fontSize:
+                                                                                            "12px",
+                                                                                    }}
+                                                                                >
+                                                                                    {
+                                                                                        wednesdayRouteError
+                                                                                    }
+                                                                                </div>
+                                                                            ) : null}
+                                                                        </FormControl>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            width: "80px",
+                                                                            border: "1px solid #DFDFDF",
+                                                                            textAlign:
+                                                                                "center",
+                                                                            color:
+                                                                                modeTheme ===
+                                                                                "light"
+                                                                                    ? "#000000"
+                                                                                    : "#8bb8e7",
+                                                                        }}
+                                                                    >
+                                                                        J
+                                                                    </TableCell>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            border: "1px solid #DFDFDF",
+                                                                        }}
+                                                                    >
+                                                                        <FormControl
+                                                                            variant="outlined"
+                                                                            fullWidth
+                                                                        >
+                                                                            <CustomSelect
+                                                                                labelId="area-label"
+                                                                                value={
+                                                                                    thursdayRoute
+                                                                                }
+                                                                                onChange={(
+                                                                                    event,
+                                                                                ) =>
+                                                                                    handleChangeSelect(
+                                                                                        "thursday",
+                                                                                        event,
+                                                                                    )
+                                                                                }
+                                                                                label=""
+                                                                            >
+                                                                                {routeData &&
+                                                                                    routeData.map(
+                                                                                        (
+                                                                                            route,
+                                                                                            index,
+                                                                                        ) => (
+                                                                                            <MenuItem
+                                                                                                key={
+                                                                                                    index
+                                                                                                }
+                                                                                                value={
+                                                                                                    route.uid
+                                                                                                }
+                                                                                            >
+                                                                                                {
+                                                                                                    route.routeName
+                                                                                                }
+                                                                                            </MenuItem>
+                                                                                        ),
+                                                                                    )}
+                                                                            </CustomSelect>
+                                                                            {thursdayRouteError ? (
+                                                                                <div
+                                                                                    style={{
+                                                                                        color: "#d32f2f",
+                                                                                        fontSize:
+                                                                                            "12px",
+                                                                                    }}
+                                                                                >
+                                                                                    {
+                                                                                        thursdayRouteError
+                                                                                    }
+                                                                                </div>
+                                                                            ) : null}
+                                                                        </FormControl>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            width: "80px",
+                                                                            border: "1px solid #DFDFDF",
+                                                                            textAlign:
+                                                                                "center",
+                                                                            color:
+                                                                                modeTheme ===
+                                                                                "light"
+                                                                                    ? "#000000"
+                                                                                    : "#8bb8e7",
+                                                                        }}
+                                                                    >
+                                                                        V
+                                                                    </TableCell>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            border: "1px solid #DFDFDF",
+                                                                        }}
+                                                                    >
+                                                                        <FormControl
+                                                                            variant="outlined"
+                                                                            fullWidth
+                                                                        >
+                                                                            <CustomSelect
+                                                                                labelId="area-label"
+                                                                                value={
+                                                                                    fridayRoute
+                                                                                }
+                                                                                onChange={(
+                                                                                    event,
+                                                                                ) =>
+                                                                                    handleChangeSelect(
+                                                                                        "friday",
+                                                                                        event,
+                                                                                    )
+                                                                                }
+                                                                                label=""
+                                                                            >
+                                                                                {routeData &&
+                                                                                    routeData.map(
+                                                                                        (
+                                                                                            route,
+                                                                                            index,
+                                                                                        ) => (
+                                                                                            <MenuItem
+                                                                                                key={
+                                                                                                    index
+                                                                                                }
+                                                                                                value={
+                                                                                                    route.uid
+                                                                                                }
+                                                                                            >
+                                                                                                {
+                                                                                                    route.routeName
+                                                                                                }
+                                                                                            </MenuItem>
+                                                                                        ),
+                                                                                    )}
+                                                                            </CustomSelect>
+                                                                            {fridayRouteError ? (
+                                                                                <div
+                                                                                    style={{
+                                                                                        color: "#d32f2f",
+                                                                                        fontSize:
+                                                                                            "12px",
+                                                                                    }}
+                                                                                >
+                                                                                    {
+                                                                                        fridayRouteError
+                                                                                    }
+                                                                                </div>
+                                                                            ) : null}
+                                                                        </FormControl>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            width: "80px",
+                                                                            border: "1px solid #DFDFDF",
+                                                                            textAlign:
+                                                                                "center",
+                                                                            color:
+                                                                                modeTheme ===
+                                                                                "light"
+                                                                                    ? "#000000"
+                                                                                    : "#8bb8e7",
+                                                                        }}
+                                                                    >
+                                                                        S
+                                                                    </TableCell>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            border: "1px solid #DFDFDF",
+                                                                        }}
+                                                                    >
+                                                                        <FormControl
+                                                                            variant="outlined"
+                                                                            fullWidth
+                                                                        >
+                                                                            <CustomSelect
+                                                                                labelId="area-label"
+                                                                                value={
+                                                                                    saturdayRoute
+                                                                                }
+                                                                                onChange={(
+                                                                                    event,
+                                                                                ) =>
+                                                                                    handleChangeSelect(
+                                                                                        "saturday",
+                                                                                        event,
+                                                                                    )
+                                                                                }
+                                                                                label=""
+                                                                            >
+                                                                                {routeData &&
+                                                                                    routeData.map(
+                                                                                        (
+                                                                                            route,
+                                                                                            index,
+                                                                                        ) => (
+                                                                                            <MenuItem
+                                                                                                key={
+                                                                                                    index
+                                                                                                }
+                                                                                                value={
+                                                                                                    route.uid
+                                                                                                }
+                                                                                            >
+                                                                                                {
+                                                                                                    route.routeName
+                                                                                                }
+                                                                                            </MenuItem>
+                                                                                        ),
+                                                                                    )}
+                                                                            </CustomSelect>
+                                                                            {saturdayRouteError ? (
+                                                                                <div
+                                                                                    style={{
+                                                                                        color: "#d32f2f",
+                                                                                        fontSize:
+                                                                                            "12px",
+                                                                                    }}
+                                                                                >
+                                                                                    {
+                                                                                        saturdayRouteError
+                                                                                    }
+                                                                                </div>
+                                                                            ) : null}
+                                                                        </FormControl>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            width: "80px",
+                                                                            border: "1px solid #DFDFDF",
+                                                                            textAlign:
+                                                                                "center",
+                                                                            color:
+                                                                                modeTheme ===
+                                                                                "light"
+                                                                                    ? "#000000"
+                                                                                    : "#8bb8e7",
+                                                                        }}
+                                                                    >
+                                                                        D
+                                                                    </TableCell>
+                                                                    <TableCell
+                                                                        sx={{
+                                                                            border: "1px solid #DFDFDF",
+                                                                        }}
+                                                                    >
+                                                                        <FormControl
+                                                                            variant="outlined"
+                                                                            fullWidth
+                                                                        >
+                                                                            <CustomSelect
+                                                                                labelId="area-label"
+                                                                                value={
+                                                                                    sundayRoute
+                                                                                }
+                                                                                onChange={(
+                                                                                    event,
+                                                                                ) =>
+                                                                                    handleChangeSelect(
+                                                                                        "sunday",
+                                                                                        event,
+                                                                                    )
+                                                                                }
+                                                                                label=""
+                                                                            >
+                                                                                {routeData &&
+                                                                                    routeData.map(
+                                                                                        (
+                                                                                            route,
+                                                                                            index,
+                                                                                        ) => (
+                                                                                            <MenuItem
+                                                                                                key={
+                                                                                                    index
+                                                                                                }
+                                                                                                value={
+                                                                                                    route.uid
+                                                                                                }
+                                                                                            >
+                                                                                                {
+                                                                                                    route.routeName
+                                                                                                }
+                                                                                            </MenuItem>
+                                                                                        ),
+                                                                                    )}
+                                                                            </CustomSelect>
+                                                                            {sundayRouteError ? (
+                                                                                <div
+                                                                                    style={{
+                                                                                        color: "#d32f2f",
+                                                                                        fontSize:
+                                                                                            "12px",
+                                                                                    }}
+                                                                                >
+                                                                                    {
+                                                                                        sundayRouteError
+                                                                                    }
+                                                                                </div>
+                                                                            ) : null}
+                                                                        </FormControl>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                </div>
+                                            </div>
+                                            <div
+                                                className="tw-flex tw-flex-col tw-justify-center tw-items-start tw-mt-7"
+                                                style={{
+                                                    borderTop:
+                                                        "1px solid #DFDFDF",
+                                                }}
+                                            >
+                                                <div className="tw-flex tw-flex-col tw-h-24 tw-justify-center tw-items-start tw-w-100">
+                                                    <SwitchForm
+                                                        modeTheme={"light"}
+                                                        checked={
+                                                            employeeCardStatus
+                                                        }
+                                                        onChange={(e) => {
+                                                            handleChangeSwitch();
+                                                        }}
+                                                    />
+                                                    {/* {employeeCardStatusError ? <div style={{ color: '#d32f2f', fontSize: '12px' }}>{employeeCardStatusError}</div> : null} */}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-                        </Card.Footer>
-                    </Card>
-                </Modal.Body>
-            </Form>
-        </Modal>
+                        </div>
+                    </Modal.Body>
+
+                    <Modal.Footer className="tw-flex tw-flex-row tw-justify-between">
+                        <Col>{step === 1 ? "Paso 1/2" : "Paso 2/2"}</Col>
+                        <Col className="tw-flex tw-flex-row tw-space-x-2 tw-items-center tw-justify-end">
+                            <Button
+                                className="tw-flex tw-items-center btn-admin"
+                                variant="light"
+                                onClick={handleClose}
+                            >
+                                <ImCancelCircle size={20} />
+                            </Button>
+
+                            {!isEdit && handleShowMainFormEdit && step === 1 ? (
+                                <Button
+                                    className=""
+                                    type={"button"}
+                                    variant="primary"
+                                    onClick={() => handleChangeStep()}
+                                >
+                                    <GrNext size={17} />
+                                </Button>
+                            ) : (
+                                <>
+                                    {step === 1 ? (
+                                        <Button
+                                            className=""
+                                            type={"button"}
+                                            variant="primary"
+                                            onClick={() => handleChangeStep()}
+                                        >
+                                            <GrNext size={17} />
+                                        </Button>
+                                    ) : (
+                                        <div className="tw-flex tw-flex-row w-full mx-16">
+                                            <Button
+                                                className=""
+                                                type="button"
+                                                variant="primary"
+                                                onClick={() => setStep(1)}
+                                            >
+                                                <GrPrevious size={17} />
+                                            </Button>
+                                            <Button
+                                                className={`${
+                                                    isLoading && "btn-loader"
+                                                } tw-ml-5 btn-save-admin`}
+                                                type="submit"
+                                            >
+                                                {isLoading ? (
+                                                    <span className="ml-2 loading">
+                                                        <i className="ri-loader-2-fill"></i>
+                                                    </span>
+                                                ) : (
+                                                    <span className="">
+                                                        <VscSave size={18} />
+                                                    </span>
+                                                )}
+                                            </Button>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </Col>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+        )
     );
 };
 

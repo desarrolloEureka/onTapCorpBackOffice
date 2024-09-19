@@ -51894,6 +51894,20 @@ ul.inbox-pagination {
 
 /* --------------------------------------------- */
 
+.picker-color {
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
+}
+
+.picker-color .arrow {
+    background-color: var(--black-3);
+    color: var(--custom-black);
+}
+
+.color-picker-pallet {
+    background-color: var(--custom-white);
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
+}
+
 .sub-card-body {
     background-color: var(--custom-gray);
     color: #fff;
@@ -51992,6 +52006,10 @@ ul.inbox-pagination {
 
 /*------------ admim custom css----*/
 
+.bLrwxC {
+    width: 100%;
+}
+
 .modal-admin {
     background-color: var(--custom-modal-white);
     color: var(--custom-black);
@@ -52010,6 +52028,10 @@ ul.inbox-pagination {
 [data-theme-mode="dark"] .btn-cancel-admin:hover {
     background-color: rgba(var(--light-rgb), 0.8);
 }
+
+/* .btn-save-admin {
+    background-color: var(--custom-btn-save-admin) !important;
+} */
 
 .btn-save-admin:hover {
     background-color: var(--custom-btn-save-admin) !important;
