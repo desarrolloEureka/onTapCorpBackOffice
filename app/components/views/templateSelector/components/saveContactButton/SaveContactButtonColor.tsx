@@ -73,17 +73,20 @@ const SaveContactButtonColor = ({
         }
       });
 
-      if (companyData?.address[1]) {
-        vCardData += `ADR;TYPE=ADDRESS:${companyData?.address[0]}\n`;
-      }
-
       if (userData.position[1]) {
-        vCardData += `TITLE:${userData.position[0] ?? ""}\n`;
+        vCardData += `ROLE:${userData.position[0] ?? ""}\n`;
       }
       // vCardData += `ORG:${userData.company?.text ?? ''}\n`;
       // vCardData += `ROLE:${userData.position?.text ?? ''}\n`;
       // vCardData += `NOTE:${userData.professional_profile?.text ?? ''}\n`;
 
+      if (companyData?.tradename[1]) {
+        vCardData += `ORG:${companyData?.tradename[0]}\n`;
+      }
+
+      if (companyData?.address[1]) {
+        vCardData += `ADR;TYPE=ADDRESS:${companyData?.address[0]}\n`;
+      }
       // Agregar cada URL social si están disponibles
 
       companyDataUrls?.forEach((url: any, index: any) => {
