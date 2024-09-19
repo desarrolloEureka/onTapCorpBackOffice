@@ -335,9 +335,9 @@ const HeadDropDown = (params: HeaderDropDownProps) => {
                                 : "John Doe"}
                         </h6>
                         <p className="main-notification-text mb-0">
-                            {params.data?.rol
+                            {/* {params.data?.rol
                                 ? params.data?.rol
-                                : "Super Admin"}
+                                : "Super Admin"} */}
                         </p>
                     </div>
                     <Dropdown.Item href="#profile" eventKey="profile">
