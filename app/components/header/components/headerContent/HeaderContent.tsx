@@ -411,7 +411,7 @@ const HeaderContent = ({
                                 >
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="areas"
                                     >
                                         <PiMapPinSimpleFill
                                             size={20}
@@ -421,7 +421,7 @@ const HeaderContent = ({
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="headquarters"
                                     >
                                         <PiMapPinSimpleFill
                                             size={20}
@@ -431,7 +431,7 @@ const HeaderContent = ({
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="employeesMaps"
                                     >
                                         <PiMapPinSimpleFill
                                             size={20}
@@ -441,7 +441,7 @@ const HeaderContent = ({
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="tutesMaps"
                                     >
                                         <PiMapPinSimpleFill
                                             size={20}
@@ -451,7 +451,7 @@ const HeaderContent = ({
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="fixedPointsMaps"
                                     >
                                         <PiMapPinSimpleFill
                                             size={20}
@@ -521,7 +521,7 @@ const HeaderContent = ({
                                 >
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="metrics"
                                     >
                                         <IoDocumentOutline
                                             size={20}
@@ -531,7 +531,7 @@ const HeaderContent = ({
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="visits"
                                     >
                                         <IoDocumentOutline
                                             size={20}
@@ -541,7 +541,7 @@ const HeaderContent = ({
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="second"
+                                        eventKey="clics"
                                     >
                                         <IoDocumentOutline
                                             size={20}
