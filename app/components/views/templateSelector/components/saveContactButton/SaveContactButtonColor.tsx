@@ -7,6 +7,7 @@ const SaveContactButtonColor = ({
   colorButton,
   userData,
   companyData,
+  companyDataUrls,
   headquarterData,
   second,
 }: {
@@ -14,6 +15,7 @@ const SaveContactButtonColor = ({
   colorButton?: string;
   userData: any;
   companyData: any;
+  companyDataUrls: any;
   headquarterData: any;
 }) => {
   const isSmallScreen = useMediaQuery("(max-height:780px)");
@@ -71,8 +73,8 @@ const SaveContactButtonColor = ({
         }
       });
 
-      if (userData?.address?.checked) {
-        vCardData += `ADR;TYPE=${userData.address?.label}:${userData.address?.text}\n`;
+      if (companyData?.address[1]) {
+        vCardData += `ADR;TYPE=ADDRESS:${companyData?.address[0]}\n`;
       }
 
       if (userData.position[1]) {
@@ -84,7 +86,7 @@ const SaveContactButtonColor = ({
 
       // Agregar cada URL social si están disponibles
 
-      companyData?.forEach((url: any, index: any) => {
+      companyDataUrls?.forEach((url: any, index: any) => {
         if (url.checked) {
           vCardData += `item${index}.URL:${url.url}\n`;
           vCardData += `item${index}.X-ABLabel:${url.name}\n`;

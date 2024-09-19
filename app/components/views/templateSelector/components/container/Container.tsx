@@ -233,7 +233,8 @@ const TemplateContainer = ({
         <SaveContactButtonColor
           colorButton={color}
           userData={userData}
-          companyData={companyDataUrls}
+          companyData={companyData}
+          companyDataUrls={companyDataUrls}
           headquarterData={headquarterDataUrls}
           second={false}
         />
