@@ -2,6 +2,8 @@ import { ModalParamsMainForm } from "@/types/modals";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
+import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
+import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import {
     FormControlLabel,
@@ -16,24 +18,22 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Typography
+    Typography,
 } from "@mui/material";
-import FormControl from '@mui/material/FormControl';
-import MenuItem from '@mui/material/MenuItem';
-import { styled } from '@mui/system';
+import FormControl from "@mui/material/FormControl";
+import MenuItem from "@mui/material/MenuItem";
+import { styled } from "@mui/system";
 import { Button, Col, Form, Modal } from "react-bootstrap";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import { ImCancelCircle } from "react-icons/im";
 import { IoMdClose } from "react-icons/io";
 import { IoAddCircle } from "react-icons/io5";
 import { VscSave } from "react-icons/vsc";
+import CustomMUITelInput from "../company/components/CustomMUITelInput";
 import CustomTextField from "../company/components/CustomTextField";
 import CustomSelectSwitch from "./components/CustomSelectSwitch";
 import SwitchForm from "./components/SwitchForm";
 import EmployeesFormHook from "./hook/employeesFormHook";
-import CustomMUITelInput from "../company/components/CustomMUITelInput";
-import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
-import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 
 const EmployeesFormModal = ({
     handleShowMainForm,
@@ -96,7 +96,7 @@ const EmployeesFormModal = ({
         saturdayRouteError,
         sundayRouteError,
         employeeCardStatusError,
-        handleChangeItemAditional
+        handleChangeItemAditional,
     } = EmployeesFormHook({
         handleShowMainForm,
         setHandleShowMainForm,
@@ -369,6 +369,7 @@ const EmployeesFormModal = ({
                                                                 checked,
                                                             )
                                                         }
+                                                        theme={modeTheme}
                                                         required
                                                         name="documentType"
                                                         type="text"
@@ -527,79 +528,128 @@ const EmployeesFormModal = ({
                                                     {dataForm.phones &&
                                                         dataForm.phones.map(
                                                             (item, index) => (
-                                                                <div key={index} className="tw-flex tw-flex-col tw-px-3 tw-w-full">
+                                                                <div
+                                                                    key={index}
+                                                                    className="tw-flex tw-flex-col tw-px-3 tw-w-full"
+                                                                >
                                                                     <div className="tw-flex tw-flex-row tw-mt-4 tw-w-full">
                                                                         <CustomMUITelInput
                                                                             className="tw-mt-4 tw-w-1/3"
                                                                             value={
                                                                                 item.indicative &&
-                                                                                    item.indicative.includes(
-                                                                                        "+",
-                                                                                    )
+                                                                                item.indicative.includes(
+                                                                                    "+",
+                                                                                )
                                                                                     ? item.indicative
                                                                                     : "+" +
-                                                                                    item.indicative
+                                                                                      item.indicative
                                                                             }
-                                                                            onChange={(value: string, name: string) =>
-                                                                                handleChangeItem("phones", index, name, value)
+                                                                            onChange={(
+                                                                                value: string,
+                                                                                name: string,
+                                                                            ) =>
+                                                                                handleChangeItem(
+                                                                                    "phones",
+                                                                                    index,
+                                                                                    name,
+                                                                                    value,
+                                                                                )
                                                                             }
                                                                             name="indicative"
-                                                                            theme={modeTheme}
+                                                                            theme={
+                                                                                modeTheme
+                                                                            }
                                                                             id={`indicative-${index}`}
                                                                             variant="standard"
                                                                             size="medium"
                                                                             label="Indicativo"
                                                                             InputProps={{
-                                                                                readOnly: true,
+                                                                                readOnly:
+                                                                                    true,
                                                                             }}
                                                                         />
 
                                                                         <CustomTextField
-                                                                            data={[item.text, item.checked]}
-                                                                            onChange={(value: string, name: string, checked: boolean) =>
-                                                                                handleChangeItem("phones", index, name, value, checked)
+                                                                            data={[
+                                                                                item.text,
+                                                                                item.checked,
+                                                                            ]}
+                                                                            onChange={(
+                                                                                value: string,
+                                                                                name: string,
+                                                                                checked: boolean,
+                                                                            ) =>
+                                                                                handleChangeItem(
+                                                                                    "phones",
+                                                                                    index,
+                                                                                    name,
+                                                                                    value,
+                                                                                    checked,
+                                                                                )
                                                                             }
                                                                             name="text"
                                                                             type="tel"
                                                                             switch="true"
-                                                                            theme={modeTheme}
+                                                                            theme={
+                                                                                modeTheme
+                                                                            }
                                                                             id={`phone-${index}`}
                                                                             fullWidth
                                                                             label="Teléfono"
                                                                             InputProps={{
-                                                                                startAdornment: (
-                                                                                    <InputAdornment position="start">
-                                                                                        <LocalPhoneOutlinedIcon />
-                                                                                    </InputAdornment>
-                                                                                ),
+                                                                                startAdornment:
+                                                                                    (
+                                                                                        <InputAdornment position="start">
+                                                                                            <LocalPhoneOutlinedIcon />
+                                                                                        </InputAdornment>
+                                                                                    ),
                                                                             }}
                                                                         />
                                                                     </div>
 
                                                                     <CustomTextField
-                                                                        data={item.ext}
-                                                                        onChange={(value: string, name: string) =>
-                                                                            handleChangeItem("phones", index, name, value)
+                                                                        data={
+                                                                            item.ext
+                                                                        }
+                                                                        onChange={(
+                                                                            value: string,
+                                                                            name: string,
+                                                                        ) =>
+                                                                            handleChangeItem(
+                                                                                "phones",
+                                                                                index,
+                                                                                name,
+                                                                                value,
+                                                                            )
                                                                         }
                                                                         onClick={() => {
-                                                                            handleDeleteItem(index, "phones");
+                                                                            handleDeleteItem(
+                                                                                index,
+                                                                                "phones",
+                                                                            );
                                                                         }}
                                                                         name="ext"
                                                                         type="tel"
-                                                                        deleted={"true"}
-                                                                        theme={modeTheme}
+                                                                        deleted={
+                                                                            "true"
+                                                                        }
+                                                                        theme={
+                                                                            modeTheme
+                                                                        }
                                                                         id="ext"
                                                                         fullWidth
                                                                         InputProps={{
-                                                                            startAdornment: (
-                                                                                <InputAdornment position="start">
-                                                                                    <Typography className="tw-font-bold">EXT</Typography>
-                                                                                </InputAdornment>
-                                                                            ),
+                                                                            startAdornment:
+                                                                                (
+                                                                                    <InputAdornment position="start">
+                                                                                        <Typography className="tw-font-bold">
+                                                                                            EXT
+                                                                                        </Typography>
+                                                                                    </InputAdornment>
+                                                                                ),
                                                                         }}
                                                                     />
                                                                 </div>
-
                                                             ),
                                                         )}
                                                 </div>
@@ -627,7 +677,6 @@ const EmployeesFormModal = ({
                                                     </div>
                                                 </div>
 
-
                                                 <div className="tw-flex tw-flex-col tw-w-full">
                                                     {dataForm.emails &&
                                                         dataForm.emails.map(
@@ -637,20 +686,37 @@ const EmployeesFormModal = ({
                                                                     className="tw-flex tw-flex-col tw-px-3 tw-w-full"
                                                                 >
                                                                     <CustomTextField
-                                                                        checked={allChecked}
+                                                                        checked={
+                                                                            allChecked
+                                                                        }
                                                                         data={[
                                                                             item.text,
                                                                             item.checked,
                                                                         ]}
-                                                                        onChange={(value: string, name: string, checked: boolean) =>
-                                                                            handleChangeItem("emails", index, name, value, checked)
+                                                                        onChange={(
+                                                                            value: string,
+                                                                            name: string,
+                                                                            checked: boolean,
+                                                                        ) =>
+                                                                            handleChangeItem(
+                                                                                "emails",
+                                                                                index,
+                                                                                name,
+                                                                                value,
+                                                                                checked,
+                                                                            )
                                                                         }
                                                                         onClick={() => {
-                                                                            handleDeleteItem(index, "emails");
+                                                                            handleDeleteItem(
+                                                                                index,
+                                                                                "emails",
+                                                                            );
                                                                         }}
                                                                         name="text"
                                                                         type="text"
-                                                                        deleted={"true"}
+                                                                        deleted={
+                                                                            "true"
+                                                                        }
                                                                         switch="true"
                                                                         theme={
                                                                             modeTheme
@@ -709,16 +775,21 @@ const EmployeesFormModal = ({
                                                                         }
                                                                         data={[
                                                                             item.autodato,
-                                                                            item.checked
+                                                                            item.checked,
                                                                         ]}
                                                                         onChange={(
                                                                             value: string,
                                                                             name: string,
                                                                             checked: boolean,
                                                                         ) =>
-                                                                            handleChangeItemAditional("additional", index, name, value, checked)
+                                                                            handleChangeItemAditional(
+                                                                                "additional",
+                                                                                index,
+                                                                                name,
+                                                                                value,
+                                                                                checked,
+                                                                            )
                                                                         }
-
                                                                         name={`autodato`}
                                                                         type="text"
                                                                         id={`additional-${index}-autodato`}
@@ -749,7 +820,13 @@ const EmployeesFormModal = ({
                                                                             name: string,
                                                                             checked: boolean,
                                                                         ) =>
-                                                                            handleChangeItemAditional("additional", index, name, value, checked)
+                                                                            handleChangeItemAditional(
+                                                                                "additional",
+                                                                                index,
+                                                                                name,
+                                                                                value,
+                                                                                checked,
+                                                                            )
                                                                         }
                                                                         name={`dato`}
                                                                         type="text"
@@ -763,7 +840,10 @@ const EmployeesFormModal = ({
                                                                             "true"
                                                                         }
                                                                         onClick={() => {
-                                                                            handleDeleteItem(index, "additional");
+                                                                            handleDeleteItem(
+                                                                                index,
+                                                                                "additional",
+                                                                            );
                                                                         }}
                                                                         InputProps={{
                                                                             startAdornment:
@@ -866,33 +946,52 @@ const EmployeesFormModal = ({
                                                 <div className="tw-flex tw-rounded tw-flex-col tw-justify-center tw-items-start tw-w-60">
                                                     <CustomSelect
                                                         labelId="headquarters-label"
-                                                        value={selectedHeadquarter}
-                                                        onChange={handleHeadquartersChange}
+                                                        value={
+                                                            selectedHeadquarter
+                                                        }
+                                                        onChange={
+                                                            handleHeadquartersChange
+                                                        }
                                                         label="Sede"
                                                     >
-                                                        {headquartersData && headquartersData.map((area, index) => (
-                                                            <MenuItem
-                                                                key={index}
-                                                                value={area.uid}
-                                                            >
-                                                                {area.name[0]}
-                                                            </MenuItem>
-                                                        ))}
+                                                        {headquartersData &&
+                                                            headquartersData.map(
+                                                                (
+                                                                    area,
+                                                                    index,
+                                                                ) => (
+                                                                    <MenuItem
+                                                                        key={
+                                                                            index
+                                                                        }
+                                                                        value={
+                                                                            area.uid
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            area
+                                                                                .name[0]
+                                                                        }
+                                                                    </MenuItem>
+                                                                ),
+                                                            )}
                                                     </CustomSelect>
 
                                                     {selectedHeadquarterError ? (
                                                         <div
                                                             style={{
                                                                 color: "#d32f2f",
-                                                                fontSize: "12px",
+                                                                fontSize:
+                                                                    "12px",
                                                             }}
                                                         >
-                                                            {selectedHeadquarterError}
+                                                            {
+                                                                selectedHeadquarterError
+                                                            }
                                                         </div>
                                                     ) : null}
                                                 </div>
                                             </div>
-
                                         </div>
                                         <div className="tw-flex tw-w-full tw-flex-col tw-mt-5">
                                             <div className="tw-flex tw-pt-4 tw-rounded tw-flex-col tw-justify-center tw-items-start">
@@ -958,7 +1057,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                    "light"
+                                                                                "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -972,7 +1071,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                    "light"
+                                                                                "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -991,7 +1090,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                    "light"
+                                                                                "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1068,7 +1167,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                    "light"
+                                                                                "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1145,7 +1244,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                    "light"
+                                                                                "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1222,7 +1321,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                    "light"
+                                                                                "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1299,7 +1398,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                    "light"
+                                                                                "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1376,7 +1475,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                    "light"
+                                                                                "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1453,7 +1552,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                    "light"
+                                                                                "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1595,8 +1694,9 @@ const EmployeesFormModal = ({
                                                 <GrPrevious size={17} />
                                             </Button>
                                             <Button
-                                                className={`${isLoading && "btn-loader"
-                                                    } tw-ml-5 btn-save-admin`}
+                                                className={`${
+                                                    isLoading && "btn-loader"
+                                                } tw-ml-5 btn-save-admin`}
                                                 type="submit"
                                             >
                                                 {isLoading ? (
