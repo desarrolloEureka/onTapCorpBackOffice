@@ -9,6 +9,8 @@ export interface DemoChangerElement extends HTMLElement {
 export type DataPhone = {
     text: '',
     checked: false,
+    indicative: string,
+    ext: string,
 };
 
 export type DataAdditional = {

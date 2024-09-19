@@ -409,12 +409,21 @@ export const getHeadquartersByCompanyId = async (companyId: any) => {
 export const saveEmployee = async (dataSave: any) => {
     try {
         const documentId = uuidv4();
-
         const docRef = doc(db, "employees", documentId);
+        //const docRef = doc(db, "users", documentId);
 
         const dataWithId = {
             ...dataSave,
             uid: documentId,
+            rolId: 'vE7NrHpiRU2s1Gjv5feg',
+            views: 0,
+            isActive: true,
+            preview: '',
+            switch_activateCard: true,
+            templateData: [{
+                id: 'VGMUWYOP3RK374gi30I8',
+                checked: true,
+            }]
         };
 
         // Guarda el documento en Firestore
@@ -430,6 +439,7 @@ export const saveEmployee = async (dataSave: any) => {
 export const updateEmployee = async (id: string, dataSave: any) => {
     try {
         const zoneRef = doc(db, "employees", id);
+        //const zoneRef = doc(db, "users", id);
         await updateDoc(zoneRef, dataSave);
 
         return { success: true, message: "Employee updated successfully" };

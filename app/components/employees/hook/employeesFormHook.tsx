@@ -23,7 +23,7 @@ const EmployeesFormHook = ({
         documentNumber: ['', false],
         dateOfBirth: ['', false],
         position: ['', false],
-        phones: [{ text: '', checked: false }],
+        phones: [{ text: '', checked: false, indicative: '', ext: '' }],
         emails: [{ text: '', checked: false }],
         additional: [{ autodato: '', dato: '', checked: false }],
     };
@@ -105,7 +105,7 @@ const EmployeesFormHook = ({
                 if ((prevData.phones || []).length < maxItems) {
                     const updatedPhones: DataPhone[] = [
                         ...(prevData.phones || []),
-                        { text: "", checked: false },
+                        { text: '', checked: false, indicative: '', ext: '' },
                     ];
                     newData = { ...newData, phones: updatedPhones };
                 }
@@ -118,19 +118,19 @@ const EmployeesFormHook = ({
                     newData = { ...newData, emails: updatedEmails };
                 }
             } else if (type === "additional") {
-                if ((prevData.additional || []).length < maxItems) {
-                    const updatedAdditional: DataAdditional[] = [
-                        ...(prevData.additional || []),
-                        { autodato: "", dato: "", checked: false },
-                    ];
-                    newData = { ...newData, additional: updatedAdditional };
-                }
+                //if ((prevData.additional || []).length < maxItems) {
+                const updatedAdditional: DataAdditional[] = [
+                    ...(prevData.additional || []),
+                    { autodato: "", dato: "", checked: false },
+                ];
+                newData = { ...newData, additional: updatedAdditional };
+                //}
             }
             return newData;
         });
     };
 
-    const handleChangeItem = (
+    const handleChangeItemAditional = (
         field: keyof FormValuesData,
         index: number,
         key: string,
@@ -141,9 +141,37 @@ const EmployeesFormHook = ({
             const fieldArray = prevData[field] as any[];
             if (fieldArray && fieldArray[index]) {
                 const updatedFieldArray = [...fieldArray];
+                const newProp = { [key]: value, checked: !checked };
+                updatedFieldArray[index] = { ...updatedFieldArray[index], ...newProp, };
+                //console.log('updatedFieldArray ', updatedFieldArray);
+
+                return {
+                    ...prevData,
+                    [field]: updatedFieldArray,
+                };
+            }
+            return prevData;
+        });
+    };
+
+    const handleChangeItem = (
+        field: keyof FormValuesData,
+        index: number,
+        key: string,
+        value: string | boolean,
+        checked?: boolean,
+    ) => {
+        setData((prevData) => {
+            const fieldArray = prevData[field] as any[];
+            if (fieldArray && fieldArray[index]) {
+                const updatedFieldArray = [...fieldArray];
+                const newProp =
+                    key === "text"
+                        ? { [key]: value, checked: !checked }
+                        : { [key]: value };
                 updatedFieldArray[index] = {
                     ...updatedFieldArray[index],
-                    [key]: value,
+                    ...newProp,
                 };
 
                 return {
@@ -157,7 +185,7 @@ const EmployeesFormHook = ({
 
     const handleChange = (value: string, name: string, isChecked?: boolean) => {
         if (isChecked === undefined) {
-            setData({ ...data, [name]: (value || "") ?? "" });
+            setData({ ...data, [name]: (value || "-") ?? "-" });
         } else {
             setData({ ...data, [name]: [(value || "") ?? "", !isChecked] });
         }
@@ -167,10 +195,30 @@ const EmployeesFormHook = ({
         setData({ ...data, [name]: value });
     };
 
-    const handleDeleteItem = (item: any) => {
-
+    const handleDeleteItem = (indexItem: number, type: any) => {
+        if (type === "phones") {
+            setData((prevData) => ({
+                ...prevData,
+                ["phones"]: prevData["phones"]?.filter(
+                    (_, index) => index !== indexItem,
+                ),
+            }));
+        } if (type === "emails") {
+            setData((prevData) => ({
+                ...prevData,
+                ["emails"]: prevData["emails"]?.filter(
+                    (_, index) => index !== indexItem,
+                ),
+            }));
+        } else {
+            setData((prevData) => ({
+                ...prevData,
+                ["additional"]: prevData["additional"]?.filter(
+                    (_, index) => index !== indexItem,
+                ),
+            }));
+        }
     };
-
 
     function resizeImage(file: File, maxWidth: number, maxHeight: number): Promise<File> {
         return new Promise((resolve, reject) => {
@@ -383,7 +431,7 @@ const EmployeesFormHook = ({
         e.preventDefault();
 
         // Validar los campos antes de continuar
-        //if (!validateSaveData()) return;
+        if (!validateSaveData()) return;
 
         setIsLoading(true);
 
@@ -444,7 +492,7 @@ const EmployeesFormHook = ({
         e.stopPropagation();
 
         // Validar los campos antes de continuar
-        //if (!validateSaveData()) return;
+        if (!validateSaveData()) return;
 
         setIsLoading(true);
 
@@ -464,6 +512,8 @@ const EmployeesFormHook = ({
             selectedHeadquarter: selectedHeadquarter,
             employeeCardStatus: employeeCardStatus,
         };
+
+        console.log('formData ', updatedData);
 
         try {
             if (userData?.companyId) {
@@ -577,6 +627,7 @@ const EmployeesFormHook = ({
 
     // Función para manejar el cambio en el CustomSelect
     const handleHeadquartersChange = (event: any) => {
+        console.log(event.target.value);
         setSelectedHeadquarter(event.target.value);
     };
 
@@ -618,7 +669,7 @@ const EmployeesFormHook = ({
             setSelectedImage(editData?.ImageProfile),
             //Paso 2
             setSelectedArea(editData?.selectedArea || ''),
-            setSelectedHeadquarter(''),
+            setSelectedHeadquarter(editData?.selectedHeadquarter || ''),
             setRouteApplicable(editData?.routeApplicable || false),
             setMondayRoute(editData?.mondayRoute || ''),
             setTuesdayRoute(editData?.tuesdayRoute || ''),
@@ -683,7 +734,8 @@ const EmployeesFormHook = ({
         fridayRouteError,
         saturdayRouteError,
         sundayRouteError,
-        employeeCardStatusError
+        employeeCardStatusError,
+        handleChangeItemAditional
     };
 };
 

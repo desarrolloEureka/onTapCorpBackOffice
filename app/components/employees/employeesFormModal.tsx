@@ -15,7 +15,8 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow
+    TableRow,
+    Typography
 } from "@mui/material";
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
@@ -30,6 +31,9 @@ import CustomTextField from "../company/components/CustomTextField";
 import CustomSelectSwitch from "./components/CustomSelectSwitch";
 import SwitchForm from "./components/SwitchForm";
 import EmployeesFormHook from "./hook/employeesFormHook";
+import CustomMUITelInput from "../company/components/CustomMUITelInput";
+import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
+import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 
 const EmployeesFormModal = ({
     handleShowMainForm,
@@ -92,6 +96,7 @@ const EmployeesFormModal = ({
         saturdayRouteError,
         sundayRouteError,
         employeeCardStatusError,
+        handleChangeItemAditional
     } = EmployeesFormHook({
         handleShowMainForm,
         setHandleShowMainForm,
@@ -522,44 +527,79 @@ const EmployeesFormModal = ({
                                                     {dataForm.phones &&
                                                         dataForm.phones.map(
                                                             (item, index) => (
-                                                                <CustomTextField
-                                                                    key={index}
-                                                                    checked={
-                                                                        item.checked
-                                                                    }
-                                                                    data={
-                                                                        item.text
-                                                                    }
-                                                                    onChange={(
-                                                                        value: string,
-                                                                        name: string,
-                                                                        checked: boolean,
-                                                                    ) =>
-                                                                        handleChangeItem(
-                                                                            "phones",
-                                                                            index,
-                                                                            name,
-                                                                            value,
-                                                                        )
-                                                                    }
-                                                                    name={`text`}
-                                                                    type="text"
-                                                                    switch="true"
-                                                                    theme={
-                                                                        modeTheme
-                                                                    }
-                                                                    id={`phone-${index}`}
-                                                                    fullWidth
-                                                                    label="Teléfono"
-                                                                    InputProps={{
-                                                                        startAdornment:
-                                                                            (
+                                                                <div key={index} className="tw-flex tw-flex-col tw-px-3 tw-w-full">
+                                                                    <div className="tw-flex tw-flex-row tw-mt-4 tw-w-full">
+                                                                        <CustomMUITelInput
+                                                                            className="tw-mt-4 tw-w-1/3"
+                                                                            value={
+                                                                                item.indicative &&
+                                                                                    item.indicative.includes(
+                                                                                        "+",
+                                                                                    )
+                                                                                    ? item.indicative
+                                                                                    : "+" +
+                                                                                    item.indicative
+                                                                            }
+                                                                            onChange={(value: string, name: string) =>
+                                                                                handleChangeItem("phones", index, name, value)
+                                                                            }
+                                                                            name="indicative"
+                                                                            theme={modeTheme}
+                                                                            id={`indicative-${index}`}
+                                                                            variant="standard"
+                                                                            size="medium"
+                                                                            label="Indicativo"
+                                                                            InputProps={{
+                                                                                readOnly: true,
+                                                                            }}
+                                                                        />
+
+                                                                        <CustomTextField
+                                                                            data={[item.text, item.checked]}
+                                                                            onChange={(value: string, name: string, checked: boolean) =>
+                                                                                handleChangeItem("phones", index, name, value, checked)
+                                                                            }
+                                                                            name="text"
+                                                                            type="tel"
+                                                                            switch="true"
+                                                                            theme={modeTheme}
+                                                                            id={`phone-${index}`}
+                                                                            fullWidth
+                                                                            label="Teléfono"
+                                                                            InputProps={{
+                                                                                startAdornment: (
+                                                                                    <InputAdornment position="start">
+                                                                                        <LocalPhoneOutlinedIcon />
+                                                                                    </InputAdornment>
+                                                                                ),
+                                                                            }}
+                                                                        />
+                                                                    </div>
+
+                                                                    <CustomTextField
+                                                                        data={item.ext}
+                                                                        onChange={(value: string, name: string) =>
+                                                                            handleChangeItem("phones", index, name, value)
+                                                                        }
+                                                                        onClick={() => {
+                                                                            handleDeleteItem(index, "phones");
+                                                                        }}
+                                                                        name="ext"
+                                                                        type="tel"
+                                                                        deleted={"true"}
+                                                                        theme={modeTheme}
+                                                                        id="ext"
+                                                                        fullWidth
+                                                                        InputProps={{
+                                                                            startAdornment: (
                                                                                 <InputAdornment position="start">
-                                                                                    <AttachFileIcon />
+                                                                                    <Typography className="tw-font-bold">EXT</Typography>
                                                                                 </InputAdornment>
                                                                             ),
-                                                                    }}
-                                                                />
+                                                                        }}
+                                                                    />
+                                                                </div>
+
                                                             ),
                                                         )}
                                                 </div>
@@ -587,49 +627,47 @@ const EmployeesFormModal = ({
                                                     </div>
                                                 </div>
 
+
                                                 <div className="tw-flex tw-flex-col tw-w-full">
                                                     {dataForm.emails &&
                                                         dataForm.emails.map(
                                                             (item, index) => (
-                                                                <CustomTextField
+                                                                <div
                                                                     key={index}
-                                                                    data={
-                                                                        item.text
-                                                                    }
-                                                                    checked={
-                                                                        item.checked
-                                                                    }
-                                                                    onChange={(
-                                                                        value: string,
-                                                                        name: string,
-                                                                        checked: boolean,
-                                                                    ) =>
-                                                                        handleChangeItem(
-                                                                            "emails",
-                                                                            index,
-                                                                            name,
-                                                                            value,
-                                                                            checked,
-                                                                        )
-                                                                    }
-                                                                    name={`text`}
-                                                                    type="text"
-                                                                    switch="true"
-                                                                    theme={
-                                                                        modeTheme
-                                                                    }
-                                                                    id={`email-${index}`}
-                                                                    fullWidth
-                                                                    label="Correo"
-                                                                    InputProps={{
-                                                                        startAdornment:
-                                                                            (
-                                                                                <InputAdornment position="start">
-                                                                                    <AttachFileIcon />
-                                                                                </InputAdornment>
-                                                                            ),
-                                                                    }}
-                                                                />
+                                                                    className="tw-flex tw-flex-col tw-px-3 tw-w-full"
+                                                                >
+                                                                    <CustomTextField
+                                                                        checked={allChecked}
+                                                                        data={[
+                                                                            item.text,
+                                                                            item.checked,
+                                                                        ]}
+                                                                        onChange={(value: string, name: string, checked: boolean) =>
+                                                                            handleChangeItem("emails", index, name, value, checked)
+                                                                        }
+                                                                        onClick={() => {
+                                                                            handleDeleteItem(index, "emails");
+                                                                        }}
+                                                                        name="text"
+                                                                        type="text"
+                                                                        deleted={"true"}
+                                                                        switch="true"
+                                                                        theme={
+                                                                            modeTheme
+                                                                        }
+                                                                        id={`email-${index}`}
+                                                                        fullWidth
+                                                                        label="Correo"
+                                                                        InputProps={{
+                                                                            startAdornment:
+                                                                                (
+                                                                                    <InputAdornment position="start">
+                                                                                        <ExploreOutlinedIcon />
+                                                                                    </InputAdornment>
+                                                                                ),
+                                                                        }}
+                                                                    />
+                                                                </div>
                                                             ),
                                                         )}
                                                 </div>
@@ -663,28 +701,25 @@ const EmployeesFormModal = ({
                                                             (item, index) => (
                                                                 <div
                                                                     key={index}
-                                                                    className="tw-flex tw-flex-col tw-space-y-2"
+                                                                    className="tw-flex tw-flex-col tw-space-y-2 tw-mt-5"
                                                                 >
                                                                     <CustomTextField
                                                                         checked={
                                                                             allChecked
                                                                         }
-                                                                        data={
-                                                                            item.autodato
-                                                                        }
+                                                                        data={[
+                                                                            item.autodato,
+                                                                            item.checked
+                                                                        ]}
                                                                         onChange={(
                                                                             value: string,
                                                                             name: string,
                                                                             checked: boolean,
                                                                         ) =>
-                                                                            handleChangeItem(
-                                                                                "additional",
-                                                                                index,
-                                                                                name,
-                                                                                value,
-                                                                            )
+                                                                            handleChangeItemAditional("additional", index, name, value, checked)
                                                                         }
-                                                                        name={`dato`}
+
+                                                                        name={`autodato`}
                                                                         type="text"
                                                                         id={`additional-${index}-autodato`}
                                                                         switch="true"
@@ -714,16 +749,11 @@ const EmployeesFormModal = ({
                                                                             name: string,
                                                                             checked: boolean,
                                                                         ) =>
-                                                                            handleChangeItem(
-                                                                                "additional",
-                                                                                index,
-                                                                                name,
-                                                                                value,
-                                                                            )
+                                                                            handleChangeItemAditional("additional", index, name, value, checked)
                                                                         }
-                                                                        name={`autodato`}
+                                                                        name={`dato`}
                                                                         type="text"
-                                                                        id={`additional-${index}-autodato`}
+                                                                        id={`additional-${index}-dato`}
                                                                         theme={
                                                                             modeTheme
                                                                         }
@@ -733,9 +763,7 @@ const EmployeesFormModal = ({
                                                                             "true"
                                                                         }
                                                                         onClick={() => {
-                                                                            handleDeleteItem(
-                                                                                item,
-                                                                            );
+                                                                            handleDeleteItem(index, "additional");
                                                                         }}
                                                                         InputProps={{
                                                                             startAdornment:
@@ -838,50 +866,33 @@ const EmployeesFormModal = ({
                                                 <div className="tw-flex tw-rounded tw-flex-col tw-justify-center tw-items-start tw-w-60">
                                                     <CustomSelect
                                                         labelId="headquarters-label"
-                                                        value={
-                                                            selectedHeadquarter
-                                                        }
-                                                        onChange={
-                                                            handleHeadquartersChange
-                                                        }
+                                                        value={selectedHeadquarter}
+                                                        onChange={handleHeadquartersChange}
                                                         label="Sede"
                                                     >
-                                                        {headquartersData &&
-                                                            headquartersData.map(
-                                                                (
-                                                                    area,
-                                                                    index,
-                                                                ) => (
-                                                                    <MenuItem
-                                                                        key={
-                                                                            index
-                                                                        }
-                                                                        value={
-                                                                            area.uid
-                                                                        }
-                                                                    >
-                                                                        {
-                                                                            area.areaName
-                                                                        }
-                                                                    </MenuItem>
-                                                                ),
-                                                            )}
+                                                        {headquartersData && headquartersData.map((area, index) => (
+                                                            <MenuItem
+                                                                key={index}
+                                                                value={area.uid}
+                                                            >
+                                                                {area.name[0]}
+                                                            </MenuItem>
+                                                        ))}
                                                     </CustomSelect>
+
                                                     {selectedHeadquarterError ? (
                                                         <div
                                                             style={{
                                                                 color: "#d32f2f",
-                                                                fontSize:
-                                                                    "12px",
+                                                                fontSize: "12px",
                                                             }}
                                                         >
-                                                            {
-                                                                selectedHeadquarterError
-                                                            }
+                                                            {selectedHeadquarterError}
                                                         </div>
                                                     ) : null}
                                                 </div>
                                             </div>
+
                                         </div>
                                         <div className="tw-flex tw-w-full tw-flex-col tw-mt-5">
                                             <div className="tw-flex tw-pt-4 tw-rounded tw-flex-col tw-justify-center tw-items-start">
@@ -947,7 +958,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -961,7 +972,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -980,7 +991,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1057,7 +1068,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1134,7 +1145,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1211,7 +1222,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1288,7 +1299,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1365,7 +1376,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1442,7 +1453,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1584,9 +1595,8 @@ const EmployeesFormModal = ({
                                                 <GrPrevious size={17} />
                                             </Button>
                                             <Button
-                                                className={`${
-                                                    isLoading && "btn-loader"
-                                                } tw-ml-5 btn-save-admin`}
+                                                className={`${isLoading && "btn-loader"
+                                                    } tw-ml-5 btn-save-admin`}
                                                 type="submit"
                                             >
                                                 {isLoading ? (
