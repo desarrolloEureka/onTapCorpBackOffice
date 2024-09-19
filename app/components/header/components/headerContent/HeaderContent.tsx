@@ -463,8 +463,7 @@ const HeaderContent = ({
                             )}
 
                             {/*  Plantillas, quitar userRole === "superadmin" || despues del desarrollo */}
-                            {(
-                                userRole === "superadmin" ||
+                            {(userRole === "superadmin" ||
                                 userRole === "operativo" ||
                                 userRole === "administrativo") && (
                                 <NavDropdown
@@ -491,28 +490,18 @@ const HeaderContent = ({
                                         Logos
                                     </NavDropdown.Item>
 
-                                        <NavDropdown.Item
-                                            //href="#functionary"
-                                            eventKey="tarjetas"
-                                        >
-                                            <FaRegAddressCard
-                                                size={20}
-                                                className="tw-mb-1 tw-mr-1"
-                                            />
-                                            Tarjetas
-                                        </NavDropdown.Item>
-                                        <NavDropdown.Item
-                                            //href="#functionary"
-                                            eventKey="second"
-                                        >
-                                            <FaRegAddressCard
-                                                size={20}
-                                                className="tw-mb-1 tw-mr-1"
-                                            />
-                                            Empleados
-                                        </NavDropdown.Item>
-                                    </NavDropdown>
-                                )}
+                                    <NavDropdown.Item
+                                        //href="#functionary"
+                                        eventKey="tarjetas"
+                                    >
+                                        <FaRegAddressCard
+                                            size={20}
+                                            className="tw-mb-1 tw-mr-1"
+                                        />
+                                        Tarjetas
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                            )}
 
                             {/*  Reportes */}
                             {(userRole === "operativo" ||
