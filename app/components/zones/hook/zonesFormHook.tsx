@@ -1,6 +1,6 @@
 "use client";
+import { getGeolocation } from "@/data/formConstant";
 import useAuth from "@/firebase/auth";
-import { getZonesByCompanyId } from "@/firebase/Documents";
 import { saveZoneQuery, updateZoneQuery } from "@/queries/documentsQueries";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
@@ -18,13 +18,13 @@ const ZonesFormHook = ({
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
-    const { userData } = useAuth();
+    const { userData, companyData } = useAuth();
 
     // Datos
     const [zoneName, setZoneName] = useState("");
     const [zoneManager, setZoneManager] = useState("");
-    const [addresses, setAddresses] = useState(['']);
-    const [idRow, setIdRow] = useState('');
+    const [addresses, setAddresses] = useState([""]);
+    const [idRow, setIdRow] = useState("");
 
     // Errores
     const [zoneNameError, setZoneNameError] = useState("");
@@ -59,7 +59,9 @@ const ZonesFormHook = ({
             valid = false;
         } else {
             // Validar cada dirección
-            const invalidAddresses = addresses.some(address => !address.trim());
+            const invalidAddresses = addresses.some(
+                (address) => !address.trim(),
+            );
             if (invalidAddresses) {
                 setAddressesError("Cada dirección debe ser válida");
                 valid = false;
@@ -80,8 +82,8 @@ const ZonesFormHook = ({
         setIsLoading(true);
         try {
             const now = new Date();
-            const date = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-            const hour = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+            const date = now.toISOString().split("T")[0]; // Formato YYYY-MM-DD
+            const hour = now.toTimeString().split(" ")[0]; // Formato HH:MM:SS
 
             if (userData?.companyId) {
                 const formData = {
@@ -90,19 +92,22 @@ const ZonesFormHook = ({
                     zoneManager,
                     addresses,
                     date,
-                    hour
+                    hour,
                 };
                 const zoneQueryResult = await saveZoneQuery(formData);
 
                 if (zoneQueryResult.success) {
                     console.log("Zone saved successfully");
                 } else {
-                    console.error("Failed to save zone:", zoneQueryResult.message);
+                    console.error(
+                        "Failed to save zone:",
+                        zoneQueryResult.message,
+                    );
                 }
-
-
             } else {
-                console.log("No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.");
+                console.log(
+                    "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
+                );
                 return;
             }
 
@@ -125,7 +130,7 @@ const ZonesFormHook = ({
     const handleReset = () => {
         setZoneName("");
         setZoneManager("");
-        setAddresses(['']);
+        setAddresses([""]);
         setZoneNameError("");
         setZoneManagerError("");
         setAddressesError("");
@@ -135,13 +140,37 @@ const ZonesFormHook = ({
         e.preventDefault();
         e.stopPropagation();
 
+        const getCoordinatesFromAddresses = async (addresses: string[]) => {
+            // Mapeamos cada dirección a una promesa de obtener las coordenadas
+            const coordsFromAddress: Promise<{
+                address: string;
+                coords: { lat: number; lng: number } | null;
+            }>[] = addresses.map(async (address: string) => {
+                const coords = await getGeolocation(address, companyData);
+
+                return { address, coords };
+            });
+
+            // Esperamos a que todas las promesas se resuelvan
+            const resolvedCoords = await Promise.all(coordsFromAddress);
+
+            // `resolvedCoords` contiene ahora los resultados reales
+            return resolvedCoords;
+        };
+
+        //Coordenadas de la Dirección
+        const allCoordsFromAddresses: {
+            address: string;
+            coords: { lat: number; lng: number } | null;
+        }[] = await getCoordinatesFromAddresses(addresses);
+
         if (!validateFields()) return;
 
         setIsLoading(true);
         try {
             const now = new Date();
-            const date = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-            const hour = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+            const date = now.toISOString().split("T")[0]; // Formato YYYY-MM-DD
+            const hour = now.toTimeString().split(" ")[0]; // Formato HH:MM:SS
 
             if (userData?.companyId && idRow) {
                 const updatedData = {
@@ -151,20 +180,27 @@ const ZonesFormHook = ({
                     addresses,
                     date,
                     hour,
-                    uid: idRow
+                    uid: idRow,
+                    geolocations: allCoordsFromAddresses,
                 };
 
-                const zoneQueryResult = await updateZoneQuery(updatedData, idRow);
+                const zoneQueryResult = await updateZoneQuery(
+                    updatedData,
+                    idRow,
+                );
 
                 if (zoneQueryResult.success) {
                     console.log("Zone saved successfully");
                 } else {
-                    console.error("Failed to save zone:", zoneQueryResult.message);
+                    console.error(
+                        "Failed to save zone:",
+                        zoneQueryResult.message,
+                    );
                 }
-
-
             } else {
-                console.log("No se pudo encontrar la compañía o el ID de la fila. Por favor, inténtalo de nuevo.");
+                console.log(
+                    "No se pudo encontrar la compañía o el ID de la fila. Por favor, inténtalo de nuevo.",
+                );
                 return;
             }
 
@@ -193,7 +229,12 @@ const ZonesFormHook = ({
     }, [handleShowMainForm]);
 
     useEffect(() => {
-        handleShowMainFormEdit && (setShow(true), setZoneName(editData?.zoneName), setZoneManager(editData?.zoneManager), setAddresses(editData?.addresses), setIdRow(editData?.uid));
+        handleShowMainFormEdit &&
+            (setShow(true),
+            setZoneName(editData?.zoneName),
+            setZoneManager(editData?.zoneManager),
+            setAddresses(editData?.addresses),
+            setIdRow(editData?.uid));
     }, [editData, handleShowMainFormEdit]);
 
     return {

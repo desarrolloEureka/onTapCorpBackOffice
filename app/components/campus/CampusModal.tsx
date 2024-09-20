@@ -131,8 +131,9 @@ const CampusModal = ({
                                         id="name"
                                         fullWidth
                                         label="Nombre Sede"
-                                        helperText={campusNameError}
-                                        error={!!campusNameError}
+                                        // helperText={campusNameError}
+                                        // error={!!campusNameError}
+                                        errorShow={campusNameError}
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">
@@ -155,8 +156,9 @@ const CampusModal = ({
                                         id="address"
                                         fullWidth
                                         label="Dirección"
-                                        helperText={campusAddressError}
-                                        error={!!campusAddressError}
+                                        // helperText={campusAddressError}
+                                        // error={!!campusAddressError}
+                                        errorShow={campusAddressError}
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">
@@ -179,8 +181,9 @@ const CampusModal = ({
                                         id="url"
                                         fullWidth
                                         label="Url Locación"
-                                        helperText={campusUrlError}
-                                        error={!!campusUrlError}
+                                        errorShow={campusUrlError}
+                                        // helperText={campusUrlError}
+                                        // error={!!campusUrlError}
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">

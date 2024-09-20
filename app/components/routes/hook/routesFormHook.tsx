@@ -1,10 +1,16 @@
 "use client";
+import { getGeolocation } from "@/data/formConstant";
 import useAuth from "@/firebase/auth";
-import { getAllDocumentsQuery, getZonesByIdQuery, saveRouteQuery, updateRouteQuery } from "@/queries/documentsQueries";
+import {
+    getAllDocumentsQuery,
+    getZonesByIdQuery,
+    saveRouteQuery,
+    updateRouteQuery,
+} from "@/queries/documentsQueries";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
+import { SelectChangeEvent } from "@mui/material/Select";
 import { useEffect, useRef, useState } from "react";
-import { SelectChangeEvent } from '@mui/material/Select';
 
 const RoutesFormHook = ({
     handleShowMainForm,
@@ -13,12 +19,12 @@ const RoutesFormHook = ({
     setHandleShowMainFormEdit,
     editData,
 }: ModalParamsMainForm) => {
-    const { userData } = useAuth();
+    const { userData, companyData } = useAuth();
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [zonesData, setZonesData] = useState<any[] | null>(null);
-    const [idRow, setIdRow] = useState('');
+    const [idRow, setIdRow] = useState("");
     const hourRef = useRef(null);
     const minuteRef = useRef(null);
     const theme = localStorage.getItem("@theme");
@@ -27,9 +33,9 @@ const RoutesFormHook = ({
     // Datos
     const [routeName, setRouteName] = useState("");
     const [routeManager, setRouteManager] = useState("");
-    const [selectedZone, setSelectedZone] = useState('');
+    const [selectedZone, setSelectedZone] = useState("");
     //const [addresses, setAddresses] = useState<string[]>([]);
-    const [addresses, setAddresses] = useState(['']);
+    const [addresses, setAddresses] = useState([""]);
     const [hours, setHours] = useState(0);
     const [minutes, setMinutes] = useState(0);
 
@@ -42,7 +48,8 @@ const RoutesFormHook = ({
     const [minutesError, setMinutesError] = useState("");
 
     // Crear un rango de opciones para horas y minutos
-    const generateOptions = (max: any) => Array.from({ length: max + 1 }, (_, i) => i);
+    const generateOptions = (max: any) =>
+        Array.from({ length: max + 1 }, (_, i) => i);
 
     const validateFields = () => {
         let valid = true;
@@ -52,7 +59,9 @@ const RoutesFormHook = ({
             setRouteNameError("El nombre de la zona es requerido");
             valid = false;
         } else if (routeName.length < 3) {
-            setRouteNameError("El nombre de la zona debe tener al menos 3 caracteres");
+            setRouteNameError(
+                "El nombre de la zona debe tener al menos 3 caracteres",
+            );
             valid = false;
         } else {
             setRouteNameError("");
@@ -63,7 +72,9 @@ const RoutesFormHook = ({
             setRouteManagerError("El jefe de zona es requerido");
             valid = false;
         } else if (routeManager.length < 3) {
-            setRouteManagerError("El nombre del jefe de zona debe tener al menos 3 caracteres");
+            setRouteManagerError(
+                "El nombre del jefe de zona debe tener al menos 3 caracteres",
+            );
             valid = false;
         } else {
             setRouteManagerError("");
@@ -83,7 +94,9 @@ const RoutesFormHook = ({
             valid = false;
         } else {
             // Validar cada dirección
-            const invalidAddresses = addresses.some(address => !address.trim());
+            const invalidAddresses = addresses.some(
+                (address) => !address.trim(),
+            );
             if (invalidAddresses) {
                 setAddressesError("Cada dirección debe ser válida");
                 valid = false;
@@ -102,10 +115,9 @@ const RoutesFormHook = ({
         return valid;
     };
 
-
     const handleChangeZone = (event: SelectChangeEvent<string>) => {
         setSelectedZone(event.target.value as string);
-    }
+    };
 
     const handleClose = () => {
         setShow(false);
@@ -118,20 +130,44 @@ const RoutesFormHook = ({
     const handleReset = () => {
         setRouteName("");
         setRouteManager("");
-        setAddresses(['']);
+        setAddresses([""]);
         setRouteNameError("");
         setRouteManagerError("");
         setAddressesError("");
         setZoneError("");
         setHoursError("");
         setMinutesError("");
-        setSelectedZone('');
+        setSelectedZone("");
         setHours(0);
         setMinutes(0);
     };
 
     const handleSendForm = async (e?: any) => {
         e.preventDefault();
+
+        const getCoordinatesFromAddresses = async (addresses: string[]) => {
+            // Mapeamos cada dirección a una promesa de obtener las coordenadas
+            const coordsFromAddress: Promise<{
+                address: string;
+                coords: { lat: number; lng: number } | null;
+            }>[] = addresses.map(async (address: string) => {
+                const coords = await getGeolocation(address, companyData);
+
+                return { address, coords };
+            });
+
+            // Esperamos a que todas las promesas se resuelvan
+            const resolvedCoords = await Promise.all(coordsFromAddress);
+
+            // `resolvedCoords` contiene ahora los resultados reales
+            return resolvedCoords;
+        };
+
+        //Coordenadas de la Dirección
+        const allCoordsFromAddresses: {
+            address: string;
+            coords: { lat: number; lng: number } | null;
+        }[] = await getCoordinatesFromAddresses(addresses);
 
         // Validar los campos antes de continuar
         if (!validateFields()) return;
@@ -140,8 +176,8 @@ const RoutesFormHook = ({
 
         try {
             const now = new Date();
-            const date = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-            const hour = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+            const date = now.toISOString().split("T")[0]; // Formato YYYY-MM-DD
+            const hour = now.toTimeString().split(" ")[0]; // Formato HH:MM:SS
             const zoneData = await getZonesByIdQuery(selectedZone);
 
             if (userData?.companyId) {
@@ -155,7 +191,8 @@ const RoutesFormHook = ({
                     estimatedMinutes: minutes,
                     createdDate: date,
                     createdTime: hour,
-                    idCompany: userData?.companyId
+                    idCompany: userData?.companyId,
+                    geolocations: allCoordsFromAddresses,
                 };
 
                 const zoneQueryResult = await saveRouteQuery(formData);
@@ -163,14 +200,17 @@ const RoutesFormHook = ({
                 if (zoneQueryResult.success) {
                     console.log("Route saved successfully");
                 } else {
-                    console.error("Failed to save route:", zoneQueryResult.message);
+                    console.error(
+                        "Failed to save route:",
+                        zoneQueryResult.message,
+                    );
                 }
-
             } else {
-                console.log("No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.");
+                console.log(
+                    "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
+                );
                 return;
             }
-
         } catch (error) {
             console.error("Error al enviar el formulario:", error);
         } finally {
@@ -190,8 +230,8 @@ const RoutesFormHook = ({
 
         try {
             const now = new Date();
-            const date = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-            const hour = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+            const date = now.toISOString().split("T")[0]; // Formato YYYY-MM-DD
+            const hour = now.toTimeString().split(" ")[0]; // Formato HH:MM:SS
             const zoneData = await getZonesByIdQuery(selectedZone);
 
             if (idRow) {
@@ -204,22 +244,28 @@ const RoutesFormHook = ({
                     estimatedHours: hours,
                     estimatedMinutes: minutes,
                     createdDate: date,
-                    createdTime: hour
+                    createdTime: hour,
                 };
 
-                const zoneQueryResult = await updateRouteQuery(updatedData, idRow);
+                const zoneQueryResult = await updateRouteQuery(
+                    updatedData,
+                    idRow,
+                );
 
                 if (zoneQueryResult.success) {
                     console.log("Route saved successfully");
                 } else {
-                    console.error("Failed to save route:", zoneQueryResult.message);
+                    console.error(
+                        "Failed to save route:",
+                        zoneQueryResult.message,
+                    );
                 }
-
             } else {
-                console.log("No se pudo encontrar la ruta. Por favor, inténtalo de nuevo.");
+                console.log(
+                    "No se pudo encontrar la ruta. Por favor, inténtalo de nuevo.",
+                );
                 return;
             }
-
         } catch (error) {
             console.error("Error al enviar el formulario:", error);
         } finally {
@@ -239,32 +285,29 @@ const RoutesFormHook = ({
     };
 
     const getZonesData = async () => {
-        const dataZones = await getAllDocumentsQuery('zones');
+        const dataZones = await getAllDocumentsQuery("zones");
         setZonesData(dataZones);
-    }
+    };
 
     useEffect(() => {
         getZonesData();
-    }, [])
+    }, []);
 
     useEffect(() => {
         handleShowMainForm && (setShow(true), setIsEdit(true));
     }, [handleShowMainForm]);
 
-
     useEffect(() => {
-        handleShowMainFormEdit && (
-            setShow(true),
+        handleShowMainFormEdit &&
+            (setShow(true),
             setRouteName(editData?.routeName),
             setRouteManager(editData?.routeManager),
             setAddresses(editData?.addresses),
             setIdRow(editData?.uid),
             setSelectedZone(editData?.zone),
             setHours(editData?.estimatedHours),
-            setMinutes(editData?.estimatedMinutes)
-        );
+            setMinutes(editData?.estimatedMinutes));
     }, [editData, handleShowMainFormEdit]);
-
 
     const scrollToCenter = (ref: any, index: any) => {
         const container = ref.current;
@@ -275,7 +318,7 @@ const RoutesFormHook = ({
             const numVisible = Math.floor(containerHeight / itemHeight);
             const middleIndex = Math.floor(numVisible / 2);
             const scrollOffset = index * itemHeight - middleIndex * itemHeight;
-            container.scrollTo({ top: scrollOffset, behavior: 'smooth' });
+            container.scrollTo({ top: scrollOffset, behavior: "smooth" });
         }
     };
 
@@ -320,7 +363,7 @@ const RoutesFormHook = ({
         minuteRef,
         zoneError,
         hoursError,
-        minutesError
+        minutesError,
     };
 };
 

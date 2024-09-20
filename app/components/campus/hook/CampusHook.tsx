@@ -5,6 +5,7 @@ import {
     initialData,
     initialPhones,
 } from "@/data/campus";
+import { getGeolocation } from "@/data/formConstant";
 import useAuth from "@/firebase/auth";
 import {
     getDocumentReference,
@@ -33,7 +34,7 @@ const CampusHook = ({
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
-    const { userData } = useAuth();
+    const { userData, companyData } = useAuth();
 
     // Datos
     const [data, setData] = useState<CampusFormValuesData>(initialData);
@@ -197,6 +198,12 @@ const CampusHook = ({
         //Creando la referencia del documento
         const documentRef: any = getDocumentReference(reference);
 
+        //Coordenadas de la Dirección
+        const coordsFromAddress: {
+            lat: number;
+            lng: number;
+        } | null = await getGeolocation(data.address[0], companyData);
+
         // Validar los campos antes de continuar
         if (!validateFields()) return;
 
@@ -207,6 +214,8 @@ const CampusHook = ({
                     ...data,
                     idCompany: userData.companyId,
                     uid: documentRef.id,
+                    //Geo localización con la dirección formateada
+                    geolocation: coordsFromAddress,
                 };
 
                 const campusQueryResult = await saveCampusQuery(
