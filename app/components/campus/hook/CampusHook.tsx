@@ -263,12 +263,21 @@ const CampusHook = ({
         e.preventDefault();
         e.stopPropagation();
 
+        //Coordenadas de la Dirección
+        const coordsFromAddress: {
+            lat: number;
+            lng: number;
+        } | null = await getGeolocation(data.address[0], companyData);
+
         if (!validateFields()) return;
 
         setIsLoading(true);
         try {
             if (userData?.companyId) {
-                const campusQueryResult = await updateCampusQuery(data);
+                const campusQueryResult = await updateCampusQuery({
+                    ...data, //Geo localización con la dirección formateada
+                    geolocation: coordsFromAddress,
+                });
 
                 if (campusQueryResult.success) {
                     console.log("Saved successfully");

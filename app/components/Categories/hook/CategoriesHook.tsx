@@ -1,5 +1,6 @@
 "use client";
 import { initialDataCategories } from "@/data/categoriesData";
+import { getGeolocation } from "@/data/formConstant";
 import useAuth from "@/firebase/auth";
 import {
     getDocumentReference,
@@ -24,7 +25,7 @@ const CategoriesHook = ({
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
-    const { userData } = useAuth();
+    const { userData, companyData } = useAuth();
     const [showPickerColor, setShowPickerColor] = useState<boolean>(false);
 
     // Datos
@@ -155,6 +156,15 @@ const CategoriesHook = ({
         //Creando la referencia del documento
         const documentRef: any = getDocumentReference(reference);
 
+        //Coordenadas de la Dirección
+        const coordsFromAddress: {
+            lat: number;
+            lng: number;
+        } | null = await getGeolocation(
+            directionsFiltered[0].address,
+            companyData,
+        );
+
         // Validar los campos antes de continuar
         if (!validateFields()) return;
 
@@ -165,7 +175,10 @@ const CategoriesHook = ({
                 // Se complementa la info faltante
                 const formData = {
                     ...data,
-                    directions: directionsFiltered,
+                    directions: [
+                        ...directionsFiltered,
+                        { ...directionsFiltered[0], ...coordsFromAddress },
+                    ],
                     idCompany: userData.companyId,
                     uid: documentRef.id,
                 };
@@ -214,6 +227,15 @@ const CategoriesHook = ({
         e.preventDefault();
         e.stopPropagation();
 
+        //Coordenadas de la Dirección
+        const coordsFromAddress: {
+            lat: number;
+            lng: number;
+        } | null = await getGeolocation(
+            directionsFiltered[0].address,
+            companyData,
+        );
+
         if (!validateFields()) return;
 
         setIsLoading(true);
@@ -223,7 +245,10 @@ const CategoriesHook = ({
                     id: data.uid,
                     data: {
                         ...data,
-                        directions: directionsFiltered,
+                        directions: [
+                            ...directionsFiltered,
+                            { ...directionsFiltered[0], ...coordsFromAddress },
+                        ],
                     },
                     reference,
                 });

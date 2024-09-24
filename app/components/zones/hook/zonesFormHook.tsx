@@ -34,6 +34,24 @@ const ZonesFormHook = ({
     const theme = localStorage.getItem("@theme");
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
+    const getCoordinatesFromAddresses = async (addresses: string[]) => {
+        // Mapeamos cada dirección a una promesa de obtener las coordenadas
+        const coordsFromAddress: Promise<{
+            address: string;
+            coords: { lat: number; lng: number } | null;
+        }>[] = addresses.map(async (address: string) => {
+            const coords = await getGeolocation(address, companyData);
+
+            return { address, coords };
+        });
+
+        // Esperamos a que todas las promesas se resuelvan
+        const resolvedCoords = await Promise.all(coordsFromAddress);
+
+        // `resolvedCoords` contiene ahora los resultados reales
+        return resolvedCoords;
+    };
+
     const validateFields = () => {
         let valid = true;
 
@@ -76,6 +94,12 @@ const ZonesFormHook = ({
     const handleSendForm = async (e?: any) => {
         e.preventDefault();
 
+        //Coordenadas de la Dirección
+        const allCoordsFromAddresses: {
+            address: string;
+            coords: { lat: number; lng: number } | null;
+        }[] = await getCoordinatesFromAddresses(addresses);
+
         // Validar los campos antes de continuar
         if (!validateFields()) return;
 
@@ -93,6 +117,7 @@ const ZonesFormHook = ({
                     addresses,
                     date,
                     hour,
+                    geolocations: allCoordsFromAddresses,
                 };
                 const zoneQueryResult = await saveZoneQuery(formData);
 
@@ -139,24 +164,6 @@ const ZonesFormHook = ({
     const handleEditForm = async (e: any) => {
         e.preventDefault();
         e.stopPropagation();
-
-        const getCoordinatesFromAddresses = async (addresses: string[]) => {
-            // Mapeamos cada dirección a una promesa de obtener las coordenadas
-            const coordsFromAddress: Promise<{
-                address: string;
-                coords: { lat: number; lng: number } | null;
-            }>[] = addresses.map(async (address: string) => {
-                const coords = await getGeolocation(address, companyData);
-
-                return { address, coords };
-            });
-
-            // Esperamos a que todas las promesas se resuelvan
-            const resolvedCoords = await Promise.all(coordsFromAddress);
-
-            // `resolvedCoords` contiene ahora los resultados reales
-            return resolvedCoords;
-        };
 
         //Coordenadas de la Dirección
         const allCoordsFromAddresses: {

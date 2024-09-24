@@ -10,6 +10,7 @@ import {
     getHeadquartersByCompanyIdQuery,
     getMeetingStatusByCompanyIdQuery,
     getNotificationsByCompanyIdQuery,
+    getRoutesByCompanyIdQuery,
     getWorkArasByCompanyIdQuery,
     getZonesByCompanyIdQuery,
 } from "@/queries/documentsQueries";
@@ -144,6 +145,10 @@ const DataTablesHook = (reference: string) => {
                           userData?.companyId,
                           reference,
                       )
+                    : []
+                : reference === "routes"
+                ? userData && userData?.companyId
+                    ? await getRoutesByCompanyIdQuery(userData?.companyId)
                     : []
                 : reference === "campus"
                 ? userData && userData?.companyId

@@ -51,6 +51,24 @@ const RoutesFormHook = ({
     const generateOptions = (max: any) =>
         Array.from({ length: max + 1 }, (_, i) => i);
 
+    const getCoordinatesFromAddresses = async (addresses: string[]) => {
+        // Mapeamos cada dirección a una promesa de obtener las coordenadas
+        const coordsFromAddress: Promise<{
+            address: string;
+            coords: { lat: number; lng: number } | null;
+        }>[] = addresses.map(async (address: string) => {
+            const coords = await getGeolocation(address, companyData);
+
+            return { address, coords };
+        });
+
+        // Esperamos a que todas las promesas se resuelvan
+        const resolvedCoords = await Promise.all(coordsFromAddress);
+
+        // `resolvedCoords` contiene ahora los resultados reales
+        return resolvedCoords;
+    };
+
     const validateFields = () => {
         let valid = true;
 
@@ -145,24 +163,6 @@ const RoutesFormHook = ({
     const handleSendForm = async (e?: any) => {
         e.preventDefault();
 
-        const getCoordinatesFromAddresses = async (addresses: string[]) => {
-            // Mapeamos cada dirección a una promesa de obtener las coordenadas
-            const coordsFromAddress: Promise<{
-                address: string;
-                coords: { lat: number; lng: number } | null;
-            }>[] = addresses.map(async (address: string) => {
-                const coords = await getGeolocation(address, companyData);
-
-                return { address, coords };
-            });
-
-            // Esperamos a que todas las promesas se resuelvan
-            const resolvedCoords = await Promise.all(coordsFromAddress);
-
-            // `resolvedCoords` contiene ahora los resultados reales
-            return resolvedCoords;
-        };
-
         //Coordenadas de la Dirección
         const allCoordsFromAddresses: {
             address: string;
@@ -223,6 +223,12 @@ const RoutesFormHook = ({
         e.preventDefault();
         e.stopPropagation();
 
+        //Coordenadas de la Dirección
+        const allCoordsFromAddresses: {
+            address: string;
+            coords: { lat: number; lng: number } | null;
+        }[] = await getCoordinatesFromAddresses(addresses);
+
         // Validar los campos antes de continuar
         if (!validateFields()) return;
 
@@ -245,6 +251,7 @@ const RoutesFormHook = ({
                     estimatedMinutes: minutes,
                     createdDate: date,
                     createdTime: hour,
+                    geolocations: allCoordsFromAddresses,
                 };
 
                 const zoneQueryResult = await updateRouteQuery(
