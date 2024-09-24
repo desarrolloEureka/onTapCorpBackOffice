@@ -7,6 +7,7 @@ import {
     DeleteSocialNetwork,
     getAllDocumentsQuery,
     getDocsByCompanyIdQuery,
+    getDocsByCompanyRolIdQuery,
     getHeadquartersByCompanyIdQuery,
     getMeetingStatusByCompanyIdQuery,
     getNotificationsByCompanyIdQuery,
@@ -111,58 +112,66 @@ const DataTablesHook = (reference: string) => {
             reference === "country"
                 ? countriesTable
                 : reference === "departments"
-                ? colombianCitiesData
-                : reference === "cities"
-                ? transformCitiesData(colombianCitiesData)
-                : reference === "documentTypes"
-                ? idTypesTable
-                : reference === "zones"
-                ? formatZoneData(
-                      userData && userData?.companyId
-                          ? await getZonesByCompanyIdQuery(userData?.companyId)
-                          : [],
-                  )
-                : reference === "notifications"
-                ? userData && userData?.companyId
-                    ? await getNotificationsByCompanyIdQuery(
-                          userData?.companyId,
-                      )
-                    : []
-                : reference === "workAreas"
-                ? userData && userData?.companyId
-                    ? await getWorkArasByCompanyIdQuery(userData?.companyId)
-                    : []
-                : reference === "meetingStatus"
-                ? userData && userData?.companyId
-                    ? await getMeetingStatusByCompanyIdQuery(
-                          userData?.companyId,
-                      )
-                    : []
-                : reference === "fixedPoints"
-                ? userData && userData?.companyId
-                    ? await getDocsByCompanyIdQuery(
-                          userData?.companyId,
-                          reference,
-                      )
-                    : []
-                : reference === "campus"
-                ? userData && userData?.companyId
-                    ? await getHeadquartersByCompanyIdQuery(userData?.companyId)
-                    : []
-                : reference === "circular" ||
-                  reference === "events" ||
-                  reference === "policy" ||
-                  reference === "forms" ||
-                  reference === "news"
-                ? userData && userData?.companyId
-                    ? await getDocsByCompanyIdQuery(
-                          userData?.companyId,
-                          reference,
-                      )
-                    : []
-                : await getAllDocumentsQuery(reference);
+                    ? colombianCitiesData
+                    : reference === "cities"
+                        ? transformCitiesData(colombianCitiesData)
+                        : reference === "documentTypes"
+                            ? idTypesTable
+                            : reference === "zones"
+                                ? formatZoneData(
+                                    userData && userData?.companyId
+                                        ? await getZonesByCompanyIdQuery(userData?.companyId)
+                                        : [],
+                                )
+                                : reference === "notifications"
+                                    ? userData && userData?.companyId
+                                        ? await getNotificationsByCompanyIdQuery(
+                                            userData?.companyId,
+                                        )
+                                        : []
+                                    : reference === "workAreas"
+                                        ? userData && userData?.companyId
+                                            ? await getWorkArasByCompanyIdQuery(userData?.companyId)
+                                            : []
+                                        : reference === "meetingStatus"
+                                            ? userData && userData?.companyId
+                                                ? await getMeetingStatusByCompanyIdQuery(
+                                                    userData?.companyId,
+                                                )
+                                                : []
+                                            : reference === "fixedPoints"
+                                                ? userData && userData?.companyId
+                                                    ? await getDocsByCompanyIdQuery(
+                                                        userData?.companyId,
+                                                        reference,
+                                                    )
+                                                    : []
+                                                : reference === "employees"
+                                                    ? userData && userData?.companyId
+                                                        ? await getDocsByCompanyRolIdQuery(
+                                                            userData?.companyId,
+                                                            'users',
+                                                        )
+                                                        : []
+                                                    : reference === "campus"
+                                                        ? userData && userData?.companyId
+                                                            ? await getHeadquartersByCompanyIdQuery(userData?.companyId)
+                                                            : []
+                                                        : reference === "circular" ||
+                                                            reference === "events" ||
+                                                            reference === "policy" ||
+                                                            reference === "forms" ||
+                                                            reference === "news"
+                                                            ? userData && userData?.companyId
+                                                                ? await getDocsByCompanyIdQuery(
+                                                                    userData?.companyId,
+                                                                    reference,
+                                                                )
+                                                                : []
+                                                            : await getAllDocumentsQuery(reference);
 
         const labelToDisplay = ["professionals", "patients", "functionary"];
+        //reference === "employees" && console.log('documents ', documents);
 
         if (documents.length > 0) {
             const cols: any[] = [];
@@ -333,13 +342,13 @@ const DataTablesHook = (reference: string) => {
                         ) : val === "uid" ? (
                             <div>
                                 {reference !== "routes" &&
-                                reference !== "logos" &&
-                                reference !== "meetingStatus" &&
-                                reference !== "circular" &&
-                                reference !== "events" &&
-                                reference !== "policy" &&
-                                reference !== "forms" &&
-                                reference !== "news" ? (
+                                    reference !== "logos" &&
+                                    reference !== "meetingStatus" &&
+                                    reference !== "circular" &&
+                                    reference !== "events" &&
+                                    reference !== "policy" &&
+                                    reference !== "forms" &&
+                                    reference !== "news" ? (
                                     <>
                                         <IconButton
                                             onClick={() =>
@@ -389,9 +398,9 @@ const DataTablesHook = (reference: string) => {
                                 />
                             </div>
                         ) : (val === "id" && reference === "documentTypes") ||
-                          reference === "country" ||
-                          reference === "departments" ||
-                          reference === "cities" ? (
+                            reference === "country" ||
+                            reference === "departments" ||
+                            reference === "cities" ? (
                             row[val]
                         ) : reference === "companies" ? (
                             _.isArray(row[val]) ? (
@@ -407,14 +416,14 @@ const DataTablesHook = (reference: string) => {
                         val === "ext" || val === "idType"
                             ? "80px"
                             : val === "content"
-                            ? "50%"
-                            : val === "issue"
-                            ? "20%"
-                            : val === "hour" || val === "issue"
-                            ? "15%"
-                            : reference === "companies"
-                            ? "200px"
-                            : "auto",
+                                ? "50%"
+                                : val === "issue"
+                                    ? "20%"
+                                    : val === "hour" || val === "issue"
+                                        ? "15%"
+                                        : reference === "companies"
+                                            ? "200px"
+                                            : "auto",
                     omit: !omittedColumns.includes(val),
                     center: val === "uid",
                     // reference != "roles" && reference != "notifications",
