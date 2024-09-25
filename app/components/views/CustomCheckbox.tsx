@@ -25,32 +25,36 @@ const CustomCheckbox = ({
 }: {
     uid?: string;
     value: any;
-    setTemplateSelect?: (e: TemplateType) => void;
+    setTemplateSelect?: (e: any) => void;
     templates?: TemplateData[];
     checked: boolean;
 }) => {
     const checkboxRef = useRef<any>(null);
-    const [isUpdate, setIsUpdate] = useState(false);
-    const [fakeData, setFakeData] = useState<TemplateData[]>(templates ?? []);
 
     const handleSelectTemplate = async () => {
         const userId = uid;
-        const fakeDataClone = [...fakeData];
+        const newCheckedState = !checked;
+
+        if (newCheckedState) {
+            setTemplateSelect && setTemplateSelect(value); // Si se selecciona, actualiza el template seleccionado
+        } else {
+            setTemplateSelect && setTemplateSelect(null); // Si se deselecciona, limpia el template seleccionado
+        }
+
+        const fakeDataClone = templates ? [...templates] : [];
         const templateIndex = fakeDataClone.findIndex(
             (item) => item.id === checkboxRef.current.id,
         );
 
         if (templateIndex !== -1) {
-            fakeDataClone[templateIndex].checked = true;
+            fakeDataClone[templateIndex].checked = newCheckedState;
         } else {
             fakeDataClone.push({
                 id: checkboxRef.current.id,
-                checked: true,
+                checked: newCheckedState,
             });
-            setFakeData(fakeDataClone);
             userId && (await SendTemplateSelected(userId, fakeDataClone));
         }
-        setIsUpdate(!isUpdate);
     };
 
     return (

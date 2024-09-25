@@ -492,13 +492,13 @@ const HeaderContent = ({
 
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="tarjetas"
+                                        eventKey="plantillas"
                                     >
                                         <FaRegAddressCard
                                             size={20}
                                             className="tw-mb-1 tw-mr-1"
                                         />
-                                        Tarjetas
+                                        Plantillas
                                     </NavDropdown.Item>
                                 </NavDropdown>
                             )}

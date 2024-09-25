@@ -231,13 +231,13 @@ export const getAllTemplates = async () => {
 };
 
 export const SendTemplateSelected = async (userId: string, data: any[]) => {
-  const templateData = data;
   const userDocRef = doc(db, "users", userId);
-  await updateDoc(userDocRef, { templateData });
-
-  const updatedUser = await getDoc(doc(db, "users", userId));
-  if (updatedUser.exists()) {
-    const userData = updatedUser.data();
+  const userDoc = await getDoc(userDocRef);
+  if (userDoc.exists()) {
+    const userData = userDoc.data();
+    const existingTemplateData = Array.isArray(userData.templateData) ? userData.templateData : [];
+    existingTemplateData[0] = data[1];
+    await setDoc(userDocRef, {templateData: existingTemplateData}, {merge: true}); // Sobrescribe el array templateData con los nuevos datos
     await localStorage.setItem("@user", JSON.stringify(userData));
   }
 };

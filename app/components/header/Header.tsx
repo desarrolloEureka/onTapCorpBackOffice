@@ -488,18 +488,18 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
-                {/* Vista de Tarjetas */}
+                {/* Vista de Plantillas */}
                 <Tab.Pane
                     className="tab-pane text-muted"
-                    id="tarjetas"
+                    id="plantillas"
                     role="tabpanel"
-                    eventKey="tarjetas"
+                    eventKey="plantillas"
                 >
                     <BannerMenu
-                        seoTitle="Tarjetas"
-                        title="Tarjetas"
+                        seoTitle="Plantillas"
+                        title="Plantillas"
                         item="Dashboard"
-                        activeItem=""
+                        activeItem="Seleccionar Plantilla"
                     />
                      <HomeContent />
                 </Tab.Pane>

@@ -15,7 +15,7 @@ interface TemplateType {
 }
 
 const HomeContent = () => {
-    const [templateSelect, setTemplateSelect] = useState<TemplateType>({
+    const [templateSelect, setTemplateSelect] = useState<any>({
         id: "",
         name: "",
         image: "",
@@ -129,16 +129,12 @@ const HomeContent = () => {
                                                                     value={
                                                                         value
                                                                     }
-                                                                    setTemplateSelect={
-                                                                        setTemplateSelect
-                                                                    }
+                                                                    setTemplateSelect={setTemplateSelect}
                                                                     templates={
                                                                         data.templateData
                                                                     }
                                                                     checked={
-                                                                        item
-                                                                            ? item.checked
-                                                                            : false
+                                                                        templateSelect?.id === value.id
                                                                     }
                                                                 />
                                                             )}
