@@ -198,14 +198,14 @@ const CampusHook = ({
         //Creando la referencia del documento
         const documentRef: any = getDocumentReference(reference);
 
+        // Validar los campos antes de continuar
+        if (!validateFields()) return;
+
         //Coordenadas de la Dirección
         const coordsFromAddress: {
             lat: number;
             lng: number;
         } | null = await getGeolocation(data.address[0], companyData);
-
-        // Validar los campos antes de continuar
-        if (!validateFields()) return;
 
         setIsLoading(true);
         try {
@@ -235,12 +235,11 @@ const CampusHook = ({
                 );
                 return;
             }
-
-            handleClose();
         } catch (error) {
             console.error("Error al enviar el formulario:", error);
         } finally {
             setIsLoading(false);
+            handleClose();
         }
     };
 
@@ -256,6 +255,8 @@ const CampusHook = ({
         setData(initialData);
         setPhones(initialPhones);
         setCampusNameError("");
+        setCampusAddressError("");
+        setCampusUrlError("");
     };
 
     //Para actualizar los datos
@@ -263,13 +264,13 @@ const CampusHook = ({
         e.preventDefault();
         e.stopPropagation();
 
+        if (!validateFields()) return;
+
         //Coordenadas de la Dirección
         const coordsFromAddress: {
             lat: number;
             lng: number;
         } | null = await getGeolocation(data.address[0], companyData);
-
-        if (!validateFields()) return;
 
         setIsLoading(true);
         try {
@@ -291,12 +292,11 @@ const CampusHook = ({
                 );
                 return;
             }
-
-            handleClose();
         } catch (error) {
             console.error("Error al editar el formulario:", error);
         } finally {
             setIsLoading(false);
+            handleClose();
         }
     };
 

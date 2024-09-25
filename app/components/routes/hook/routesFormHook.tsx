@@ -10,6 +10,7 @@ import {
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
 import { SelectChangeEvent } from "@mui/material/Select";
+import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 
 const RoutesFormHook = ({
@@ -46,6 +47,8 @@ const RoutesFormHook = ({
     const [addressesError, setAddressesError] = useState("");
     const [hoursError, setHoursError] = useState("");
     const [minutesError, setMinutesError] = useState("");
+
+    const currentDate = moment().format();
 
     // Crear un rango de opciones para horas y minutos
     const generateOptions = (max: any) =>
@@ -163,21 +166,21 @@ const RoutesFormHook = ({
     const handleSendForm = async (e?: any) => {
         e.preventDefault();
 
+        // Validar los campos antes de continuar
+        if (!validateFields()) return;
+
         //Coordenadas de la Dirección
         const allCoordsFromAddresses: {
             address: string;
             coords: { lat: number; lng: number } | null;
         }[] = await getCoordinatesFromAddresses(addresses);
 
-        // Validar los campos antes de continuar
-        if (!validateFields()) return;
-
         setIsLoading(true);
 
         try {
-            const now = new Date();
-            const date = now.toISOString().split("T")[0]; // Formato YYYY-MM-DD
-            const hour = now.toTimeString().split(" ")[0]; // Formato HH:MM:SS
+            // const now = new Date();
+            // const date = now.toISOString().split("T")[0]; // Formato YYYY-MM-DD
+            // const hour = now.toTimeString().split(" ")[0]; // Formato HH:MM:SS
             const zoneData = await getZonesByIdQuery(selectedZone);
 
             if (userData?.companyId) {
@@ -189,8 +192,9 @@ const RoutesFormHook = ({
                     addresses,
                     estimatedHours: hours,
                     estimatedMinutes: minutes,
-                    createdDate: date,
-                    createdTime: hour,
+                    // createdDate: date,
+                    // createdTime: hour,
+                    timestamp: currentDate,
                     idCompany: userData?.companyId,
                     geolocations: allCoordsFromAddresses,
                 };
@@ -223,21 +227,21 @@ const RoutesFormHook = ({
         e.preventDefault();
         e.stopPropagation();
 
+        // Validar los campos antes de continuar
+        if (!validateFields()) return;
+
         //Coordenadas de la Dirección
         const allCoordsFromAddresses: {
             address: string;
             coords: { lat: number; lng: number } | null;
         }[] = await getCoordinatesFromAddresses(addresses);
 
-        // Validar los campos antes de continuar
-        if (!validateFields()) return;
-
         setIsLoading(true);
 
         try {
-            const now = new Date();
-            const date = now.toISOString().split("T")[0]; // Formato YYYY-MM-DD
-            const hour = now.toTimeString().split(" ")[0]; // Formato HH:MM:SS
+            // const now = new Date();
+            // const date = now.toISOString().split("T")[0]; // Formato YYYY-MM-DD
+            // const hour = now.toTimeString().split(" ")[0]; // Formato HH:MM:SS
             const zoneData = await getZonesByIdQuery(selectedZone);
 
             if (idRow) {
@@ -249,8 +253,9 @@ const RoutesFormHook = ({
                     addresses,
                     estimatedHours: hours,
                     estimatedMinutes: minutes,
-                    createdDate: date,
-                    createdTime: hour,
+                    // createdDate: date,
+                    // createdTime: hour,
+                    timestamp: currentDate,
                     geolocations: allCoordsFromAddresses,
                 };
 

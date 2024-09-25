@@ -303,8 +303,14 @@ const EmployeesFormModal = ({
                                                         id="firstName"
                                                         fullWidth
                                                         label="Nombre"
-                                                        errorShow={
+                                                        // errorShow={
+                                                        //     errors.firstName
+                                                        // }
+                                                        helperText={
                                                             errors.firstName
+                                                        }
+                                                        error={
+                                                            !!errors.firstName
                                                         }
                                                         InputProps={{
                                                             startAdornment: (
@@ -338,8 +344,14 @@ const EmployeesFormModal = ({
                                                         theme={modeTheme}
                                                         id="lastName"
                                                         fullWidth
-                                                        errorShow={
+                                                        // errorShow={
+                                                        //     errors.lastName
+                                                        // }
+                                                        helperText={
                                                             errors.lastName
+                                                        }
+                                                        error={
+                                                            !!errors.lastName
                                                         }
                                                         label="Apellido"
                                                         InputProps={{
@@ -376,8 +388,14 @@ const EmployeesFormModal = ({
                                                         switch="true"
                                                         id="documentType"
                                                         fullWidth
-                                                        errorShow={
+                                                        // errorShow={
+                                                        //     errors.documentType
+                                                        // }
+                                                        helperText={
                                                             errors.documentType
+                                                        }
+                                                        error={
+                                                            !!errors.documentType
                                                         }
                                                         label="Número de Documento"
                                                         InputProps={{
@@ -415,8 +433,14 @@ const EmployeesFormModal = ({
                                                         id="documentNumber"
                                                         fullWidth
                                                         label="Número de Documento"
-                                                        errorShow={
+                                                        // errorShow={
+                                                        //     errors.documentNumber
+                                                        // }
+                                                        helperText={
                                                             errors.documentNumber
+                                                        }
+                                                        error={
+                                                            !!errors.documentNumber
                                                         }
                                                         InputProps={{
                                                             startAdornment: (
@@ -452,8 +476,14 @@ const EmployeesFormModal = ({
                                                         theme={modeTheme}
                                                         id="dateOfBirth"
                                                         fullWidth
-                                                        errorShow={
+                                                        // errorShow={
+                                                        //     errors.dateOfBirth
+                                                        // }
+                                                        helperText={
                                                             errors.dateOfBirth
+                                                        }
+                                                        error={
+                                                            !!errors.dateOfBirth
                                                         }
                                                         label="Fecha de Nacimiento"
                                                         InputProps={{
@@ -488,8 +518,14 @@ const EmployeesFormModal = ({
                                                         theme={modeTheme}
                                                         id="position"
                                                         fullWidth
-                                                        errorShow={
+                                                        // errorShow={
+                                                        //     errors.position
+                                                        // }
+                                                        helperText={
                                                             errors.position
+                                                        }
+                                                        error={
+                                                            !!errors.position
                                                         }
                                                         label="Cargo"
                                                         InputProps={{
@@ -588,7 +624,7 @@ const EmployeesFormModal = ({
                                                                                 )
                                                                             }
                                                                             name="text"
-                                                                            type="tel"
+                                                                            type="number"
                                                                             switch="true"
                                                                             theme={
                                                                                 modeTheme
@@ -629,7 +665,7 @@ const EmployeesFormModal = ({
                                                                             );
                                                                         }}
                                                                         name="ext"
-                                                                        type="tel"
+                                                                        type="number"
                                                                         deleted={
                                                                             "true"
                                                                         }

@@ -178,17 +178,17 @@ const DataTablesHook = (reference: string) => {
 
             if (reference === "documentTypes" || reference === "country") {
                 columnNamesToDisplay = {
-                    id: "Id",
+                    // id: "Id",
                     label: "Nombre",
                 };
             } else if (reference === "departments") {
                 columnNamesToDisplay = {
-                    id: "Id",
+                    // id: "Id",
                     departamento: "Nombre",
                 };
             } else if (reference === "cities") {
                 columnNamesToDisplay = {
-                    id: "Id",
+                    // id: "Id",
                     ciudad: "Ciudad",
                     departamento: "Departamento",
                     pais: "País",
@@ -201,8 +201,9 @@ const DataTablesHook = (reference: string) => {
                 };
             } else if (reference === "notifications") {
                 columnNamesToDisplay = {
-                    date: "Fecha",
-                    hour: "Hora",
+                    // date: "Fecha",
+                    // hour: "Hora",
+                    timestamp: "Fecha Registro",
                     issue: "Asunto",
                     content: "Contenido",
                 };
@@ -228,8 +229,9 @@ const DataTablesHook = (reference: string) => {
             } else if (reference === "routes") {
                 columnNamesToDisplay = {
                     uid: "Acciones",
-                    createdDate: "Fecha de creación",
-                    createdTime: "Hora de creación",
+                    // createdDate: "Fecha de creación",
+                    // createdTime: "Hora de creación",
+                    timestamp: "Fecha Registro",
                     routeName: "Nombre de la ruta",
                     routeManager: "Jefe de la ruta",
                     zoneName: "Zona a la que corresponde",
@@ -237,8 +239,9 @@ const DataTablesHook = (reference: string) => {
             } else if (reference === "logos") {
                 columnNamesToDisplay = {
                     uid: "Acciones",
-                    createdDate: "Fecha de creación",
-                    createdTime: "Hora de creación",
+                    // createdDate: "Fecha de creación",
+                    // createdTime: "Hora de creación",
+                    timestamp: "Fecha Registro",
                     logoName: "Nombre",
                     imageUrl: "Imagen",
                 };
@@ -398,7 +401,8 @@ const DataTablesHook = (reference: string) => {
                           reference === "departments" ||
                           reference === "cities" ? (
                             row[val]
-                        ) : reference === "companies" ? (
+                        ) : reference === "companies" ||
+                          reference === "workAreas" ? (
                             _.isArray(row[val]) ? (
                                 [row[val][0]]
                             ) : (

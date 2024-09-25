@@ -94,14 +94,14 @@ const ZonesFormHook = ({
     const handleSendForm = async (e?: any) => {
         e.preventDefault();
 
+        // Validar los campos antes de continuar
+        if (!validateFields()) return;
+
         //Coordenadas de la Dirección
         const allCoordsFromAddresses: {
             address: string;
             coords: { lat: number; lng: number } | null;
         }[] = await getCoordinatesFromAddresses(addresses);
-
-        // Validar los campos antes de continuar
-        if (!validateFields()) return;
 
         setIsLoading(true);
         try {
@@ -165,13 +165,13 @@ const ZonesFormHook = ({
         e.preventDefault();
         e.stopPropagation();
 
+        if (!validateFields()) return;
+
         //Coordenadas de la Dirección
         const allCoordsFromAddresses: {
             address: string;
             coords: { lat: number; lng: number } | null;
         }[] = await getCoordinatesFromAddresses(addresses);
-
-        if (!validateFields()) return;
 
         setIsLoading(true);
         try {

@@ -310,16 +310,18 @@ const HeaderContent = ({
                                         />
                                         Tipos Documento
                                     </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        href="#roles"
-                                        eventKey="notifications"
-                                    >
-                                        <IoMdNotifications
-                                            size={20}
-                                            className="tw-mb-1 tw-mr-1"
-                                        />
-                                        Notificaciones
-                                    </NavDropdown.Item>
+                                    {userRole !== "superadmin" && (
+                                        <NavDropdown.Item
+                                            href="#roles"
+                                            eventKey="notifications"
+                                        >
+                                            <IoMdNotifications
+                                                size={20}
+                                                className="tw-mb-1 tw-mr-1"
+                                            />
+                                            Notificaciones
+                                        </NavDropdown.Item>
+                                    )}
                                 </NavDropdown>
                             )}
 
@@ -462,9 +464,9 @@ const HeaderContent = ({
                                 </NavDropdown>
                             )}
 
-                            {/*  Plantillas, quitar userRole === "superadmin" || despues del desarrollo */}
-                            {(userRole === "superadmin" ||
-                                userRole === "operativo" ||
+                            {/*  Plantillas, quitar 'userRole === "superadmin" ||' después del desarrollo */}
+                            {(userRole === "operativo" ||
+                                // userRole === "superadmin" ||
                                 userRole === "administrativo") && (
                                 <NavDropdown
                                     title={

@@ -2,13 +2,13 @@
 import { DataTableComponentProps } from "@/types/tables";
 import { Card, Col, Row } from "react-bootstrap";
 import CampusModal from "../campus/CampusModal";
-import CategoriesModal from "../Categories/CategoriesModal";
+import CategoriesModal from "../categories/CategoriesModal";
 import EmployeesFormModal from "../employees/employeesFormModal";
 import LogosFormModal from "../logos/logosFormModal";
 import MainFormModal from "../mainForm/mainFormModal";
 import MeetingStatusesModal from "../meetings/MeetingStatusesModal";
 import FormModal from "../modal/formModal/FormModal";
-import NewsModal from "../News/NewsModal";
+import NewsModal from "../news/NewsModal";
 import NotificationsFormModal from "../notifications/notificationsFormModal";
 import RoutesFormModal from "../routes/routesFormModal";
 import CSVReader from "../uploadCsv/UploadCsv";

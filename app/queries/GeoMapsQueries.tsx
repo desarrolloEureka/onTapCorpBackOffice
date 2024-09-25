@@ -15,6 +15,8 @@ export const getCoordinates = async (address: string) => {
 
         const data = response.data;
 
+        if (!address) return null;
+
         if (data.status === "OK") {
             const { lat, lng } = data.results[0].geometry.location;
             return { lat, lng };

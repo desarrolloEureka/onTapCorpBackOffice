@@ -1,8 +1,12 @@
 "use client";
 import useAuth from "@/firebase/auth";
-import { SaveSocialNetwork, UpdateSocialNetwork } from "@/queries/documentsQueries";
+import {
+    SaveSocialNetwork,
+    UpdateSocialNetwork,
+} from "@/queries/documentsQueries";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
+import moment from "moment";
 import { useEffect, useState } from "react";
 
 const LogosFormHook = ({
@@ -16,27 +20,29 @@ const LogosFormHook = ({
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
-    const [idRow, setIdRow] = useState('');
+    const [idRow, setIdRow] = useState("");
     const theme = localStorage.getItem("@theme");
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
     //Datos
-    const [logoName, setLogoName] = useState('');
-    const [logoNameOld, setLogoNameOld] = useState('');
+    const [logoName, setLogoName] = useState("");
+    const [logoNameOld, setLogoNameOld] = useState("");
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [isUpdateImage, setIsUpdateImage] = useState(false);
 
     //Errores
-    const [logoNameError, setLogoNameError] = useState('');
-    const [imageError, setImageError] = useState('');
+    const [logoNameError, setLogoNameError] = useState("");
+    const [imageError, setImageError] = useState("");
 
-    // Lógica para manejar la selección de imagen   
+    const currentDate = moment().format();
+
+    // Lógica para manejar la selección de imagen
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             setSelectedImage(file);
             setIsUpdateImage(true);
-            setImageError('');
+            setImageError("");
         }
     };
 
@@ -44,17 +50,17 @@ const LogosFormHook = ({
         let valid = true;
 
         if (!logoName) {
-            setLogoNameError('El nombre del logo es obligatorio');
+            setLogoNameError("El nombre del logo es obligatorio");
             valid = false;
         } else {
-            setLogoNameError('');
+            setLogoNameError("");
         }
 
         if (!selectedImage) {
-            setImageError('Debes seleccionar una imagen');
+            setImageError("Debes seleccionar una imagen");
             valid = false;
         } else {
-            setImageError('');
+            setImageError("");
         }
 
         return valid;
@@ -64,8 +70,8 @@ const LogosFormHook = ({
         setLogoName(e.target.value);
 
         // Limpiar el error si el usuario empieza a escribir
-        if (e.target.value.trim() !== '') {
-            setLogoNameError('');
+        if (e.target.value.trim() !== "") {
+            setLogoNameError("");
         }
     };
 
@@ -78,12 +84,12 @@ const LogosFormHook = ({
     };
 
     const handleReset = () => {
-        setLogoName('');
+        setLogoName("");
         setSelectedImage(null);
-        setLogoNameError('');
-        setImageError('');
-        setLogoNameOld('');
-        setIdRow('');
+        setLogoNameError("");
+        setImageError("");
+        setLogoNameOld("");
+        setIdRow("");
         setIsUpdateImage(false);
     };
 
@@ -96,17 +102,18 @@ const LogosFormHook = ({
         setIsLoading(true);
 
         try {
-            const now = new Date();
-            const date = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-            const hour = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+            // const now = new Date();
+            // const date = now.toISOString().split("T")[0]; // Formato YYYY-MM-DD
+            // const hour = now.toTimeString().split(" ")[0]; // Formato HH:MM:SS
 
             if (userData?.companyId && selectedImage) {
                 const formData = {
                     logoName,
                     imageName: logoName,
-                    createdDate: date,
-                    createdTime: hour,
-                    idCompany: userData?.companyId
+                    // createdDate: date,
+                    // createdTime: hour,
+                    timestamp: currentDate,
+                    idCompany: userData?.companyId,
                 };
 
                 const result = await SaveSocialNetwork(formData, selectedImage);
@@ -116,12 +123,12 @@ const LogosFormHook = ({
                 } else {
                     console.error("Failed to save logo:", result.message);
                 }
-
             } else {
-                console.log("No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.");
+                console.log(
+                    "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
+                );
                 return;
             }
-
         } catch (error) {
             console.error("Error al enviar el formulario:", error);
         } finally {
@@ -140,31 +147,37 @@ const LogosFormHook = ({
         setIsLoading(true);
 
         try {
-            const now = new Date();
-            const date = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-            const hour = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+            // const now = new Date();
+            // const date = now.toISOString().split("T")[0]; // Formato YYYY-MM-DD
+            // const hour = now.toTimeString().split(" ")[0]; // Formato HH:MM:SS
 
             if (userData?.companyId && selectedImage) {
                 const formData = {
                     logoName,
-                    createdDate: date,
-                    createdTime: hour,
-                    idCompany: userData?.companyId
+                    // createdDate: date,
+                    // createdTime: hour,
+                    timestamp: currentDate,
+                    idCompany: userData?.companyId,
                 };
 
-                const result = await UpdateSocialNetwork(idRow, logoNameOld, formData?.logoName, isUpdateImage ? selectedImage : null);
+                const result = await UpdateSocialNetwork(
+                    idRow,
+                    logoNameOld,
+                    formData?.logoName,
+                    isUpdateImage ? selectedImage : null,
+                );
 
                 if (result.success) {
                     console.log("Logo updated successfully");
                 } else {
                     console.error("Failed to update logo:", result.message);
                 }
-
             } else {
-                console.log("No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.");
+                console.log(
+                    "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
+                );
                 return;
             }
-
         } catch (error) {
             console.error("Error al enviar el formulario:", error);
         } finally {
@@ -178,13 +191,12 @@ const LogosFormHook = ({
     }, [handleShowMainForm]);
 
     useEffect(() => {
-        handleShowMainFormEdit && (
-            setShow(true),
+        handleShowMainFormEdit &&
+            (setShow(true),
             setIdRow(editData?.uid),
-            setLogoName(editData?.logoName || ''),
-            setLogoNameOld(editData?.imageName || ''),
-            setSelectedImage(editData?.imageUrl || '')
-        );
+            setLogoName(editData?.logoName || ""),
+            setLogoNameOld(editData?.imageName || ""),
+            setSelectedImage(editData?.imageUrl || ""));
     }, [editData, handleShowMainFormEdit]);
 
     return {
@@ -204,7 +216,7 @@ const LogosFormHook = ({
         logoNameError,
         imageError,
         handleLogoNameChange,
-        isUpdateImage
+        isUpdateImage,
     };
 };
 

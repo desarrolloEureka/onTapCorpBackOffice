@@ -1,10 +1,11 @@
 "use client";
+import { initialErrorsCompany } from "@/data/companyData";
 import useAuth from "@/firebase/auth";
 import {
     saveEditDataDocumentsQuery,
     saveIconFile,
 } from "@/queries/documentsQueries";
-import { MyStateType } from "@/types/company";
+import { InitialErrorsDataCompany, MyStateType } from "@/types/company";
 import _ from "lodash";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -17,6 +18,9 @@ const CompanyHook = () => {
     const [files, setFiles] = useState<any>();
     const [fileName, setFileName] = useState<any>();
     const [objToArrayItems, setObjToArrayItems] = useState<MyStateType>({});
+
+    // Errores
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     const companyName = companyData && companyData.tradename[0];
 
@@ -112,7 +116,29 @@ const CompanyHook = () => {
         });
     };
 
-    const handleSendForm = async () => {
+    const validateFields = () => {
+        const newErrors: { [key: string]: string } = {};
+
+        if (!data.tradename[0]?.trim()) {
+            newErrors.tradename = "El nombre es obligatorio";
+        }
+
+        if (!data.businessName[0]?.trim()) {
+            newErrors.businessName = "La razón social es obligatorio";
+        }
+
+        if (!data.id[0]?.trim()) {
+            newErrors.id = "El NIT es obligatorio";
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSendForm = async (e: any) => {
+        e.preventDefault();
+        // Validar los campos antes de continuar
+        if (!validateFields()) return;
         confirmSaveAlert();
     };
 
@@ -397,6 +423,7 @@ const CompanyHook = () => {
     }, [companyData]);
 
     return {
+        errors,
         data,
         handleChange,
         handleChangeMiuTel,

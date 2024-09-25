@@ -21,6 +21,7 @@ type CompanyProps = {
 
 const CompanyPage = ({ theme }: CompanyProps) => {
     const {
+        errors,
         data,
         handleChange,
         companyName,
@@ -92,7 +93,8 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                             <h3 className="h3">Hola {companyName}</h3>
                         </div>
                     </div>
-                    <div className="">
+
+                    <form onSubmit={handleSendForm} className="">
                         <Card className="custom-card tw-px-16 tw-py-2 tw-shadow-2xl tw-rounded-3xl">
                             <Card.Body>
                                 <Card.Title className="tw-font-bold tw-mb-5">
@@ -107,6 +109,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
 
                                             <div className="tw-px-3 tw-w-full">
                                                 <CustomTextField
+                                                    required
                                                     checked={allChecked}
                                                     data={data.tradename}
                                                     onChange={(
@@ -125,6 +128,10 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                     switch="true"
                                                     theme={theme}
                                                     id="tradename"
+                                                    helperText={
+                                                        errors.tradename
+                                                    }
+                                                    error={!!errors.tradename}
                                                     fullWidth
                                                     label="Nombre Comercial"
                                                     InputProps={{
@@ -136,6 +143,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                     }}
                                                 />
                                                 <CustomTextField
+                                                    required
                                                     checked={allChecked}
                                                     data={data.businessName}
                                                     onChange={(
@@ -154,6 +162,12 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                     switch="true"
                                                     theme={theme}
                                                     id="businessName"
+                                                    helperText={
+                                                        errors.businessName
+                                                    }
+                                                    error={
+                                                        !!errors.businessName
+                                                    }
                                                     fullWidth
                                                     label="Razón Social"
                                                     InputProps={{
@@ -165,6 +179,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                     }}
                                                 />
                                                 <CustomTextField
+                                                    required
                                                     checked={allChecked}
                                                     data={data.id}
                                                     onChange={(
@@ -183,6 +198,8 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                     switch="true"
                                                     theme={theme}
                                                     id="id"
+                                                    helperText={errors.id}
+                                                    error={!!errors.id}
                                                     fullWidth
                                                     label="Nit"
                                                     InputProps={{
@@ -237,7 +254,10 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                         )
                                                     }
                                                     name="webSite"
-                                                    type="text"
+                                                    type="url"
+                                                    helperText={
+                                                        "Ej: https://example.com"
+                                                    }
                                                     switch="true"
                                                     theme={theme}
                                                     id="webSite"
@@ -364,7 +384,8 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                         <IoAddCircle
                                                             size={25}
                                                         />
-                                                        Agregar Teléfono Adicional
+                                                        Agregar Teléfono
+                                                        Adicional
                                                     </div>
                                                 )}
                                             </div>
@@ -410,6 +431,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                             />
 
                                                             <CustomTextField
+                                                                required
                                                                 checked={
                                                                     allChecked
                                                                 }
@@ -429,7 +451,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                     )
                                                                 }
                                                                 name={item[0]}
-                                                                type="tel"
+                                                                type="number"
                                                                 switch="true"
                                                                 theme={theme}
                                                                 id={item[0]}
@@ -446,6 +468,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                             />
                                                         </div>
                                                         <CustomTextField
+                                                            required
                                                             data={item[4]}
                                                             onChange={(
                                                                 value: string,
@@ -462,7 +485,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                 );
                                                             }}
                                                             name={item[3]}
-                                                            type="tel"
+                                                            type="number"
                                                             deleted={
                                                                 index !== 0
                                                                     ? "true"
@@ -509,6 +532,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                         className="tw-flex tw-flex-col tw-px-3 tw-w-full"
                                                     >
                                                         <CustomTextField
+                                                            required
                                                             checked={allChecked}
                                                             data={[
                                                                 item[1],
@@ -578,6 +602,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                         className="tw-flex tw-flex-col tw-px-3 tw-w-full"
                                                     >
                                                         <CustomTextField
+                                                            required
                                                             checked={allChecked}
                                                             data={[
                                                                 item[1],
@@ -612,6 +637,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                         />
 
                                                         <CustomTextField
+                                                            required
                                                             data={item[4]}
                                                             onChange={(
                                                                 value: string,
@@ -628,7 +654,10 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                 );
                                                             }}
                                                             name={item[3]}
-                                                            type="text"
+                                                            type="url"
+                                                            helperText={
+                                                                "Ej: https://example.com"
+                                                            }
                                                             deleted={
                                                                 index !== 0
                                                                     ? "true"
@@ -675,7 +704,8 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                             </Card.Body>
                             <Card.Footer className="text-muted">
                                 <Button
-                                    onClick={handleSendForm}
+                                    type="submit"
+                                    // onClick={handleSendForm}
                                     className="tw-rounded-3xl"
                                     variant="dark"
                                 >
@@ -683,7 +713,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                 </Button>
                             </Card.Footer>
                         </Card>
-                    </div>
+                    </form>
                 </div>
             </div>
         )

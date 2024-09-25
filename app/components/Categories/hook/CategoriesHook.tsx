@@ -156,6 +156,9 @@ const CategoriesHook = ({
         //Creando la referencia del documento
         const documentRef: any = getDocumentReference(reference);
 
+        // Validar los campos antes de continuar
+        if (!validateFields()) return;
+
         //Coordenadas de la Dirección
         const coordsFromAddress: {
             lat: number;
@@ -164,9 +167,6 @@ const CategoriesHook = ({
             directionsFiltered[0].address,
             companyData,
         );
-
-        // Validar los campos antes de continuar
-        if (!validateFields()) return;
 
         setIsLoading(true);
 
@@ -199,12 +199,11 @@ const CategoriesHook = ({
                 );
                 return;
             }
-
-            handleClose();
         } catch (error) {
             console.error("Error al enviar el formulario:", error);
         } finally {
             setIsLoading(false);
+            handleClose();
         }
     };
 
@@ -220,12 +219,15 @@ const CategoriesHook = ({
         setData(initialDataCategories);
         setNameError("");
         setPointNameError("");
+        setAddressError("");
     };
 
     //Para actualizar los datos
     const handleEditForm = async (e: any) => {
         e.preventDefault();
         e.stopPropagation();
+
+        if (!validateFields()) return;
 
         //Coordenadas de la Dirección
         const coordsFromAddress: {
@@ -235,8 +237,6 @@ const CategoriesHook = ({
             directionsFiltered[0].address,
             companyData,
         );
-
-        if (!validateFields()) return;
 
         setIsLoading(true);
         try {
@@ -267,12 +267,11 @@ const CategoriesHook = ({
                 );
                 return;
             }
-
-            handleClose();
         } catch (error) {
             console.error("Error al editar el formulario:", error);
         } finally {
             setIsLoading(false);
+            handleClose();
         }
     };
 
