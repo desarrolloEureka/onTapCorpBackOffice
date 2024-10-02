@@ -6,6 +6,7 @@ import {
     doc,
     getDoc,
     getDocs,
+    onSnapshot,
     query,
     setDoc,
     updateDoc,
@@ -259,6 +260,33 @@ export const getDocsByCompanyId = async (companyId: any, reference: string) => {
     }
 };
 
+export const getDocsByCompanyIdInRealTime = (
+    companyId: any,
+    reference: string,
+) => {
+    try {
+        const dataResult: any[] = [];
+
+        const q = query(
+            collection(db, reference),
+            where("idCompany", "==", companyId),
+        );
+
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            if (!querySnapshot.empty) {
+                querySnapshot.forEach((doc: any) => {
+                    const data = doc.data();
+                    dataResult.push(data);
+                });
+            }
+        });
+        return { unsubscribe, dataResult };
+    } catch (error) {
+        console.error("Error fetching Docs:", error);
+        return [];
+    }
+};
+
 export const getZonesByCompanyId = async (companyId: any) => {
     try {
         const q = query(
@@ -415,15 +443,17 @@ export const saveEmployee = async (dataSave: any) => {
         const dataWithId = {
             ...dataSave,
             uid: documentId,
-            rolId: 'vE7NrHpiRU2s1Gjv5feg',
+            rolId: "vE7NrHpiRU2s1Gjv5feg",
             views: 0,
             isActive: true,
-            preview: '',
+            preview: "",
             switch_activateCard: true,
-            templateData: [{
-                id: 'VGMUWYOP3RK374gi30I8',
-                checked: true,
-            }]
+            templateData: [
+                {
+                    id: "VGMUWYOP3RK374gi30I8",
+                    checked: true,
+                },
+            ],
         };
 
         // Guarda el documento en Firestore

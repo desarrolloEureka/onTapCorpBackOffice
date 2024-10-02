@@ -41,7 +41,7 @@ const CategoriesHook = ({
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
     //Filtra los campos vacíos
-    const directionsFiltered = data.directions.filter(
+    const directionsFiltered = data?.directions?.filter(
         (item) => item.pointName !== "" && item.address !== "",
     );
 
@@ -176,7 +176,7 @@ const CategoriesHook = ({
                 const formData = {
                     ...data,
                     directions: [
-                        ...directionsFiltered,
+                        // ...directionsFiltered,
                         { ...directionsFiltered[0], ...coordsFromAddress },
                     ],
                     idCompany: userData.companyId,
@@ -246,7 +246,7 @@ const CategoriesHook = ({
                     data: {
                         ...data,
                         directions: [
-                            ...directionsFiltered,
+                            // ...directionsFiltered,
                             { ...directionsFiltered[0], ...coordsFromAddress },
                         ],
                     },
