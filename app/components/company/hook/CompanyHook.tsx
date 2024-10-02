@@ -1,10 +1,12 @@
 "use client";
 import { initialErrorsCompany } from "@/data/companyData";
+import { getStateName } from "@/data/formConstant";
 import useAuth from "@/firebase/auth";
 import {
     saveEditDataDocumentsQuery,
     saveIconFile,
 } from "@/queries/documentsQueries";
+import { getCoordinates } from "@/queries/GeoMapsQueries";
 import { InitialErrorsDataCompany, MyStateType } from "@/types/company";
 import _ from "lodash";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
@@ -89,6 +91,11 @@ const CompanyHook = () => {
     const uploadHandle = async () => {
         const reference = "companies";
         // await new Promise((resolve) => setTimeout(resolve, 3000));
+        const formattedAddress: string = `${data.city}, ${getStateName(
+            data.state,
+        )},${data.country}`;
+
+        const coords = await getCoordinates(formattedAddress);
 
         if (files && files.length > 0) {
             for (const record of files) {
@@ -111,7 +118,7 @@ const CompanyHook = () => {
 
         await saveEditDataDocumentsQuery({
             id: data.uid,
-            data: data,
+            data: { ...data, geolocation: coords },
             reference,
         });
     };

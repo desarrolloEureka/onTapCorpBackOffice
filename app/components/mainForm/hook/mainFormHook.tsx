@@ -1,4 +1,5 @@
 "use client";
+import { getStateName } from "@/data/formConstant";
 import {
     dataAdminCompanyObject,
     dataAgreementsObject,
@@ -10,10 +11,8 @@ import {
     dataPatientObject,
     dataProfessionalObject,
     dataSpecialtyObject,
-    dataWorkAreasObject
+    dataWorkAreasObject,
 } from "@/data/mainFormData";
-// import { getDocumentRefById } from "@/firebase/Documents";
-// import { registerFirebase } from "@/firebase/user";
 import useAuth from "@/firebase/auth";
 import { addUser } from "@/firebase/user";
 import {
@@ -24,10 +23,12 @@ import {
     saveFilesDocuments,
     saveIconFile,
 } from "@/queries/documentsQueries";
+import { getCoordinates } from "@/queries/GeoMapsQueries";
 import { getAllRolesQuery } from "@/queries/RolesQueries";
 import { getAllSpecialtiesQuery } from "@/queries/SpecialtiesQueries";
 import { ErrorDataForm } from "@/types/documents";
 import { LocalVariable } from "@/types/global";
+import { Coords } from "@/types/googleMaps";
 import { ModalParamsMainForm } from "@/types/modals";
 import { RolesSelector } from "@/types/roles";
 import { SpecialtySelector } from "@/types/specialty";
@@ -72,8 +73,6 @@ const MainFormHook = ({
 
     const theme = localStorage.getItem("@theme");
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
-
-    // console.log("theme", themeParsed?.dataThemeMode);
 
     const handleEditForm = (e: any) => {
         e.preventDefault();
@@ -376,6 +375,12 @@ const MainFormHook = ({
             const currentDataObjectCompany = { ...dataCompanyObject };
             const currentDataObjectAdmin = { ...dataAdminCompanyObject };
 
+            const formattedAddress: string = `${data.city}, ${getStateName(
+                data.state,
+            )},${data.country}`;
+
+            const coords = await getCoordinates(formattedAddress);
+
             handleShowMainFormEdit
                 ? ((currentDataObjectCompany.uid = data.uid),
                   (currentDataObjectAdmin.uid = data.adminId),
@@ -400,6 +405,7 @@ const MainFormHook = ({
             currentDataObjectCompany.ext = data.ext;
             currentDataObjectCompany.webSite = data.webSite;
             currentDataObjectCompany.sector = data.sector;
+            currentDataObjectCompany.geolocation = coords as Coords;
             currentDataObjectCompany.country = data.country;
             currentDataObjectCompany.state = data.state;
             currentDataObjectCompany.city = data.city;

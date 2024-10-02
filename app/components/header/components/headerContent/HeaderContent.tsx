@@ -412,7 +412,17 @@ const HeaderContent = ({
                                     className="nav-item dropdown"
                                 >
                                     <NavDropdown.Item
-                                        //href="#functionary"
+                                        href="#generalMap"
+                                        eventKey="maps"
+                                    >
+                                        <PiMapPinSimpleFill
+                                            size={20}
+                                            className="tw-mb-1 tw-mr-1"
+                                        />
+                                        General
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        href="#zonesMap"
                                         eventKey="areas"
                                     >
                                         <PiMapPinSimpleFill
@@ -422,7 +432,7 @@ const HeaderContent = ({
                                         Áreas
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
-                                        //href="#functionary"
+                                        href="#campusMap"
                                         eventKey="headquarters"
                                     >
                                         <PiMapPinSimpleFill
@@ -432,7 +442,7 @@ const HeaderContent = ({
                                         Sedes
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
-                                        //href="#functionary"
+                                        href="#employeesMap"
                                         eventKey="employeesMaps"
                                     >
                                         <PiMapPinSimpleFill
@@ -442,8 +452,8 @@ const HeaderContent = ({
                                         Empleados
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
-                                        //href="#functionary"
-                                        eventKey="tutesMaps"
+                                        href="#routesMap"
+                                        eventKey="routesMaps"
                                     >
                                         <PiMapPinSimpleFill
                                             size={20}
@@ -452,7 +462,7 @@ const HeaderContent = ({
                                         Rutas
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
-                                        //href="#functionary"
+                                        href="#fixedPointsMap"
                                         eventKey="fixedPointsMaps"
                                     >
                                         <PiMapPinSimpleFill

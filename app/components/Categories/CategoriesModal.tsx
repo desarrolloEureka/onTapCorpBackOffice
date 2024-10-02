@@ -5,7 +5,7 @@ import {
     InputAdornment,
     PaletteMode,
     TextField,
-    Typography
+    Typography,
 } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Circle from "@uiw/react-color-circle";
@@ -281,7 +281,8 @@ const CategoriesModal = ({
                                                             variant="standard"
                                                             color="primary"
                                                             helperText={
-                                                                addressError
+                                                                addressError ||
+                                                                'Solo la dirección, Ej: "Calle 1 #2-3"'
                                                             }
                                                             error={
                                                                 !!addressError

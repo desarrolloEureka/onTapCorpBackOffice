@@ -1,3 +1,5 @@
+import { Coords } from "./googleMaps";
+
 export interface DataMainFormObject {
     uid: string;
     adminId: string;
@@ -28,6 +30,7 @@ export interface DataMainFormObject {
     ext: string;
     webSite: string;
     sector: string;
+    geolocation: Coords;
     address: string;
     country: string;
     state: any;
@@ -209,6 +212,7 @@ export type DataCompanyObject = {
     ext: string;
     webSite: string;
     sector: string;
+    geolocation: Coords;
     address: string;
     country: string;
     state: any;
