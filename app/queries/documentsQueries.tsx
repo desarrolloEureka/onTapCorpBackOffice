@@ -16,6 +16,7 @@ import {
     getZoneById,
     getZonesByCompanyId,
     saveCampus,
+    saveDocumentByIdFb,
     saveDocumentsFb,
     saveEmployee,
     saveMeeting,
@@ -266,6 +267,19 @@ export const saveDataDocumentsQuery = async ({
     data: any;
 }) => {
     const queryResult = await saveOneDocumentFb(documentRef, data);
+    return queryResult;
+};
+
+export const saveDataDocumentsQueryById = async ({
+    id,
+    data,
+    reference,
+}: {
+    id: string;
+    data: any;
+    reference: string;
+}) => {
+    const queryResult = await saveDocumentByIdFb(id, data, reference);
     return queryResult;
 };
 
