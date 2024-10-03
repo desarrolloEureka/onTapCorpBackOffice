@@ -425,6 +425,10 @@ const DataTablesHook = (reference: string) => {
                             ? "15%"
                             : reference === "companies"
                             ? "200px"
+                            : reference === "workAreas"
+                            ? val === "timestamp" || val === "urlLink"
+                                ? "15%"
+                                : "auto"
                             : "auto",
                     omit: !omittedColumns.includes(val),
                     center: val === "uid",

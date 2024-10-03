@@ -643,6 +643,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                 className="tw-flex tw-flex-col tw-px-3 tw-w-full"
                                                             >
                                                                 <CustomTextField
+                                                                    required
                                                                     checked={
                                                                         allChecked
                                                                     }
@@ -683,6 +684,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                 />
 
                                                                 <CustomTextField
+                                                                    required
                                                                     data={
                                                                         item[4]
                                                                     }
@@ -703,7 +705,10 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                     name={
                                                                         item[3]
                                                                     }
-                                                                    type="text"
+                                                                    type="url"
+                                                                    helperText={
+                                                                        "Ej: https://example.com"
+                                                                    }
                                                                     deleted={
                                                                         index !==
                                                                         0

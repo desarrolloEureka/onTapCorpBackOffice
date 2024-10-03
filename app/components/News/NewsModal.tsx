@@ -124,14 +124,17 @@ const NewsModal = ({
                                     <TextField
                                         value={data.url}
                                         onChange={handleChange}
-                                        type="text"
+                                        type="url"
                                         name="url"
                                         id="url"
                                         fullWidth
                                         label="Url"
                                         variant="standard"
                                         color="primary"
-                                        helperText={urlError}
+                                        helperText={
+                                            urlError ||
+                                            "Ej: https://example.com"
+                                        }
                                         error={!!urlError}
                                         InputProps={{
                                             startAdornment: (

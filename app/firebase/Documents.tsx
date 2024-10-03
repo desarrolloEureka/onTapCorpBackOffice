@@ -103,17 +103,17 @@ export const saveDocumentByIdFb = async (
     data: any,
     reference: string,
 ) => {
-    //await setDoc(doc(db, "cities", "new-city-id"), data);
-    // const documentRef = await addDoc(allRef({ ref: reference }), data);
-    const document = docRef({
-        ref: reference,
-        collection: id,
-    });
-
-    // console.log("document", document);
-
-    await setDoc(document, data);
-    return document;
+    try {
+        const document = docRef({ ref: reference, collection: id });
+        await setDoc(document, {
+            ...data,
+            timestamp: currentDate,
+        });
+        return { success: true, message: "Data saved successfully" };
+    } catch (error) {
+        console.error("Error saving notification:", error);
+        return { success: false, message: "Error saving data", error };
+    }
 };
 
 export const updateDocumentsByCsvByIdFb = async (
@@ -411,7 +411,7 @@ export const getWorkArasByCompanyId = async (companyId: any) => {
     try {
         const q = query(
             collection(db, "workAreas"),
-            where("idCompany", "==", companyId),
+            where("companyId", "==", companyId),
         );
 
         const querySnapshot = await getDocs(q);

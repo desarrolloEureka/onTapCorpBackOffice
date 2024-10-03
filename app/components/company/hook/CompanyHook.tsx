@@ -1,14 +1,13 @@
 "use client";
-import { initialErrorsCompany } from "@/data/companyData";
 import { getStateName } from "@/data/formConstant";
 import useAuth from "@/firebase/auth";
 import {
     getAllDocumentsQuery,
-    saveEditDataDocumentsQuery,
-    saveIconFile,
+    saveDataDocumentsQueryById,
+    saveIconFile
 } from "@/queries/documentsQueries";
 import { getCoordinates } from "@/queries/GeoMapsQueries";
-import { InitialErrorsDataCompany, MyStateType } from "@/types/company";
+import { MyStateType } from "@/types/company";
 import _ from "lodash";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -134,7 +133,7 @@ const CompanyHook = () => {
                     });
             }
         }
-        await saveEditDataDocumentsQuery({
+        await saveDataDocumentsQueryById({
             id: data.uid,
             data: { ...data, geolocation: coords },
             reference,
@@ -201,7 +200,11 @@ const CompanyHook = () => {
 
     const handleDeleteItem = (item: any) => {
         if (item[0].includes("url")) {
-            const dataFiltered = _.omit(_.cloneDeep(data), [item[0], item[3]]);
+            const dataFiltered = _.omit(_.cloneDeep(data), [
+                item[0],
+                item[3],
+                item[5],
+            ]);
             setData(dataFiltered);
         }
         if (item[0].includes("additionalDataName")) {
@@ -230,32 +233,23 @@ const CompanyHook = () => {
                 "ext",
             ];
             const newItemPhone: { [key: string]: any[] | string } = {};
-            // const currentItems = objToArrayItems[type ?? "phone"].map(
-            //     (item) => item[0],
-            // );
+
             const itemIndex =
                 objToArrayItems[type ?? "phone"].length > 0
                     ? objToArrayItems[type ?? "phone"].length
                     : 0;
 
-            // const arrayFound = objToArrayItems[type ?? "phone"].map(
-            //     (item) => item[0],
-            // );
-
             listItemToChange.forEach((item) => {
                 const currentIndex = `${item}${itemIndex + 1}`;
-                // arrayFound.forEach((element) => {
-                // if (element !== currentIndex) {
+
                 newItemPhone[currentIndex] =
                     item === "phone"
                         ? ["", false]
                         : item === "indicative"
-                            ? "57"
-                            : item === "ext"
-                                ? " "
-                                : " ";
-                // }
-                // });
+                        ? "57"
+                        : item === "ext"
+                        ? " "
+                        : " ";
             });
             setData({ ...data, ...newItemPhone });
         }
@@ -289,38 +283,48 @@ const CompanyHook = () => {
             listNewItem.forEach((item) => {
                 item === "additionalDataName"
                     ? (newItemDato[
-                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                    ] = ["", false])
+                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                      ] = ["", false])
                     : (newItemDato[
-                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                    ] = "");
+                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                      ] = "");
             });
             setData({ ...data, ...newItemDato });
         }
 
         if (type === "urlName") {
-            const listNewItem: string[] = ["urlName", "urlLink"];
+            const listNewItem: string[] = ["urlName", "urlLink", "iconName"];
             const newItemUrl: { [key: string]: any[] | string } = {};
             const itemIndex = objToArrayItems[type ?? "urlName"].length
                 ? objToArrayItems[type ?? "urlName"].length
                 : 0;
 
             listNewItem.forEach((item) => {
-                item === "urlName"
-                    ? (newItemUrl[
-                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                    ] = ["", false])
-                    : (newItemUrl[
-                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                    ] = "");
+                const currentIndex = `${item}${itemIndex + 1}`;
+
+                newItemUrl[currentIndex] =
+                    item === "urlName"
+                        ? ["", false]
+                        : item === "urlLink"
+                        ? " "
+                        : item === "iconName"
+                        ? " "
+                        : " ";
             });
+
             setData({ ...data, ...newItemUrl });
         }
     };
 
     const handleDataNetworks = (text: any, index: any) => {
-        setData({ ...data, ["iconName" + '' + (index === 0 ? '' : index + 1)]: text });
-        setItemUrlSelected({ ...objToArrayItems.urlName[index], iconName: text });
+        setData({
+            ...data,
+            ["iconName" + "" + (index === 0 ? "" : index + 1)]: text,
+        });
+        setItemUrlSelected({
+            ...objToArrayItems.urlName[index],
+            iconName: text,
+        });
         setTimeout(() => {
             setIsOpenModalIcons(false);
         }, 1000);
@@ -330,13 +334,13 @@ const CompanyHook = () => {
         setItemUrlKey(index);
         setItemUrlSelected(item);
         setIsOpenModalIcons(true);
-    }
+    };
 
     const handleCloseModalIcons = () => {
         setItemUrlKey(0);
         setItemUrlSelected([]);
         setIsOpenModalIcons(false);
-    }
+    };
 
     const createNewArray = useCallback(() => {
         const newObject: MyStateType = {};
@@ -457,7 +461,6 @@ const CompanyHook = () => {
         return newObject;
     }, [data]);
 
-
     useEffect(() => {
         data && setObjToArrayItems(createNewArray());
     }, [createNewArray, data]);
@@ -491,7 +494,7 @@ const CompanyHook = () => {
         itemUrlKey,
         setItemUrlKey,
         itemUrlSelected,
-        setItemUrlSelected
+        setItemUrlSelected,
     };
 };
 
