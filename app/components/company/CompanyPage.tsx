@@ -17,6 +17,7 @@ import CompanyHook from "./hook/CompanyHook";
 import IconsUrlModal from "./components/iconsUrlModal";
 import Image from "next/image";
 import LinkIcon from "@mui/icons-material/Link";
+import React from "react";
 
 type CompanyProps = {
     theme: string;

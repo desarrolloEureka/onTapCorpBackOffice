@@ -1,6 +1,7 @@
 import HeaderHook from "@/components/header/hook/HeaderHook";
 import { main_logo_light } from "@/globals/images";
 import dynamic from "next/dynamic";
+import React from "react";
 import {
     Container,
     // Dropdown,
@@ -214,6 +215,7 @@ const HeaderContent = ({
                                                 Empresa
                                             </NavDropdown.Item>
                                             <NavDropdown.Item
+                                                className="tw-flex tw-items-center tw-justify-center"
                                                 href="#meetingStatus"
                                                 eventKey="workAreas"
                                             >
@@ -221,9 +223,12 @@ const HeaderContent = ({
                                                     size={18}
                                                     className="tw-mb-1 tw-mr-1"
                                                 />
-                                                Áreas de Trabajo
+                                                <span className="tw-text-wrap">
+                                                    Áreas de Trabajo
+                                                </span>
                                             </NavDropdown.Item>
                                             <NavDropdown.Item
+                                                className="tw-flex tw-items-center tw-justify-center"
                                                 href="#meetingStatus"
                                                 eventKey="meetingStatus"
                                             >
@@ -231,7 +236,7 @@ const HeaderContent = ({
                                                     size={20}
                                                     className="tw-mb-1 tw-mr-1"
                                                 />
-                                                <span className="tw-text-nowrap">
+                                                <span className="tw-text-wrap">
                                                     Estados Reunión
                                                 </span>
                                             </NavDropdown.Item>

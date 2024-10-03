@@ -21,6 +21,7 @@ import { IconButton } from "@mui/material";
 import _ from "lodash";
 import moment from "moment";
 import Image from "next/image";
+import React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { FaTrashCan } from "react-icons/fa6";
 import { MdModeEdit } from "react-icons/md";
@@ -107,7 +108,7 @@ const DataTablesHook = (reference: string) => {
     };
 
     const getAllDocuments = useCallback(async () => {
-        const documents =
+        const documents: any =
             reference === "country"
                 ? countriesTable
                 : reference === "departments"
@@ -171,7 +172,8 @@ const DataTablesHook = (reference: string) => {
 
         if (documents.length > 0) {
             const cols: any[] = [];
-            const entries = Object.keys(documents);
+            const docs = documents[0];
+            const entries = Object.keys(docs);
 
             // Define column names based on reference
             let columnNamesToDisplay: ColumnNamesToDisplay = {};
