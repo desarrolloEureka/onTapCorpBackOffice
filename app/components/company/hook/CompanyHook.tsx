@@ -1,10 +1,14 @@
 "use client";
+import { initialErrorsCompany } from "@/data/companyData";
+import { getStateName } from "@/data/formConstant";
 import useAuth from "@/firebase/auth";
 import {
+    getAllDocumentsQuery,
     saveEditDataDocumentsQuery,
     saveIconFile,
 } from "@/queries/documentsQueries";
-import { MyStateType } from "@/types/company";
+import { getCoordinates } from "@/queries/GeoMapsQueries";
+import { InitialErrorsDataCompany, MyStateType } from "@/types/company";
 import _ from "lodash";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -18,7 +22,28 @@ const CompanyHook = () => {
     const [fileName, setFileName] = useState<any>();
     const [objToArrayItems, setObjToArrayItems] = useState<MyStateType>({});
 
+    // Errores
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
     const companyName = companyData && companyData.tradename[0];
+    //Modal Iconos
+    const [isOpenModalIcons, setIsOpenModalIcons] = useState<boolean>(false);
+    const [itemUrlKey, setItemUrlKey] = useState(0);
+    const [dataLogos, setDataLogos] = useState<any>(null);
+    const [itemUrlSelected, setItemUrlSelected] = useState([]);
+
+    useEffect(() => {
+        const fetchDocuments = async () => {
+            try {
+                const docs = await getAllDocumentsQuery("logos");
+                setDataLogos(docs);
+            } catch (error) {
+                console.error("Error fetching documents: ", error);
+            }
+        };
+
+        fetchDocuments();
+    }, []);
 
     const saveAlert = async (callbackFc: () => Promise<void>) => {
         Swal.fire({
@@ -85,6 +110,11 @@ const CompanyHook = () => {
     const uploadHandle = async () => {
         const reference = "companies";
         // await new Promise((resolve) => setTimeout(resolve, 3000));
+        const formattedAddress: string = `${data.city}, ${getStateName(
+            data.state,
+        )},${data.country}`;
+
+        const coords = await getCoordinates(formattedAddress);
 
         if (files && files.length > 0) {
             for (const record of files) {
@@ -104,15 +134,36 @@ const CompanyHook = () => {
                     });
             }
         }
-
         await saveEditDataDocumentsQuery({
             id: data.uid,
-            data: data,
+            data: { ...data, geolocation: coords },
             reference,
         });
     };
 
-    const handleSendForm = async () => {
+    const validateFields = () => {
+        const newErrors: { [key: string]: string } = {};
+
+        if (!data.tradename[0]?.trim()) {
+            newErrors.tradename = "El nombre es obligatorio";
+        }
+
+        if (!data.businessName[0]?.trim()) {
+            newErrors.businessName = "La razón social es obligatorio";
+        }
+
+        if (!data.id[0]?.trim()) {
+            newErrors.id = "El NIT es obligatorio";
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSendForm = async (e: any) => {
+        e.preventDefault();
+        // Validar los campos antes de continuar
+        if (!validateFields()) return;
         confirmSaveAlert();
     };
 
@@ -199,10 +250,10 @@ const CompanyHook = () => {
                     item === "phone"
                         ? ["", false]
                         : item === "indicative"
-                        ? "57"
-                        : item === "ext"
-                        ? " "
-                        : " ";
+                            ? "57"
+                            : item === "ext"
+                                ? " "
+                                : " ";
                 // }
                 // });
             });
@@ -238,11 +289,11 @@ const CompanyHook = () => {
             listNewItem.forEach((item) => {
                 item === "additionalDataName"
                     ? (newItemDato[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = ["", false])
+                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                    ] = ["", false])
                     : (newItemDato[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = "");
+                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                    ] = "");
             });
             setData({ ...data, ...newItemDato });
         }
@@ -257,15 +308,35 @@ const CompanyHook = () => {
             listNewItem.forEach((item) => {
                 item === "urlName"
                     ? (newItemUrl[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = ["", false])
+                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                    ] = ["", false])
                     : (newItemUrl[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = "");
+                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                    ] = "");
             });
             setData({ ...data, ...newItemUrl });
         }
     };
+
+    const handleDataNetworks = (text: any, index: any) => {
+        setData({ ...data, ["iconName" + '' + (index === 0 ? '' : index + 1)]: text });
+        setItemUrlSelected({ ...objToArrayItems.urlName[index], iconName: text });
+        setTimeout(() => {
+            setIsOpenModalIcons(false);
+        }, 1000);
+    };
+
+    const handleOpenModalIcons = (item: any, index: any) => {
+        setItemUrlKey(index);
+        setItemUrlSelected(item);
+        setIsOpenModalIcons(true);
+    }
+
+    const handleCloseModalIcons = () => {
+        setItemUrlKey(0);
+        setItemUrlSelected([]);
+        setIsOpenModalIcons(false);
+    }
 
     const createNewArray = useCallback(() => {
         const newObject: MyStateType = {};
@@ -349,7 +420,7 @@ const CompanyHook = () => {
                         });
                     }
                     if (element === "urlName") {
-                        const newElements = ["urlLink"];
+                        const newElements = ["urlLink", "iconName"];
                         newElements.forEach((newItem) => {
                             if (
                                 Object.keys(_.cloneDeep(data)).includes(newItem)
@@ -386,6 +457,7 @@ const CompanyHook = () => {
         return newObject;
     }, [data]);
 
+
     useEffect(() => {
         data && setObjToArrayItems(createNewArray());
     }, [createNewArray, data]);
@@ -397,6 +469,7 @@ const CompanyHook = () => {
     }, [companyData]);
 
     return {
+        errors,
         data,
         handleChange,
         handleChangeMiuTel,
@@ -409,6 +482,16 @@ const CompanyHook = () => {
         handleNewItem,
         handleDeleteItem,
         handleSendForm,
+        handleOpenModalIcons,
+        handleCloseModalIcons,
+        isOpenModalIcons,
+        setIsOpenModalIcons,
+        dataLogos,
+        handleDataNetworks,
+        itemUrlKey,
+        setItemUrlKey,
+        itemUrlSelected,
+        setItemUrlSelected
     };
 };
 

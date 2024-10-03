@@ -3,7 +3,6 @@ import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
-  updatePassword,
 } from "firebase/auth";
 import {
   doc,

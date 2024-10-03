@@ -1,12 +1,15 @@
 "use client";
 import useAuth from "@/firebase/auth";
-import { editEmployeeQuery, getAreasByCompanyIdQuery, getHeadquartersByCompanyIdQuery, getRoutesByCompanyIdQuery, saveEmployeeQuery, saveRouteQuery } from "@/queries/documentsQueries";
+import { editEmployeeQuery, getAreasByCompanyIdQuery, getDocumentReference, getHeadquartersByCompanyIdQuery, getRoutesByCompanyIdQuery, saveEmployeeQuery } from "@/queries/documentsQueries";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
 import { DataAdditional, DataEmail, DataPhone, FormValuesData } from "@/types/user";
 import { SelectChangeEvent } from "@mui/material";
 import { useEffect, useState } from "react";
 import _ from "lodash";
+import { addUser } from "@/firebase/user";
+import moment from "moment";
+import Swal from "sweetalert2";
 
 const EmployeesFormHook = ({
     handleShowMainForm,
@@ -16,7 +19,6 @@ const EmployeesFormHook = ({
     editData,
 }: ModalParamsMainForm) => {
     const initialData: FormValuesData = {
-        //firstName: '',
         firstName: ['', false],
         lastName: ['', false],
         documentType: ['', false],
@@ -42,7 +44,7 @@ const EmployeesFormHook = ({
         employeeCardStatus: '',
     };
 
-    const { userData } = useAuth();
+    const { accessTokenUser, userData } = useAuth();
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
@@ -143,8 +145,6 @@ const EmployeesFormHook = ({
                 const updatedFieldArray = [...fieldArray];
                 const newProp = { [key]: value, checked: !checked };
                 updatedFieldArray[index] = { ...updatedFieldArray[index], ...newProp, };
-                //console.log('updatedFieldArray ', updatedFieldArray);
-
                 return {
                     ...prevData,
                     [field]: updatedFieldArray,
@@ -182,6 +182,18 @@ const EmployeesFormHook = ({
             return prevData;
         });
     };
+
+    const isFormComplete = (): boolean => {
+        // Verifica si todos los campos en 'emails' están completos
+        if (data.emails) {
+            // Itera sobre cada email y verifica si tanto 'text' como 'checked' tienen valores válidos
+            return data.emails.every((email) => {
+                return email.text.trim() !== "" && email.checked !== false;
+            });
+        }
+        return false;
+    };
+
 
     const handleChange = (value: string, name: string, isChecked?: boolean) => {
         if (isChecked === undefined) {
@@ -284,7 +296,6 @@ const EmployeesFormHook = ({
         event: React.ChangeEvent<HTMLInputElement>,
     ) => {
         const file = event.target.files ? event.target.files[0] : null;
-        console.log();
         if (file && file instanceof File) {
             try {
                 const resizedImage = await resizeImage(file, 750, 750);
@@ -331,8 +342,25 @@ const EmployeesFormHook = ({
             newErrors.position = 'El cargo es obligatoria';
         }
 
+        // Validación de emails
+        if (data.emails) {
+            data.emails.forEach((email, index) => {
+                if (!email.text.trim()) {
+                    newErrors[`email-${index}`] = `El correo ${index + 1} es obligatorio`;
+                } else if (!isValidEmail(email.text)) {
+                    newErrors[`email-${index}`] = `El correo ${index + 1} no es válido`;
+                }
+            });
+        }
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
+    };
+
+    // Función de validación de correo electrónico
+    const isValidEmail = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     };
 
     const validateSaveData = () => {
@@ -411,16 +439,9 @@ const EmployeesFormHook = ({
         if (!sundayRoute) {
             setSundayRouteError('La ruta del domingo es requerida.');
             valid = false;
+
         } else {
             setSundayRouteError('');
-        }
-
-
-        if (!employeeCardStatus) {
-            setEmployeeCardStatusError('El estado de la tarjeta del empleado es requerido.');
-            valid = false;
-        } else {
-            setEmployeeCardStatusError('');
         }
 
         return valid;
@@ -435,10 +456,17 @@ const EmployeesFormHook = ({
 
         setIsLoading(true);
 
+        const currentDate = moment().format();
+
         // Estructura Data
         const updatedData = {
             ...data,
             ImageProfile: selectedImage,
+            createdDate: currentDate,
+            routeApplicable: routeApplicable,
+            selectedArea: selectedArea,
+            selectedHeadquarter: selectedHeadquarter,
+            switch_activateCard: employeeCardStatus,
             mondayRoute: mondayRoute,
             tuesdayRoute: tuesdayRoute,
             wednesdayRoute: wednesdayRoute,
@@ -446,39 +474,44 @@ const EmployeesFormHook = ({
             fridayRoute: fridayRoute,
             saturdayRoute: saturdayRoute,
             sundayRoute: sundayRoute,
-            routeApplicable: routeApplicable,
-            selectedArea: selectedArea,
-            selectedHeadquarter: selectedHeadquarter,
-            employeeCardStatus: employeeCardStatus,
         };
 
         try {
-            const now = new Date();
-            const date = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-            const hour = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+            const email = updatedData?.emails?.[0]?.text.trim().toLowerCase();
+            const password = updatedData?.documentNumber[0].trim();
+            const documentRefUser: any = getDocumentReference("users");
 
             if (userData?.companyId) {
-                const formData = {
+                await addUser({ email: email || '', password: password, accessTokenUser, uid: documentRefUser.id });
+                const combinedData = {
                     ...updatedData,
-                    createdDate: date,
-                    createdTime: hour,
+                    uid: documentRefUser.id,
                     idCompany: userData?.companyId
-                };
-
-                console.log(formData);
-                const zoneQueryResult = await saveEmployeeQuery(formData);
-
-                if (zoneQueryResult.success) {
-                    console.log("Route saved successfully");
-                } else {
-                    console.error("Failed to save route:", zoneQueryResult.message);
                 }
 
+                const employeeQueryResult = await saveEmployeeQuery(combinedData);
+
+                if (employeeQueryResult.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Usuario creado',
+                        text: 'El usuario ha sido registrado exitosamente.',
+                        timer: 2500,
+                    });
+                    console.log("Usuario guardado con éxito");
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al registrar usuario',
+                        text: `No se pudo registrar el usuario: ${employeeQueryResult.message}`,
+                        timer: 2500,
+                    });
+                    console.error("Error al guardar usuario:", employeeQueryResult.message);
+                }
             } else {
                 console.log("No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.");
                 return;
             }
-
         } catch (error) {
             console.error("Error al enviar el formulario:", error);
         } finally {
@@ -493,7 +526,6 @@ const EmployeesFormHook = ({
 
         // Validar los campos antes de continuar
         if (!validateSaveData()) return;
-
         setIsLoading(true);
 
         // Actualiza el objeto data
@@ -510,10 +542,9 @@ const EmployeesFormHook = ({
             routeApplicable: routeApplicable,
             selectedArea: selectedArea,
             selectedHeadquarter: selectedHeadquarter,
-            employeeCardStatus: employeeCardStatus,
+            switch_activateCard: employeeCardStatus
+            //employeeCardStatus: employeeCardStatus,
         };
-
-        console.log('formData ', updatedData);
 
         try {
             if (userData?.companyId) {
@@ -524,11 +555,22 @@ const EmployeesFormHook = ({
                 const employeeQueryResult = await editEmployeeQuery(formData, idRow);
 
                 if (employeeQueryResult.success) {
-                    console.log("Employee saved successfully");
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Empleado actualizado',
+                        text: 'El empleado ha sido actualizado exitosamente.',
+                        timer: 2500,
+                    });
+                    console.log("Empleado actualizado con éxito");
                 } else {
-                    console.error("Failed to save employee:", employeeQueryResult.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al actualizar',
+                        text: `No se pudo actualizar el empleado: ${employeeQueryResult.message}`,
+                        timer: 2500,
+                    });
+                    console.error("Error al actualizar el empleado:", employeeQueryResult.message);
                 }
-
             } else {
                 console.log("No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.");
                 return;
@@ -627,7 +669,6 @@ const EmployeesFormHook = ({
 
     // Función para manejar el cambio en el CustomSelect
     const handleHeadquartersChange = (event: any) => {
-        console.log(event.target.value);
         setSelectedHeadquarter(event.target.value);
     };
 
@@ -663,7 +704,6 @@ const EmployeesFormHook = ({
         handleShowMainFormEdit && (
             setShow(true),
             setIdRow(editData?.uid),
-            //console.log('editData ', editData),
             //Paso 1
             getDataEmployee(editData),
             setSelectedImage(editData?.ImageProfile),
@@ -677,7 +717,8 @@ const EmployeesFormHook = ({
             setThursdayRoute(editData?.thursdayRoute || ''),
             setFridayRoute(editData?.fridayRoute || ''),
             setSaturdayRoute(editData?.saturdayRoute || ''),
-            setSundayRoute(editData?.sundayRoute || '')
+            setSundayRoute(editData?.sundayRoute || ''),
+            setEmployeeCardStatus(editData?.switch_activateCard || false)
         );
         getRouteData();
         // eslint-disable-next-line react-hooks/exhaustive-deps

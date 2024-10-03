@@ -10,7 +10,7 @@ import {
     DataPatientObject,
     DataProfessionalObject,
     DataSpecialtyObject,
-    DataWorkAreasObject
+    DataWorkAreasObject,
 } from "@/types/mainForm";
 
 export const dataMainFormObject = {
@@ -43,6 +43,7 @@ export const dataMainFormObject = {
     ext: "",
     webSite: "",
     sector: "",
+    geolocation: { lat: 4.709870567688981, lng: -74.07280277961777 }, //4.709870567688981, -74.07280277961777 Bogotá
     address: "",
     country: "",
     state: "",
@@ -225,6 +226,7 @@ export const dataCompanyObject = {
     webSite: "",
     sector: "",
     address: "",
+    geolocation: { lat: 4.709870567688981, lng: -74.07280277961777 }, //4.709870567688981, -74.07280277961777 Bogotá
     country: "",
     state: "",
     city: "",

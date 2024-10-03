@@ -158,7 +158,8 @@ const EmployeesFormModal = ({
                     >
                         <span>Agregar los datos del empleado</span>
                         <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-center tw-items-center -tw-mt-2">
-                            <Button
+                            <button
+                                type="button"
                                 onClick={handleClose}
                                 className="tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center"
                                 style={{
@@ -168,7 +169,19 @@ const EmployeesFormModal = ({
                                 }}
                             >
                                 <IoMdClose size={35} color={"gray"} />
-                            </Button>
+                            </button>
+
+                            {/* <Button
+                                onClick={handleClose}
+                                className="tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center"
+                                style={{
+                                    padding: 0,
+                                    background: "transparent",
+                                    border: "none",
+                                }}
+                            >
+                                <IoMdClose size={35} color={"gray"} />
+                            </Button> */}
                         </div>
                     </Modal.Title>
 
@@ -303,8 +316,14 @@ const EmployeesFormModal = ({
                                                         id="firstName"
                                                         fullWidth
                                                         label="Nombre"
-                                                        errorShow={
+                                                        // errorShow={
+                                                        //     errors.firstName
+                                                        // }
+                                                        helperText={
                                                             errors.firstName
+                                                        }
+                                                        error={
+                                                            !!errors.firstName
                                                         }
                                                         InputProps={{
                                                             startAdornment: (
@@ -338,8 +357,14 @@ const EmployeesFormModal = ({
                                                         theme={modeTheme}
                                                         id="lastName"
                                                         fullWidth
-                                                        errorShow={
+                                                        // errorShow={
+                                                        //     errors.lastName
+                                                        // }
+                                                        helperText={
                                                             errors.lastName
+                                                        }
+                                                        error={
+                                                            !!errors.lastName
                                                         }
                                                         label="Apellido"
                                                         InputProps={{
@@ -376,8 +401,14 @@ const EmployeesFormModal = ({
                                                         switch="true"
                                                         id="documentType"
                                                         fullWidth
-                                                        errorShow={
+                                                        // errorShow={
+                                                        //     errors.documentType
+                                                        // }
+                                                        helperText={
                                                             errors.documentType
+                                                        }
+                                                        error={
+                                                            !!errors.documentType
                                                         }
                                                         label="Número de Documento"
                                                         InputProps={{
@@ -415,8 +446,14 @@ const EmployeesFormModal = ({
                                                         id="documentNumber"
                                                         fullWidth
                                                         label="Número de Documento"
-                                                        errorShow={
+                                                        // errorShow={
+                                                        //     errors.documentNumber
+                                                        // }
+                                                        helperText={
                                                             errors.documentNumber
+                                                        }
+                                                        error={
+                                                            !!errors.documentNumber
                                                         }
                                                         InputProps={{
                                                             startAdornment: (
@@ -452,8 +489,14 @@ const EmployeesFormModal = ({
                                                         theme={modeTheme}
                                                         id="dateOfBirth"
                                                         fullWidth
-                                                        errorShow={
+                                                        // errorShow={
+                                                        //     errors.dateOfBirth
+                                                        // }
+                                                        helperText={
                                                             errors.dateOfBirth
+                                                        }
+                                                        error={
+                                                            !!errors.dateOfBirth
                                                         }
                                                         label="Fecha de Nacimiento"
                                                         InputProps={{
@@ -488,8 +531,14 @@ const EmployeesFormModal = ({
                                                         theme={modeTheme}
                                                         id="position"
                                                         fullWidth
-                                                        errorShow={
+                                                        // errorShow={
+                                                        //     errors.position
+                                                        // }
+                                                        helperText={
                                                             errors.position
+                                                        }
+                                                        error={
+                                                            !!errors.position
                                                         }
                                                         label="Cargo"
                                                         InputProps={{
@@ -537,12 +586,12 @@ const EmployeesFormModal = ({
                                                                             className="tw-mt-4 tw-w-1/3"
                                                                             value={
                                                                                 item.indicative &&
-                                                                                item.indicative.includes(
-                                                                                    "+",
-                                                                                )
+                                                                                    item.indicative.includes(
+                                                                                        "+",
+                                                                                    )
                                                                                     ? item.indicative
                                                                                     : "+" +
-                                                                                      item.indicative
+                                                                                    item.indicative
                                                                             }
                                                                             onChange={(
                                                                                 value: string,
@@ -588,7 +637,7 @@ const EmployeesFormModal = ({
                                                                                 )
                                                                             }
                                                                             name="text"
-                                                                            type="tel"
+                                                                            type="number"
                                                                             switch="true"
                                                                             theme={
                                                                                 modeTheme
@@ -629,7 +678,7 @@ const EmployeesFormModal = ({
                                                                             );
                                                                         }}
                                                                         name="ext"
-                                                                        type="tel"
+                                                                        type="number"
                                                                         deleted={
                                                                             "true"
                                                                         }
@@ -678,7 +727,7 @@ const EmployeesFormModal = ({
                                                 </div>
 
                                                 <div className="tw-flex tw-flex-col tw-w-full">
-                                                    {dataForm.emails &&
+                                                    {/*  {dataForm.emails &&
                                                         dataForm.emails.map(
                                                             (item, index) => (
                                                                 <div
@@ -715,7 +764,9 @@ const EmployeesFormModal = ({
                                                                         name="text"
                                                                         type="text"
                                                                         deleted={
-                                                                            "true"
+                                                                            index !== 0
+                                                                                ? "true"
+                                                                                : ""
                                                                         }
                                                                         switch="true"
                                                                         theme={
@@ -735,7 +786,48 @@ const EmployeesFormModal = ({
                                                                     />
                                                                 </div>
                                                             ),
-                                                        )}
+                                                        )} */}
+                                                    {dataForm.emails &&
+                                                        dataForm.emails.map((item, index) => (
+                                                            <div key={index} className="tw-flex tw-flex-col tw-px-3 tw-w-full">
+                                                                <CustomTextField
+                                                                    checked={allChecked}
+                                                                    data={[item.text, item.checked]}
+                                                                    onChange={(
+                                                                        value: string,
+                                                                        name: string,
+                                                                        checked: boolean
+                                                                    ) =>
+                                                                        handleChangeItem(
+                                                                            "emails",
+                                                                            index,
+                                                                            name,
+                                                                            value,
+                                                                            checked
+                                                                        )
+                                                                    }
+                                                                    onClick={() => {
+                                                                        handleDeleteItem(index, "emails");
+                                                                    }}
+                                                                    name="text"
+                                                                    type="text"
+                                                                    deleted={index !== 0 ? "true" : ""}
+                                                                    switch="true"
+                                                                    theme={modeTheme}
+                                                                    id={`email-${index}`}
+                                                                    fullWidth
+                                                                    label="Correo"
+                                                                    errorShow={errors[`email-${index}`]}
+                                                                    InputProps={{
+                                                                        startAdornment: (
+                                                                            <InputAdornment position="start">
+                                                                                <ExploreOutlinedIcon />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        ))}
                                                 </div>
                                             </div>
                                         </div>
@@ -1057,7 +1149,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1071,7 +1163,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1090,7 +1182,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1167,7 +1259,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1244,7 +1336,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1321,7 +1413,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1398,7 +1490,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1475,7 +1567,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1552,7 +1644,7 @@ const EmployeesFormModal = ({
                                                                                 "center",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#000000"
                                                                                     : "#8bb8e7",
                                                                         }}
@@ -1694,9 +1786,8 @@ const EmployeesFormModal = ({
                                                 <GrPrevious size={17} />
                                             </Button>
                                             <Button
-                                                className={`${
-                                                    isLoading && "btn-loader"
-                                                } tw-ml-5 btn-save-admin`}
+                                                className={`${isLoading && "btn-loader"
+                                                    } tw-ml-5 btn-save-admin`}
                                                 type="submit"
                                             >
                                                 {isLoading ? (

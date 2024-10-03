@@ -1,4 +1,5 @@
 import { AllRefPropsFirebase, RefPropsFirebase } from "@/types/userFirebase";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import {
     addDoc,
     collection,
@@ -6,6 +7,7 @@ import {
     doc,
     getDoc,
     getDocs,
+    onSnapshot,
     query,
     setDoc,
     updateDoc,
@@ -21,6 +23,7 @@ import {
 import moment from "moment";
 import { db } from "shared/firebase/firebase";
 import { v4 as uuidv4 } from "uuid";
+const auth = getAuth();
 
 export const allRef = ({ ref }: AllRefPropsFirebase) => collection(db, ref);
 
@@ -239,15 +242,76 @@ export const updateCampus = async (dataSave: any) => {
     }
 };
 
-export const getDocsByCompanyId = async (companyId: any, reference: string) => {
+export const getDocsByCompanyId = async (
+    companyId: any,
+    reference: string,
+    fieldPathInDB?: string,
+    valueToFound?: string,
+) => {
     try {
+        const q =
+            fieldPathInDB && valueToFound
+                ? query(
+                      collection(db, reference),
+                      where("idCompany", "==", companyId),
+                      where(fieldPathInDB, "==", valueToFound),
+                  )
+                : query(
+                      collection(db, reference),
+                      where("idCompany", "==", companyId),
+                  );
+
+        const querySnapshot = await getDocs(q);
+
+        const docs: { [key: string]: any } = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+        }));
+        return docs;
+    } catch (error) {
+        console.error("Error fetching Docs:", error);
+        return [];
+    }
+};
+
+export const getDocsByCompanyIdInRealTime = (
+    companyId: any,
+    reference: string,
+) => {
+    try {
+        const dataResult: any[] = [];
+
         const q = query(
             collection(db, reference),
             where("idCompany", "==", companyId),
         );
 
-        const querySnapshot = await getDocs(q);
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            if (!querySnapshot.empty) {
+                querySnapshot.forEach((doc: any) => {
+                    const data = doc.data();
+                    dataResult.push(data);
+                });
+            }
+        });
+        return { unsubscribe, dataResult };
+    } catch (error) {
+        console.error("Error fetching Docs:", error);
+        return [];
+    }
+};
 
+export const getDocsByCompanyRolId = async (
+    companyId: any,
+    reference: string,
+) => {
+    try {
+        const q = query(
+            collection(db, reference),
+            where("idCompany", "==", companyId),
+            where("rolId", "==", "vE7NrHpiRU2s1Gjv5feg"),
+        );
+
+        const querySnapshot = await getDocs(q);
         const docs = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
@@ -255,6 +319,38 @@ export const getDocsByCompanyId = async (companyId: any, reference: string) => {
         return docs;
     } catch (error) {
         console.error("Error fetching Docs:", error);
+        return [];
+    }
+};
+
+export const getLocationsByCompanyId = async (
+    companyId: any,
+    fieldPathInDB?: string,
+    valueToFound?: string,
+) => {
+    try {
+        const q =
+            fieldPathInDB && valueToFound
+                ? query(
+                      collection(db, "locations"),
+                      where("companyId", "==", companyId),
+                      where(fieldPathInDB, "==", valueToFound),
+                  )
+                : query(
+                      collection(db, "locations"),
+                      where("companyId", "==", companyId),
+                  );
+
+        const querySnapshot = await getDocs(q);
+
+        const locations: { [key: string]: any } = querySnapshot.docs.map(
+            (doc) => ({
+                ...doc.data(),
+            }),
+        );
+        return locations;
+    } catch (error) {
+        console.error("Error fetching locations:", error);
         return [];
     }
 };
@@ -408,22 +504,22 @@ export const getHeadquartersByCompanyId = async (companyId: any) => {
 
 export const saveEmployee = async (dataSave: any) => {
     try {
-        const documentId = uuidv4();
-        const docRef = doc(db, "employees", documentId);
-        //const docRef = doc(db, "users", documentId);
-
+        const docRef = doc(db, "users", dataSave.uid);
         const dataWithId = {
             ...dataSave,
-            uid: documentId,
-            rolId: 'vE7NrHpiRU2s1Gjv5feg',
+            //Fwecha de creacion
+            // dejar switch_activateCardy no employeeCardStatus
+            rolId: "vE7NrHpiRU2s1Gjv5feg",
             views: 0,
             isActive: true,
-            preview: '',
+            preview: `https://one-tap-corp-dev.vercel.app/components/views/cardView/?uid=${dataSave.uid}`,
             switch_activateCard: true,
-            templateData: [{
-                id: 'VGMUWYOP3RK374gi30I8',
-                checked: true,
-            }]
+            templateData: [
+                {
+                    id: "VGMUWYOP3RK374gi30I8",
+                    checked: true,
+                },
+            ],
         };
 
         // Guarda el documento en Firestore
@@ -438,8 +534,8 @@ export const saveEmployee = async (dataSave: any) => {
 
 export const updateEmployee = async (id: string, dataSave: any) => {
     try {
-        const zoneRef = doc(db, "employees", id);
-        //const zoneRef = doc(db, "users", id);
+        //const zoneRef = doc(db, "employees", id);
+        const zoneRef = doc(db, "users", id);
         await updateDoc(zoneRef, dataSave);
 
         return { success: true, message: "Employee updated successfully" };
@@ -447,6 +543,15 @@ export const updateEmployee = async (id: string, dataSave: any) => {
         console.error("Error updating employee:", error);
         return { success: false, message: "Error updating route", error };
     }
+};
+
+export const registerFirebase = async (user: string, password: string) => {
+    const registerF = await createUserWithEmailAndPassword(
+        auth,
+        user,
+        password,
+    );
+    return registerF;
 };
 
 export const saveRoute = async (dataSave: any) => {

@@ -7,9 +7,11 @@ import {
     DeleteSocialNetwork,
     getAllDocumentsQuery,
     getDocsByCompanyIdQuery,
+    getDocsByCompanyRolIdQuery,
     getHeadquartersByCompanyIdQuery,
     getMeetingStatusByCompanyIdQuery,
     getNotificationsByCompanyIdQuery,
+    getRoutesByCompanyIdQuery,
     getWorkArasByCompanyIdQuery,
     getZonesByCompanyIdQuery,
 } from "@/queries/documentsQueries";
@@ -19,6 +21,7 @@ import { IconButton } from "@mui/material";
 import _ from "lodash";
 import moment from "moment";
 import Image from "next/image";
+import React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { FaTrashCan } from "react-icons/fa6";
 import { MdModeEdit } from "react-icons/md";
@@ -55,10 +58,8 @@ const DataTablesHook = (reference: string) => {
     const [isEmptyDataRef, setIsEmptyDataRef] = useState(true);
     const [handleShowMainForm, setHandleShowMainForm] = useState(false);
     const [handleShowMainFormEdit, setHandleShowMainFormEdit] = useState(false);
-    const [getDocuments, setGetDocuments] = useState<
-        DataMainFormObject[] | any[]
-    >();
-    const [dataTable, setDataTable] = useState<setDataTable>();
+    const [getDocuments, setGetDocuments] = useState<any>();
+    const [dataTable, setDataTable] = useState<any>();
     const [columns, setColumns] = useState<any[]>();
     const [editData, setEditData] = useState<any>();
     const [searchTerm, setSearchTerm] = useState("");
@@ -107,7 +108,7 @@ const DataTablesHook = (reference: string) => {
     };
 
     const getAllDocuments = useCallback(async () => {
-        const documents =
+        const documents: any =
             reference === "country"
                 ? countriesTable
                 : reference === "departments"
@@ -145,6 +146,10 @@ const DataTablesHook = (reference: string) => {
                           reference,
                       )
                     : []
+                : reference === "routes"
+                ? userData && userData?.companyId
+                    ? await getRoutesByCompanyIdQuery(userData?.companyId)
+                    : []
                 : reference === "campus"
                 ? userData && userData?.companyId
                     ? await getHeadquartersByCompanyIdQuery(userData?.companyId)
@@ -163,27 +168,29 @@ const DataTablesHook = (reference: string) => {
                 : await getAllDocumentsQuery(reference);
 
         const labelToDisplay = ["professionals", "patients", "functionary"];
+        //reference === "employees" && console.log('documents ', documents);
 
         if (documents.length > 0) {
             const cols: any[] = [];
-            const entries = Object.keys(documents[0]);
+            const docs = documents[0];
+            const entries = Object.keys(docs);
 
             // Define column names based on reference
             let columnNamesToDisplay: ColumnNamesToDisplay = {};
 
             if (reference === "documentTypes" || reference === "country") {
                 columnNamesToDisplay = {
-                    id: "Id",
+                    // id: "Id",
                     label: "Nombre",
                 };
             } else if (reference === "departments") {
                 columnNamesToDisplay = {
-                    id: "Id",
+                    // id: "Id",
                     departamento: "Nombre",
                 };
             } else if (reference === "cities") {
                 columnNamesToDisplay = {
-                    id: "Id",
+                    // id: "Id",
                     ciudad: "Ciudad",
                     departamento: "Departamento",
                     pais: "País",
@@ -196,8 +203,9 @@ const DataTablesHook = (reference: string) => {
                 };
             } else if (reference === "notifications") {
                 columnNamesToDisplay = {
-                    date: "Fecha",
-                    hour: "Hora",
+                    // date: "Fecha",
+                    // hour: "Hora",
+                    timestamp: "Fecha Registro",
                     issue: "Asunto",
                     content: "Contenido",
                 };
@@ -223,8 +231,9 @@ const DataTablesHook = (reference: string) => {
             } else if (reference === "routes") {
                 columnNamesToDisplay = {
                     uid: "Acciones",
-                    createdDate: "Fecha de creación",
-                    createdTime: "Hora de creación",
+                    // createdDate: "Fecha de creación",
+                    // createdTime: "Hora de creación",
+                    timestamp: "Fecha Registro",
                     routeName: "Nombre de la ruta",
                     routeManager: "Jefe de la ruta",
                     zoneName: "Zona a la que corresponde",
@@ -232,8 +241,9 @@ const DataTablesHook = (reference: string) => {
             } else if (reference === "logos") {
                 columnNamesToDisplay = {
                     uid: "Acciones",
-                    createdDate: "Fecha de creación",
-                    createdTime: "Hora de creación",
+                    // createdDate: "Fecha de creación",
+                    // createdTime: "Hora de creación",
+                    timestamp: "Fecha Registro",
                     logoName: "Nombre",
                     imageUrl: "Imagen",
                 };
@@ -393,7 +403,8 @@ const DataTablesHook = (reference: string) => {
                           reference === "departments" ||
                           reference === "cities" ? (
                             row[val]
-                        ) : reference === "companies" ? (
+                        ) : reference === "companies" ||
+                          reference === "workAreas" ? (
                             _.isArray(row[val]) ? (
                                 [row[val][0]]
                             ) : (
@@ -450,7 +461,7 @@ const DataTablesHook = (reference: string) => {
         const value = e.target.value.toLowerCase();
         setSearchTerm(value);
 
-        const filtered = getDocuments?.filter((item) => {
+        const filtered = getDocuments?.filter((item: any) => {
             return _.some(item, (prop, key) => {
                 if (reference === "departments") {
                     // Si reference es 'departments', filtra solo por el campo 'departamento'

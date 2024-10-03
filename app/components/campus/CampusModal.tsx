@@ -173,13 +173,16 @@ const CampusModal = ({
                                             checked: boolean,
                                         ) => handleChange(value, name, checked)}
                                         name="url"
-                                        type="text"
+                                        type="url"
                                         switch="true"
                                         theme={modeTheme}
                                         id="url"
                                         fullWidth
                                         label="Url Locación"
-                                        helperText={campusUrlError}
+                                        helperText={
+                                            campusUrlError ||
+                                            "Ej: https://example.com"
+                                        }
                                         error={!!campusUrlError}
                                         InputProps={{
                                             startAdornment: (
@@ -187,6 +190,7 @@ const CampusModal = ({
                                                     <AttachFileOutlinedIcon />
                                                 </InputAdornment>
                                             ),
+                                            title: 'Ingrese una URL válida Ej: "https://example.com"',
                                         }}
                                     />
                                 </div>
@@ -271,7 +275,7 @@ const CampusModal = ({
                                                             )
                                                         }
                                                         name="text"
-                                                        type="tel"
+                                                        type="number"
                                                         switch="true"
                                                         theme={modeTheme}
                                                         id={`phone-${index}`}
@@ -303,7 +307,7 @@ const CampusModal = ({
                                                         handleDeleteItem(index);
                                                     }}
                                                     name="ext"
-                                                    type="tel"
+                                                    type="number"
                                                     deleted={"true"}
                                                     theme={modeTheme}
                                                     id="ext"
@@ -369,13 +373,14 @@ const CampusModal = ({
                                                     <CustomSelect
                                                         labelId="area-label"
                                                         value={item[1].openTime}
-                                                        onChange={(e: any) =>
+                                                        onChange={(e: any) => {
+                                                            e.preventDefault();
                                                             handleScheduleDay(
                                                                 e,
                                                                 item[0],
                                                                 "openTime",
-                                                            )
-                                                        }
+                                                            );
+                                                        }}
                                                         label=""
                                                         MenuProps={{
                                                             PaperProps: {
@@ -416,13 +421,14 @@ const CampusModal = ({
                                                         value={
                                                             item[1].closeTime
                                                         }
-                                                        onChange={(e: any) =>
+                                                        onChange={(e: any) => {
+                                                            e.preventDefault();
                                                             handleScheduleDay(
                                                                 e,
                                                                 item[0],
                                                                 "closeTime",
-                                                            )
-                                                        }
+                                                            );
+                                                        }}
                                                         label=""
                                                         MenuProps={{
                                                             PaperProps: {

@@ -53,17 +53,13 @@ const CustomTextField = (props: any) => {
                             checked,
                         )
                     }
-                    onClick={() => { }}
+                    onClick={() => {}}
                     name={props.name}
                     variant="standard"
                     color="primary"
                     className={`tw-mb-4 ${props.deleted && "tw-w-full"}`}
-                    helperText={
-                        props.errorShow
-                    }
-                    error={
-                        !!props.errorShow
-                    }
+                    // helperText={props.errorShow}
+                    // error={!!props.errorShow}
                     InputLabelProps={{
                         style: {
                             fontSize: "20px",

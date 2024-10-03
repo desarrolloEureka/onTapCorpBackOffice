@@ -1,6 +1,7 @@
 import HeaderHook from "@/components/header/hook/HeaderHook";
 import { main_logo_light } from "@/globals/images";
 import dynamic from "next/dynamic";
+import React from "react";
 import {
     Container,
     // Dropdown,
@@ -214,6 +215,7 @@ const HeaderContent = ({
                                                 Empresa
                                             </NavDropdown.Item>
                                             <NavDropdown.Item
+                                                className="tw-flex tw-items-center tw-justify-center"
                                                 href="#meetingStatus"
                                                 eventKey="workAreas"
                                             >
@@ -221,9 +223,12 @@ const HeaderContent = ({
                                                     size={18}
                                                     className="tw-mb-1 tw-mr-1"
                                                 />
-                                                Áreas de Trabajo
+                                                <span className="tw-text-wrap">
+                                                    Áreas de Trabajo
+                                                </span>
                                             </NavDropdown.Item>
                                             <NavDropdown.Item
+                                                className="tw-flex tw-items-center tw-justify-center"
                                                 href="#meetingStatus"
                                                 eventKey="meetingStatus"
                                             >
@@ -231,7 +236,7 @@ const HeaderContent = ({
                                                     size={20}
                                                     className="tw-mb-1 tw-mr-1"
                                                 />
-                                                <span className="tw-text-nowrap">
+                                                <span className="tw-text-wrap">
                                                     Estados Reunión
                                                 </span>
                                             </NavDropdown.Item>
@@ -310,16 +315,18 @@ const HeaderContent = ({
                                         />
                                         Tipos Documento
                                     </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        href="#roles"
-                                        eventKey="notifications"
-                                    >
-                                        <IoMdNotifications
-                                            size={20}
-                                            className="tw-mb-1 tw-mr-1"
-                                        />
-                                        Notificaciones
-                                    </NavDropdown.Item>
+                                    {userRole !== "superadmin" && (
+                                        <NavDropdown.Item
+                                            href="#roles"
+                                            eventKey="notifications"
+                                        >
+                                            <IoMdNotifications
+                                                size={20}
+                                                className="tw-mb-1 tw-mr-1"
+                                            />
+                                            Notificaciones
+                                        </NavDropdown.Item>
+                                    )}
                                 </NavDropdown>
                             )}
 
@@ -410,7 +417,17 @@ const HeaderContent = ({
                                     className="nav-item dropdown"
                                 >
                                     <NavDropdown.Item
-                                        //href="#functionary"
+                                        href="#generalMap"
+                                        eventKey="maps"
+                                    >
+                                        <PiMapPinSimpleFill
+                                            size={20}
+                                            className="tw-mb-1 tw-mr-1"
+                                        />
+                                        General
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item
+                                        href="#zonesMap"
                                         eventKey="areas"
                                     >
                                         <PiMapPinSimpleFill
@@ -420,7 +437,7 @@ const HeaderContent = ({
                                         Áreas
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
-                                        //href="#functionary"
+                                        href="#campusMap"
                                         eventKey="headquarters"
                                     >
                                         <PiMapPinSimpleFill
@@ -430,7 +447,7 @@ const HeaderContent = ({
                                         Sedes
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
-                                        //href="#functionary"
+                                        href="#employeesMap"
                                         eventKey="employeesMaps"
                                     >
                                         <PiMapPinSimpleFill
@@ -440,8 +457,8 @@ const HeaderContent = ({
                                         Empleados
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
-                                        //href="#functionary"
-                                        eventKey="tutesMaps"
+                                        href="#routesMap"
+                                        eventKey="routesMaps"
                                     >
                                         <PiMapPinSimpleFill
                                             size={20}
@@ -450,7 +467,7 @@ const HeaderContent = ({
                                         Rutas
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
-                                        //href="#functionary"
+                                        href="#fixedPointsMap"
                                         eventKey="fixedPointsMaps"
                                     >
                                         <PiMapPinSimpleFill

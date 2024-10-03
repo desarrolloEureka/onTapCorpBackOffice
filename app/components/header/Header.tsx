@@ -4,9 +4,10 @@ import BannerMenu from "../bannerMenu/BannerMenu";
 import CompanyPage from "../company/CompanyPage";
 import HomeDash from "../dashBoard/homeDash/HomeDash";
 import DataTableComponent from "../dataTable/DataTableComponent";
+import GoogleMapsPage from "../maps/GoogleMapsPage";
 import Profile from "../profile/page";
-import HeaderContent from "./components/headerContent/HeaderContent";
 import HomeContent from "../views/home/HomeContent";
+import HeaderContent from "./components/headerContent/HeaderContent";
 
 const Header = ({ hamburger }: { hamburger?: boolean }) => {
     const [theme, setTheme] = useState<string>("light");
@@ -426,6 +427,92 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
+                {/* Vista de los mapas */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="maps"
+                    role="tabpanel"
+                    eventKey="maps"
+                >
+                    <BannerMenu
+                        seoTitle="Mapa General"
+                        title="Mapa General"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <GoogleMapsPage mapToShow={"all"} />
+                </Tab.Pane>
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="areas"
+                    role="tabpanel"
+                    eventKey="areas"
+                >
+                    <BannerMenu
+                        seoTitle="Mapa de Zonas"
+                        title="Mapa Zonas"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <GoogleMapsPage mapToShow={"areas"} />
+                </Tab.Pane>
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="headquarters"
+                    role="tabpanel"
+                    eventKey="headquarters"
+                >
+                    <BannerMenu
+                        seoTitle="Mapa de Sedes"
+                        title="Mapa Sedes"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <GoogleMapsPage mapToShow={"campus"} />
+                </Tab.Pane>
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="employeesMaps"
+                    role="tabpanel"
+                    eventKey="employeesMaps"
+                >
+                    <BannerMenu
+                        seoTitle="Mapa de Empleados"
+                        title="Mapa Empleados"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <GoogleMapsPage mapToShow={"employees"} />
+                </Tab.Pane>
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="routesMaps"
+                    role="tabpanel"
+                    eventKey="routesMaps"
+                >
+                    <BannerMenu
+                        seoTitle="Mapa de Rutas"
+                        title="Mapa Rutas"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <GoogleMapsPage mapToShow={"routes"} />
+                </Tab.Pane>
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="fixedPointsMaps"
+                    role="tabpanel"
+                    eventKey="fixedPointsMaps"
+                >
+                    <BannerMenu
+                        seoTitle="Mapa de Puntos Fijos"
+                        title="Mapa Puntos Fijos"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <GoogleMapsPage mapToShow={"fixedPoints"} />
+                </Tab.Pane>
+
                 {/* Vista de la Empresa */}
                 <Tab.Pane
                     className="tab-pane text-muted"
@@ -501,9 +588,8 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         item="Dashboard"
                         activeItem="Seleccionar Plantilla"
                     />
-                     <HomeContent />
+                    <HomeContent />
                 </Tab.Pane>
-
             </Tab.Content>
         </Tab.Container>
     );
