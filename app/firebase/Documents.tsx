@@ -407,7 +407,7 @@ export const getNotificationsByCompanyId = async (companyId: any) => {
     }
 };
 
-export const getWorkArasByCompanyId = async (companyId: any) => {
+export const getWorkAreasByCompanyId = async (companyId: any) => {
     try {
         const q = query(
             collection(db, "workAreas"),
@@ -468,7 +468,7 @@ export const getAreasByCompanyId = async (companyId: any) => {
     try {
         const q = query(
             collection(db, "workAreas"),
-            where("idCompany", "==", companyId),
+            where("companyId", "==", companyId),
         );
 
         const querySnapshot = await getDocs(q);

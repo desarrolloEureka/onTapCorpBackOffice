@@ -12,7 +12,7 @@ import {
     getMeetingStatusByCompanyIdQuery,
     getNotificationsByCompanyIdQuery,
     getRoutesByCompanyIdQuery,
-    getWorkArasByCompanyIdQuery,
+    getWorkAreasByCompanyIdQuery,
     getZonesByCompanyIdQuery,
 } from "@/queries/documentsQueries";
 import { DataMainFormObject } from "@/types/mainForm";
@@ -131,7 +131,7 @@ const DataTablesHook = (reference: string) => {
                     : []
                 : reference === "workAreas"
                 ? userData && userData?.companyId
-                    ? await getWorkArasByCompanyIdQuery(userData?.companyId)
+                    ? await getWorkAreasByCompanyIdQuery(userData?.companyId)
                     : []
                 : reference === "meetingStatus"
                 ? userData && userData?.companyId

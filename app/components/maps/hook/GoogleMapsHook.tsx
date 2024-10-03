@@ -4,6 +4,7 @@ import {
     getHeadquartersByCompanyIdQuery,
     getLocationsByCompanyIdQuery,
     getRoutesByCompanyIdQuery,
+    getWorkAreasByCompanyIdQuery,
     getZonesByCompanyIdQuery,
 } from "@/queries/documentsQueries";
 import {
@@ -104,10 +105,10 @@ export const GoogleMapsHook = () => {
                 "employees",
             );
 
-            const workAreas = await getDocsByCompanyIdQuery(
+            const workAreas = await getWorkAreasByCompanyIdQuery(
                 companyData.uid,
-                "workAreas",
             );
+
             const routes = await getDocsByCompanyIdQuery(
                 companyData.uid,
                 "routes",

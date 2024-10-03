@@ -12,7 +12,7 @@ import {
     getNotificationsByCompanyId,
     getReference,
     getRoutesByCompanyId,
-    getWorkArasByCompanyId,
+    getWorkAreasByCompanyId,
     getZoneById,
     getZonesByCompanyId,
     saveCampus,
@@ -189,8 +189,8 @@ export const getNotificationsByCompanyIdQuery = async (idCompany: string) => {
     return documents;
 };
 
-export const getWorkArasByCompanyIdQuery = async (idCompany: string) => {
-    const documents = await getWorkArasByCompanyId(idCompany);
+export const getWorkAreasByCompanyIdQuery = async (idCompany: string) => {
+    const documents = await getWorkAreasByCompanyId(idCompany);
     return documents;
 };
 
