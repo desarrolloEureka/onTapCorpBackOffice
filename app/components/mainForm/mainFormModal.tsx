@@ -243,48 +243,50 @@ const MainFormModal = ({
                                             </h6>
                                         </div>
 
-                                        <CustomTextField
-                                            data={data && data.areaName}
-                                            onChange={(
-                                                value: string,
-                                                name: string,
-                                            ) => handleChange(value, name)}
-                                            required
-                                            name="areaName"
-                                            type="text"
-                                            theme={modeTheme}
-                                            id="areaName"
-                                            fullWidth
-                                            label="Nombre del Área"
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <WorkOutlineOutlinedIcon />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                        />
-                                        <CustomTextField
-                                            data={data && data.areaHead}
-                                            onChange={(
-                                                value: string,
-                                                name: string,
-                                            ) => handleChange(value, name)}
-                                            required
-                                            name="areaHead"
-                                            type="text"
-                                            theme={modeTheme}
-                                            id="areaHead"
-                                            fullWidth
-                                            label="Jefe de Área"
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <PersonOutlineOutlinedIcon />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                        />
+                                        <div className="tw-px-3 tw-w-full">
+                                            <CustomTextField
+                                                data={data && data.areaName}
+                                                onChange={(
+                                                    value: string,
+                                                    name: string,
+                                                ) => handleChange(value, name)}
+                                                required
+                                                name="areaName"
+                                                type="text"
+                                                theme={modeTheme}
+                                                id="areaName"
+                                                fullWidth
+                                                label="Nombre del Área"
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <WorkOutlineOutlinedIcon />
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            />
+                                            <CustomTextField
+                                                data={data && data.areaHead}
+                                                onChange={(
+                                                    value: string,
+                                                    name: string,
+                                                ) => handleChange(value, name)}
+                                                required
+                                                name="areaHead"
+                                                type="text"
+                                                theme={modeTheme}
+                                                id="areaHead"
+                                                fullWidth
+                                                label="Jefe de Área"
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <PersonOutlineOutlinedIcon />
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            />
+                                        </div>
                                     </div>
                                     <div className="tw-flex tw-w-full tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-admin-body">
                                         <div className="tw-flex tw-w-full tw-justify-between">
@@ -304,9 +306,10 @@ const MainFormModal = ({
 
                                         <div
                                             // key={index}
-                                            className="tw-flex tw-flex-col tw-w-full"
+                                            className="tw-flex tw-flex-col tw-px-3 tw-w-full"
                                         >
                                             <CustomTextField
+                                                required
                                                 data={data && data.urlName}
                                                 onChange={(
                                                     value: string,
@@ -336,13 +339,17 @@ const MainFormModal = ({
                                             />
 
                                             <CustomTextField
+                                                required
                                                 data={data && data.urlLink}
                                                 onChange={(
                                                     value: string,
                                                     name: string,
                                                 ) => handleChange(value, name)}
                                                 name="urlLink"
-                                                type="text"
+                                                type="url"
+                                                helperText={
+                                                    "Ej: https://example.com"
+                                                }
                                                 theme={modeTheme}
                                                 id="urlLink"
                                                 fullWidth
@@ -778,7 +785,7 @@ const MainFormModal = ({
                                                                 }
                                                                 name="phone"
                                                                 id="phone"
-                                                                type="tel"
+                                                                type="number"
                                                                 variant="standard"
                                                                 color="primary"
                                                                 fullWidth
@@ -843,7 +850,7 @@ const MainFormModal = ({
                                                                 }
                                                                 name="ext"
                                                                 id="ext"
-                                                                type="text"
+                                                                type="number"
                                                                 variant="standard"
                                                                 color="primary"
                                                                 fullWidth
@@ -1704,7 +1711,7 @@ const MainFormModal = ({
                                                                 }
                                                                 name="phoneAdmin"
                                                                 id="phoneAdmin"
-                                                                type="tel"
+                                                                type="number"
                                                                 variant="standard"
                                                                 color="primary"
                                                                 fullWidth

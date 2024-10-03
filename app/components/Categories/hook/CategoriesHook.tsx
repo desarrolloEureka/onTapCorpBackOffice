@@ -1,5 +1,6 @@
 "use client";
 import { initialDataCategories } from "@/data/categoriesData";
+import { getGeolocation } from "@/data/formConstant";
 import useAuth from "@/firebase/auth";
 import {
     getDocumentReference,
@@ -24,7 +25,7 @@ const CategoriesHook = ({
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
-    const { userData } = useAuth();
+    const { userData, companyData } = useAuth();
     const [showPickerColor, setShowPickerColor] = useState<boolean>(false);
 
     // Datos
@@ -40,7 +41,7 @@ const CategoriesHook = ({
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
     //Filtra los campos vacíos
-    const directionsFiltered = data.directions.filter(
+    const directionsFiltered = data?.directions?.filter(
         (item) => item.pointName !== "" && item.address !== "",
     );
 
@@ -158,6 +159,15 @@ const CategoriesHook = ({
         // Validar los campos antes de continuar
         if (!validateFields()) return;
 
+        //Coordenadas de la Dirección
+        const coordsFromAddress: {
+            lat: number;
+            lng: number;
+        } | null = await getGeolocation(
+            directionsFiltered[0].address,
+            companyData,
+        );
+
         setIsLoading(true);
 
         try {
@@ -165,7 +175,10 @@ const CategoriesHook = ({
                 // Se complementa la info faltante
                 const formData = {
                     ...data,
-                    directions: directionsFiltered,
+                    directions: [
+                        // ...directionsFiltered,
+                        { ...directionsFiltered[0], ...coordsFromAddress },
+                    ],
                     idCompany: userData.companyId,
                     uid: documentRef.id,
                 };
@@ -186,12 +199,11 @@ const CategoriesHook = ({
                 );
                 return;
             }
-
-            handleClose();
         } catch (error) {
             console.error("Error al enviar el formulario:", error);
         } finally {
             setIsLoading(false);
+            handleClose();
         }
     };
 
@@ -207,6 +219,7 @@ const CategoriesHook = ({
         setData(initialDataCategories);
         setNameError("");
         setPointNameError("");
+        setAddressError("");
     };
 
     //Para actualizar los datos
@@ -216,6 +229,15 @@ const CategoriesHook = ({
 
         if (!validateFields()) return;
 
+        //Coordenadas de la Dirección
+        const coordsFromAddress: {
+            lat: number;
+            lng: number;
+        } | null = await getGeolocation(
+            directionsFiltered[0].address,
+            companyData,
+        );
+
         setIsLoading(true);
         try {
             if (userData?.companyId) {
@@ -223,7 +245,10 @@ const CategoriesHook = ({
                     id: data.uid,
                     data: {
                         ...data,
-                        directions: directionsFiltered,
+                        directions: [
+                            // ...directionsFiltered,
+                            { ...directionsFiltered[0], ...coordsFromAddress },
+                        ],
                     },
                     reference,
                 });
@@ -242,12 +267,11 @@ const CategoriesHook = ({
                 );
                 return;
             }
-
-            handleClose();
         } catch (error) {
             console.error("Error al editar el formulario:", error);
         } finally {
             setIsLoading(false);
+            handleClose();
         }
     };
 

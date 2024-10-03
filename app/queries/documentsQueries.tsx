@@ -4,8 +4,10 @@ import {
     getAllDocumentsFb,
     getAreasByCompanyId,
     getDocsByCompanyId,
+    getDocsByCompanyRolId,
     getDocumentsByIdFb,
     getHeadquartersByCompanyId,
+    getLocationsByCompanyId,
     getMeetingStatusByCompanyId,
     getNotificationsByCompanyId,
     getReference,
@@ -138,8 +140,36 @@ export const getAllDocumentsQuery = async (ref: string) => {
 export const getDocsByCompanyIdQuery = async (
     idCompany: string,
     reference: string,
+    fieldPathInDB?: string,
+    valueToFound?: string,
 ) => {
-    const documents = await getDocsByCompanyId(idCompany, reference);
+    const documents = await getDocsByCompanyId(
+        idCompany,
+        reference,
+        fieldPathInDB,
+        valueToFound,
+    );
+    return documents;
+};
+
+export const getLocationsByCompanyIdQuery = async (
+    idCompany: string,
+    fieldPath?: string,
+    valueToFound?: string,
+) => {
+    const documents = await getLocationsByCompanyId(
+        idCompany,
+        fieldPath,
+        valueToFound,
+    );
+    return documents;
+};
+
+export const getDocsByCompanyRolIdQuery = async (
+    idCompany: string,
+    reference: string,
+) => {
+    const documents = await getDocsByCompanyRolId(idCompany, reference);
     return documents;
 };
 

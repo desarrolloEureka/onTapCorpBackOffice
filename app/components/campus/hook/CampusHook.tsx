@@ -5,6 +5,7 @@ import {
     initialData,
     initialPhones,
 } from "@/data/campus";
+import { getGeolocation } from "@/data/formConstant";
 import useAuth from "@/firebase/auth";
 import {
     getDocumentReference,
@@ -33,7 +34,7 @@ const CampusHook = ({
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
-    const { userData } = useAuth();
+    const { userData, companyData } = useAuth();
 
     // Datos
     const [data, setData] = useState<CampusFormValuesData>(initialData);
@@ -200,6 +201,12 @@ const CampusHook = ({
         // Validar los campos antes de continuar
         if (!validateFields()) return;
 
+        //Coordenadas de la Dirección
+        const coordsFromAddress: {
+            lat: number;
+            lng: number;
+        } | null = await getGeolocation(data.address[0], companyData);
+
         setIsLoading(true);
         try {
             if (userData?.companyId) {
@@ -207,6 +214,8 @@ const CampusHook = ({
                     ...data,
                     idCompany: userData.companyId,
                     uid: documentRef.id,
+                    //Geo localización con la dirección formateada
+                    geolocation: coordsFromAddress,
                 };
 
                 const campusQueryResult = await saveCampusQuery(
@@ -226,12 +235,11 @@ const CampusHook = ({
                 );
                 return;
             }
-
-            handleClose();
         } catch (error) {
             console.error("Error al enviar el formulario:", error);
         } finally {
             setIsLoading(false);
+            handleClose();
         }
     };
 
@@ -247,6 +255,8 @@ const CampusHook = ({
         setData(initialData);
         setPhones(initialPhones);
         setCampusNameError("");
+        setCampusAddressError("");
+        setCampusUrlError("");
     };
 
     //Para actualizar los datos
@@ -256,10 +266,19 @@ const CampusHook = ({
 
         if (!validateFields()) return;
 
+        //Coordenadas de la Dirección
+        const coordsFromAddress: {
+            lat: number;
+            lng: number;
+        } | null = await getGeolocation(data.address[0], companyData);
+
         setIsLoading(true);
         try {
             if (userData?.companyId) {
-                const campusQueryResult = await updateCampusQuery(data);
+                const campusQueryResult = await updateCampusQuery({
+                    ...data, //Geo localización con la dirección formateada
+                    geolocation: coordsFromAddress,
+                });
 
                 if (campusQueryResult.success) {
                     console.log("Saved successfully");
@@ -273,12 +292,11 @@ const CampusHook = ({
                 );
                 return;
             }
-
-            handleClose();
         } catch (error) {
             console.error("Error al editar el formulario:", error);
         } finally {
             setIsLoading(false);
+            handleClose();
         }
     };
 

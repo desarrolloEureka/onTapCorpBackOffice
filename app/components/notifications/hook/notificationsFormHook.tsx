@@ -3,13 +3,14 @@ import useAuth from "@/firebase/auth";
 import { saveNotificationQuery } from "@/queries/documentsQueries";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
+import moment from "moment";
 import { useEffect, useState } from "react";
 
 const NotificationsFormHook = ({
     handleShowMainForm,
     setHandleShowMainForm,
     setHandleShowMainFormEdit,
-    editData
+    editData,
 }: ModalParamsMainForm) => {
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -58,28 +59,36 @@ const NotificationsFormHook = ({
 
         setIsLoading(true);
         try {
-            const now = new Date();
-            const date = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-            const hour = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+            // const now = new Date();
+            // const date = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+            // const hour = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
+
+            const currentDate = moment().format();
 
             if (userData?.companyId) {
                 const formData = {
                     idCompany: userData.companyId,
                     issue,
                     content,
-                    date,
-                    hour
+                    timestamp: currentDate,
                 };
 
-                const notificationResult = await saveNotificationQuery(formData);
+                const notificationResult = await saveNotificationQuery(
+                    formData,
+                );
 
                 if (notificationResult.success) {
                     console.log("Notification saved successfully");
                 } else {
-                    console.error("Failed to save notification:", notificationResult.message);
+                    console.error(
+                        "Failed to save notification:",
+                        notificationResult.message,
+                    );
                 }
             } else {
-                console.log("No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.");
+                console.log(
+                    "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
+                );
                 return;
             }
 

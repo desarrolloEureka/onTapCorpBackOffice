@@ -1,10 +1,7 @@
-
 "use client";
-import { dataAdminCompanyObject } from "@/data/mainFormData";
 import { getDocumentsByIdQuery } from "@/queries/documentsQueries";
-import { DataAdminCompanyObject } from "@/types/mainForm";
-import { User, onAuthStateChanged } from "firebase/auth";
-import { getDoc, doc, DocumentReference } from "firebase/firestore";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { auth, db } from "shared/firebase/firebase";
 
@@ -103,9 +100,6 @@ const useAuth = () => {
         });
         return () => {
             unsubscribe();
-            // if (user !== undefined) {
-            //     setIsLoading(false);
-            // }
         };
     }, []);
 
