@@ -3,6 +3,7 @@ import { initialErrorsCompany } from "@/data/companyData";
 import { getStateName } from "@/data/formConstant";
 import useAuth from "@/firebase/auth";
 import {
+    getAllDocumentsQuery,
     saveEditDataDocumentsQuery,
     saveIconFile,
 } from "@/queries/documentsQueries";
@@ -25,6 +26,24 @@ const CompanyHook = () => {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     const companyName = companyData && companyData.tradename[0];
+    //Modal Iconos
+    const [isOpenModalIcons, setIsOpenModalIcons] = useState<boolean>(false);
+    const [itemUrlKey, setItemUrlKey] = useState(0);
+    const [dataLogos, setDataLogos] = useState<any>(null);
+    const [itemUrlSelected, setItemUrlSelected] = useState([]);
+
+    useEffect(() => {
+        const fetchDocuments = async () => {
+            try {
+                const docs = await getAllDocumentsQuery("logos");
+                setDataLogos(docs);
+            } catch (error) {
+                console.error("Error fetching documents: ", error);
+            }
+        };
+
+        fetchDocuments();
+    }, []);
 
     const saveAlert = async (callbackFc: () => Promise<void>) => {
         Swal.fire({
@@ -115,7 +134,6 @@ const CompanyHook = () => {
                     });
             }
         }
-
         await saveEditDataDocumentsQuery({
             id: data.uid,
             data: { ...data, geolocation: coords },
@@ -232,10 +250,10 @@ const CompanyHook = () => {
                     item === "phone"
                         ? ["", false]
                         : item === "indicative"
-                        ? "57"
-                        : item === "ext"
-                        ? " "
-                        : " ";
+                            ? "57"
+                            : item === "ext"
+                                ? " "
+                                : " ";
                 // }
                 // });
             });
@@ -271,11 +289,11 @@ const CompanyHook = () => {
             listNewItem.forEach((item) => {
                 item === "additionalDataName"
                     ? (newItemDato[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = ["", false])
+                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                    ] = ["", false])
                     : (newItemDato[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = "");
+                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                    ] = "");
             });
             setData({ ...data, ...newItemDato });
         }
@@ -290,15 +308,35 @@ const CompanyHook = () => {
             listNewItem.forEach((item) => {
                 item === "urlName"
                     ? (newItemUrl[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = ["", false])
+                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                    ] = ["", false])
                     : (newItemUrl[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = "");
+                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                    ] = "");
             });
             setData({ ...data, ...newItemUrl });
         }
     };
+
+    const handleDataNetworks = (text: any, index: any) => {
+        setData({ ...data, ["iconName" + '' + (index === 0 ? '' : index + 1)]: text });
+        setItemUrlSelected({ ...objToArrayItems.urlName[index], iconName: text });
+        setTimeout(() => {
+            setIsOpenModalIcons(false);
+        }, 1000);
+    };
+
+    const handleOpenModalIcons = (item: any, index: any) => {
+        setItemUrlKey(index);
+        setItemUrlSelected(item);
+        setIsOpenModalIcons(true);
+    }
+
+    const handleCloseModalIcons = () => {
+        setItemUrlKey(0);
+        setItemUrlSelected([]);
+        setIsOpenModalIcons(false);
+    }
 
     const createNewArray = useCallback(() => {
         const newObject: MyStateType = {};
@@ -382,7 +420,7 @@ const CompanyHook = () => {
                         });
                     }
                     if (element === "urlName") {
-                        const newElements = ["urlLink"];
+                        const newElements = ["urlLink", "iconName"];
                         newElements.forEach((newItem) => {
                             if (
                                 Object.keys(_.cloneDeep(data)).includes(newItem)
@@ -419,6 +457,7 @@ const CompanyHook = () => {
         return newObject;
     }, [data]);
 
+
     useEffect(() => {
         data && setObjToArrayItems(createNewArray());
     }, [createNewArray, data]);
@@ -443,6 +482,16 @@ const CompanyHook = () => {
         handleNewItem,
         handleDeleteItem,
         handleSendForm,
+        handleOpenModalIcons,
+        handleCloseModalIcons,
+        isOpenModalIcons,
+        setIsOpenModalIcons,
+        dataLogos,
+        handleDataNetworks,
+        itemUrlKey,
+        setItemUrlKey,
+        itemUrlSelected,
+        setItemUrlSelected
     };
 };
 

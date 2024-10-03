@@ -4,6 +4,7 @@ import {
     getAllDocumentsFb,
     getAreasByCompanyId,
     getDocsByCompanyId,
+    getDocsByCompanyRolId,
     getDocumentsByIdFb,
     getHeadquartersByCompanyId,
     getLocationsByCompanyId,
@@ -161,6 +162,14 @@ export const getLocationsByCompanyIdQuery = async (
         fieldPath,
         valueToFound,
     );
+    return documents;
+};
+
+export const getDocsByCompanyRolIdQuery = async (
+    idCompany: string,
+    reference: string,
+) => {
+    const documents = await getDocsByCompanyRolId(idCompany, reference);
     return documents;
 };
 

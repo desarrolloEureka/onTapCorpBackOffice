@@ -1,4 +1,5 @@
 import { AllRefPropsFirebase, RefPropsFirebase } from "@/types/userFirebase";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import {
     addDoc,
     collection,
@@ -22,6 +23,7 @@ import {
 import moment from "moment";
 import { db } from "shared/firebase/firebase";
 import { v4 as uuidv4 } from "uuid";
+const auth = getAuth();
 
 export const allRef = ({ ref }: AllRefPropsFirebase) => collection(db, ref);
 
@@ -298,6 +300,29 @@ export const getDocsByCompanyIdInRealTime = (
     }
 };
 
+export const getDocsByCompanyRolId = async (
+    companyId: any,
+    reference: string,
+) => {
+    try {
+        const q = query(
+            collection(db, reference),
+            where("idCompany", "==", companyId),
+            where("rolId", "==", "vE7NrHpiRU2s1Gjv5feg"),
+        );
+
+        const querySnapshot = await getDocs(q);
+        const docs = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        return docs;
+    } catch (error) {
+        console.error("Error fetching Docs:", error);
+        return [];
+    }
+};
+
 export const getLocationsByCompanyId = async (
     companyId: any,
     fieldPathInDB?: string,
@@ -479,17 +504,15 @@ export const getHeadquartersByCompanyId = async (companyId: any) => {
 
 export const saveEmployee = async (dataSave: any) => {
     try {
-        const documentId = uuidv4();
-        const docRef = doc(db, "employees", documentId);
-        //const docRef = doc(db, "users", documentId);
-
+        const docRef = doc(db, "users", dataSave.uid);
         const dataWithId = {
             ...dataSave,
-            uid: documentId,
+            //Fwecha de creacion
+            // dejar switch_activateCardy no employeeCardStatus
             rolId: "vE7NrHpiRU2s1Gjv5feg",
             views: 0,
             isActive: true,
-            preview: "",
+            preview: `https://one-tap-corp-dev.vercel.app/components/views/cardView/?uid=${dataSave.uid}`,
             switch_activateCard: true,
             templateData: [
                 {
@@ -511,8 +534,8 @@ export const saveEmployee = async (dataSave: any) => {
 
 export const updateEmployee = async (id: string, dataSave: any) => {
     try {
-        const zoneRef = doc(db, "employees", id);
-        //const zoneRef = doc(db, "users", id);
+        //const zoneRef = doc(db, "employees", id);
+        const zoneRef = doc(db, "users", id);
         await updateDoc(zoneRef, dataSave);
 
         return { success: true, message: "Employee updated successfully" };
@@ -520,6 +543,15 @@ export const updateEmployee = async (id: string, dataSave: any) => {
         console.error("Error updating employee:", error);
         return { success: false, message: "Error updating route", error };
     }
+};
+
+export const registerFirebase = async (user: string, password: string) => {
+    const registerF = await createUserWithEmailAndPassword(
+        auth,
+        user,
+        password,
+    );
+    return registerF;
 };
 
 export const saveRoute = async (dataSave: any) => {

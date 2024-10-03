@@ -7,6 +7,7 @@ import {
     DeleteSocialNetwork,
     getAllDocumentsQuery,
     getDocsByCompanyIdQuery,
+    getDocsByCompanyRolIdQuery,
     getHeadquartersByCompanyIdQuery,
     getMeetingStatusByCompanyIdQuery,
     getNotificationsByCompanyIdQuery,
@@ -56,10 +57,8 @@ const DataTablesHook = (reference: string) => {
     const [isEmptyDataRef, setIsEmptyDataRef] = useState(true);
     const [handleShowMainForm, setHandleShowMainForm] = useState(false);
     const [handleShowMainFormEdit, setHandleShowMainFormEdit] = useState(false);
-    const [getDocuments, setGetDocuments] = useState<
-        DataMainFormObject[] | any[]
-    >();
-    const [dataTable, setDataTable] = useState<setDataTable>();
+    const [getDocuments, setGetDocuments] = useState<any>();
+    const [dataTable, setDataTable] = useState<any>();
     const [columns, setColumns] = useState<any[]>();
     const [editData, setEditData] = useState<any>();
     const [searchTerm, setSearchTerm] = useState("");
@@ -168,10 +167,11 @@ const DataTablesHook = (reference: string) => {
                 : await getAllDocumentsQuery(reference);
 
         const labelToDisplay = ["professionals", "patients", "functionary"];
+        //reference === "employees" && console.log('documents ', documents);
 
         if (documents.length > 0) {
             const cols: any[] = [];
-            const entries = Object.keys(documents[0]);
+            const entries = Object.keys(documents);
 
             // Define column names based on reference
             let columnNamesToDisplay: ColumnNamesToDisplay = {};
@@ -459,7 +459,7 @@ const DataTablesHook = (reference: string) => {
         const value = e.target.value.toLowerCase();
         setSearchTerm(value);
 
-        const filtered = getDocuments?.filter((item) => {
+        const filtered = getDocuments?.filter((item: any) => {
             return _.some(item, (prop, key) => {
                 if (reference === "departments") {
                     // Si reference es 'departments', filtra solo por el campo 'departamento'
