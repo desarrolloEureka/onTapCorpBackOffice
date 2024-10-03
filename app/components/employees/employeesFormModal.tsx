@@ -158,7 +158,8 @@ const EmployeesFormModal = ({
                     >
                         <span>Agregar los datos del empleado</span>
                         <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-center tw-items-center -tw-mt-2">
-                            <Button
+                            <button
+                                type="button"
                                 onClick={handleClose}
                                 className="tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center"
                                 style={{
@@ -168,7 +169,19 @@ const EmployeesFormModal = ({
                                 }}
                             >
                                 <IoMdClose size={35} color={"gray"} />
-                            </Button>
+                            </button>
+
+                            {/* <Button
+                                onClick={handleClose}
+                                className="tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center"
+                                style={{
+                                    padding: 0,
+                                    background: "transparent",
+                                    border: "none",
+                                }}
+                            >
+                                <IoMdClose size={35} color={"gray"} />
+                            </Button> */}
                         </div>
                     </Modal.Title>
 
