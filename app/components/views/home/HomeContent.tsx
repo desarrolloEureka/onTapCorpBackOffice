@@ -28,12 +28,13 @@ const HomeContent = () => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const userData = await GetUser();
+            const userData = await GetUser(true);
             setData(userData);
         };
 
         const fetchTemplate = async () => {
             const templateData = await getAllTemplates();
+            console.log("templateData",templateData)
             setTemplates(templateData);
         };
 
@@ -65,6 +66,11 @@ const HomeContent = () => {
                         const item = data?.templateData?.find(
                             (val: any) => val.id === value.id,
                         );
+                        console.log("1")
+                        console.log("value.id DEL ARRAY DE TODOS LOS TEMPLATES", value.id)
+                        console.log("data?.templateData MI INFO", data?.templateData)
+                        console.log("item", item)
+
                         return (
                             <div
                                 key={index}
@@ -126,15 +132,14 @@ const HomeContent = () => {
                                                                     uid={
                                                                         data.uid
                                                                     }
-                                                                    value={
-                                                                        value
-                                                                    }
+                                                                    value={value}
                                                                     setTemplateSelect={setTemplateSelect}
                                                                     templates={
                                                                         data.templateData
                                                                     }
-                                                                    checked={
-                                                                        templateSelect?.id === value.id
+                                                                    checked={ 
+                                                                        value?.id  === (item?.id || templateSelect?.id ) ?
+                                                                        true : false
                                                                     }
                                                                 />
                                                             )}

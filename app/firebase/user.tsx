@@ -236,7 +236,7 @@ export const SendTemplateSelected = async (userId: string, data: any[]) => {
   if (userDoc.exists()) {
     const userData = userDoc.data();
     const existingTemplateData = Array.isArray(userData.templateData) ? userData.templateData : [];
-    existingTemplateData[0] = data[1];
+    existingTemplateData[0] = data[0];
     await setDoc(userDocRef, {templateData: existingTemplateData}, {merge: true}); // Sobrescribe el array templateData con los nuevos datos
     await localStorage.setItem("@user", JSON.stringify(userData));
   }
