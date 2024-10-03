@@ -16,7 +16,6 @@ const EmployeesFormHook = ({
     editData,
 }: ModalParamsMainForm) => {
     const initialData: FormValuesData = {
-        //firstName: '',
         firstName: ['', false],
         lastName: ['', false],
         documentType: ['', false],

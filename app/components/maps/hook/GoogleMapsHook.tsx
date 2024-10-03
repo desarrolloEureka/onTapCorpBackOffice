@@ -1,13 +1,8 @@
-import {
-    employeeLocations,
-    // fixedPoints,
-    officeLocations,
-    // routeCoordinates,
-    // zoneCoordinates,
-} from "@/data/googleMapsData";
 import useAuth from "@/firebase/auth";
 import {
+    getDocsByCompanyIdQuery,
     getHeadquartersByCompanyIdQuery,
+    getLocationsByCompanyIdQuery,
     getRoutesByCompanyIdQuery,
     getZonesByCompanyIdQuery,
 } from "@/queries/documentsQueries";
@@ -17,7 +12,9 @@ import {
     FixedPointsCoords,
     RoutesCoords,
 } from "@/types/googleMaps";
+import { FormValuesData } from "@/types/user";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
+import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 import { db } from "shared/firebase/firebase";
 
@@ -40,6 +37,9 @@ export const GoogleMapsHook = () => {
     const [selectedCampus, setSelectedCampus] =
         useState<google.maps.LatLngLiteral | null>(null);
 
+    const [selectedEmployee, setSelectedEmployee] =
+        useState<google.maps.LatLngLiteral | null>(null);
+
     const [routeCoordinates, setRouteCoordinates] = useState<RoutesCoords[]>();
 
     const [officeLocations, setOfficeLocations] = useState<any>();
@@ -48,9 +48,19 @@ export const GoogleMapsHook = () => {
 
     const [dataFixedPoints, setDataFixedPoints] = useState<any>();
 
+    const [employeeLocations, setEmployeeLocations] = useState<any>();
+
+    const [dataEmployeeLocations, setDataEmployeeLocations] = useState<any>();
+
     const [dataRoutes, setDataRoutes] = useState<any>();
 
     const [dataCampus, setDataCampus] = useState<any>();
+
+    const [dataEmployee, setDataEmployee] = useState<any>();
+
+    const [dataZones, setDataZones] = useState<any>();
+
+    const [day, setDay] = useState("mondayRoute");
 
     // Define las opciones para el mapa
     const mapContainerStyle = {
@@ -66,6 +76,138 @@ export const GoogleMapsHook = () => {
         zoomControl: true,
     };
 
+    const handleChangeDay = (e: any) => {
+        setDay(e.target.value);
+    };
+
+    // Función para encontrar la fecha más reciente
+    const getMostRecentItem = (
+        data: { [key: string]: any }[],
+    ): { [key: string]: any } | null => {
+        if (data.length === 0) return null; // Si no hay datos, retornar null
+
+        const mostRecent = data.reduce((latest, current) => {
+            const currentTimestamp = moment(current.timestamp);
+            const latestTimestamp = moment(latest.timestamp);
+
+            // Si la fecha de 'current' es más reciente que 'latest', actualizar 'latest'
+            return currentTimestamp.isAfter(latestTimestamp) ? current : latest;
+        });
+
+        return mostRecent;
+    };
+
+    const getEmployees = useCallback(async () => {
+        if (companyData) {
+            const employees = await getDocsByCompanyIdQuery(
+                companyData.uid,
+                "employees",
+            );
+
+            const workAreas = await getDocsByCompanyIdQuery(
+                companyData.uid,
+                "workAreas",
+            );
+            const routes = await getDocsByCompanyIdQuery(
+                companyData.uid,
+                "routes",
+            );
+            const campus = await getDocsByCompanyIdQuery(
+                companyData.uid,
+                "campus",
+            );
+
+            const geolocationsFound = await getLocationsByCompanyIdQuery(
+                companyData.uid,
+            );
+
+            const employeesLocations: FormValuesData[] = employees.map(
+                (employee: any) => {
+                    const {
+                        firstName,
+                        lastName,
+                        documentType,
+                        documentNumber,
+                        dateOfBirth,
+                        position,
+                        phones,
+                        emails,
+                        ImageProfile,
+                        selectedHeadquarter,
+                        selectedArea,
+                        // additional,
+                        mondayRoute,
+                        tuesdayRoute,
+                        wednesdayRoute,
+                        thursdayRoute,
+                        fridayRoute,
+                        saturdayRoute,
+                        sundayRoute,
+                    } = employee;
+
+                    const routesSchedule: { [key: string]: string } = {
+                        mondayRoute,
+                        tuesdayRoute,
+                        wednesdayRoute,
+                        thursdayRoute,
+                        fridayRoute,
+                        saturdayRoute,
+                        sundayRoute,
+                    };
+
+                    const arrayRoutes = Object.entries(routesSchedule);
+
+                    const routesNames = arrayRoutes.map(([key, value]) => {
+                        const routeFound = routes?.find(
+                            (route: any) => route.uid === value,
+                        );
+                        return [key, routeFound?.routeName];
+                    });
+
+                    const geolocations = getMostRecentItem(
+                        geolocationsFound.filter(
+                            (geolocation: any) =>
+                                geolocation.employeeId === employee.uid,
+                        ),
+                    );
+                    const campusFound = campus?.find(
+                        (campus: any) => campus.uid === selectedHeadquarter,
+                    );
+
+                    const areaFound = workAreas?.find(
+                        (area: any) => area.uid === selectedArea,
+                    );
+
+                    return {
+                        selectedHeadquarter: campusFound?.name[0],
+                        selectedArea: areaFound?.areaName,
+                        routes: Object.fromEntries(routesNames),
+                        ImageProfile,
+                        firstName: firstName[0],
+                        lastName: lastName[0],
+                        documentType: documentType[0],
+                        documentNumber: documentNumber[0],
+                        dateOfBirth: dateOfBirth[0],
+                        position: position[0],
+                        phones: phones?.map((phone: any) => ({
+                            text: phone.text,
+                            indicative: phone.indicative,
+                            ext: phone.ext,
+                        })),
+                        emails: emails?.map((email: any) => email.text),
+
+                        geolocation: {
+                            lat: Number(geolocations?.latitude),
+                            lng: Number(geolocations?.longitude),
+                        },
+                    };
+                },
+            );
+
+            employees && setEmployeeLocations(employeesLocations);
+        }
+    }, [companyData]);
+
     const getRoutes = useCallback(async () => {
         if (companyData) {
             const routesFound = await getRoutesByCompanyIdQuery(
@@ -74,9 +216,15 @@ export const GoogleMapsHook = () => {
 
             const routesLocations: RoutesCoords[] = routesFound.map(
                 (route: any) => {
-                    const { geolocations, zoneName, routeName, routeManager } =
-                        route;
+                    const {
+                        uid,
+                        geolocations,
+                        zoneName,
+                        routeName,
+                        routeManager,
+                    } = route;
                     return {
+                        uid,
                         geolocations,
                         zoneName,
                         routeName,
@@ -97,8 +245,10 @@ export const GoogleMapsHook = () => {
 
             const campusLocations: CampusCoords[] = campusFound.map(
                 (campus: any) => {
-                    const { geolocation, name, address, url, phones } = campus;
+                    const { uid, geolocation, name, address, url, phones } =
+                        campus;
                     return {
+                        uid,
                         geolocation,
                         name: name[0],
                         address: address[0],
@@ -123,7 +273,8 @@ export const GoogleMapsHook = () => {
                 return zoneLocations;
             });
 
-            zonesFound && setZoneCoordinates(zonesLocations);
+            zonesFound &&
+                (setZoneCoordinates(zonesLocations), setDataZones(zonesFound));
         }
     }, [companyData]);
 
@@ -131,7 +282,8 @@ export const GoogleMapsHook = () => {
         getRoutes();
         getZones();
         getCampus();
-    }, [getCampus, getRoutes, getZones]);
+        getEmployees();
+    }, [getCampus, getRoutes, getZones, getEmployees]);
 
     useEffect(() => {
         if (companyData) {
@@ -165,9 +317,9 @@ export const GoogleMapsHook = () => {
         center,
         options,
         zoom,
-        employeeLocations,
         fixedPoints,
         officeLocations,
+        employeeLocations,
         zoneCoordinates,
         selectedMarker,
         setSelectedMarker,
@@ -182,5 +334,13 @@ export const GoogleMapsHook = () => {
         setSelectedCampus,
         dataCampus,
         setDataCampus,
+        dataEmployeeLocations,
+        setDataEmployeeLocations,
+        selectedEmployee,
+        setSelectedEmployee,
+        dataEmployee,
+        setDataEmployee,
+        handleChangeDay,
+        day,
     };
 };

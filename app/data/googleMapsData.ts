@@ -33,13 +33,27 @@ export const officeLocations = [
     { lat: 3.45107, lng: -76.56144 }, // Sede Oeste
 ];
 
-// Coordenadas de los empleados
+// Coordenadas de los empleados Cali
+// export const employeeLocations = [
+//     { lat: 3.45074, lng: -76.53191 }, // Empleado 1
+//     { lat: 3.45543, lng: -76.53512 }, // Empleado 2
+//     { lat: 3.46236, lng: -76.51859 }, // Empleado 3
+//     { lat: 3.43915, lng: -76.52849 }, // Empleado 4
+//     { lat: 3.43387, lng: -76.53716 }, // Empleado 5
+// ];
+
+// Coordenadas de los empleados Bogota
 export const employeeLocations = [
-    { lat: 3.45074, lng: -76.53191 }, // Empleado 1
-    { lat: 3.45543, lng: -76.53512 }, // Empleado 2
-    { lat: 3.46236, lng: -76.51859 }, // Empleado 3
-    { lat: 3.43915, lng: -76.52849 }, // Empleado 4
-    { lat: 3.43387, lng: -76.53716 }, // Empleado 5
+    { lat: 4.67663, lng: -74.0479 }, // Empleado 1
+    { lat: 4.66542, lng: -74.09274 }, // Empleado 2
+    { lat: 4.68652, lng: -74.08219 }, // Empleado 3
+    { lat: 4.61045, lng: -74.07859 }, // Empleado 4
+    { lat: 4.63272, lng: -74.07293 }, // Empleado 5
+    { lat: 4.67412, lng: -74.09711 }, // Empleado 6
+    { lat: 4.60587, lng: -74.06599 }, // Empleado 7
+    { lat: 4.65561, lng: -74.07847 }, // Empleado 8
+    { lat: 4.63485, lng: -74.05732 }, // Empleado 9
+    { lat: 4.67423, lng: -74.03912 }, // Empleado 10
 ];
 
 // Coordenadas para el polígono (Ejemplo: Triángulo en Cali)

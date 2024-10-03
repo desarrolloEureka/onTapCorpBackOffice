@@ -1,3 +1,5 @@
+import { Coords, RoutesCoords, ScheduleRoutes } from "./googleMaps";
+
 export type LoginParams = {
     email: string;
     password: string;
@@ -7,10 +9,10 @@ export interface DemoChangerElement extends HTMLElement {
 }
 
 export type DataPhone = {
-    text: '',
-    checked: false,
-    indicative: string,
-    ext: string,
+    text: string;
+    checked: false;
+    indicative: string;
+    ext: string;
 };
 
 export type DataAdditional = {
@@ -22,9 +24,8 @@ export type DataAdditional = {
 export type FormValues = {
     phones?: DataPhone[];
     emails?: DataPhone[];
-    dataAdditional?: DataAdditional[]
+    dataAdditional?: DataAdditional[];
 };
-
 
 /* 
 export type DataPhone = {
@@ -55,8 +56,8 @@ export type FormValues = {
 }; */
 
 export type DataEmail = {
-    text: '',
-    checked: false,
+    text: string;
+    checked: false;
 };
 
 export type FormValuesData = {
@@ -69,4 +70,9 @@ export type FormValuesData = {
     phones?: DataPhone[];
     emails?: DataEmail[];
     additional?: DataAdditional[];
+    geolocation?: Coords;
+    selectedHeadquarter?: string;
+    selectedArea?: string;
+    ImageProfile?: string;
+    routes?: ScheduleRoutes;
 };

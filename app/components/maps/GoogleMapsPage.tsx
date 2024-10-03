@@ -5,9 +5,8 @@ import { FaSquare } from "react-icons/fa6";
 import { IoBusiness, IoPin, IoSearchSharp } from "react-icons/io5";
 import { PiPersonArmsSpreadFill } from "react-icons/pi";
 import { GooglePageProps } from "../../types/googleMaps";
-import GoogleMapComponent1 from "./components/GoogleMapComponent1";
-import { GoogleMapsHook } from "./hook/GoogleMapsHook";
 import GoogleMapComponent2 from "./components/GoogleMapComponent2";
+import { GoogleMapsHook } from "./hook/GoogleMapsHook";
 
 const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
     const {
@@ -15,7 +14,6 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
         center,
         options,
         zoom,
-        employeeLocations,
         fixedPoints,
         officeLocations,
         zoneCoordinates,
@@ -32,6 +30,15 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
         setSelectedCampus,
         dataCampus,
         setDataCampus,
+        employeeLocations,
+        dataEmployeeLocations,
+        setDataEmployeeLocations,
+        selectedEmployee,
+        setSelectedEmployee,
+        dataEmployee,
+        setDataEmployee,
+        handleChangeDay,
+        day,
     } = GoogleMapsHook();
 
     return (
@@ -99,6 +106,14 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
                         setDataCampus={setDataCampus}
                         selectedCampus={selectedCampus}
                         setSelectedCampus={setSelectedCampus}
+                        dataEmployeeLocations={dataEmployeeLocations}
+                        setDataEmployeeLocations={setDataEmployeeLocations}
+                        selectedEmployee={selectedEmployee}
+                        setSelectedEmployee={setSelectedEmployee}
+                        dataEmployee={dataEmployee}
+                        setDataEmployee={setDataEmployee}
+                        handleChangeDay={handleChangeDay}
+                        day={day}
                     />
                 </div>
                 <div className="tw-flex tw-flex-col sm:tw-flex-row tw-justify-center tw-items-center sm:tw-justify-between tw-w-full tw-px-10 tw-pt-16 tw-space-x-0 sm:tw-space-x-4 tw-space-y-4 sm:tw-space-y-0">

@@ -1,4 +1,5 @@
 import { CampusDataPhone } from "./campus";
+import { FormValuesData } from "./user";
 
 export interface MapContainerProps {
     width: string;
@@ -12,11 +13,23 @@ export interface Coords {
     lng: number;
 }
 
+export type ScheduleRoutes = {
+    mondayRoute: string;
+    tuesdayRoute: string;
+    wednesdayRoute: string;
+    thursdayRoute: string;
+    fridayRoute: string;
+    saturdayRoute: string;
+    sundayRoute: string;
+};
+
 export interface RoutesCoords {
+    uid: string;
     geolocations: Coords[];
     zoneName: string;
     routeName: string;
     routeManager: string;
+    // routesSchedule?: ScheduleRoutes;
 }
 
 export interface CampusCoords {
@@ -35,6 +48,14 @@ export interface FixedPointsCoords {
     pointName: string;
     address: string;
 }
+export interface EmployeesCoords {
+    lat: number;
+    lng: number;
+    color: string;
+    name: string;
+    pointName: string;
+    address: string;
+}
 
 export interface GoogleMapComponentProps {
     mapContainerStyle: MapContainerProps;
@@ -46,7 +67,7 @@ export interface GoogleMapComponentProps {
     routeCoordinates?: RoutesCoords[];
     zoneCoordinates?: Coords[][];
     officeLocations?: CampusCoords[];
-    employeeLocations?: Coords[];
+    employeeLocations?: FormValuesData[];
     polygonCoords?: number[][][];
     mapToShow?:
         | "all"
@@ -67,6 +88,14 @@ export interface GoogleMapComponentProps {
     setDataCampus: (e: any) => void;
     selectedCampus: google.maps.LatLngLiteral | null;
     setSelectedCampus: (e: any) => void;
+    dataEmployeeLocations: any;
+    setDataEmployeeLocations: (e: any) => void;
+    selectedEmployee: google.maps.LatLngLiteral | null;
+    setSelectedEmployee: (e: any) => void;
+    dataEmployee: any;
+    setDataEmployee: (e: any) => void;
+    handleChangeDay: (e: any) => void;
+    day: string;
 }
 
 // Definir la estructura de las coordenadas

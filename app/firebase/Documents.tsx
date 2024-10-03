@@ -240,17 +240,28 @@ export const updateCampus = async (dataSave: any) => {
     }
 };
 
-export const getDocsByCompanyId = async (companyId: any, reference: string) => {
+export const getDocsByCompanyId = async (
+    companyId: any,
+    reference: string,
+    fieldPathInDB?: string,
+    valueToFound?: string,
+) => {
     try {
-        const q = query(
-            collection(db, reference),
-            where("idCompany", "==", companyId),
-        );
+        const q =
+            fieldPathInDB && valueToFound
+                ? query(
+                      collection(db, reference),
+                      where("idCompany", "==", companyId),
+                      where(fieldPathInDB, "==", valueToFound),
+                  )
+                : query(
+                      collection(db, reference),
+                      where("idCompany", "==", companyId),
+                  );
 
         const querySnapshot = await getDocs(q);
 
-        const docs = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
+        const docs: { [key: string]: any } = querySnapshot.docs.map((doc) => ({
             ...doc.data(),
         }));
         return docs;
@@ -283,6 +294,38 @@ export const getDocsByCompanyIdInRealTime = (
         return { unsubscribe, dataResult };
     } catch (error) {
         console.error("Error fetching Docs:", error);
+        return [];
+    }
+};
+
+export const getLocationsByCompanyId = async (
+    companyId: any,
+    fieldPathInDB?: string,
+    valueToFound?: string,
+) => {
+    try {
+        const q =
+            fieldPathInDB && valueToFound
+                ? query(
+                      collection(db, "locations"),
+                      where("companyId", "==", companyId),
+                      where(fieldPathInDB, "==", valueToFound),
+                  )
+                : query(
+                      collection(db, "locations"),
+                      where("companyId", "==", companyId),
+                  );
+
+        const querySnapshot = await getDocs(q);
+
+        const locations: { [key: string]: any } = querySnapshot.docs.map(
+            (doc) => ({
+                ...doc.data(),
+            }),
+        );
+        return locations;
+    } catch (error) {
+        console.error("Error fetching locations:", error);
         return [];
     }
 };
