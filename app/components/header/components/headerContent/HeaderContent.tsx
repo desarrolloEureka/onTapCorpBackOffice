@@ -463,9 +463,10 @@ const HeaderContent = ({
                             )}
 
                             {/*  Plantillas, quitar userRole === "superadmin" || despues del desarrollo */}
-                            {(userRole === "superadmin" ||
+                            {(
                                 userRole === "operativo" ||
-                                userRole === "administrativo") && (
+                                userRole === "administrativo" ||
+                                userRole === "superadmin") && (
                                 <NavDropdown
                                     title={
                                         <>

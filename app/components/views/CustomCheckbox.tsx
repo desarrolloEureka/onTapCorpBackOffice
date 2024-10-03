@@ -40,10 +40,6 @@ const CustomCheckbox = ({
         }
         const fakeDataClone = templates ? [...templates] : [];
         const templateIndex = fakeDataClone[0]?.id === checkboxRef.current.id
-        
-        console.log("templateIndex", templateIndex)
-        console.log("checkboxRef.current.id", checkboxRef.current.id)
-        console.log("fakeDataClone", fakeDataClone)
 
         if (!templateIndex) {
             const dataSend = [{
