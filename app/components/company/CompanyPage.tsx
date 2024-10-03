@@ -302,8 +302,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                         <IoAddCircle
                                                             size={25}
                                                         />
-                                                        Agregar Teléfono
-                                                        Adicional
+                                                        Agregar Dato Adicional
                                                     </div>
                                                 </div>
 
@@ -314,7 +313,6 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                             className="tw-flex tw-flex-col tw-px-3 tw-w-full"
                                                         >
                                                             <CustomTextField
-                                                                required
                                                                 checked={
                                                                     allChecked
                                                                 }
@@ -334,7 +332,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                     )
                                                                 }
                                                                 name={item[0]}
-                                                                type="number"
+                                                                type="text"
                                                                 switch="true"
                                                                 theme={theme}
                                                                 id={item[0]}
@@ -452,6 +450,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                 />
 
                                                                 <CustomTextField
+                                                                    required
                                                                     checked={
                                                                         allChecked
                                                                     }
@@ -473,7 +472,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                     name={
                                                                         item[0]
                                                                     }
-                                                                    type="tel"
+                                                                    type="number"
                                                                     switch="true"
                                                                     theme={
                                                                         theme
@@ -492,6 +491,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                 />
                                                             </div>
                                                             <CustomTextField
+                                                                required
                                                                 data={item[4]}
                                                                 onChange={(
                                                                     value: string,
@@ -508,7 +508,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                     );
                                                                 }}
                                                                 name={item[3]}
-                                                                type="tel"
+                                                                type="number"
                                                                 deleted={
                                                                     index !== 0
                                                                         ? "true"
@@ -560,6 +560,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                             className="tw-flex tw-flex-col tw-px-3 tw-w-full"
                                                         >
                                                             <CustomTextField
+                                                                required
                                                                 checked={
                                                                     allChecked
                                                                 }
