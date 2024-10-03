@@ -8,7 +8,7 @@ const SaveContactButtonColor = ({
   userData,
   companyData,
   companyDataUrls,
-  headquarterData,
+  areaData,
   second,
 }: {
   second?: boolean;
@@ -16,7 +16,7 @@ const SaveContactButtonColor = ({
   userData: any;
   companyData: any;
   companyDataUrls: any;
-  headquarterData: any;
+  areaData: any;
 }) => {
   const isSmallScreen = useMediaQuery("(max-height:780px)");
 
@@ -96,8 +96,8 @@ const SaveContactButtonColor = ({
         }
       });
 
-      headquarterData?.forEach((url: any, index: any) => {
-        if (url.checked) {
+      areaData?.forEach((url: any, index: any) => {
+        if (url.isActiveSwitch) {
           vCardData += `item${index}.URL:${url.url}\n`;
           vCardData += `item${index}.X-ABLabel:${url.name}\n`;
         }
