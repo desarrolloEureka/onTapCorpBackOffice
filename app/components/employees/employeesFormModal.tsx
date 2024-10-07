@@ -49,7 +49,7 @@ const EmployeesFormModal = ({
         modeTheme,
         show,
         dataForm,
-        isLoading,
+        // isLoading,
         handleSendForm,
         handleClose,
         handleReset,
@@ -404,9 +404,6 @@ const EmployeesFormModal = ({
                                                         // errorShow={
                                                         //     errors.documentType
                                                         // }
-                                                        helperText={
-                                                            errors.documentType
-                                                        }
                                                         error={
                                                             !!errors.documentType
                                                         }
@@ -586,12 +583,12 @@ const EmployeesFormModal = ({
                                                                             className="tw-mt-4 tw-w-1/3"
                                                                             value={
                                                                                 item.indicative &&
-                                                                                    item.indicative.includes(
-                                                                                        "+",
-                                                                                    )
+                                                                                item.indicative.includes(
+                                                                                    "+",
+                                                                                )
                                                                                     ? item.indicative
                                                                                     : "+" +
-                                                                                    item.indicative
+                                                                                      item.indicative
                                                                             }
                                                                             onChange={(
                                                                                 value: string,
@@ -727,7 +724,7 @@ const EmployeesFormModal = ({
                                                 </div>
 
                                                 <div className="tw-flex tw-flex-col tw-w-full">
-                                                    {/*  {dataForm.emails &&
+                                                    {dataForm.emails &&
                                                         dataForm.emails.map(
                                                             (item, index) => (
                                                                 <div
@@ -764,7 +761,8 @@ const EmployeesFormModal = ({
                                                                         name="text"
                                                                         type="text"
                                                                         deleted={
-                                                                            index !== 0
+                                                                            index !==
+                                                                            0
                                                                                 ? "true"
                                                                                 : ""
                                                                         }
@@ -775,6 +773,21 @@ const EmployeesFormModal = ({
                                                                         id={`email-${index}`}
                                                                         fullWidth
                                                                         label="Correo"
+                                                                        // errorShow={
+                                                                        //     errors[
+                                                                        //         `email-${index}`
+                                                                        //     ]
+                                                                        // }
+                                                                        helperText={
+                                                                            errors[
+                                                                                `email-${index}`
+                                                                            ]
+                                                                        }
+                                                                        error={
+                                                                            !!errors[
+                                                                                `email-${index}`
+                                                                            ]
+                                                                        }
                                                                         InputProps={{
                                                                             startAdornment:
                                                                                 (
@@ -786,48 +799,7 @@ const EmployeesFormModal = ({
                                                                     />
                                                                 </div>
                                                             ),
-                                                        )} */}
-                                                    {dataForm.emails &&
-                                                        dataForm.emails.map((item, index) => (
-                                                            <div key={index} className="tw-flex tw-flex-col tw-px-3 tw-w-full">
-                                                                <CustomTextField
-                                                                    checked={allChecked}
-                                                                    data={[item.text, item.checked]}
-                                                                    onChange={(
-                                                                        value: string,
-                                                                        name: string,
-                                                                        checked: boolean
-                                                                    ) =>
-                                                                        handleChangeItem(
-                                                                            "emails",
-                                                                            index,
-                                                                            name,
-                                                                            value,
-                                                                            checked
-                                                                        )
-                                                                    }
-                                                                    onClick={() => {
-                                                                        handleDeleteItem(index, "emails");
-                                                                    }}
-                                                                    name="text"
-                                                                    type="text"
-                                                                    deleted={index !== 0 ? "true" : ""}
-                                                                    switch="true"
-                                                                    theme={modeTheme}
-                                                                    id={`email-${index}`}
-                                                                    fullWidth
-                                                                    label="Correo"
-                                                                    errorShow={errors[`email-${index}`]}
-                                                                    InputProps={{
-                                                                        startAdornment: (
-                                                                            <InputAdornment position="start">
-                                                                                <ExploreOutlinedIcon />
-                                                                            </InputAdornment>
-                                                                        ),
-                                                                    }}
-                                                                />
-                                                            </div>
-                                                        ))}
+                                                        )}
                                                 </div>
                                             </div>
                                         </div>
@@ -1135,588 +1107,591 @@ const EmployeesFormModal = ({
                                                 </div>
                                             </div>
 
-                                            <div className="tw-flex  tw-rounded tw-flex-col tw-justify-center tw-items-start">
-                                                <div className="tw-flex tw-rounded tw-flex-col tw-justify-center tw-items-start tw-w-100">
-                                                    <TableContainer>
-                                                        <Table>
-                                                            <TableHead>
-                                                                <TableRow>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            width: "80px",
-                                                                            border: "1px solid #DFDFDF",
-                                                                            textAlign:
-                                                                                "center",
-                                                                            color:
-                                                                                modeTheme ===
+                                            {routeApplicable && (
+                                                <div className="tw-flex  tw-rounded tw-flex-col tw-justify-center tw-items-start">
+                                                    <div className="tw-flex tw-rounded tw-flex-col tw-justify-center tw-items-start tw-w-100">
+                                                        <TableContainer>
+                                                            <Table>
+                                                                <TableHead>
+                                                                    <TableRow>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                width: "80px",
+                                                                                border: "1px solid #DFDFDF",
+                                                                                textAlign:
+                                                                                    "center",
+                                                                                color:
+                                                                                    modeTheme ===
                                                                                     "light"
-                                                                                    ? "#000000"
-                                                                                    : "#8bb8e7",
-                                                                        }}
-                                                                    >
-                                                                        Día
-                                                                    </TableCell>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            border: "1px solid #DFDFDF",
-                                                                            textAlign:
-                                                                                "center",
-                                                                            color:
-                                                                                modeTheme ===
-                                                                                    "light"
-                                                                                    ? "#000000"
-                                                                                    : "#8bb8e7",
-                                                                        }}
-                                                                    >
-                                                                        Ruta
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                            </TableHead>
-                                                            <TableBody>
-                                                                <TableRow>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            width: "80px",
-                                                                            border: "1px solid #DFDFDF",
-                                                                            textAlign:
-                                                                                "center",
-                                                                            color:
-                                                                                modeTheme ===
-                                                                                    "light"
-                                                                                    ? "#000000"
-                                                                                    : "#8bb8e7",
-                                                                        }}
-                                                                    >
-                                                                        L
-                                                                    </TableCell>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            border: "1px solid #DFDFDF",
-                                                                        }}
-                                                                    >
-                                                                        <FormControl
-                                                                            variant="outlined"
-                                                                            fullWidth
+                                                                                        ? "#000000"
+                                                                                        : "#8bb8e7",
+                                                                            }}
                                                                         >
-                                                                            <CustomSelect
-                                                                                labelId="area-label"
-                                                                                value={
-                                                                                    mondayRoute
-                                                                                }
-                                                                                onChange={(
-                                                                                    event,
-                                                                                ) =>
-                                                                                    handleChangeSelect(
-                                                                                        "monday",
-                                                                                        event,
-                                                                                    )
-                                                                                }
-                                                                                label=""
-                                                                            >
-                                                                                {routeData &&
-                                                                                    routeData.map(
-                                                                                        (
-                                                                                            route,
-                                                                                            index,
-                                                                                        ) => (
-                                                                                            <MenuItem
-                                                                                                key={
-                                                                                                    index
-                                                                                                }
-                                                                                                value={
-                                                                                                    route.uid
-                                                                                                }
-                                                                                            >
-                                                                                                {
-                                                                                                    route.routeName
-                                                                                                }
-                                                                                            </MenuItem>
-                                                                                        ),
-                                                                                    )}
-                                                                            </CustomSelect>
-                                                                            {mondayRouteError ? (
-                                                                                <div
-                                                                                    style={{
-                                                                                        color: "#d32f2f",
-                                                                                        fontSize:
-                                                                                            "12px",
-                                                                                    }}
-                                                                                >
-                                                                                    {
-                                                                                        mondayRouteError
-                                                                                    }
-                                                                                </div>
-                                                                            ) : null}
-                                                                        </FormControl>
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            width: "80px",
-                                                                            border: "1px solid #DFDFDF",
-                                                                            textAlign:
-                                                                                "center",
-                                                                            color:
-                                                                                modeTheme ===
+                                                                            Día
+                                                                        </TableCell>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                border: "1px solid #DFDFDF",
+                                                                                textAlign:
+                                                                                    "center",
+                                                                                color:
+                                                                                    modeTheme ===
                                                                                     "light"
-                                                                                    ? "#000000"
-                                                                                    : "#8bb8e7",
-                                                                        }}
-                                                                    >
-                                                                        M
-                                                                    </TableCell>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            border: "1px solid #DFDFDF",
-                                                                        }}
-                                                                    >
-                                                                        <FormControl
-                                                                            variant="outlined"
-                                                                            fullWidth
+                                                                                        ? "#000000"
+                                                                                        : "#8bb8e7",
+                                                                            }}
                                                                         >
-                                                                            <CustomSelect
-                                                                                labelId="area-label"
-                                                                                value={
-                                                                                    tuesdayRoute
-                                                                                }
-                                                                                onChange={(
-                                                                                    event,
-                                                                                ) =>
-                                                                                    handleChangeSelect(
-                                                                                        "tuesday",
-                                                                                        event,
-                                                                                    )
-                                                                                }
-                                                                                label=""
-                                                                            >
-                                                                                {routeData &&
-                                                                                    routeData.map(
-                                                                                        (
-                                                                                            route,
-                                                                                            index,
-                                                                                        ) => (
-                                                                                            <MenuItem
-                                                                                                key={
-                                                                                                    index
-                                                                                                }
-                                                                                                value={
-                                                                                                    route.uid
-                                                                                                }
-                                                                                            >
-                                                                                                {
-                                                                                                    route.routeName
-                                                                                                }
-                                                                                            </MenuItem>
-                                                                                        ),
-                                                                                    )}
-                                                                            </CustomSelect>
-                                                                            {tuesdayRouteError ? (
-                                                                                <div
-                                                                                    style={{
-                                                                                        color: "#d32f2f",
-                                                                                        fontSize:
-                                                                                            "12px",
-                                                                                    }}
-                                                                                >
-                                                                                    {
-                                                                                        tuesdayRouteError
-                                                                                    }
-                                                                                </div>
-                                                                            ) : null}
-                                                                        </FormControl>
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            width: "80px",
-                                                                            border: "1px solid #DFDFDF",
-                                                                            textAlign:
-                                                                                "center",
-                                                                            color:
-                                                                                modeTheme ===
+                                                                            Ruta
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                </TableHead>
+                                                                <TableBody>
+                                                                    <TableRow>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                width: "80px",
+                                                                                border: "1px solid #DFDFDF",
+                                                                                textAlign:
+                                                                                    "center",
+                                                                                color:
+                                                                                    modeTheme ===
                                                                                     "light"
-                                                                                    ? "#000000"
-                                                                                    : "#8bb8e7",
-                                                                        }}
-                                                                    >
-                                                                        X
-                                                                    </TableCell>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            border: "1px solid #DFDFDF",
-                                                                        }}
-                                                                    >
-                                                                        <FormControl
-                                                                            variant="outlined"
-                                                                            fullWidth
+                                                                                        ? "#000000"
+                                                                                        : "#8bb8e7",
+                                                                            }}
                                                                         >
-                                                                            <CustomSelect
-                                                                                labelId="area-label"
-                                                                                value={
-                                                                                    wednesdayRoute
-                                                                                }
-                                                                                onChange={(
-                                                                                    event,
-                                                                                ) =>
-                                                                                    handleChangeSelect(
-                                                                                        "wednesday",
-                                                                                        event,
-                                                                                    )
-                                                                                }
-                                                                                label=""
+                                                                            L
+                                                                        </TableCell>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                border: "1px solid #DFDFDF",
+                                                                            }}
+                                                                        >
+                                                                            <FormControl
+                                                                                variant="outlined"
+                                                                                fullWidth
                                                                             >
-                                                                                {routeData &&
-                                                                                    routeData.map(
-                                                                                        (
-                                                                                            route,
-                                                                                            index,
-                                                                                        ) => (
-                                                                                            <MenuItem
-                                                                                                key={
-                                                                                                    index
-                                                                                                }
-                                                                                                value={
-                                                                                                    route.uid
-                                                                                                }
-                                                                                            >
-                                                                                                {
-                                                                                                    route.routeName
-                                                                                                }
-                                                                                            </MenuItem>
-                                                                                        ),
-                                                                                    )}
-                                                                            </CustomSelect>
-                                                                            {wednesdayRouteError ? (
-                                                                                <div
-                                                                                    style={{
-                                                                                        color: "#d32f2f",
-                                                                                        fontSize:
-                                                                                            "12px",
-                                                                                    }}
-                                                                                >
-                                                                                    {
-                                                                                        wednesdayRouteError
+                                                                                <CustomSelect
+                                                                                    labelId="area-label"
+                                                                                    value={
+                                                                                        mondayRoute
                                                                                     }
-                                                                                </div>
-                                                                            ) : null}
-                                                                        </FormControl>
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            width: "80px",
-                                                                            border: "1px solid #DFDFDF",
-                                                                            textAlign:
-                                                                                "center",
-                                                                            color:
-                                                                                modeTheme ===
+                                                                                    onChange={(
+                                                                                        event,
+                                                                                    ) =>
+                                                                                        handleChangeSelect(
+                                                                                            "monday",
+                                                                                            event,
+                                                                                        )
+                                                                                    }
+                                                                                    label=""
+                                                                                >
+                                                                                    {routeData &&
+                                                                                        routeData.map(
+                                                                                            (
+                                                                                                route,
+                                                                                                index,
+                                                                                            ) => (
+                                                                                                <MenuItem
+                                                                                                    key={
+                                                                                                        index
+                                                                                                    }
+                                                                                                    value={
+                                                                                                        route.uid
+                                                                                                    }
+                                                                                                >
+                                                                                                    {
+                                                                                                        route.routeName
+                                                                                                    }
+                                                                                                </MenuItem>
+                                                                                            ),
+                                                                                        )}
+                                                                                </CustomSelect>
+                                                                                {mondayRouteError ? (
+                                                                                    <div
+                                                                                        style={{
+                                                                                            color: "#d32f2f",
+                                                                                            fontSize:
+                                                                                                "12px",
+                                                                                        }}
+                                                                                    >
+                                                                                        {
+                                                                                            mondayRouteError
+                                                                                        }
+                                                                                    </div>
+                                                                                ) : null}
+                                                                            </FormControl>
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                width: "80px",
+                                                                                border: "1px solid #DFDFDF",
+                                                                                textAlign:
+                                                                                    "center",
+                                                                                color:
+                                                                                    modeTheme ===
                                                                                     "light"
-                                                                                    ? "#000000"
-                                                                                    : "#8bb8e7",
-                                                                        }}
-                                                                    >
-                                                                        J
-                                                                    </TableCell>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            border: "1px solid #DFDFDF",
-                                                                        }}
-                                                                    >
-                                                                        <FormControl
-                                                                            variant="outlined"
-                                                                            fullWidth
+                                                                                        ? "#000000"
+                                                                                        : "#8bb8e7",
+                                                                            }}
                                                                         >
-                                                                            <CustomSelect
-                                                                                labelId="area-label"
-                                                                                value={
-                                                                                    thursdayRoute
-                                                                                }
-                                                                                onChange={(
-                                                                                    event,
-                                                                                ) =>
-                                                                                    handleChangeSelect(
-                                                                                        "thursday",
-                                                                                        event,
-                                                                                    )
-                                                                                }
-                                                                                label=""
+                                                                            M
+                                                                        </TableCell>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                border: "1px solid #DFDFDF",
+                                                                            }}
+                                                                        >
+                                                                            <FormControl
+                                                                                variant="outlined"
+                                                                                fullWidth
                                                                             >
-                                                                                {routeData &&
-                                                                                    routeData.map(
-                                                                                        (
-                                                                                            route,
-                                                                                            index,
-                                                                                        ) => (
-                                                                                            <MenuItem
-                                                                                                key={
-                                                                                                    index
-                                                                                                }
-                                                                                                value={
-                                                                                                    route.uid
-                                                                                                }
-                                                                                            >
-                                                                                                {
-                                                                                                    route.routeName
-                                                                                                }
-                                                                                            </MenuItem>
-                                                                                        ),
-                                                                                    )}
-                                                                            </CustomSelect>
-                                                                            {thursdayRouteError ? (
-                                                                                <div
-                                                                                    style={{
-                                                                                        color: "#d32f2f",
-                                                                                        fontSize:
-                                                                                            "12px",
-                                                                                    }}
-                                                                                >
-                                                                                    {
-                                                                                        thursdayRouteError
+                                                                                <CustomSelect
+                                                                                    labelId="area-label"
+                                                                                    value={
+                                                                                        tuesdayRoute
                                                                                     }
-                                                                                </div>
-                                                                            ) : null}
-                                                                        </FormControl>
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            width: "80px",
-                                                                            border: "1px solid #DFDFDF",
-                                                                            textAlign:
-                                                                                "center",
-                                                                            color:
-                                                                                modeTheme ===
+                                                                                    onChange={(
+                                                                                        event,
+                                                                                    ) =>
+                                                                                        handleChangeSelect(
+                                                                                            "tuesday",
+                                                                                            event,
+                                                                                        )
+                                                                                    }
+                                                                                    label=""
+                                                                                >
+                                                                                    {routeData &&
+                                                                                        routeData.map(
+                                                                                            (
+                                                                                                route,
+                                                                                                index,
+                                                                                            ) => (
+                                                                                                <MenuItem
+                                                                                                    key={
+                                                                                                        index
+                                                                                                    }
+                                                                                                    value={
+                                                                                                        route.uid
+                                                                                                    }
+                                                                                                >
+                                                                                                    {
+                                                                                                        route.routeName
+                                                                                                    }
+                                                                                                </MenuItem>
+                                                                                            ),
+                                                                                        )}
+                                                                                </CustomSelect>
+                                                                                {tuesdayRouteError ? (
+                                                                                    <div
+                                                                                        style={{
+                                                                                            color: "#d32f2f",
+                                                                                            fontSize:
+                                                                                                "12px",
+                                                                                        }}
+                                                                                    >
+                                                                                        {
+                                                                                            tuesdayRouteError
+                                                                                        }
+                                                                                    </div>
+                                                                                ) : null}
+                                                                            </FormControl>
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                width: "80px",
+                                                                                border: "1px solid #DFDFDF",
+                                                                                textAlign:
+                                                                                    "center",
+                                                                                color:
+                                                                                    modeTheme ===
                                                                                     "light"
-                                                                                    ? "#000000"
-                                                                                    : "#8bb8e7",
-                                                                        }}
-                                                                    >
-                                                                        V
-                                                                    </TableCell>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            border: "1px solid #DFDFDF",
-                                                                        }}
-                                                                    >
-                                                                        <FormControl
-                                                                            variant="outlined"
-                                                                            fullWidth
+                                                                                        ? "#000000"
+                                                                                        : "#8bb8e7",
+                                                                            }}
                                                                         >
-                                                                            <CustomSelect
-                                                                                labelId="area-label"
-                                                                                value={
-                                                                                    fridayRoute
-                                                                                }
-                                                                                onChange={(
-                                                                                    event,
-                                                                                ) =>
-                                                                                    handleChangeSelect(
-                                                                                        "friday",
-                                                                                        event,
-                                                                                    )
-                                                                                }
-                                                                                label=""
+                                                                            X
+                                                                        </TableCell>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                border: "1px solid #DFDFDF",
+                                                                            }}
+                                                                        >
+                                                                            <FormControl
+                                                                                variant="outlined"
+                                                                                fullWidth
                                                                             >
-                                                                                {routeData &&
-                                                                                    routeData.map(
-                                                                                        (
-                                                                                            route,
-                                                                                            index,
-                                                                                        ) => (
-                                                                                            <MenuItem
-                                                                                                key={
-                                                                                                    index
-                                                                                                }
-                                                                                                value={
-                                                                                                    route.uid
-                                                                                                }
-                                                                                            >
-                                                                                                {
-                                                                                                    route.routeName
-                                                                                                }
-                                                                                            </MenuItem>
-                                                                                        ),
-                                                                                    )}
-                                                                            </CustomSelect>
-                                                                            {fridayRouteError ? (
-                                                                                <div
-                                                                                    style={{
-                                                                                        color: "#d32f2f",
-                                                                                        fontSize:
-                                                                                            "12px",
-                                                                                    }}
-                                                                                >
-                                                                                    {
-                                                                                        fridayRouteError
+                                                                                <CustomSelect
+                                                                                    labelId="area-label"
+                                                                                    value={
+                                                                                        wednesdayRoute
                                                                                     }
-                                                                                </div>
-                                                                            ) : null}
-                                                                        </FormControl>
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            width: "80px",
-                                                                            border: "1px solid #DFDFDF",
-                                                                            textAlign:
-                                                                                "center",
-                                                                            color:
-                                                                                modeTheme ===
+                                                                                    onChange={(
+                                                                                        event,
+                                                                                    ) =>
+                                                                                        handleChangeSelect(
+                                                                                            "wednesday",
+                                                                                            event,
+                                                                                        )
+                                                                                    }
+                                                                                    label=""
+                                                                                >
+                                                                                    {routeData &&
+                                                                                        routeData.map(
+                                                                                            (
+                                                                                                route,
+                                                                                                index,
+                                                                                            ) => (
+                                                                                                <MenuItem
+                                                                                                    key={
+                                                                                                        index
+                                                                                                    }
+                                                                                                    value={
+                                                                                                        route.uid
+                                                                                                    }
+                                                                                                >
+                                                                                                    {
+                                                                                                        route.routeName
+                                                                                                    }
+                                                                                                </MenuItem>
+                                                                                            ),
+                                                                                        )}
+                                                                                </CustomSelect>
+                                                                                {wednesdayRouteError ? (
+                                                                                    <div
+                                                                                        style={{
+                                                                                            color: "#d32f2f",
+                                                                                            fontSize:
+                                                                                                "12px",
+                                                                                        }}
+                                                                                    >
+                                                                                        {
+                                                                                            wednesdayRouteError
+                                                                                        }
+                                                                                    </div>
+                                                                                ) : null}
+                                                                            </FormControl>
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                width: "80px",
+                                                                                border: "1px solid #DFDFDF",
+                                                                                textAlign:
+                                                                                    "center",
+                                                                                color:
+                                                                                    modeTheme ===
                                                                                     "light"
-                                                                                    ? "#000000"
-                                                                                    : "#8bb8e7",
-                                                                        }}
-                                                                    >
-                                                                        S
-                                                                    </TableCell>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            border: "1px solid #DFDFDF",
-                                                                        }}
-                                                                    >
-                                                                        <FormControl
-                                                                            variant="outlined"
-                                                                            fullWidth
+                                                                                        ? "#000000"
+                                                                                        : "#8bb8e7",
+                                                                            }}
                                                                         >
-                                                                            <CustomSelect
-                                                                                labelId="area-label"
-                                                                                value={
-                                                                                    saturdayRoute
-                                                                                }
-                                                                                onChange={(
-                                                                                    event,
-                                                                                ) =>
-                                                                                    handleChangeSelect(
-                                                                                        "saturday",
-                                                                                        event,
-                                                                                    )
-                                                                                }
-                                                                                label=""
+                                                                            J
+                                                                        </TableCell>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                border: "1px solid #DFDFDF",
+                                                                            }}
+                                                                        >
+                                                                            <FormControl
+                                                                                variant="outlined"
+                                                                                fullWidth
                                                                             >
-                                                                                {routeData &&
-                                                                                    routeData.map(
-                                                                                        (
-                                                                                            route,
-                                                                                            index,
-                                                                                        ) => (
-                                                                                            <MenuItem
-                                                                                                key={
-                                                                                                    index
-                                                                                                }
-                                                                                                value={
-                                                                                                    route.uid
-                                                                                                }
-                                                                                            >
-                                                                                                {
-                                                                                                    route.routeName
-                                                                                                }
-                                                                                            </MenuItem>
-                                                                                        ),
-                                                                                    )}
-                                                                            </CustomSelect>
-                                                                            {saturdayRouteError ? (
-                                                                                <div
-                                                                                    style={{
-                                                                                        color: "#d32f2f",
-                                                                                        fontSize:
-                                                                                            "12px",
-                                                                                    }}
-                                                                                >
-                                                                                    {
-                                                                                        saturdayRouteError
+                                                                                <CustomSelect
+                                                                                    labelId="area-label"
+                                                                                    value={
+                                                                                        thursdayRoute
                                                                                     }
-                                                                                </div>
-                                                                            ) : null}
-                                                                        </FormControl>
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            width: "80px",
-                                                                            border: "1px solid #DFDFDF",
-                                                                            textAlign:
-                                                                                "center",
-                                                                            color:
-                                                                                modeTheme ===
+                                                                                    onChange={(
+                                                                                        event,
+                                                                                    ) =>
+                                                                                        handleChangeSelect(
+                                                                                            "thursday",
+                                                                                            event,
+                                                                                        )
+                                                                                    }
+                                                                                    label=""
+                                                                                >
+                                                                                    {routeData &&
+                                                                                        routeData.map(
+                                                                                            (
+                                                                                                route,
+                                                                                                index,
+                                                                                            ) => (
+                                                                                                <MenuItem
+                                                                                                    key={
+                                                                                                        index
+                                                                                                    }
+                                                                                                    value={
+                                                                                                        route.uid
+                                                                                                    }
+                                                                                                >
+                                                                                                    {
+                                                                                                        route.routeName
+                                                                                                    }
+                                                                                                </MenuItem>
+                                                                                            ),
+                                                                                        )}
+                                                                                </CustomSelect>
+                                                                                {thursdayRouteError ? (
+                                                                                    <div
+                                                                                        style={{
+                                                                                            color: "#d32f2f",
+                                                                                            fontSize:
+                                                                                                "12px",
+                                                                                        }}
+                                                                                    >
+                                                                                        {
+                                                                                            thursdayRouteError
+                                                                                        }
+                                                                                    </div>
+                                                                                ) : null}
+                                                                            </FormControl>
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                width: "80px",
+                                                                                border: "1px solid #DFDFDF",
+                                                                                textAlign:
+                                                                                    "center",
+                                                                                color:
+                                                                                    modeTheme ===
                                                                                     "light"
-                                                                                    ? "#000000"
-                                                                                    : "#8bb8e7",
-                                                                        }}
-                                                                    >
-                                                                        D
-                                                                    </TableCell>
-                                                                    <TableCell
-                                                                        sx={{
-                                                                            border: "1px solid #DFDFDF",
-                                                                        }}
-                                                                    >
-                                                                        <FormControl
-                                                                            variant="outlined"
-                                                                            fullWidth
+                                                                                        ? "#000000"
+                                                                                        : "#8bb8e7",
+                                                                            }}
                                                                         >
-                                                                            <CustomSelect
-                                                                                labelId="area-label"
-                                                                                value={
-                                                                                    sundayRoute
-                                                                                }
-                                                                                onChange={(
-                                                                                    event,
-                                                                                ) =>
-                                                                                    handleChangeSelect(
-                                                                                        "sunday",
-                                                                                        event,
-                                                                                    )
-                                                                                }
-                                                                                label=""
+                                                                            V
+                                                                        </TableCell>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                border: "1px solid #DFDFDF",
+                                                                            }}
+                                                                        >
+                                                                            <FormControl
+                                                                                variant="outlined"
+                                                                                fullWidth
                                                                             >
-                                                                                {routeData &&
-                                                                                    routeData.map(
-                                                                                        (
-                                                                                            route,
-                                                                                            index,
-                                                                                        ) => (
-                                                                                            <MenuItem
-                                                                                                key={
-                                                                                                    index
-                                                                                                }
-                                                                                                value={
-                                                                                                    route.uid
-                                                                                                }
-                                                                                            >
-                                                                                                {
-                                                                                                    route.routeName
-                                                                                                }
-                                                                                            </MenuItem>
-                                                                                        ),
-                                                                                    )}
-                                                                            </CustomSelect>
-                                                                            {sundayRouteError ? (
-                                                                                <div
-                                                                                    style={{
-                                                                                        color: "#d32f2f",
-                                                                                        fontSize:
-                                                                                            "12px",
-                                                                                    }}
-                                                                                >
-                                                                                    {
-                                                                                        sundayRouteError
+                                                                                <CustomSelect
+                                                                                    labelId="area-label"
+                                                                                    value={
+                                                                                        fridayRoute
                                                                                     }
-                                                                                </div>
-                                                                            ) : null}
-                                                                        </FormControl>
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                            </TableBody>
-                                                        </Table>
-                                                    </TableContainer>
+                                                                                    onChange={(
+                                                                                        event,
+                                                                                    ) =>
+                                                                                        handleChangeSelect(
+                                                                                            "friday",
+                                                                                            event,
+                                                                                        )
+                                                                                    }
+                                                                                    label=""
+                                                                                >
+                                                                                    {routeData &&
+                                                                                        routeData.map(
+                                                                                            (
+                                                                                                route,
+                                                                                                index,
+                                                                                            ) => (
+                                                                                                <MenuItem
+                                                                                                    key={
+                                                                                                        index
+                                                                                                    }
+                                                                                                    value={
+                                                                                                        route.uid
+                                                                                                    }
+                                                                                                >
+                                                                                                    {
+                                                                                                        route.routeName
+                                                                                                    }
+                                                                                                </MenuItem>
+                                                                                            ),
+                                                                                        )}
+                                                                                </CustomSelect>
+                                                                                {fridayRouteError ? (
+                                                                                    <div
+                                                                                        style={{
+                                                                                            color: "#d32f2f",
+                                                                                            fontSize:
+                                                                                                "12px",
+                                                                                        }}
+                                                                                    >
+                                                                                        {
+                                                                                            fridayRouteError
+                                                                                        }
+                                                                                    </div>
+                                                                                ) : null}
+                                                                            </FormControl>
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                width: "80px",
+                                                                                border: "1px solid #DFDFDF",
+                                                                                textAlign:
+                                                                                    "center",
+                                                                                color:
+                                                                                    modeTheme ===
+                                                                                    "light"
+                                                                                        ? "#000000"
+                                                                                        : "#8bb8e7",
+                                                                            }}
+                                                                        >
+                                                                            S
+                                                                        </TableCell>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                border: "1px solid #DFDFDF",
+                                                                            }}
+                                                                        >
+                                                                            <FormControl
+                                                                                variant="outlined"
+                                                                                fullWidth
+                                                                            >
+                                                                                <CustomSelect
+                                                                                    labelId="area-label"
+                                                                                    value={
+                                                                                        saturdayRoute
+                                                                                    }
+                                                                                    onChange={(
+                                                                                        event,
+                                                                                    ) =>
+                                                                                        handleChangeSelect(
+                                                                                            "saturday",
+                                                                                            event,
+                                                                                        )
+                                                                                    }
+                                                                                    label=""
+                                                                                >
+                                                                                    {routeData &&
+                                                                                        routeData.map(
+                                                                                            (
+                                                                                                route,
+                                                                                                index,
+                                                                                            ) => (
+                                                                                                <MenuItem
+                                                                                                    key={
+                                                                                                        index
+                                                                                                    }
+                                                                                                    value={
+                                                                                                        route.uid
+                                                                                                    }
+                                                                                                >
+                                                                                                    {
+                                                                                                        route.routeName
+                                                                                                    }
+                                                                                                </MenuItem>
+                                                                                            ),
+                                                                                        )}
+                                                                                </CustomSelect>
+                                                                                {saturdayRouteError ? (
+                                                                                    <div
+                                                                                        style={{
+                                                                                            color: "#d32f2f",
+                                                                                            fontSize:
+                                                                                                "12px",
+                                                                                        }}
+                                                                                    >
+                                                                                        {
+                                                                                            saturdayRouteError
+                                                                                        }
+                                                                                    </div>
+                                                                                ) : null}
+                                                                            </FormControl>
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                width: "80px",
+                                                                                border: "1px solid #DFDFDF",
+                                                                                textAlign:
+                                                                                    "center",
+                                                                                color:
+                                                                                    modeTheme ===
+                                                                                    "light"
+                                                                                        ? "#000000"
+                                                                                        : "#8bb8e7",
+                                                                            }}
+                                                                        >
+                                                                            D
+                                                                        </TableCell>
+                                                                        <TableCell
+                                                                            sx={{
+                                                                                border: "1px solid #DFDFDF",
+                                                                            }}
+                                                                        >
+                                                                            <FormControl
+                                                                                variant="outlined"
+                                                                                fullWidth
+                                                                            >
+                                                                                <CustomSelect
+                                                                                    labelId="area-label"
+                                                                                    value={
+                                                                                        sundayRoute
+                                                                                    }
+                                                                                    onChange={(
+                                                                                        event,
+                                                                                    ) =>
+                                                                                        handleChangeSelect(
+                                                                                            "sunday",
+                                                                                            event,
+                                                                                        )
+                                                                                    }
+                                                                                    label=""
+                                                                                >
+                                                                                    {routeData &&
+                                                                                        routeData.map(
+                                                                                            (
+                                                                                                route,
+                                                                                                index,
+                                                                                            ) => (
+                                                                                                <MenuItem
+                                                                                                    key={
+                                                                                                        index
+                                                                                                    }
+                                                                                                    value={
+                                                                                                        route.uid
+                                                                                                    }
+                                                                                                >
+                                                                                                    {
+                                                                                                        route.routeName
+                                                                                                    }
+                                                                                                </MenuItem>
+                                                                                            ),
+                                                                                        )}
+                                                                                </CustomSelect>
+                                                                                {sundayRouteError ? (
+                                                                                    <div
+                                                                                        style={{
+                                                                                            color: "#d32f2f",
+                                                                                            fontSize:
+                                                                                                "12px",
+                                                                                        }}
+                                                                                    >
+                                                                                        {
+                                                                                            sundayRouteError
+                                                                                        }
+                                                                                    </div>
+                                                                                ) : null}
+                                                                            </FormControl>
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                </TableBody>
+                                                            </Table>
+                                                        </TableContainer>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            )}
+
                                             <div
                                                 className="tw-flex tw-flex-col tw-justify-center tw-items-start tw-mt-7"
                                                 style={{
@@ -1786,19 +1761,12 @@ const EmployeesFormModal = ({
                                                 <GrPrevious size={17} />
                                             </Button>
                                             <Button
-                                                className={`${isLoading && "btn-loader"
-                                                    } tw-ml-5 btn-save-admin`}
+                                                className={`tw-ml-5 btn-save-admin`}
                                                 type="submit"
                                             >
-                                                {isLoading ? (
-                                                    <span className="ml-2 loading">
-                                                        <i className="ri-loader-2-fill"></i>
-                                                    </span>
-                                                ) : (
-                                                    <span className="">
-                                                        <VscSave size={18} />
-                                                    </span>
-                                                )}
+                                                <span className="">
+                                                    <VscSave size={18} />
+                                                </span>
                                             </Button>
                                         </div>
                                     )}

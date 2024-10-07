@@ -8,6 +8,7 @@ import {
     getAllDocumentsQuery,
     getDocsByCompanyIdQuery,
     getDocsByCompanyRolIdQuery,
+    getEmployeesByCompanyIdQuery,
     getHeadquartersByCompanyIdQuery,
     getMeetingStatusByCompanyIdQuery,
     getNotificationsByCompanyIdQuery,
@@ -132,6 +133,10 @@ const DataTablesHook = (reference: string) => {
                 : reference === "workAreas"
                 ? userData && userData?.companyId
                     ? await getWorkAreasByCompanyIdQuery(userData?.companyId)
+                    : []
+                : reference === "employees"
+                ? userData && userData?.companyId
+                    ? await getEmployeesByCompanyIdQuery(userData?.companyId)
                     : []
                 : reference === "meetingStatus"
                 ? userData && userData?.companyId
@@ -431,8 +436,14 @@ const DataTablesHook = (reference: string) => {
                                 : "auto"
                             : "auto",
                     omit: !omittedColumns.includes(val),
-                    center: val === "uid",
-                    // reference != "roles" && reference != "notifications",
+                    style:
+                        val === "uid"
+                            ? {
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                              }
+                            : {},
                 };
 
                 cols.push(columnsData);

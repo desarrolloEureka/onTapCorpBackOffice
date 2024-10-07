@@ -428,17 +428,17 @@ const HeaderContent = ({
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
                                         href="#zonesMap"
-                                        eventKey="areas"
+                                        eventKey="zonesMap"
                                     >
                                         <PiMapPinSimpleFill
                                             size={20}
                                             className="tw-mb-1 tw-mr-1"
                                         />
-                                        Áreas
+                                        Zonas
                                     </NavDropdown.Item>
                                     <NavDropdown.Item
                                         href="#campusMap"
-                                        eventKey="headquarters"
+                                        eventKey="campusMap"
                                     >
                                         <PiMapPinSimpleFill
                                             size={20}

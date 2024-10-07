@@ -1,11 +1,9 @@
 import useAuth from "@/firebase/auth";
+import { getDocsByCompanyIdInRealTime } from "@/firebase/Documents";
 import {
     getDocsByCompanyIdQuery,
-    getHeadquartersByCompanyIdQuery,
-    getLocationsByCompanyIdQuery,
-    getRoutesByCompanyIdQuery,
-    getWorkAreasByCompanyIdQuery,
-    getZonesByCompanyIdQuery,
+    getEmployeesByCompanyIdQuery,
+    getWorkAreasByCompanyIdQuery
 } from "@/queries/documentsQueries";
 import {
     CampusCoords,
@@ -99,32 +97,22 @@ export const GoogleMapsHook = () => {
     };
 
     const getEmployees = useCallback(async () => {
-        if (companyData) {
-            const employees = await getDocsByCompanyIdQuery(
-                companyData.uid,
-                "employees",
-            );
+        if (!companyData) return;
 
-            const workAreas = await getWorkAreasByCompanyIdQuery(
-                companyData.uid,
-            );
-
-            const routes = await getDocsByCompanyIdQuery(
-                companyData.uid,
-                "routes",
-            );
-            const campus = await getDocsByCompanyIdQuery(
-                companyData.uid,
-                "campus",
-            );
-
-            const geolocationsFound = await getLocationsByCompanyIdQuery(
-                companyData.uid,
-            );
+        try {
+            // Ejecutar todas las queries en paralelo para mejorar rendimiento
+            const [employees, workAreas, routes, campus] = await Promise.all([
+                getEmployeesByCompanyIdQuery(companyData.uid),
+                getWorkAreasByCompanyIdQuery(companyData.uid),
+                getDocsByCompanyIdQuery(companyData.uid, "routes"),
+                getDocsByCompanyIdQuery(companyData.uid, "campus"),
+                // getDocsByCompanyIdQuery(companyData.uid, "locations"),
+            ]);
 
             const employeesLocations: FormValuesData[] = employees.map(
                 (employee: any) => {
                     const {
+                        uid,
                         firstName,
                         lastName,
                         documentType,
@@ -136,7 +124,6 @@ export const GoogleMapsHook = () => {
                         ImageProfile,
                         selectedHeadquarter,
                         selectedArea,
-                        // additional,
                         mondayRoute,
                         tuesdayRoute,
                         wednesdayRoute,
@@ -146,6 +133,7 @@ export const GoogleMapsHook = () => {
                         sundayRoute,
                     } = employee;
 
+                    // Calcular rutas y obtener nombres de las rutas
                     const routesSchedule: { [key: string]: string } = {
                         mondayRoute,
                         tuesdayRoute,
@@ -156,21 +144,18 @@ export const GoogleMapsHook = () => {
                         sundayRoute,
                     };
 
-                    const arrayRoutes = Object.entries(routesSchedule);
-
-                    const routesNames = arrayRoutes.map(([key, value]) => {
-                        const routeFound = routes?.find(
-                            (route: any) => route.uid === value,
-                        );
-                        return [key, routeFound?.routeName];
-                    });
-
-                    const geolocations = getMostRecentItem(
-                        geolocationsFound.filter(
-                            (geolocation: any) =>
-                                geolocation.employeeId === employee.uid,
-                        ),
+                    const routesNames = Object.entries(routesSchedule).map(
+                        ([key, value]) => {
+                            const routeFound = routes?.find(
+                                (route: any) => route.uid === value,
+                            );
+                            return [key, routeFound?.routeName || ""] as [
+                                string,
+                                string,
+                            ];
+                        },
                     );
+
                     const campusFound = campus?.find(
                         (campus: any) => campus.uid === selectedHeadquarter,
                     );
@@ -180,6 +165,7 @@ export const GoogleMapsHook = () => {
                     );
 
                     return {
+                        uid,
                         selectedHeadquarter: campusFound?.name[0],
                         selectedArea: areaFound?.areaName,
                         routes: Object.fromEntries(routesNames),
@@ -196,97 +182,136 @@ export const GoogleMapsHook = () => {
                             ext: phone.ext,
                         })),
                         emails: emails?.map((email: any) => email.text),
-
-                        geolocation: {
-                            lat: Number(geolocations?.latitude),
-                            lng: Number(geolocations?.longitude),
-                        },
                     };
                 },
             );
 
-            employees && setEmployeeLocations(employeesLocations);
+            const unsubscribe = getDocsByCompanyIdInRealTime(
+                companyData.uid,
+                "locations",
+                (locationsFound: any) => {
+                    const dataUpdated = employeesLocations.map(
+                        (employee: any) => {
+                            const geolocations = getMostRecentItem(
+                                locationsFound.filter(
+                                    (geolocation: any) =>
+                                        geolocation.employeeId === employee.uid,
+                                ),
+                            );
+                            const dataWithGeolocation = {
+                                ...employee,
+                                geolocation: {
+                                    lat: Number(geolocations?.latitude),
+                                    lng: Number(geolocations?.longitude),
+                                },
+                            };
+                            return dataWithGeolocation;
+                        },
+                    );
+                    setEmployeeLocations(dataUpdated);
+                },
+            );
+
+            return () => unsubscribe();
+        } catch (error) {
+            console.error("Error fetching employee data:", error);
         }
     }, [companyData]);
 
     const getRoutes = useCallback(async () => {
         if (companyData) {
-            const routesFound = await getRoutesByCompanyIdQuery(
+            const unsubscribe = getDocsByCompanyIdInRealTime(
                 companyData.uid,
-            );
-
-            const routesLocations: RoutesCoords[] = routesFound.map(
-                (route: any) => {
-                    const {
-                        uid,
-                        geolocations,
-                        zoneName,
-                        routeName,
-                        routeManager,
-                    } = route;
-                    return {
-                        uid,
-                        geolocations,
-                        zoneName,
-                        routeName,
-                        routeManager,
-                    };
+                "routes",
+                (routesFound: any) => {
+                    const routesLocations: RoutesCoords[] = routesFound.map(
+                        (route: any) => {
+                            const {
+                                uid,
+                                geolocations,
+                                zoneName,
+                                routeName,
+                                routeManager,
+                            } = route;
+                            return {
+                                uid,
+                                geolocations,
+                                zoneName,
+                                routeName,
+                                routeManager,
+                            };
+                        },
+                    );
+                    routesFound && setRouteCoordinates(routesLocations);
                 },
             );
 
-            routesFound && setRouteCoordinates(routesLocations);
+            return () => unsubscribe();
         }
     }, [companyData]);
 
     const getCampus = useCallback(async () => {
         if (companyData) {
-            const campusFound = await getHeadquartersByCompanyIdQuery(
+            const unsubscribe = getDocsByCompanyIdInRealTime(
                 companyData.uid,
-            );
-
-            const campusLocations: CampusCoords[] = campusFound.map(
-                (campus: any) => {
-                    const { uid, geolocation, name, address, url, phones } =
-                        campus;
-                    return {
-                        uid,
-                        geolocation,
-                        name: name[0],
-                        address: address[0],
-                        url: url[0],
-                        phones,
-                    };
+                "campus",
+                (campusFound: any) => {
+                    const campusLocations: CampusCoords[] = campusFound.map(
+                        (campus: any) => {
+                            const {
+                                uid,
+                                geolocation,
+                                name,
+                                address,
+                                url,
+                                phones,
+                            } = campus;
+                            return {
+                                uid,
+                                geolocation,
+                                name: name[0],
+                                address: address[0],
+                                url: url[0],
+                                phones,
+                            };
+                        },
+                    );
+                    campusFound && setOfficeLocations(campusLocations);
                 },
             );
-            campusFound && setOfficeLocations(campusLocations);
+
+            return () => unsubscribe();
         }
     }, [companyData]);
 
     const getZones = useCallback(async () => {
         if (companyData) {
-            const zonesFound = await getZonesByCompanyIdQuery(companyData.uid);
+            const unsubscribe = getDocsByCompanyIdInRealTime(
+                companyData.uid,
+                "zones",
+                (zonesFound: any) => {
+                    const zonesLocations: Coords[][] = zonesFound.map(
+                        (zone: any) => {
+                            const { geolocations } = zone;
+                            const zoneLocations = geolocations.map(
+                                (point: any) => {
+                                    return point.coords;
+                                },
+                            );
+                            return zoneLocations;
+                        },
+                    );
+                    zonesFound &&
+                        (setZoneCoordinates(zonesLocations),
+                        setDataZones(zonesFound));
+                },
+            );
 
-            const zonesLocations: Coords[][] = zonesFound.map((zone: any) => {
-                const { geolocations } = zone;
-                const zoneLocations = geolocations.map((point: any) => {
-                    return point.coords;
-                });
-                return zoneLocations;
-            });
-
-            zonesFound &&
-                (setZoneCoordinates(zonesLocations), setDataZones(zonesFound));
+            return () => unsubscribe();
         }
     }, [companyData]);
 
-    useEffect(() => {
-        getRoutes();
-        getZones();
-        getCampus();
-        getEmployees();
-    }, [getCampus, getRoutes, getZones, getEmployees]);
-
-    useEffect(() => {
+    const getFixedPoints = useCallback(() => {
         if (companyData) {
             const q = query(
                 collection(db, "fixedPoints"),
@@ -306,6 +331,25 @@ export const GoogleMapsHook = () => {
             return () => unsubscribe();
         }
     }, [companyData]);
+
+    useEffect(() => {
+        getRoutes();
+        getZones();
+        getCampus();
+        getEmployees();
+        getFixedPoints();
+        return () => {
+            getRoutes();
+            getZones();
+            getCampus();
+            getEmployees();
+            getFixedPoints();
+        };
+    }, [getCampus, getEmployees, getFixedPoints, getRoutes, getZones]);
+
+    // useEffect(() => {
+
+    // }, [companyData]);
 
     useEffect(() => {
         if (companyData) {

@@ -13,15 +13,18 @@ export interface Coords {
     lng: number;
 }
 
-export type ScheduleRoutes = {
-    mondayRoute: string;
-    tuesdayRoute: string;
-    wednesdayRoute: string;
-    thursdayRoute: string;
-    fridayRoute: string;
-    saturdayRoute: string;
-    sundayRoute: string;
-};
+// export type ScheduleRoutes = {
+//     mondayRoute: string;
+//     tuesdayRoute: string;
+//     wednesdayRoute: string;
+//     thursdayRoute: string;
+//     fridayRoute: string;
+//     saturdayRoute: string;
+//     sundayRoute: string;
+//     [key: string]: string;
+// };
+
+export type ScheduleRoutes = { [key: string]: string };
 
 export interface RoutesCoords {
     uid: string;

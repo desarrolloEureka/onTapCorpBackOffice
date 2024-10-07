@@ -63,9 +63,10 @@ const MainFormHook = ({
     const [errorPass, setErrorPass] = useState(false);
     const [itemExist, setItemExist] = useState(false);
     const [nextStep, setNextStep] = useState(true);
-    const [files, setFiles] = useState<SetStateAction<any>[]>([]);
-    const [fileName, setFileName] = useState<any>();
-    const [iconFile, setIconFile] = useState<any>([]);
+    const [files, setFiles] = useState<File[]>([]);
+    const [fileNameIcon, setFileNameIcon] = useState<any>();
+    const [fileNamePhoto, setFileNamePhoto] = useState<any>();
+    const [iconFile, setIconFile] = useState<any>();
     const [specialties, setSpecialties] = useState<SpecialtySelector[]>();
     const [roles, setRoles] = useState<RolesSelector[]>();
     const [diagnostician, setDiagnostician] = useState<any[]>();
@@ -80,14 +81,38 @@ const MainFormHook = ({
         setIsEdit(true);
     };
 
-    const confirmAlert = () => {
+    const saveAlert = async (callbackFc: () => Promise<any>) => {
         Swal.fire({
             position: "center",
-            icon: "success",
-            title: `Se guardó correctamente en la tabla de ${title}`,
-            showConfirmButton: false,
-            timer: 2000,
+            title: `Guardando...`,
+            text: "Por favor espera",
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            },
         });
+
+        try {
+            await callbackFc();
+
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: `Se guardó correctamente en la tabla de ${title}`,
+                showConfirmButton: false,
+                timer: 2000,
+            });
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: `Ocurrió un error ${error}`,
+                confirmButtonColor: "#1f2937",
+                confirmButtonText: "Aceptar",
+            });
+        } finally {
+            Swal.hideLoading();
+        }
     };
 
     const findValue = (item: any, dataValue: any) => item.value === dataValue;
@@ -122,16 +147,23 @@ const MainFormHook = ({
         }));
     };
 
-    const handleMultipleChange = (event: { target: any }) => {
-        event.target.files && setFiles([...event.target.files]);
+    const handleMultipleChange = (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length > 0) {
+            const file = event.target.files[0];
+            setFiles([file]);
+            setFileNamePhoto(event.target.files[0].name);
+        } else {
+            setFiles([]);
+            setFileNamePhoto(null);
+        }
     };
     const handleIconFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
-            setIconFile(e.target.files);
-            setFileName(e.target.files[0].name);
+            setIconFile(e.target.files[0]);
+            setFileNameIcon(e.target.files[0].name);
         } else {
             setIconFile(null);
-            setFileName(null);
+            setFileNameIcon(null);
         }
     };
 
@@ -350,11 +382,11 @@ const MainFormHook = ({
             currentDataObject.isActive = data.isActive;
             userData && (currentDataObject.companyId = userData.companyId);
 
-            for (const record of iconFile) {
-                const urlName = record.name.split(".")[0];
+            if (iconFile) {
+                const urlName = iconFile.name.split(".")[0];
                 await saveIconFile({
                     urlName,
-                    record,
+                    record: iconFile,
                     uid: handleShowMainFormEdit ? data.uid : documentRef.id,
                     reference,
                 })
@@ -438,11 +470,11 @@ const MainFormHook = ({
                     });
             }
 
-            for (const record of iconFile) {
-                const urlName = record.name.split(".")[0];
+            if (iconFile) {
+                const urlName = iconFile.name.split(".")[0];
                 await saveIconFile({
                     urlName,
-                    record,
+                    record: iconFile,
                     uid: handleShowMainFormEdit ? data.uid : documentRef.id,
                     reference,
                 })
@@ -483,55 +515,90 @@ const MainFormHook = ({
         // console.log("newData", newData, "data");
         // console.log("reference", reference);
 
-        handleShowMainFormEdit
-            ? reference === "companies"
-                ? await saveEditDataDocumentsQuery({
-                      id: data.adminId,
-                      data: newData.admin,
-                      reference: "users",
-                  }).then(async () => {
-                      await saveEditDataDocumentsQuery({
-                          id: data.uid,
-                          data: newData.company,
-                          reference,
-                      });
-                      confirmAlert();
-                  })
-                : await saveEditDataDocumentsQuery({
-                      id: data.uid,
-                      data: newData,
-                      reference,
-                  }).then(confirmAlert)
-            : reference === "companies"
-            ? await addUser({
-                  email: data.email,
-                  password: reference === "companies" ? data.id : data.password,
-                  accessTokenUser,
-                  uid: documentRefUser.id,
-              }).then(async () => {
-                  await saveDataDocumentsQuery({
-                      documentRef: documentRefUser,
-                      data: reference === "companies" ? newData.admin : newData,
-                  }).then(async () => {
-                      await saveDataDocumentsQuery({
-                          documentRef,
-                          data:
-                              reference === "companies"
-                                  ? {
-                                        ...newData.company,
-                                        adminId: documentRefUser.id,
-                                    }
-                                  : newData,
-                      });
-                      // Envía el correo de nuevo usuario
-                      await handleSendWelcomeEmail(data);
-                      confirmAlert();
-                  });
-              })
-            : await saveDataDocumentsQuery({
-                  documentRef,
-                  data: newData,
-              }).then(confirmAlert);
+        // Función auxiliar para guardar datos del administrador y la compañía
+        const saveCompanyData = async (
+            data: any,
+            newData: any,
+            reference: string,
+        ) => {
+            // Guardar datos del administrador
+            await saveEditDataDocumentsQuery({
+                id: data.adminId,
+                data: newData.admin,
+                reference: "users",
+            });
+
+            // Guardar datos de la compañía
+            await saveEditDataDocumentsQuery({
+                id: data.uid,
+                data: newData.company,
+                reference,
+            });
+        };
+
+        // Función auxiliar para agregar un usuario y guardar los datos correspondientes
+        const addCompanyUserAndData = async (
+            data: any,
+            newData: any,
+            documentRefUser: any,
+            documentRef: any,
+            accessTokenUser: string,
+        ) => {
+            // Agrega nuevo usuario
+            await addUser({
+                email: data.email,
+                password: data.id,
+                accessTokenUser,
+                uid: documentRefUser.id,
+            });
+
+            // Guardar datos del usuario
+            await saveDataDocumentsQuery({
+                documentRef: documentRefUser,
+                data: newData.admin,
+            });
+
+            // Guardar datos de la compañía
+            await saveDataDocumentsQuery({
+                documentRef,
+                data: {
+                    ...newData.company,
+                    adminId: documentRefUser.id,
+                },
+            });
+
+            // Enviar correo de bienvenida
+            await handleSendWelcomeEmail(data);
+        };
+
+        // Lógica principal
+        if (handleShowMainFormEdit) {
+            if (reference === "companies") {
+                await saveCompanyData(data, newData, reference);
+            } else {
+                await saveEditDataDocumentsQuery({
+                    id: data.uid,
+                    data: newData,
+                    reference,
+                });
+            }
+        } else {
+            if (reference === "companies") {
+                await addCompanyUserAndData(
+                    data,
+                    newData,
+                    documentRefUser,
+                    documentRef,
+                    accessTokenUser,
+                );
+            } else {
+                await saveDataDocumentsQuery({
+                    documentRef,
+                    data: newData,
+                });
+            }
+        }
+
         return [...error];
     };
 
@@ -642,11 +709,7 @@ const MainFormHook = ({
             e.preventDefault();
             e.stopPropagation();
             console.log("Entró");
-            setIsLoading(true);
-            const dataUpload = await uploadHandle();
-            setIsLoading(false);
-            const errorFound = dataUpload.find((value) => !value.success);
-            !errorFound && handleClose();
+            saveAlert(uploadHandle).then(handleClose);
         } else {
             e.preventDefault();
             e.stopPropagation();
@@ -776,7 +839,8 @@ const MainFormHook = ({
         errorValid,
         nextStep,
         companyVal,
-        fileName,
+        fileNameIcon,
+        fileNamePhoto,
         setNextStep,
         setErrorPass,
         setErrorValid,

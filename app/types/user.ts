@@ -61,6 +61,7 @@ export type DataEmail = {
 };
 
 export type FormValuesData = {
+    uid: string;
     firstName: [string, boolean];
     lastName: [string, boolean];
     documentType: [string, boolean];

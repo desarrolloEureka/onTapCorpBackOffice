@@ -13,8 +13,8 @@ import CSVReader from "../uploadCsv/UploadCsv";
 import ZonesFormModal from "../zones/zonesFormModal";
 import { ExportCSV } from "./dataTables/dataTables";
 import DataTablesHook from "./hook/DataTablesHook";
-import CategoriesModal from "../Categories/CategoriesModal";
-import NewsModal from "../News/NewsModal";
+import CategoriesModal from "../categories/CategoriesModal";
+import NewsModal from "../news/NewsModal";
 
 const DataTableComponent = ({
     componentTitle,
