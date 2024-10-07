@@ -1,9 +1,12 @@
 import useAuth from "@/firebase/auth";
-import { getDocsByCompanyIdInRealTime } from "@/firebase/Documents";
+import {
+    getDocsByCompanyIdInRealTime,
+    getLocationsByCompanyIdInRealTime,
+} from "@/firebase/Documents";
 import {
     getDocsByCompanyIdQuery,
     getEmployeesByCompanyIdQuery,
-    getWorkAreasByCompanyIdQuery
+    getWorkAreasByCompanyIdQuery,
 } from "@/queries/documentsQueries";
 import {
     CampusCoords,
@@ -186,28 +189,37 @@ export const GoogleMapsHook = () => {
                 },
             );
 
-            const unsubscribe = getDocsByCompanyIdInRealTime(
+            const unsubscribe = getLocationsByCompanyIdInRealTime(
                 companyData.uid,
                 "locations",
                 (locationsFound: any) => {
-                    const dataUpdated = employeesLocations.map(
-                        (employee: any) => {
-                            const geolocations = getMostRecentItem(
-                                locationsFound.filter(
-                                    (geolocation: any) =>
-                                        geolocation.employeeId === employee.uid,
-                                ),
-                            );
-                            const dataWithGeolocation = {
-                                ...employee,
-                                geolocation: {
-                                    lat: Number(geolocations?.latitude),
-                                    lng: Number(geolocations?.longitude),
-                                },
-                            };
-                            return dataWithGeolocation;
-                        },
-                    );
+                    const dataUpdated =
+                        employeesLocations.length > 0
+                            ? employeesLocations.map((employee: any) => {
+                                  const geolocations = getMostRecentItem(
+                                      locationsFound.filter(
+                                          (geolocation: any) =>
+                                              geolocation.employeeId ===
+                                              employee.uid,
+                                      ),
+                                  );
+                                  const dataWithGeolocation = {
+                                      ...employee,
+                                      geolocation: geolocations
+                                          ? {
+                                                lat: Number(
+                                                    geolocations?.latitude,
+                                                ),
+                                                lng: Number(
+                                                    geolocations?.longitude,
+                                                ),
+                                            }
+                                          : null,
+                                  };
+                                  return dataWithGeolocation;
+                              })
+                            : [];
+
                     setEmployeeLocations(dataUpdated);
                 },
             );

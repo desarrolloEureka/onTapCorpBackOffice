@@ -314,6 +314,43 @@ export const getDocsByCompanyIdInRealTime = (
     }
 };
 
+export const getLocationsByCompanyIdInRealTime = (
+    companyId: any,
+    reference: string,
+    callBack: (data: any[]) => void,
+    fieldPathInDB?: string,
+    valueToFound?: string,
+): Unsubscribe => {
+    try {
+        const q =
+            fieldPathInDB && valueToFound
+                ? query(
+                      collection(db, reference),
+                      where("companyId", "==", companyId),
+                      where(fieldPathInDB, "==", valueToFound),
+                  )
+                : query(
+                      collection(db, reference),
+                      where("companyId", "==", companyId),
+                  );
+
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            if (!querySnapshot.empty) {
+                const dataFound: any[] = querySnapshot.docs.map((doc) =>
+                    doc.data(),
+                );
+                callBack(dataFound);
+            }
+        });
+
+        return unsubscribe; // Retornar la variable inicializada
+    } catch (error) {
+        console.error("Error fetching Docs:", error);
+        const unsubscribe = () => {};
+        return unsubscribe; // Retornar array vacío en caso de error
+    }
+};
+
 export const getDocsByCompanyRolId = async (
     companyId: any,
     reference: string,
