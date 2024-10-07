@@ -32,6 +32,7 @@ const EmployeesFormHook = ({
     editData,
 }: ModalParamsMainForm) => {
     const initialData: FormValuesData = {
+        uid: "",
         firstName: ["", false],
         lastName: ["", false],
         documentType: ["", false],
@@ -579,6 +580,7 @@ const EmployeesFormHook = ({
             console.error("Error al enviar el formulario:", error);
         } finally {
             // setIsLoading(false);
+            
             // Enviar correo de bienvenida
             await handleSendWelcomeEmail(dataToSendOnEmail);
             Swal.hideLoading();
