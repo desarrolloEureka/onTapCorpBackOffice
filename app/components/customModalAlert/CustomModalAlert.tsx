@@ -29,7 +29,7 @@ function CustomModalAlert({
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          bgcolor: '#02AF9B',
+          bgcolor: '#030124',
           padding: 7,
           borderRadius: 3,
           position: 'relative',

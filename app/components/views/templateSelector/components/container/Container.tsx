@@ -99,14 +99,14 @@ const TemplateContainer = ({
   companyData,
   headquarterData,
   companyDataUrls,
-  headquarterDataUrls,
+  areaDataUrls,
   color,
 }: {
   userData: any;
   companyData: any;
   headquarterData: any;
   companyDataUrls: any;
-  headquarterDataUrls: any;
+  areaDataUrls: any;
   color: string;
 }) => {
   const finalArray = orderArray(userData, headquarterData);
@@ -235,7 +235,7 @@ const TemplateContainer = ({
           userData={userData}
           companyData={companyData}
           companyDataUrls={companyDataUrls}
-          headquarterData={headquarterDataUrls}
+          areaData={areaDataUrls}
           second={false}
         />
         <Container

@@ -15,7 +15,7 @@ interface TemplateType {
 }
 
 const HomeContent = () => {
-    const [templateSelect, setTemplateSelect] = useState<TemplateType>({
+    const [templateSelect, setTemplateSelect] = useState<any>({
         id: "",
         name: "",
         image: "",
@@ -28,7 +28,7 @@ const HomeContent = () => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const userData = await GetUser();
+            const userData = await GetUser(true);
             setData(userData);
         };
 
@@ -65,6 +65,7 @@ const HomeContent = () => {
                         const item = data?.templateData?.find(
                             (val: any) => val.id === value.id,
                         );
+
                         return (
                             <div
                                 key={index}
@@ -126,19 +127,14 @@ const HomeContent = () => {
                                                                     uid={
                                                                         data.uid
                                                                     }
-                                                                    value={
-                                                                        value
-                                                                    }
-                                                                    setTemplateSelect={
-                                                                        setTemplateSelect
-                                                                    }
+                                                                    value={value}
+                                                                    setTemplateSelect={setTemplateSelect}
                                                                     templates={
                                                                         data.templateData
                                                                     }
-                                                                    checked={
-                                                                        item
-                                                                            ? item.checked
-                                                                            : false
+                                                                    checked={ 
+                                                                        value?.id  === (item?.id || templateSelect?.id ) ?
+                                                                        true : false
                                                                     }
                                                                 />
                                                             )}
