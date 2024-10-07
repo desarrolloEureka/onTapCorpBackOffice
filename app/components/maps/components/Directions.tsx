@@ -6,14 +6,14 @@ import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
 type DirectionsMapsProps = {
     originCoords: Coords;
     destinationCoords: Coords;
-    onClick?: (e: google.maps.MapMouseEvent) => void;
+    // onClick?: (e: google.maps.MapMouseEvent) => void;
 };
 
 function DirectionsMaps({
     originCoords,
     destinationCoords,
-    onClick,
-}: DirectionsMapsProps) {
+}: // onClick,
+DirectionsMapsProps) {
     const map = useMap();
     const routesLibrary = useMapsLibrary("routes");
     const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow>();
@@ -60,7 +60,14 @@ function DirectionsMaps({
             });
 
         return () => directionsRenderer.setMap(null);
-    }, [destinationCoords, directionsRenderer, directionsService, infoWindow, map, originCoords]);
+    }, [
+        destinationCoords,
+        directionsRenderer,
+        directionsService,
+        infoWindow,
+        map,
+        originCoords,
+    ]);
 
     // Update direction route
     useEffect(() => {

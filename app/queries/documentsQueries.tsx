@@ -6,6 +6,7 @@ import {
     getDocsByCompanyId,
     getDocsByCompanyRolId,
     getDocumentsByIdFb,
+    getEmployeesByCompanyId,
     getHeadquartersByCompanyId,
     getLocationsByCompanyId,
     getMeetingStatusByCompanyId,
@@ -214,6 +215,11 @@ export const getHeadquartersByCompanyIdQuery = async (idCompany: string) => {
     return documents;
 };
 
+export const getEmployeesByCompanyIdQuery = async (idCompany: string) => {
+    const documents = await getEmployeesByCompanyId(idCompany);
+    return documents;
+};
+
 // export const getDocumentsByIdQuery = async (
 //     id: string,
 //     date: number,
@@ -292,10 +298,17 @@ export const saveEditDataDocumentsQuery = async ({
     data: any;
     reference: string;
 }) => {
-    const queryResult = await updateDocumentsByIdFb(id, data, reference);
-    // console.log("Editado");
-    return queryResult;
-    // return;
+    try {
+        const queryResult = await updateDocumentsByIdFb(id, data, reference);
+        return queryResult;
+    } catch (error) {
+        console.error("Error al editar el documento:", error);
+        return {
+            success: false,
+            message: "Error al editar el documento",
+            error,
+        };
+    }
 };
 
 export const saveNotificationQuery = async (dataSave: any) => {

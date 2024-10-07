@@ -444,9 +444,9 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                 </Tab.Pane>
                 <Tab.Pane
                     className="tab-pane text-muted"
-                    id="areas"
+                    id="zonesMap"
                     role="tabpanel"
-                    eventKey="areas"
+                    eventKey="zonesMap"
                 >
                     <BannerMenu
                         seoTitle="Mapa de Zonas"
@@ -458,9 +458,9 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                 </Tab.Pane>
                 <Tab.Pane
                     className="tab-pane text-muted"
-                    id="headquarters"
+                    id="campusMap"
                     role="tabpanel"
-                    eventKey="headquarters"
+                    eventKey="campusMap"
                 >
                     <BannerMenu
                         seoTitle="Mapa de Sedes"

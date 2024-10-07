@@ -561,15 +561,15 @@ const GoogleMapComponent2 = ({
                                         destinationCoords={
                                             route.geolocations.at(-1).coords
                                         }
-                                        onClick={(event) => {
-                                            // // Capturamos las coordenadas del clic en la Polyline
-                                            // const latLng = {
-                                            //     lat: event.latLng?.lat() || 0,
-                                            //     lng: event.latLng?.lng() || 0,
-                                            // };
-                                            // setSelectedPosition(latLng);
-                                            // setDataRoutes(route);
-                                        }}
+                                        // onClick={(event) => {
+                                        // // Capturamos las coordenadas del clic en la Polyline
+                                        // const latLng = {
+                                        //     lat: event.latLng?.lat() || 0,
+                                        //     lng: event.latLng?.lng() || 0,
+                                        // };
+                                        // setSelectedPosition(latLng);
+                                        // setDataRoutes(route);
+                                        // }}
                                     />
                                 ),
                             )}

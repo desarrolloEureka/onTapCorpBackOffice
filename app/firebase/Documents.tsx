@@ -1,5 +1,9 @@
 import { AllRefPropsFirebase, RefPropsFirebase } from "@/types/userFirebase";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import {
+    createUserWithEmailAndPassword,
+    getAuth,
+    Unsubscribe,
+} from "firebase/auth";
 import {
     addDoc,
     collection,
@@ -276,27 +280,37 @@ export const getDocsByCompanyId = async (
 export const getDocsByCompanyIdInRealTime = (
     companyId: any,
     reference: string,
-) => {
+    callBack: (data: any[]) => void,
+    fieldPathInDB?: string,
+    valueToFound?: string,
+): Unsubscribe => {
     try {
-        const dataResult: any[] = [];
-
-        const q = query(
-            collection(db, reference),
-            where("idCompany", "==", companyId),
-        );
+        const q =
+            fieldPathInDB && valueToFound
+                ? query(
+                      collection(db, reference),
+                      where("idCompany", "==", companyId),
+                      where(fieldPathInDB, "==", valueToFound),
+                  )
+                : query(
+                      collection(db, reference),
+                      where("idCompany", "==", companyId),
+                  );
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             if (!querySnapshot.empty) {
-                querySnapshot.forEach((doc: any) => {
-                    const data = doc.data();
-                    dataResult.push(data);
-                });
+                const dataFound: any[] = querySnapshot.docs.map((doc) =>
+                    doc.data(),
+                );
+                callBack(dataFound);
             }
         });
-        return { unsubscribe, dataResult };
+
+        return unsubscribe; // Retornar la variable inicializada
     } catch (error) {
         console.error("Error fetching Docs:", error);
-        return [];
+        const unsubscribe = () => {};
+        return unsubscribe; // Retornar array vacío en caso de error
     }
 };
 
@@ -502,14 +516,34 @@ export const getHeadquartersByCompanyId = async (companyId: any) => {
     }
 };
 
+export const getEmployeesByCompanyId = async (companyId: any) => {
+    try {
+        const q = query(
+            collection(db, "users"),
+            where("idCompany", "==", companyId),
+            where("rolId", "==", "uysG1ULyEDklfbGDFate"),
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        const Routes = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+        }));
+        return Routes;
+    } catch (error) {
+        console.error("Error fetching Campus", error);
+        return [];
+    }
+};
+
 export const saveEmployee = async (dataSave: any) => {
     try {
         const docRef = doc(db, "users", dataSave.uid);
         const dataWithId = {
             ...dataSave,
-            //Fwecha de creacion
+            //Fecha de creación
             // dejar switch_activateCardy no employeeCardStatus
-            rolId: "vE7NrHpiRU2s1Gjv5feg",
+            rolId: "uysG1ULyEDklfbGDFate",
             views: 0,
             isActive: true,
             preview: `https://one-tap-corp-dev.vercel.app/components/views/cardView/?uid=${dataSave.uid}`,

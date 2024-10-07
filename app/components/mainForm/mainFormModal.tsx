@@ -142,7 +142,8 @@ const MainFormModal = ({
         errorValid,
         nextStep,
         companyVal,
-        fileName,
+        fileNameIcon,
+        fileNamePhoto,
         setNextStep,
         setErrorPass,
         setErrorValid,
@@ -381,8 +382,8 @@ const MainFormModal = ({
                                                         />
                                                     </IconButton>
                                                     <Typography className="tw-font-bold tw-text-sm url-label">
-                                                        {fileName
-                                                            ? fileName
+                                                        {fileNameIcon
+                                                            ? fileNameIcon
                                                             : "Seleccionar Icono"}
                                                     </Typography>
                                                     <input
@@ -1315,8 +1316,8 @@ const MainFormModal = ({
                                                                     />
                                                                 </IconButton>
                                                                 <Typography className="tw-font-bold tw-text-sm url-label">
-                                                                    {fileName
-                                                                        ? fileName
+                                                                    {fileNameIcon
+                                                                        ? fileNameIcon
                                                                         : "Seleccionar Icono"}
                                                                 </Typography>
                                                                 <input
@@ -1829,8 +1830,8 @@ const MainFormModal = ({
                                                                     />
                                                                 </IconButton>
                                                                 <Typography className="tw-font-bold tw-text-sm url-label">
-                                                                    {fileName
-                                                                        ? fileName
+                                                                    {fileNamePhoto
+                                                                        ? fileNamePhoto
                                                                         : "Seleccionar Foto"}
                                                                 </Typography>
                                                                 <input
@@ -2534,19 +2535,11 @@ const MainFormModal = ({
                                 ) : (
                                     <button
                                         type="submit"
-                                        className={`${
-                                            isLoading && "btn-loader"
-                                        } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
+                                        className={`tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
                                     >
-                                        {isLoading ? (
-                                            <span className="ml-2 loading">
-                                                <i className="ri-loader-2-fill"></i>
-                                            </span>
-                                        ) : (
-                                            <span className="tw-text-white">
-                                                <RiSave2Fill size={28} />
-                                            </span>
-                                        )}
+                                        <span className="tw-text-white">
+                                            <RiSave2Fill size={28} />
+                                        </span>
                                     </button>
                                 )}
                             </Col>
@@ -2604,27 +2597,12 @@ const MainFormModal = ({
                                                 )}
                                                 <Button
                                                     // variant="primary"
-                                                    className={`${
-                                                        isLoading &&
-                                                        "btn-loader"
-                                                    } tw-ml-5 btn-save-admin`}
+                                                    className={`tw-ml-5 btn-save-admin`}
                                                     type="submit"
                                                 >
-                                                    {isLoading ? (
-                                                        <span className="ml-2 loading">
-                                                            <i className="ri-loader-2-fill"></i>
-                                                        </span>
-                                                    ) : (
-                                                        <span className="">
-                                                            <VscSave
-                                                                size={18}
-                                                            />
-                                                            {/* {handleShowMainFormEdit ? (
-                                            ) : (
-                                                "Crear"
-                                            )} */}
-                                                        </span>
-                                                    )}
+                                                    <span className="">
+                                                        <VscSave size={18} />
+                                                    </span>
                                                 </Button>
                                             </div>
                                         )}

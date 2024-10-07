@@ -1,15 +1,28 @@
 "use client";
 import useAuth from "@/firebase/auth";
-import { editEmployeeQuery, getAreasByCompanyIdQuery, getDocumentReference, getHeadquartersByCompanyIdQuery, getRoutesByCompanyIdQuery, saveEmployeeQuery } from "@/queries/documentsQueries";
+import {
+    editEmployeeQuery,
+    getAreasByCompanyIdQuery,
+    getDocumentReference,
+    getHeadquartersByCompanyIdQuery,
+    getRoutesByCompanyIdQuery,
+    saveEmployeeQuery,
+} from "@/queries/documentsQueries";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
-import { DataAdditional, DataEmail, DataPhone, FormValuesData } from "@/types/user";
+import {
+    DataAdditional,
+    DataEmail,
+    DataPhone,
+    FormValuesData,
+} from "@/types/user";
 import { SelectChangeEvent } from "@mui/material";
 import { useEffect, useState } from "react";
 import _ from "lodash";
 import { addUser } from "@/firebase/user";
 import moment from "moment";
 import Swal from "sweetalert2";
+import { handleSendWelcomeEmail } from "lib/brevo/handlers/actions";
 
 const EmployeesFormHook = ({
     handleShowMainForm,
@@ -19,36 +32,36 @@ const EmployeesFormHook = ({
     editData,
 }: ModalParamsMainForm) => {
     const initialData: FormValuesData = {
-        firstName: ['', false],
-        lastName: ['', false],
-        documentType: ['', false],
-        documentNumber: ['', false],
-        dateOfBirth: ['', false],
-        position: ['', false],
-        phones: [{ text: '', checked: false, indicative: '', ext: '' }],
-        emails: [{ text: '', checked: false }],
-        additional: [{ autodato: '', dato: '', checked: false }],
+        firstName: ["", false],
+        lastName: ["", false],
+        documentType: ["", false],
+        documentNumber: ["", false],
+        dateOfBirth: ["", false],
+        position: ["", false],
+        phones: [{ text: "", checked: false, indicative: "", ext: "" }],
+        emails: [{ text: "", checked: false }],
+        additional: [{ autodato: "", dato: "", checked: false }],
     };
 
     const initialErrors = {
-        selectedArea: '',
-        selectedHeadquarter: '',
-        routeApplicable: '',
-        mondayRoute: '',
-        tuesdayRoute: '',
-        wednesdayRoute: '',
-        thursdayRoute: '',
-        fridayRoute: '',
-        saturdayRoute: '',
-        sundayRoute: '',
-        employeeCardStatus: '',
+        selectedArea: "",
+        selectedHeadquarter: "",
+        routeApplicable: "",
+        mondayRoute: "",
+        tuesdayRoute: "",
+        wednesdayRoute: "",
+        thursdayRoute: "",
+        fridayRoute: "",
+        saturdayRoute: "",
+        sundayRoute: "",
+        employeeCardStatus: "",
     };
 
     const { accessTokenUser, userData } = useAuth();
     const [show, setShow] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
-    const [idRow, setIdRow] = useState('');
+    const [idRow, setIdRow] = useState("");
     const theme = localStorage.getItem("@theme");
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
@@ -60,46 +73,49 @@ const EmployeesFormHook = ({
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     //Datos Paso 2
-    const [selectedArea, setSelectedArea] = useState('');
-    const [selectedAreaError, setSelectedAreaError] = useState('');
+    const [selectedArea, setSelectedArea] = useState("");
+    const [selectedAreaError, setSelectedAreaError] = useState("");
 
-    const [selectedHeadquarter, setSelectedHeadquarter] = useState('');
-    const [selectedHeadquarterError, setSelectedHeadquarterError] = useState('');
+    const [selectedHeadquarter, setSelectedHeadquarter] = useState("");
+    const [selectedHeadquarterError, setSelectedHeadquarterError] =
+        useState("");
 
     const [routeApplicable, setRouteApplicable] = useState<boolean>(true);
-    const [routeApplicableError, setRouteApplicableError] = useState('');
+    const [routeApplicableError, setRouteApplicableError] = useState("");
 
-    const [mondayRoute, setMondayRoute] = useState('');
-    const [mondayRouteError, setMondayRouteError] = useState('');
+    const [mondayRoute, setMondayRoute] = useState("");
+    const [mondayRouteError, setMondayRouteError] = useState("");
 
-    const [tuesdayRoute, setTuesdayRoute] = useState('');
-    const [tuesdayRouteError, setTuesdayRouteError] = useState('');
+    const [tuesdayRoute, setTuesdayRoute] = useState("");
+    const [tuesdayRouteError, setTuesdayRouteError] = useState("");
 
-    const [wednesdayRoute, setWednesdayRoute] = useState('');
-    const [wednesdayRouteError, setWednesdayRouteError] = useState('');
+    const [wednesdayRoute, setWednesdayRoute] = useState("");
+    const [wednesdayRouteError, setWednesdayRouteError] = useState("");
 
-    const [thursdayRoute, setThursdayRoute] = useState('');
-    const [thursdayRouteError, setThursdayRouteError] = useState('');
+    const [thursdayRoute, setThursdayRoute] = useState("");
+    const [thursdayRouteError, setThursdayRouteError] = useState("");
 
-    const [fridayRoute, setFridayRoute] = useState('');
-    const [fridayRouteError, setFridayRouteError] = useState('');
+    const [fridayRoute, setFridayRoute] = useState("");
+    const [fridayRouteError, setFridayRouteError] = useState("");
 
-    const [saturdayRoute, setSaturdayRoute] = useState('');
-    const [saturdayRouteError, setSaturdayRouteError] = useState('');
+    const [saturdayRoute, setSaturdayRoute] = useState("");
+    const [saturdayRouteError, setSaturdayRouteError] = useState("");
 
-    const [sundayRoute, setSundayRoute] = useState('');
-    const [sundayRouteError, setSundayRouteError] = useState('');
+    const [sundayRoute, setSundayRoute] = useState("");
+    const [sundayRouteError, setSundayRouteError] = useState("");
 
     const [employeeCardStatus, setEmployeeCardStatus] = useState(false);
-    const [employeeCardStatusError, setEmployeeCardStatusError] = useState('');
+    const [employeeCardStatusError, setEmployeeCardStatusError] = useState("");
 
     //Data Selects
-    const [headquartersData, setHeadquartersData] = useState<any[] | null>(null);
+    const [headquartersData, setHeadquartersData] = useState<any[] | null>(
+        null,
+    );
     const [areaData, setAreaData] = useState<any[] | null>(null);
     const [routeData, setRouteData] = useState<any[] | null>(null);
 
-    const handleAddData = (type: 'phone' | 'email' | 'additional') => {
-        setData(prevData => {
+    const handleAddData = (type: "phone" | "email" | "additional") => {
+        setData((prevData) => {
             const maxItems = 3;
             let newData = { ...prevData };
 
@@ -107,7 +123,7 @@ const EmployeesFormHook = ({
                 if ((prevData.phones || []).length < maxItems) {
                     const updatedPhones: DataPhone[] = [
                         ...(prevData.phones || []),
-                        { text: '', checked: false, indicative: '', ext: '' },
+                        { text: "", checked: false, indicative: "", ext: "" },
                     ];
                     newData = { ...newData, phones: updatedPhones };
                 }
@@ -137,14 +153,17 @@ const EmployeesFormHook = ({
         index: number,
         key: string,
         value: string | boolean,
-        checked?: boolean
+        checked?: boolean,
     ) => {
         setData((prevData) => {
             const fieldArray = prevData[field] as any[];
             if (fieldArray && fieldArray[index]) {
                 const updatedFieldArray = [...fieldArray];
                 const newProp = { [key]: value, checked: !checked };
-                updatedFieldArray[index] = { ...updatedFieldArray[index], ...newProp, };
+                updatedFieldArray[index] = {
+                    ...updatedFieldArray[index],
+                    ...newProp,
+                };
                 return {
                     ...prevData,
                     [field]: updatedFieldArray,
@@ -194,7 +213,6 @@ const EmployeesFormHook = ({
         return false;
     };
 
-
     const handleChange = (value: string, name: string, isChecked?: boolean) => {
         if (isChecked === undefined) {
             setData({ ...data, [name]: (value || "-") ?? "-" });
@@ -215,7 +233,8 @@ const EmployeesFormHook = ({
                     (_, index) => index !== indexItem,
                 ),
             }));
-        } if (type === "emails") {
+        }
+        if (type === "emails") {
             setData((prevData) => ({
                 ...prevData,
                 ["emails"]: prevData["emails"]?.filter(
@@ -232,7 +251,11 @@ const EmployeesFormHook = ({
         }
     };
 
-    function resizeImage(file: File, maxWidth: number, maxHeight: number): Promise<File> {
+    function resizeImage(
+        file: File,
+        maxWidth: number,
+        maxHeight: number,
+    ): Promise<File> {
         return new Promise((resolve, reject) => {
             const image = new Image();
             image.src = URL.createObjectURL(file);
@@ -257,17 +280,21 @@ const EmployeesFormHook = ({
                 canvas.height = height;
                 const ctx = canvas.getContext("2d");
                 ctx && ctx.drawImage(image, 0, 0, width, height);
-                canvas.toBlob(blob => {
-                    if (blob) {
-                        const resizedFile = new File([blob], file.name, {
-                            type: blob.type || 'image/jpeg',
-                            lastModified: Date.now()
-                        });
-                        resolve(resizedFile);
-                    } else {
-                        reject(new Error("Failed to create Blob"));
-                    }
-                }, file.type || 'image/jpeg', 0.35);
+                canvas.toBlob(
+                    (blob) => {
+                        if (blob) {
+                            const resizedFile = new File([blob], file.name, {
+                                type: blob.type || "image/jpeg",
+                                lastModified: Date.now(),
+                            });
+                            resolve(resizedFile);
+                        } else {
+                            reject(new Error("Failed to create Blob"));
+                        }
+                    },
+                    file.type || "image/jpeg",
+                    0.35,
+                );
             };
             image.onerror = () => {
                 reject(new Error("Could not load image"));
@@ -319,36 +346,40 @@ const EmployeesFormHook = ({
     const validateFields = () => {
         const newErrors: { [key: string]: string } = {};
         if (!data.firstName[0]?.trim()) {
-            newErrors.firstName = 'El nombre es obligatorio';
+            newErrors.firstName = "El nombre es obligatorio";
         }
 
         if (!data.lastName[0]?.trim()) {
-            newErrors.lastName = 'El apellido es obligatorio';
+            newErrors.lastName = "El apellido es obligatorio";
         }
 
         if (!data.documentType[0]?.trim()) {
-            newErrors.documentType = 'El tipo de documento es obligatorio';
+            newErrors.documentType = "El tipo de documento es obligatorio";
         }
 
         if (!data.documentNumber[0]?.trim()) {
-            newErrors.documentNumber = 'El número de documento es obligatorio';
+            newErrors.documentNumber = "El número de documento es obligatorio";
         }
 
         if (!data.dateOfBirth[0]?.trim()) {
-            newErrors.dateOfBirth = 'La fecha de nacimiento es obligatoria';
+            newErrors.dateOfBirth = "La fecha de nacimiento es obligatoria";
         }
 
         if (!data.position[0]?.trim()) {
-            newErrors.position = 'El cargo es obligatoria';
+            newErrors.position = "El cargo es obligatoria";
         }
 
         // Validación de emails
         if (data.emails) {
             data.emails.forEach((email, index) => {
                 if (!email.text.trim()) {
-                    newErrors[`email-${index}`] = `El correo ${index + 1} es obligatorio`;
+                    newErrors[`email-${index}`] = `El correo ${
+                        index + 1
+                    } es obligatorio`;
                 } else if (!isValidEmail(email.text)) {
-                    newErrors[`email-${index}`] = `El correo ${index + 1} no es válido`;
+                    newErrors[`email-${index}`] = `El correo ${
+                        index + 1
+                    } no es válido`;
                 }
             });
         }
@@ -367,81 +398,82 @@ const EmployeesFormHook = ({
         let valid = true;
 
         if (!selectedArea) {
-            setSelectedAreaError('El área seleccionada es requerida.');
+            setSelectedAreaError("El área seleccionada es requerida.");
             valid = false;
         } else {
-            setSelectedAreaError('');
+            setSelectedAreaError("");
         }
 
         if (!selectedHeadquarter) {
-            setSelectedHeadquarterError('La sede seleccionada es requerida.');
+            setSelectedHeadquarterError("La sede seleccionada es requerida.");
             valid = false;
         } else {
-            setSelectedHeadquarterError('');
+            setSelectedHeadquarterError("");
         }
 
         // Validación de booleanos y rutas (puedes ajustar la validación según tus reglas)
         if (routeApplicable === null) {
-            setRouteApplicableError('El campo de ruta aplicable es requerido.');
+            setRouteApplicableError("El campo de ruta aplicable es requerido.");
             valid = false;
         } else {
-            setRouteApplicableError('');
+            setRouteApplicableError("");
         }
 
-        if (!mondayRoute) {
-            setMondayRouteError('La ruta del lunes es requerida.');
-            valid = false;
-        } else {
-            setMondayRouteError('');
-        }
+        if (routeApplicable) {
+            if (!mondayRoute) {
+                setMondayRouteError("La ruta del lunes es requerida.");
+                valid = false;
+            } else {
+                setMondayRouteError("");
+            }
 
-        // Validación para la ruta del martes
-        if (!tuesdayRoute) {
-            setTuesdayRouteError('La ruta del martes es requerida.');
-            valid = false;
-        } else {
-            setTuesdayRouteError('');
-        }
+            // Validación para la ruta del martes
+            if (!tuesdayRoute) {
+                setTuesdayRouteError("La ruta del martes es requerida.");
+                valid = false;
+            } else {
+                setTuesdayRouteError("");
+            }
 
-        // Validación para la ruta del miércoles
-        if (!wednesdayRoute) {
-            setWednesdayRouteError('La ruta del miércoles es requerida.');
-            valid = false;
-        } else {
-            setWednesdayRouteError('');
-        }
+            // Validación para la ruta del miércoles
+            if (!wednesdayRoute) {
+                setWednesdayRouteError("La ruta del miércoles es requerida.");
+                valid = false;
+            } else {
+                setWednesdayRouteError("");
+            }
 
-        // Validación para la ruta del jueves
-        if (!thursdayRoute) {
-            setThursdayRouteError('La ruta del jueves es requerida.');
-            valid = false;
-        } else {
-            setThursdayRouteError('');
-        }
+            // Validación para la ruta del jueves
+            if (!thursdayRoute) {
+                setThursdayRouteError("La ruta del jueves es requerida.");
+                valid = false;
+            } else {
+                setThursdayRouteError("");
+            }
 
-        // Validación para la ruta del viernes
-        if (!fridayRoute) {
-            setFridayRouteError('La ruta del viernes es requerida.');
-            valid = false;
-        } else {
-            setFridayRouteError('');
-        }
+            // Validación para la ruta del viernes
+            if (!fridayRoute) {
+                setFridayRouteError("La ruta del viernes es requerida.");
+                valid = false;
+            } else {
+                setFridayRouteError("");
+            }
 
-        // Validación para la ruta del sábado
-        if (!saturdayRoute) {
-            setSaturdayRouteError('La ruta del sábado es requerida.');
-            valid = false;
-        } else {
-            setSaturdayRouteError('');
-        }
+            // Validación para la ruta del sábado
+            if (!saturdayRoute) {
+                setSaturdayRouteError("La ruta del sábado es requerida.");
+                valid = false;
+            } else {
+                setSaturdayRouteError("");
+            }
 
-        // Validación para la ruta del domingo
-        if (!sundayRoute) {
-            setSundayRouteError('La ruta del domingo es requerida.');
-            valid = false;
-
-        } else {
-            setSundayRouteError('');
+            // Validación para la ruta del domingo
+            if (!sundayRoute) {
+                setSundayRouteError("La ruta del domingo es requerida.");
+                valid = false;
+            } else {
+                setSundayRouteError("");
+            }
         }
 
         return valid;
@@ -454,7 +486,7 @@ const EmployeesFormHook = ({
         // Validar los campos antes de continuar
         if (!validateSaveData()) return;
 
-        setIsLoading(true);
+        // setIsLoading(true);
 
         const currentDate = moment().format();
 
@@ -476,46 +508,80 @@ const EmployeesFormHook = ({
             sundayRoute: sundayRoute,
         };
 
+        const dataToSendOnEmail = {
+            name: updatedData?.firstName[0],
+            lastName: updatedData?.lastName[0],
+            email: updatedData?.emails?.[0]?.text.trim().toLowerCase(),
+            id: updatedData?.documentNumber[0].trim(),
+        };
+
+        Swal.fire({
+            position: "center",
+            title: `Guardando...`,
+            text: "Por favor espera",
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            },
+        });
+
         try {
             const email = updatedData?.emails?.[0]?.text.trim().toLowerCase();
             const password = updatedData?.documentNumber[0].trim();
             const documentRefUser: any = getDocumentReference("users");
 
             if (userData?.companyId) {
-                await addUser({ email: email || '', password: password, accessTokenUser, uid: documentRefUser.id });
+                await addUser({
+                    email: email || "",
+                    password: password,
+                    accessTokenUser,
+                    uid: documentRefUser.id,
+                });
+
                 const combinedData = {
                     ...updatedData,
                     uid: documentRefUser.id,
-                    idCompany: userData?.companyId
-                }
+                    idCompany: userData?.companyId,
+                };
 
-                const employeeQueryResult = await saveEmployeeQuery(combinedData);
+                const employeeQueryResult = await saveEmployeeQuery(
+                    combinedData,
+                );
 
                 if (employeeQueryResult.success) {
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Usuario creado',
-                        text: 'El usuario ha sido registrado exitosamente.',
+                        icon: "success",
+                        title: "Usuario creado",
+                        text: "El usuario ha sido registrado exitosamente.",
+                        showConfirmButton: false,
                         timer: 2500,
                     });
                     console.log("Usuario guardado con éxito");
                 } else {
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Error al registrar usuario',
+                        icon: "error",
+                        title: "Error al registrar usuario",
                         text: `No se pudo registrar el usuario: ${employeeQueryResult.message}`,
                         timer: 2500,
                     });
-                    console.error("Error al guardar usuario:", employeeQueryResult.message);
+                    console.error(
+                        "Error al guardar usuario:",
+                        employeeQueryResult.message,
+                    );
                 }
             } else {
-                console.log("No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.");
+                console.log(
+                    "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
+                );
                 return;
             }
         } catch (error) {
             console.error("Error al enviar el formulario:", error);
         } finally {
-            setIsLoading(false);
+            // setIsLoading(false);
+            // Enviar correo de bienvenida
+            await handleSendWelcomeEmail(dataToSendOnEmail);
+            Swal.hideLoading();
             handleClose();
         }
     };
@@ -526,7 +592,7 @@ const EmployeesFormHook = ({
 
         // Validar los campos antes de continuar
         if (!validateSaveData()) return;
-        setIsLoading(true);
+        // setIsLoading(true);
 
         // Actualiza el objeto data
         const updatedData = {
@@ -542,44 +608,63 @@ const EmployeesFormHook = ({
             routeApplicable: routeApplicable,
             selectedArea: selectedArea,
             selectedHeadquarter: selectedHeadquarter,
-            switch_activateCard: employeeCardStatus
+            switch_activateCard: employeeCardStatus,
             //employeeCardStatus: employeeCardStatus,
         };
+
+        Swal.fire({
+            position: "center",
+            title: `Guardando...`,
+            text: "Por favor espera",
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            },
+        });
 
         try {
             if (userData?.companyId) {
                 const formData = {
                     ...updatedData,
-                    idCompany: userData?.companyId
+                    idCompany: userData?.companyId,
                 };
-                const employeeQueryResult = await editEmployeeQuery(formData, idRow);
+                const employeeQueryResult = await editEmployeeQuery(
+                    formData,
+                    idRow,
+                );
 
                 if (employeeQueryResult.success) {
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Empleado actualizado',
-                        text: 'El empleado ha sido actualizado exitosamente.',
+                        icon: "success",
+                        title: "Empleado actualizado",
+                        text: "El empleado ha sido actualizado exitosamente.",
+                        showConfirmButton: false,
                         timer: 2500,
                     });
                     console.log("Empleado actualizado con éxito");
                 } else {
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Error al actualizar',
+                        icon: "error",
+                        title: "Error al actualizar",
                         text: `No se pudo actualizar el empleado: ${employeeQueryResult.message}`,
                         timer: 2500,
                     });
-                    console.error("Error al actualizar el empleado:", employeeQueryResult.message);
+                    console.error(
+                        "Error al actualizar el empleado:",
+                        employeeQueryResult.message,
+                    );
                 }
             } else {
-                console.log("No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.");
+                console.log(
+                    "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
+                );
                 return;
             }
-
         } catch (error) {
             console.error("Error al enviar el formulario:", error);
         } finally {
-            setIsLoading(false);
+            // setIsLoading(false);
+            Swal.hideLoading();
             handleClose();
         }
     };
@@ -604,21 +689,21 @@ const EmployeesFormHook = ({
         setSaturdayRoute("");
         setSundayRoute("");
         setRouteApplicable(false);
-        setSelectedArea('');
-        setSelectedHeadquarter('');
+        setSelectedArea("");
+        setSelectedHeadquarter("");
         // Restablece los errores de validación de cada campo
         setErrors(initialErrors);
-        setSelectedAreaError('');
-        setSelectedHeadquarterError('');
-        setRouteApplicableError('');
-        setMondayRouteError('');
-        setTuesdayRouteError('');
-        setWednesdayRouteError('');
-        setThursdayRouteError('');
-        setFridayRouteError('');
-        setSaturdayRouteError('');
-        setSundayRouteError('');
-        setEmployeeCardStatusError('');
+        setSelectedAreaError("");
+        setSelectedHeadquarterError("");
+        setRouteApplicableError("");
+        setMondayRouteError("");
+        setTuesdayRouteError("");
+        setWednesdayRouteError("");
+        setThursdayRouteError("");
+        setFridayRouteError("");
+        setSaturdayRouteError("");
+        setSundayRouteError("");
+        setEmployeeCardStatusError("");
     };
 
     const getDataEmployee = async (editData: any) => {
@@ -626,28 +711,31 @@ const EmployeesFormHook = ({
     };
 
     // Función para manejar el cambio de selección
-    const handleChangeSelect = (day: string, event: SelectChangeEvent<unknown>) => {
+    const handleChangeSelect = (
+        day: string,
+        event: SelectChangeEvent<unknown>,
+    ) => {
         const newValue = event.target.value;
         switch (day) {
-            case 'monday':
+            case "monday":
                 setMondayRoute(newValue as string);
                 break;
-            case 'tuesday':
+            case "tuesday":
                 setTuesdayRoute(newValue as string);
                 break;
-            case 'wednesday':
+            case "wednesday":
                 setWednesdayRoute(newValue as string);
                 break;
-            case 'thursday':
+            case "thursday":
                 setThursdayRoute(newValue as string);
                 break;
-            case 'friday':
+            case "friday":
                 setFridayRoute(newValue as string);
                 break;
-            case 'saturday':
+            case "saturday":
                 setSaturdayRoute(newValue as string);
                 break;
-            case 'sunday':
+            case "sunday":
                 setSundayRoute(newValue as string);
                 break;
             default:
@@ -658,7 +746,7 @@ const EmployeesFormHook = ({
     // Función para manejar el cambio en el RadioGroup
     const handleRouteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
-        const isApplicable = value === 'true';
+        const isApplicable = value === "true";
         setRouteApplicable(isApplicable);
     };
 
@@ -701,25 +789,24 @@ const EmployeesFormHook = ({
     }, [handleShowMainForm]);
 
     useEffect(() => {
-        handleShowMainFormEdit && (
-            setShow(true),
+        handleShowMainFormEdit &&
+            (setShow(true),
             setIdRow(editData?.uid),
             //Paso 1
             getDataEmployee(editData),
             setSelectedImage(editData?.ImageProfile),
             //Paso 2
-            setSelectedArea(editData?.selectedArea || ''),
-            setSelectedHeadquarter(editData?.selectedHeadquarter || ''),
+            setSelectedArea(editData?.selectedArea || ""),
+            setSelectedHeadquarter(editData?.selectedHeadquarter || ""),
             setRouteApplicable(editData?.routeApplicable || false),
-            setMondayRoute(editData?.mondayRoute || ''),
-            setTuesdayRoute(editData?.tuesdayRoute || ''),
-            setWednesdayRoute(editData?.wednesdayRoute || ''),
-            setThursdayRoute(editData?.thursdayRoute || ''),
-            setFridayRoute(editData?.fridayRoute || ''),
-            setSaturdayRoute(editData?.saturdayRoute || ''),
-            setSundayRoute(editData?.sundayRoute || ''),
-            setEmployeeCardStatus(editData?.switch_activateCard || false)
-        );
+            setMondayRoute(editData?.mondayRoute || ""),
+            setTuesdayRoute(editData?.tuesdayRoute || ""),
+            setWednesdayRoute(editData?.wednesdayRoute || ""),
+            setThursdayRoute(editData?.thursdayRoute || ""),
+            setFridayRoute(editData?.fridayRoute || ""),
+            setSaturdayRoute(editData?.saturdayRoute || ""),
+            setSundayRoute(editData?.sundayRoute || ""),
+            setEmployeeCardStatus(editData?.switch_activateCard || false));
         getRouteData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editData, handleShowMainFormEdit]);
@@ -728,7 +815,7 @@ const EmployeesFormHook = ({
         modeTheme: themeParsed?.dataThemeMode,
         show,
         dataForm: data,
-        isLoading,
+        // isLoading,
         isEdit,
         handleSendForm,
         handleClose,
@@ -776,7 +863,7 @@ const EmployeesFormHook = ({
         saturdayRouteError,
         sundayRouteError,
         employeeCardStatusError,
-        handleChangeItemAditional
+        handleChangeItemAditional,
     };
 };
 

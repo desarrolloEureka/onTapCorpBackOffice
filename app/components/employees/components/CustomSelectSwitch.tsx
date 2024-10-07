@@ -67,7 +67,8 @@ const CustomSelectSwitch = (props: any) => {
                         value={value}
                         name={props.name}
                         color="primary"
-                        error={!!props.errorShow}
+                        // error={!!props.errorShow}
+                        error={!!props.error}
                         onChange={(e) =>
                             handleCustomChange(
                                 e.target.value,

@@ -786,7 +786,6 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                         );
                                                     },
                                                 )}
-                                                ;
                                             </div>
                                         </div>
                                     </div>
