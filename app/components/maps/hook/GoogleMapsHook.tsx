@@ -1,9 +1,12 @@
 import useAuth from "@/firebase/auth";
-import { getDocsByCompanyIdInRealTime } from "@/firebase/Documents";
+import {
+    getDocsByCompanyIdInRealTime,
+    getLocationsByCompanyIdInRealTime,
+} from "@/firebase/Documents";
 import {
     getDocsByCompanyIdQuery,
     getEmployeesByCompanyIdQuery,
-    getWorkAreasByCompanyIdQuery
+    getWorkAreasByCompanyIdQuery,
 } from "@/queries/documentsQueries";
 import {
     CampusCoords,
@@ -186,7 +189,7 @@ export const GoogleMapsHook = () => {
                 },
             );
 
-            const unsubscribe = getDocsByCompanyIdInRealTime(
+            const unsubscribe = getLocationsByCompanyIdInRealTime(
                 companyData.uid,
                 "locations",
                 (locationsFound: any) => {
