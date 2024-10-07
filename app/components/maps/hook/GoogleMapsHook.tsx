@@ -193,24 +193,33 @@ export const GoogleMapsHook = () => {
                 companyData.uid,
                 "locations",
                 (locationsFound: any) => {
-                    const dataUpdated = employeesLocations.map(
-                        (employee: any) => {
-                            const geolocations = getMostRecentItem(
-                                locationsFound.filter(
-                                    (geolocation: any) =>
-                                        geolocation.employeeId === employee.uid,
-                                ),
-                            );
-                            const dataWithGeolocation = {
-                                ...employee,
-                                geolocation: {
-                                    lat: Number(geolocations?.latitude),
-                                    lng: Number(geolocations?.longitude),
-                                },
-                            };
-                            return dataWithGeolocation;
-                        },
-                    );
+                    const dataUpdated =
+                        employeesLocations.length > 0
+                            ? employeesLocations.map((employee: any) => {
+                                  const geolocations = getMostRecentItem(
+                                      locationsFound.filter(
+                                          (geolocation: any) =>
+                                              geolocation.employeeId ===
+                                              employee.uid,
+                                      ),
+                                  );
+                                  const dataWithGeolocation = {
+                                      ...employee,
+                                      geolocation: geolocations
+                                          ? {
+                                                lat: Number(
+                                                    geolocations?.latitude,
+                                                ),
+                                                lng: Number(
+                                                    geolocations?.longitude,
+                                                ),
+                                            }
+                                          : null,
+                                  };
+                                  return dataWithGeolocation;
+                              })
+                            : [];
+
                     setEmployeeLocations(dataUpdated);
                 },
             );
