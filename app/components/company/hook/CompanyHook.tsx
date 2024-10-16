@@ -142,24 +142,35 @@ const CompanyHook = () => {
 
     const validateFields = () => {
         const newErrors: { [key: string]: string } = {};
-
         if (!data.tradename[0]?.trim()) {
             newErrors.tradename = "El nombre es obligatorio";
         }
-
         if (!data.businessName[0]?.trim()) {
             newErrors.businessName = "La razón social es obligatorio";
         }
-
         if (!data.id[0]?.trim()) {
             newErrors.id = "El NIT es obligatorio";
         }
 
+        if (data.webSite[0] && !/^https:\/\/.+\..+$/.test(data.webSite[0])) {
+            newErrors.webSite = "Ej: https://example.com";
+        }
+
+        // Validación para URLs dinámicas que comienzan con 'urlLink'
+        for (const key in data) {
+            if (key.startsWith('urlLink') && data[key]) {
+                if (!/^https:\/\/.+\..+$/.test(data[key])) {
+                    newErrors.urlLink = `Ej: https://example.com`;
+                }
+            }
+        }
+        console.log("newErrors", newErrors)
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
     const handleSendForm = async (e: any) => {
+        console.log("data", data)
         e.preventDefault();
         // Validar los campos antes de continuar
         if (!validateFields()) return;

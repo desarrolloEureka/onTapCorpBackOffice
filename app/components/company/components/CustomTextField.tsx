@@ -20,9 +20,12 @@ const CustomTextField = (props: any) => {
         name: string,
         checked: boolean,
     ) => {
-        props.onChange((value || "") ?? "", name, checked);
-        setValue((value || "") ?? "");
-        setChecked(checked);
+        const newValue = ((value || "") ?? "");
+        if (newValue === '' || newValue.length <= props.maxLength || props.maxLength === undefined) {
+            props.onChange(newValue, name, checked);
+            setValue(newValue);
+            setChecked(checked);        
+        }
     };
 
     useEffect(() => {
@@ -39,6 +42,9 @@ const CustomTextField = (props: any) => {
             }
         }
     }, [props.data]);
+    
+console.log("props.helperText", props.helperText)
+console.log("error", props.error)
 
     return (
         <div className="tw-flex tw-flex-row tw-mt-4 tw-w-full">

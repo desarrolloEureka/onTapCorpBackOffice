@@ -107,6 +107,11 @@ const DataTablesHook = (reference: string) => {
             };
         });
     };
+    
+    const formatDataByDate = (documents: any[] | { [key: string]: any } ) => {
+        if (!Array.isArray(documents)) { return [] }
+        return documents.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+    };
 
     const getAllDocuments = useCallback(async () => {
         const documents: any =
@@ -125,51 +130,53 @@ const DataTablesHook = (reference: string) => {
                           : [],
                   )
                 : reference === "notifications"
-                ? userData && userData?.companyId
-                    ? await getNotificationsByCompanyIdQuery(
-                          userData?.companyId,
-                      )
-                    : []
+                ? formatDataByDate(
+                    userData && userData?.companyId
+                        ? await getNotificationsByCompanyIdQuery(
+                            userData?.companyId,
+                        )
+                        : []
+                    )    
                 : reference === "workAreas"
-                ? userData && userData?.companyId
+                ? formatDataByDate(userData && userData?.companyId
                     ? await getWorkAreasByCompanyIdQuery(userData?.companyId)
-                    : []
+                    : [])
                 : reference === "employees"
                 ? userData && userData?.companyId
                     ? await getEmployeesByCompanyIdQuery(userData?.companyId)
                     : []
                 : reference === "meetingStatus"
-                ? userData && userData?.companyId
+                ? formatDataByDate(userData && userData?.companyId
                     ? await getMeetingStatusByCompanyIdQuery(
                           userData?.companyId,
                       )
-                    : []
+                    : [])
                 : reference === "fixedPoints"
-                ? userData && userData?.companyId
+                ? formatDataByDate(userData && userData?.companyId
                     ? await getDocsByCompanyIdQuery(
                           userData?.companyId,
                           reference,
                       )
-                    : []
+                    : [] )
                 : reference === "routes"
-                ? userData && userData?.companyId
+                ? formatDataByDate(userData && userData?.companyId
                     ? await getRoutesByCompanyIdQuery(userData?.companyId)
-                    : []
+                    : [])
                 : reference === "campus"
-                ? userData && userData?.companyId
+                ? formatDataByDate(userData && userData?.companyId
                     ? await getHeadquartersByCompanyIdQuery(userData?.companyId)
-                    : []
+                    : [])
                 : reference === "circular" ||
                   reference === "events" ||
                   reference === "policy" ||
                   reference === "forms" ||
                   reference === "news"
-                ? userData && userData?.companyId
+                ? formatDataByDate(userData && userData?.companyId
                     ? await getDocsByCompanyIdQuery(
                           userData?.companyId,
                           reference,
                       )
-                    : []
+                    : [])
                 : await getAllDocumentsQuery(reference);
 
         const labelToDisplay = ["professionals", "patients", "functionary"];

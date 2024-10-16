@@ -58,7 +58,7 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         seoTitle="Sedes"
                         title="Sedes"
                         item="Dashboard"
-                        activeItem=""
+                        activeItem="Registro de Sedes"
                     />
                     <DataTableComponent
                         componentTitle="Tabla de Sedes"
