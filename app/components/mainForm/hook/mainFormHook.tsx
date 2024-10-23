@@ -632,7 +632,7 @@ const MainFormHook = ({
         data.businessName &&
         data.cards &&
         data.cardGPS &&
-        data.cards > data.cardGPS &&
+        parseInt(data.cards) >= parseInt(data.cardGPS) &&
         data.country &&
         data.state &&
         data.city;

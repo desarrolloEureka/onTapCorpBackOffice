@@ -9,6 +9,7 @@ import {
     getEmployeesByCompanyId,
     getHeadquartersByCompanyId,
     getLocationsByCompanyId,
+    getLocationsByCompanyIdAndWorkingday,
     getMeetingStatusByCompanyId,
     getNotificationsByCompanyId,
     getReference,
@@ -217,6 +218,11 @@ export const getHeadquartersByCompanyIdQuery = async (idCompany: string) => {
 
 export const getEmployeesByCompanyIdQuery = async (idCompany: string) => {
     const documents = await getEmployeesByCompanyId(idCompany);
+    return documents;
+};
+
+export const getLocationsByCompanyIdAndWorkingdayQuery = async (idCompany: string) => {
+    const documents = await getLocationsByCompanyIdAndWorkingday(idCompany);
     return documents;
 };
 

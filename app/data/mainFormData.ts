@@ -206,7 +206,8 @@ export const dataAdminCompanyObject = {
     indicativeTwo: "57",
     phoneAdmin: "",
     urlPhoto: "",
-    rolId: "TZ3vIk6qaQ97Pej1qqwV",
+    // rolId: "TZ3vIk6qaQ97Pej1qqwV", //  UID Administrador de la empresa DESARROLLO
+    rolId: "pLBTcNDk2DtYwgJzrtFE", // UID Administrador de la empresa PRODUCCION
     companyId: "",
 } as DataAdminCompanyObject;
 

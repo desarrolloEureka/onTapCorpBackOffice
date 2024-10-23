@@ -221,6 +221,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                 </InputAdornment>
                                                             ),
                                                         }}
+                                                        maxLength = {9}
                                                     />
                                                     <CustomTextField
                                                         checked={allChecked}
@@ -267,9 +268,8 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                         }
                                                         name="webSite"
                                                         type="url"
-                                                        helperText={
-                                                            "Ej: https://example.com"
-                                                        }
+                                                        helperText={errors.webSite}
+                                                        error={!!errors.webSite}
                                                         switch="true"
                                                         theme={theme}
                                                         id="webSite"
@@ -481,6 +481,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                     id={item[0]}
                                                                     fullWidth
                                                                     label="Teléfono"
+                                                                    maxLength = {10}
                                                                     InputProps={{
                                                                         startAdornment:
                                                                             (
@@ -517,6 +518,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                 }
                                                                 theme={theme}
                                                                 id={item[3]}
+                                                                maxLength = {3}
                                                                 fullWidth
                                                                 InputProps={{
                                                                     startAdornment:
@@ -706,9 +708,8 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                         item[3]
                                                                     }
                                                                     type="url"
-                                                                    helperText={
-                                                                        "Ej: https://example.com"
-                                                                    }
+                                                                    helperText={errors.urlLink}
+                                                                    error={!!errors.urlLink}
                                                                     deleted={
                                                                         index !==
                                                                         0

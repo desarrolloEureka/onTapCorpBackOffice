@@ -6,7 +6,7 @@ import HomeDash from "../dashBoard/homeDash/HomeDash";
 import DataTableComponent from "../dataTable/DataTableComponent";
 import GoogleMapsPage from "../maps/GoogleMapsPage";
 import Profile from "../profile/page";
-import HomeContent from "../views/home/HomeContent";
+import TempladeContent from "../views/home/HomeContent";
 import HeaderContent from "./components/headerContent/HeaderContent";
 
 const Header = ({ hamburger }: { hamburger?: boolean }) => {
@@ -58,7 +58,7 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         seoTitle="Sedes"
                         title="Sedes"
                         item="Dashboard"
-                        activeItem=""
+                        activeItem="Registro de Sedes"
                     />
                     <DataTableComponent
                         componentTitle="Tabla de Sedes"
@@ -588,7 +588,28 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         item="Dashboard"
                         activeItem="Seleccionar Plantilla"
                     />
-                    <HomeContent />
+                    <TempladeContent />
+                </Tab.Pane>
+
+                {/* Vista del reporte de Jornada Laboral */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="workingday"
+                    role="tabpanel"
+                    eventKey="workingday"
+                >
+                    <BannerMenu
+                        seoTitle="Jornada Laboral"
+                        title="Jornada Laboral"
+                        item="Dashboard"
+                        activeItem="Reporte de Jornadas Laborales"
+                    />
+                    <DataTableComponent
+                        componentTitle="Reporte de Jornadas Laborales"
+                        componentDescription="En esta tabla se encuentran el reporte de las jornadas laborales."
+                        tableTitle="Jornada Laboral"
+                        reference="workingday"
+                    />
                 </Tab.Pane>
             </Tab.Content>
         </Tab.Container>

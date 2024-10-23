@@ -30,36 +30,59 @@ const customStyles = {
     },
 };
 
-function convertArrayOfObjectsToCSV(array: object[]): string {
+function convertArrayOfObjectsToCSV(array: object[], reference: string): string {
+    if (array.length < 1) { return ""}
     let result: string;
+    let keys: any;
 
     const columnDelimiter = ",";
     const lineDelimiter = "\n";
-    const keys = Object.keys(array[0]);
-
     result = "";
-    result += keys.join(columnDelimiter);
-    result += lineDelimiter;
 
+    const convertToHoursAndMinutes = (horaDuracionISO: number): string => {
+        const hours = Math.floor((horaDuracionISO % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.ceil((horaDuracionISO % (1000 * 60 * 60)) / (1000 * 60));
+        return `${hours} hora${hours !== 1 ? 's' : ''} y ${minutes} minuto${minutes !== 1 ? 's' : ''}`;
+    };
+
+    if( reference == "workingday") {
+        keys = ["firstName", "lastName", "documentType", "documentNumber", "position", "longitude", "latitude", "startDay", "endDay", "totalTime"];
+        const headers: Record<string, string> = {
+            firstName: "Nombres",
+            lastName: "Apellidos",
+            documentType: "Tipo de Documento",
+            documentNumber: "Numero de Documento",
+            position: "Posicion",
+            longitude: "Longitud",
+            latitude: "Latitud",
+            startDay: "Inicio jornada",
+            endDay: "Final jornada",
+            totalTime: "Jornada laboral"
+        };
+        result += keys.map((key: string) => headers[key]).join(columnDelimiter);
+    } else {
+        keys = Object.keys(array[0]);
+        result += keys.join(columnDelimiter);
+    }
+    result += lineDelimiter;
     array.forEach((item: any) => {
         let ctr = 0;
         keys.forEach((key: string) => {
             if (ctr > 0) result += columnDelimiter;
-
-            result += item[key];
-
+            if (reference === "workingday" && key === "totalTime" && typeof item[key] === "number"){ 
+                result += convertToHoursAndMinutes(item[key]);
+            } else {result += item[key] !== undefined ? item[key] : "";}
             ctr++;
         });
         result += lineDelimiter;
     });
-
     return result;
 }
 
-function downloadCSV(array: any[], tableTitle: string) {
+function downloadCSV(array: any[], tableTitle: string, reference: string) {
     const link = document.createElement("a");
-    let csv = convertArrayOfObjectsToCSV(array);
-    if (csv == null) return;
+    let csv = convertArrayOfObjectsToCSV(array, reference);
+    if (csv === "") return;
 
     const filename = `${tableTitle}.csv`;
 
@@ -95,6 +118,47 @@ const MainFormModal = ({ onMainFormModal }: UploadDataButtonModalProps) => (
         <VscAdd size={18} className="" />
     </Button>
 );
+
+// Componente para la fecha de inicio
+const StartDayInput = ({ startDate, setStartDate }
+    : { startDate: string, setStartDate: (value: string) => void}) => (
+    <Form.Group controlId="startDate">
+        <Form.Label>Fecha Inicio</Form.Label>
+        <Form.Control
+            type="date"
+            value={startDate || ''}
+            onChange={(e) => {
+                setStartDate(e.target.value)
+            }}
+            max={new Date().toISOString().split("T")[0]} // Establece la fecha máxima como hoy
+        />
+    </Form.Group>
+);
+
+// Componente para la fecha de fin
+const EndDayInput = ({ endDate, startDate, setEndDate}
+    : { endDate: string, startDate: string , setEndDate: (value: string) => void}) => (
+    <Form.Group controlId="endDate">
+        <Form.Label>Fecha Fin</Form.Label>
+        <Form.Control
+            type="date"
+            value={endDate || ''}
+            onChange={(e) => {
+                setEndDate(e.target.value); // Actualiza el estado
+            }}
+            max={new Date().toISOString().split("T")[0]} // Establece la fecha máxima como hoy
+            min={startDate}
+            disabled={!startDate}
+        />
+    </Form.Group>
+);
+
+const Filter = ({ handleSearchAndFilter }: {handleSearchAndFilter: (e: any) => void; }) => (
+    <Button onClick={handleSearchAndFilter}>
+        Filtrar
+    </Button>
+);
+
 
 const UploadDataPdfModal = ({
     onUploadDataModalPdf,
@@ -134,14 +198,18 @@ export const ExportCSV = ({
     tableTitle,
     reference,
     isEmptyDataRef,
-    handleSearch,
+    handleSearchAndFilter,
     searchTerm,
     clearSearch,
+    startDate, 
+    setStartDate,
+    endDate, 
+    setEndDate,
 }: UploadDataModalProps) => {
     const actionsMemo = useMemo(() => {
         return (
-            <div className="tw-flex tw-justify-between tw-w-full tw-space-x-4">
-                <div className="tw-flex tw-w-1/2 tw-relative">
+            <div className="tw-flex tw-justify-between tw-w-full tw-space-x-4 tw-items-center">
+                <div className="tw-flex tw-w-1/2 tw-h-1/2 tw-relative">
                     <Form.Control
                         value={searchTerm}
                         name="search"
@@ -151,9 +219,9 @@ export const ExportCSV = ({
                         placeholder="Búsqueda"
                         className="form-control tw-w-full"
                         aria-label="search"
-                        onChange={handleSearch}
+                        onChange={handleSearchAndFilter}
                     />
-                    {searchTerm && (
+                    {(searchTerm || endDate) && (
                         <Button
                             className="tw-absolute tw-right-0 tw-bottom-0 text-gray-500 hover:text-gray-700"
                             onClick={clearSearch}
@@ -162,13 +230,28 @@ export const ExportCSV = ({
                         </Button>
                     )}
                 </div>
-                <div className="tw-space-x-4">
+                <div className="tw-flex tw-items-center tw-space-x-4">
+                    {["workingday"].includes(reference) && (
+                        <>
+                            <StartDayInput 
+                                startDate={startDate}
+                                setStartDate={setStartDate} 
+                            />
+                            <EndDayInput 
+                                endDate={endDate}
+                                startDate={startDate}
+                                setEndDate={setEndDate}
+                            />
+                            <Filter handleSearchAndFilter={handleSearchAndFilter} />
+                        </>
+                    )}
                     {![
                         "roles",
                         "country",
                         "departments",
                         "cities",
                         "documentTypes",
+                        "workingday"
                     ].includes(reference) &&
                         onMainFormModal && (
                             <MainFormModal onMainFormModal={onMainFormModal} />
@@ -186,7 +269,7 @@ export const ExportCSV = ({
                     )}
                     {data.length > 0 && (
                         <Export
-                            onExport={() => downloadCSV(data, tableTitle)}
+                            onExport={() => downloadCSV(tableData?.data ?? [], tableTitle, reference)}
                         />
                     )}
                 </div>
@@ -194,7 +277,11 @@ export const ExportCSV = ({
         );
     }, [
         searchTerm,
-        handleSearch,
+        startDate, 
+        setStartDate,
+        endDate, 
+        setEndDate,
+        handleSearchAndFilter,
         clearSearch,
         reference,
         onMainFormModal,
