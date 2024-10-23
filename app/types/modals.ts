@@ -13,6 +13,19 @@ export interface ModalParamsMainForm {
     reference: string;
     title: string;
     editData: any;
+    data?: any;
+    handleDeleteItem?: any
+}
+
+export interface ModalIcons {
+    show: boolean,
+    handleClose: any,
+    title?: string;
+    dataLogos: any
+    handleDataNetworks: (text: any, index: any) => void;
+    itemKey: any;
+    val: any;
+    modeTheme: string
 }
 
 export interface ModalParamsPdf {

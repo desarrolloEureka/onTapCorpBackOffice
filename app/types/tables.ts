@@ -6,7 +6,7 @@ export interface UploadDataModalProps {
     onUploadDataModalCsv?: () => void;
     onMainFormModal?: () => void;
     onMainFormModalEdit: (e: any) => void;
-    handleSearch: (e: any) => void;
+    handleSearchAndFilter: (e: any) => void;
     data: any;
     tableData?: setDataTable;
     columns: any;
@@ -14,6 +14,10 @@ export interface UploadDataModalProps {
     tableTitle: string;
     reference: string;
     searchTerm: string;
+    startDate: string;
+    setStartDate: (value: any) => void;
+    endDate: string;
+    setEndDate: (value: any) => void;
     clearSearch: () => void;
     isEmptyDataRef: boolean;
 }
@@ -21,7 +25,6 @@ export interface UploadDataButtonModalProps {
     onUploadDataModalPdf?: () => void;
     onUploadDataModalCsv?: () => void;
     onMainFormModal?: () => void;
-    campusIsEmpty?: boolean;
 }
 export interface TableDataItemOld {
     id: string;
@@ -79,7 +82,6 @@ export interface TableDataObject {
     specialty: string;
     contract: string;
     rol: string;
-    campus: string;
     area: string;
     urlPhoto: string;
     timestamp: Date;

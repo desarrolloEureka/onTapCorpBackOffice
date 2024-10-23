@@ -1,5 +1,7 @@
-import { User, onAuthStateChanged } from "firebase/auth";
-import { getDoc, doc, DocumentReference } from "firebase/firestore";
+"use client";
+import { getDocumentsByIdQuery } from "@/queries/documentsQueries";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { auth, db } from "shared/firebase/firebase";
 
@@ -16,11 +18,13 @@ const useAuth = () => {
     const [role, setRole] = useState<Role | null>();
     const [error, setError] = useState<string>();
     const [accessTokenUser, setAccessTokenUser] = useState<string>("");
+    const [userData, setUserData] = useState<any>();
+    const [companyData, setCompanyData] = useState<any>();
 
     const getRole = useCallback(async () => {
         if (user) {
             // Obtiene el documento del usuario desde Firestore
-            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            const userDoc = await getDoc(doc(db, "users", user.uid));
 
             if (userDoc.exists()) {
                 const userData = userDoc.data();
@@ -33,24 +37,28 @@ const useAuth = () => {
                     id: roleId,
                     name: "",
                     slug: "",
-                    isAdmin: false
+                    isAdmin: false,
                 };
 
                 switch (roleId) {
-                    case "vE7NrHpiRU2s1Gjv5feg":
+                    //case "vE7NrHpiRU2s1Gjv5feg":  // UID SUPERADMIN DESARROLLO
+                    case "xzF2CqDF9xvbsrazI6Md":  // UID SUPERADMIN PRODUCCION
                         role.name = "Superadmin";
                         role.slug = "superadmin";
                         break;
-                    case "LJTfIeCONNjlxsyooofx":
+                    //case "LJTfIeCONNjlxsyooofx": // UID Seguimiento y reportes del Backoffice DESARROLLO
+                    case "THgHuVWvN3UGrrXiFjMr":  // UID Seguimiento y reportes del Backoffice PRODUCCION
                         role.name = "Operativo";
                         role.slug = "operativo";
                         break;
-                    case "TZ3vIk6qaQ97Pej1qqwV":
+                    //case "TZ3vIk6qaQ97Pej1qqwV": // UID Administrador de la empresa DESARROLLO
+                    case "pLBTcNDk2DtYwgJzrtFE":  // UID Administrador de la empresa PRODUCCION
                         role.name = "Administrativo";
                         role.slug = "administrativo";
                         role.isAdmin = true;
                         break;
-                    case "uysG1ULyEDklfbGDFate":
+                    //case "uysG1ULyEDklfbGDFate": //  UID Empleados de la empresa DESARROLLO
+                    case "9nBswv3gVcLukzhQtvM3":    // UID Empleados de la empresa PRODUCCION
                         role.name = "Empleado";
                         role.slug = "empleado";
                         break;
@@ -62,16 +70,33 @@ const useAuth = () => {
 
                 // Guardar solo el slug en el almacenamiento local
                 setRole(role);
-                await localStorage.setItem('userRoleSlug', role.slug); // Guarda el rol en localStorage
+                await localStorage.setItem("userRoleSlug", role.slug); // Guarda el rol en localStorage
             } else {
                 setRole(null);
-                localStorage.removeItem('userRoleSlug'); // Limpia el rol si no existe
+                localStorage.removeItem("userRoleSlug"); // Limpia el rol si no existe
             }
         } else if (user === null) {
             setRole(null);
-            localStorage.removeItem('userRoleSlug'); // Limpia el rol si no hay usuario
+            localStorage.removeItem("userRoleSlug"); // Limpia el rol si no hay usuario
         }
-    }, [user])
+    }, [user]);
+
+    const getUserData = useCallback(async () => {
+        if (user) {
+            const userId: string | undefined = user?.uid;
+            // Obtiene el documento del usuario desde Firestore
+            const userDoc = await getDoc(doc(db, "users", userId));
+            userDoc && setUserData(userDoc.data());
+
+            if (userDoc.data()?.companyId) {
+                const result = await getDocumentsByIdQuery(
+                    "companies",
+                    userDoc.data()?.companyId,
+                );
+                result && setCompanyData(result);
+            }
+        }
+    }, [user]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, setUser, (error: any) => {
@@ -79,9 +104,6 @@ const useAuth = () => {
         });
         return () => {
             unsubscribe();
-            // if (user !== undefined) {
-            //     setIsLoading(false);
-            // }
         };
     }, []);
 
@@ -91,17 +113,19 @@ const useAuth = () => {
 
     useEffect(() => {
         if (user !== undefined) {
+            getUserData();
             setIsLoading(false);
             user?.getIdToken().then((token) => setAccessTokenUser(token));
-            // console.log(accessTokenUser);
         }
-    }, [user, accessTokenUser]);
+    }, [user, accessTokenUser, getUserData]);
 
     return {
         isLoading,
         user,
         error,
         accessTokenUser,
+        userData,
+        companyData,
     };
 };
 export default useAuth;

@@ -11,6 +11,8 @@ import { MouseEvent, useMemo } from "react";
 import { Button, Form } from "react-bootstrap";
 import DataTable, { createTheme } from "react-data-table-component";
 import "react-data-table-component-extensions/dist/index.css";
+import { TfiClose, TfiExport } from "react-icons/tfi";
+import { VscAdd } from "react-icons/vsc";
 // import Swal from "sweetalert2";
 
 const DataTableExtensions: any = dynamic(
@@ -23,41 +25,64 @@ createTheme("solarized", "dark");
 const customStyles = {
     headCells: {
         style: {
-            color: "#e9a225",
+            color: "#8bb8e7",
         },
     },
 };
 
-function convertArrayOfObjectsToCSV(array: object[]): string {
+function convertArrayOfObjectsToCSV(array: object[], reference: string): string {
+    if (array.length < 1) { return ""}
     let result: string;
+    let keys: any;
 
     const columnDelimiter = ",";
     const lineDelimiter = "\n";
-    const keys = Object.keys(array[0]);
-
     result = "";
-    result += keys.join(columnDelimiter);
-    result += lineDelimiter;
 
+    const convertToHoursAndMinutes = (horaDuracionISO: number): string => {
+        const hours = Math.floor((horaDuracionISO % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.ceil((horaDuracionISO % (1000 * 60 * 60)) / (1000 * 60));
+        return `${hours} hora${hours !== 1 ? 's' : ''} y ${minutes} minuto${minutes !== 1 ? 's' : ''}`;
+    };
+
+    if( reference == "workingday") {
+        keys = ["firstName", "lastName", "documentType", "documentNumber", "position", "longitude", "latitude", "startDay", "endDay", "totalTime"];
+        const headers: Record<string, string> = {
+            firstName: "Nombres",
+            lastName: "Apellidos",
+            documentType: "Tipo de Documento",
+            documentNumber: "Numero de Documento",
+            position: "Posicion",
+            longitude: "Longitud",
+            latitude: "Latitud",
+            startDay: "Inicio jornada",
+            endDay: "Final jornada",
+            totalTime: "Jornada laboral"
+        };
+        result += keys.map((key: string) => headers[key]).join(columnDelimiter);
+    } else {
+        keys = Object.keys(array[0]);
+        result += keys.join(columnDelimiter);
+    }
+    result += lineDelimiter;
     array.forEach((item: any) => {
         let ctr = 0;
         keys.forEach((key: string) => {
             if (ctr > 0) result += columnDelimiter;
-
-            result += item[key];
-
+            if (reference === "workingday" && key === "totalTime" && typeof item[key] === "number"){ 
+                result += convertToHoursAndMinutes(item[key]);
+            } else {result += item[key] !== undefined ? item[key] : "";}
             ctr++;
         });
         result += lineDelimiter;
     });
-
     return result;
 }
 
-function downloadCSV(array: any[], tableTitle: string) {
+function downloadCSV(array: any[], tableTitle: string, reference: string) {
     const link = document.createElement("a");
-    let csv = convertArrayOfObjectsToCSV(array);
-    if (csv == null) return;
+    let csv = convertArrayOfObjectsToCSV(array, reference);
+    if (csv === "") return;
 
     const filename = `${tableTitle}.csv`;
 
@@ -78,7 +103,7 @@ const Export = ({ onExport }: ExportProps) => (
             onExport(e.currentTarget.value)
         }
     >
-        Exportar
+        <TfiExport size={18} className="" />
     </Button>
 );
 
@@ -88,14 +113,52 @@ const UploadDataCsvModal = ({
     <Button onClick={onUploadDataModalCsv}>Subir Csv</Button>
 );
 
-const MainFormModal = ({
-    onMainFormModal,
-    campusIsEmpty,
-}: UploadDataButtonModalProps) => (
-    <Button disabled={campusIsEmpty} onClick={onMainFormModal}>
-        Nuevo
+const MainFormModal = ({ onMainFormModal }: UploadDataButtonModalProps) => (
+    <Button onClick={onMainFormModal}>
+        <VscAdd size={18} className="" />
     </Button>
 );
+
+// Componente para la fecha de inicio
+const StartDayInput = ({ startDate, setStartDate }
+    : { startDate: string, setStartDate: (value: string) => void}) => (
+    <Form.Group controlId="startDate">
+        <Form.Label>Fecha Inicio</Form.Label>
+        <Form.Control
+            type="date"
+            value={startDate || ''}
+            onChange={(e) => {
+                setStartDate(e.target.value)
+            }}
+            max={new Date().toISOString().split("T")[0]} // Establece la fecha máxima como hoy
+        />
+    </Form.Group>
+);
+
+// Componente para la fecha de fin
+const EndDayInput = ({ endDate, startDate, setEndDate}
+    : { endDate: string, startDate: string , setEndDate: (value: string) => void}) => (
+    <Form.Group controlId="endDate">
+        <Form.Label>Fecha Fin</Form.Label>
+        <Form.Control
+            type="date"
+            value={endDate || ''}
+            onChange={(e) => {
+                setEndDate(e.target.value); // Actualiza el estado
+            }}
+            max={new Date().toISOString().split("T")[0]} // Establece la fecha máxima como hoy
+            min={startDate}
+            disabled={!startDate}
+        />
+    </Form.Group>
+);
+
+const Filter = ({ handleSearchAndFilter }: {handleSearchAndFilter: (e: any) => void; }) => (
+    <Button onClick={handleSearchAndFilter}>
+        Filtrar
+    </Button>
+);
+
 
 const UploadDataPdfModal = ({
     onUploadDataModalPdf,
@@ -135,20 +198,18 @@ export const ExportCSV = ({
     tableTitle,
     reference,
     isEmptyDataRef,
-    handleSearch,
+    handleSearchAndFilter,
     searchTerm,
     clearSearch,
+    startDate, 
+    setStartDate,
+    endDate, 
+    setEndDate,
 }: UploadDataModalProps) => {
-    // const [selectedRows, setSelectedRows] = React.useState([]);
-    // const [toggleCleared, setToggleCleared] = React.useState(false);
-    // const [dataTable, setDataTable] = React.useState(data);
-
-    const campusIsEmpty = isEmptyDataRef && reference === "areas";
-
     const actionsMemo = useMemo(() => {
         return (
-            <>
-                <div className="tw-flex tw-flex-1 tw-relative">
+            <div className="tw-flex tw-justify-between tw-w-full tw-space-x-4 tw-items-center">
+                <div className="tw-flex tw-w-1/2 tw-h-1/2 tw-relative">
                     <Form.Control
                         value={searchTerm}
                         name="search"
@@ -158,48 +219,77 @@ export const ExportCSV = ({
                         placeholder="Búsqueda"
                         className="form-control tw-w-full"
                         aria-label="search"
-                        onChange={handleSearch}
+                        onChange={handleSearchAndFilter}
                     />
-                    {searchTerm && (
+                    {(searchTerm || endDate) && (
                         <Button
                             className="tw-absolute tw-right-0 tw-bottom-0 text-gray-500 hover:text-gray-700"
                             onClick={clearSearch}
                         >
-                            Limpiar
+                            <TfiClose size={16} className="" />
                         </Button>
                     )}
                 </div>
-                {!["roles", "country", "departments", "cities", "documentTypes"].includes(reference) && onMainFormModal && (
-                    <MainFormModal
-                        campusIsEmpty={campusIsEmpty}
-                        onMainFormModal={onMainFormModal}
-                    />
-                )}
-                {refToShowButtonCsv.includes(reference) &&
-                    onUploadDataModalCsv && (
-                        <UploadDataCsvModal
-                            onUploadDataModalCsv={onUploadDataModalCsv}
+                <div className="tw-flex tw-items-center tw-space-x-4">
+                    {["workingday"].includes(reference) && (
+                        <>
+                            <StartDayInput 
+                                startDate={startDate}
+                                setStartDate={setStartDate} 
+                            />
+                            <EndDayInput 
+                                endDate={endDate}
+                                startDate={startDate}
+                                setEndDate={setEndDate}
+                            />
+                            <Filter handleSearchAndFilter={handleSearchAndFilter} />
+                        </>
+                    )}
+                    {![
+                        "roles",
+                        "country",
+                        "departments",
+                        "cities",
+                        "documentTypes",
+                        "workingday"
+                    ].includes(reference) &&
+                        onMainFormModal && (
+                            <MainFormModal onMainFormModal={onMainFormModal} />
+                        )}
+                    {refToShowButtonCsv.includes(reference) &&
+                        onUploadDataModalCsv && (
+                            <UploadDataCsvModal
+                                onUploadDataModalCsv={onUploadDataModalCsv}
+                            />
+                        )}
+                    {onUploadDataModalPdf && (
+                        <UploadDataPdfModal
+                            onUploadDataModalPdf={onUploadDataModalPdf}
                         />
                     )}
-                {onUploadDataModalPdf && (
-                    <UploadDataPdfModal
-                        onUploadDataModalPdf={onUploadDataModalPdf}
-                    />
-                )}
-                {data.length > 0 && (
-                    <Export onExport={() => downloadCSV(data, tableTitle)} />
-                )}
-            </>
+                    {data.length > 0 && (
+                        <Export
+                            onExport={() => downloadCSV(tableData?.data ?? [], tableTitle, reference)}
+                        />
+                    )}
+                </div>
+            </div>
         );
-    }, [searchTerm, handleSearch, clearSearch, reference, onMainFormModal, campusIsEmpty, onUploadDataModalCsv, onUploadDataModalPdf, data, tableTitle]);
-
-    // const handleRowSelected = React.useCallback((state: any) => {
-    //     setSelectedRows(state.selectedRows);
-    // }, []);
-
-    const handleRowEdit = (row: any, event: any) => {
-        // console.log(row);
-    };
+    }, [
+        searchTerm,
+        startDate, 
+        setStartDate,
+        endDate, 
+        setEndDate,
+        handleSearchAndFilter,
+        clearSearch,
+        reference,
+        onMainFormModal,
+        onUploadDataModalCsv,
+        onUploadDataModalPdf,
+        data,
+        tableTitle,
+    ]);
 
     const conditionalRowStyles = [
         {
@@ -217,85 +307,28 @@ export const ExportCSV = ({
         selectAllRowsItemText: "Todos",
     };
 
-    // const contextActionsMemo = React.useMemo(() => {
-    //     const handleDelete = () => {
-    //         Swal.fire({
-    //             title: `Are you sure you want to delete:\r ${selectedRows.map(
-    //                 (r: TableDataItemOld) => r.SNO,
-    //             )}?`,
-    //             text: "You won't be able to revert this!",
-    //             icon: "warning",
-    //             showCancelButton: true,
-    //             // confirmButtonColor: "#3085d6",
-    //             // cancelButtonColor: "#d33",
-    //             confirmButtonText: "Yes, delete it!",
-    //         }).then((result) => {
-    //             if (result.isConfirmed) {
-    //                 Swal.fire(
-    //                     "Deleted!",
-    //                     "Your file has been deleted.",
-    //                     "success",
-    //                 );
-    //                 setToggleCleared(!toggleCleared);
-    //                 setDataTable(differenceBy(dataTable, selectedRows, "SNO"));
-    //             } else {
-    //                 setToggleCleared(!toggleCleared);
-    //             }
-    //         });
-    //     };
-
-    //     return (
-    //         <Button key="delete" onClick={handleDelete}>
-    //             Delete
-    //         </Button>
-    //     );
-    // }, [dataTable, selectedRows, toggleCleared]);
-
-    const tableDatas = campusIsEmpty
-        ? {
-            columns: [],
-            data: [],
-        }
-        : tableData;
-
     return (
         <DataTableExtensions
             export={false}
             print={false}
             filter={false}
-            {...tableDatas}
+            {...tableData}
             filterPlaceholder="Buscar"
         >
             <DataTable
-                // selectableRows
-                // contextActions={contextActionsMemo}
-                // clearSelectedRows={toggleCleared}
-                // onRowClicked={handleRowEdit}
-                // onSelectedRowsChange={handleRowSelected}
-                // conditionalRowStyles={conditionalRowStyles}
                 noDataComponent={
                     <NoDataCard
                         emptyRef={isEmptyDataRef}
                         reference={reference}
                     />
                 }
-                onRowClicked={(row: any, event) => {
-                    if (!["roles", "country", "departments", "cities", "documentTypes"].includes(reference) && !row.isDeleted) {
-                        onMainFormModalEdit(row);
-                    }
-                }}
-                // onRowClicked={onMainFormModalEdit}
-                pointerOnHover={reference !== "roles"}
                 defaultSortFieldId={2}
                 columns={columns}
                 data={data}
-                // data={dataTable}
                 actions={actionsMemo}
                 pagination
                 paginationComponentOptions={paginationComponentOptions}
                 highlightOnHover
-                // title={tableTitle}
-                // progressPending={dataTable ? false : true}
                 theme="solarized"
                 customStyles={customStyles}
             />

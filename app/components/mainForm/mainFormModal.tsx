@@ -1,91 +1,126 @@
 import {
-    // areas,
-    // campus,
     ColombianStates,
-    // contracts,
     countries,
     getCities,
     idTypes,
     isActiveData,
-    // specialties,
-    personTypes,
 } from "@/data/formConstant";
 import { ModalParamsMainForm } from "@/types/modals";
-import "filepond/dist/filepond.min.css";
-import _ from "lodash";
-import dynamic from "next/dynamic";
+import AddCardOutlinedIcon from "@mui/icons-material/AddCardOutlined";
+import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
+import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
+import GpsFixedOutlinedIcon from "@mui/icons-material/GpsFixedOutlined";
+import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 import {
-    Alert,
-    Button,
-    Col,
-    Form,
-    InputGroup,
-    Modal,
-    Row,
-} from "react-bootstrap";
-import { FilePond } from "react-filepond";
-import MainFormHook from "./hook/mainFormHook";
-const Select = dynamic(() => import("react-select"), { ssr: false });
-import { components } from "react-select";
-import { showPasswordParams } from "@/types/mainForm";
-import makeAnimated from "react-select/animated";
-import PhoneInput from "react-phone-input-2";
+    IconButton,
+    InputAdornment,
+    PaletteMode,
+    TextField,
+    Typography,
+} from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import _ from "lodash";
 import moment from "moment";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import { Alert, Button, Col, Form, Modal, Row } from "react-bootstrap";
+import { BsFillTelephoneForwardFill, BsPersonVcard } from "react-icons/bs";
+import { FaPhone } from "react-icons/fa6";
+import { FiEdit } from "react-icons/fi";
+import { GrNext, GrPrevious } from "react-icons/gr";
+import { HiOutlineCheckCircle } from "react-icons/hi";
+import { ImCancelCircle } from "react-icons/im";
+import { IoMdClose } from "react-icons/io";
+import { IoBusinessSharp, IoPersonSharp } from "react-icons/io5";
+import {
+    MdAccessTime,
+    MdBusinessCenter,
+    MdEmail,
+    MdLocationPin,
+} from "react-icons/md";
+import { RiSave2Fill } from "react-icons/ri";
+import { VscSave } from "react-icons/vsc";
+import CustomMUITelInput from "../company/components/CustomMUITelInput";
+import CustomSelect from "../company/components/CustomSelect";
+import CustomTextField from "../company/components/CustomTextField";
+import MainFormHook from "./hook/mainFormHook";
 
-const animatedComponents = makeAnimated();
+const Select = dynamic(() => import("react-select"), { ssr: false });
 
-const { Option } = components;
+// const animatedComponents = makeAnimated();
 
-const IconOption = (props: any) => (
-    <Option {...props}>
-        <div>
-            <span className={`status bg-${props.data.statusInfo}`}></span>
-            {props.data.label}
-        </div>
-    </Option>
-);
+// const { Option } = components;
 
-const customStyles = (theme: any) => ({
-    control: (provided: any, state: any) => ({
-        ...provided,
-        backgroundColor: state.isDisabled
-            ? theme === "dark"
-                ? "#565656"
-                : "#f0f0f0"
-            : theme === "light"
-            ? "white"
-            : "#3a3a3d",
-    }),
-});
+// const IconOption = (props: any) => (
+//     <Option {...props}>
+//         <div>
+//             <span className={`status bg-${props.data.statusInfo}`}></span>
+//             {props.data.label}
+//         </div>
+//     </Option>
+// );
 
-const dot = (color = "transparent") => ({
-    alignItems: "center",
-    display: "flex",
+// const customStyles = (theme: any) => ({
+//     control: (provided: any, state: any) => ({
+//         ...provided,
+//         backgroundColor: state.isDisabled
+//             ? theme === "dark"
+//                 ? "#565656"
+//                 : "#f0f0f0"
+//             : theme === "light"
+//             ? "white"
+//             : "#3a3a3d",
+//     }),
+// });
 
-    ":before": {
-        backgroundColor: color,
-        borderRadius: 10,
-        content: '" "',
-        display: "block",
-        marginRight: 8,
-        height: 7,
-        width: 7,
-    },
-});
+// const dot = (color = "transparent") => ({
+//     alignItems: "center",
+//     display: "flex",
 
-const ShowPasswordButton = ({ show, setShow }: showPasswordParams) => (
-    <Button
-        variant="outline-primary"
-        className="btn btn-icon btn-wave"
-        onClick={() => setShow(!show)}
-    >
-        {show ? (
-            <i className="fe fe-eye-off"></i>
-        ) : (
-            <i className="fe fe-eye"></i>
-        )}
-    </Button>
-);
+//     ":before": {
+//         backgroundColor: color,
+//         borderRadius: 10,
+//         content: '" "',
+//         display: "block",
+//         marginRight: 8,
+//         height: 7,
+//         width: 7,
+//     },
+// });
+
+// const ShowPasswordButton = ({ show, setShow }: showPasswordParams) => (
+//     <Button
+//         variant="outline-primary"
+//         className="btn btn-icon btn-wave"
+//         onClick={() => setShow(!show)}
+//     >
+//         {show ? (
+//             <i className="fe fe-eye-off"></i>
+//         ) : (
+//             <i className="fe fe-eye"></i>
+//         )}
+//     </Button>
+// );
+
+// const TooltipComponent = ({
+//     id,
+//     children,
+//     title,
+// }: {
+//     id: string;
+//     children: any;
+//     title: string;
+// }) => (
+//     <OverlayTrigger
+//         placement="bottom"
+//         delay={{ show: 150, hide: 400 }}
+//         overlay={<Tooltip id={id}>{title}</Tooltip>}
+//     >
+//         {children}
+//     </OverlayTrigger>
+// );
 
 const MainFormModal = ({
     handleShowMainForm,
@@ -99,57 +134,28 @@ const MainFormModal = ({
     const {
         show,
         errorForm,
-        showPassword,
         isLoading,
         data,
-        selectedRol,
-        selectedIdType,
-        selectedState,
-        selectedCountry,
-        selectedCity,
-        selectedSpecialty,
-        selectedContract,
-        selectedStatus,
-        selectedCampus,
-        selectedAvailableCampus,
-        selectedArea,
         isEdit,
         errorPass,
-        campus,
-        specialties,
-        contracts,
-        areas,
-        roles,
-        theme,
+        modeTheme,
         errorValid,
+        nextStep,
+        companyVal,
+        fileNameIcon,
+        fileNamePhoto,
+        setNextStep,
         setErrorPass,
         setErrorValid,
         handleSendForm,
         handleClose,
         handleReset,
         setErrorForm,
-        changeHandler,
-        clearSelectFields,
-        dateChangeHandler,
-        selectChangeHandlerIdType,
-        setShowPassword,
-        selectChangeHandlerRol,
-        selectChangeHandlerCampus,
-        selectChangeHandlerAvailableCampus,
-        selectChangeHandlerArea,
-        selectChangeHandlerStatus,
-        selectChangeHandlerContract,
-        selectChangeHandlerSpecialty,
-        selectChangeHandlerCity,
-        selectChangeHandlerCountry,
-        selectChangeHandlerState,
-        phoneChangeHandler,
-        phoneTwoChangeHandler,
+        handleChange,
         findValue,
         handleEditForm,
         handleMultipleChange,
-        selectChangeHandlerPersonType,
-        areasByCampus,
+        handleIconFileChange,
     } = MainFormHook({
         handleShowMainForm,
         setHandleShowMainForm,
@@ -160,1843 +166,2454 @@ const MainFormModal = ({
         reference,
     });
 
+    const theme = createTheme({
+        palette: {
+            mode: modeTheme as PaletteMode,
+        },
+    });
+
     return (
-        <Modal size="xl" centered show={show} onHide={handleClose}>
-            <Form
-                // noValidate
-                // validated={errorForm}
-                onReset={handleReset}
-                onSubmit={handleSendForm}
+        data && (
+            <Modal
+                size={reference === "companies" ? "xl" : "lg"}
+                centered
+                show={show}
+                onHide={handleClose}
+                aria-hidden="false"
+                aria-modal="true"
+                contentClassName={
+                    reference !== "companies" ? "modal-admin" : ""
+                }
             >
-                <Modal.Header closeButton>
-                    <Modal.Title
-                        className="tw-text-[#e9a225]"
-                        as="h6"
-                    >{`Nuevo Registro ${title}`}</Modal.Title>
-                </Modal.Header>
-                {isEdit ? (
-                    <Modal.Body className="tw-px-8">
-                        <Row>
-                            {reference !== "campus" &&
-                                reference !== "specialties" &&
-                                reference !== "agreements" &&
-                                reference !== "diagnoses" &&
-                                reference !== "companies" &&
-                                reference !== "areas" && (
-                                    <>
-                                        <Col md={6} lg={4} className="mb-3">
-                                            <Form.Group controlId="idType">
-                                                <Form.Label className="">
-                                                    Tipo Documento
-                                                    <span className="tw-text-red-500">
-                                                        *
-                                                    </span>
-                                                </Form.Label>
-                                                <Select
-                                                    required
-                                                    noOptionsMessage={({
-                                                        inputValue,
-                                                    }) =>
-                                                        `No hay resultados para "${inputValue}"`
-                                                    }
-                                                    value={
-                                                        data.idType
-                                                            ? idTypes.find(
-                                                                  (value) =>
-                                                                      findValue(
-                                                                          value,
-                                                                          data.idType,
-                                                                      ),
-                                                              )
-                                                            : []
-                                                    }
-                                                    defaultValue={
-                                                        selectedIdType
-                                                    }
-                                                    placeholder="Seleccione"
-                                                    isClearable
-                                                    name="idType"
-                                                    options={idTypes}
-                                                    id="idType"
-                                                    className="basic-multi-select"
-                                                    classNamePrefix="Select2"
-                                                    onChange={
-                                                        selectChangeHandlerIdType
-                                                    }
-                                                />
-                                            </Form.Group>
-                                        </Col>
-                                        <Col md={6} lg={4} className="mb-3">
-                                            <Form.Label className="">
-                                                Documento
-                                                <span className="tw-text-red-500">
-                                                    *
-                                                </span>
-                                            </Form.Label>
-                                            <Form.Control
-                                                required
-                                                value={data.id}
-                                                type="text"
-                                                minLength={2}
-                                                maxLength={250}
-                                                name="id"
-                                                className="form-control"
-                                                placeholder="Número"
-                                                onChange={changeHandler}
-                                            />
-                                        </Col>
-                                    </>
-                                )}
-
-                            <Col
-                                md={6}
-                                lg={
-                                    reference !== "agreements" &&
-                                    reference !== "areas" &&
-                                    reference !== "specialties" &&
-                                    reference !== "campus"
-                                        ? 4
-                                        : 6
-                                }
-                                className="mb-3"
-                            >
-                                <Form.Label className="">
-                                    {reference === "functionary" ||
-                                    reference === "professionals" ||
-                                    reference === "patients"
-                                        ? "Nombre/s"
-                                        : "Nombre"}
-                                    <span className="tw-text-red-500">*</span>
-                                </Form.Label>
-                                <Form.Control
-                                    required
-                                    value={data.name}
-                                    type="text"
-                                    minLength={1}
-                                    maxLength={250}
-                                    name="name"
-                                    className="form-control"
-                                    placeholder="Nombres"
-                                    aria-label="First name"
-                                    onChange={changeHandler}
-                                />
-                            </Col>
-                            <Col md={6} lg={4} className="mb-3">
-                                <Form.Label className="">
-                                    NIT
-                                    <span className="tw-text-red-500">*</span>
-                                </Form.Label>
-                                <Form.Control
-                                    required
-                                    value={data.id}
-                                    type="text"
-                                    minLength={2}
-                                    maxLength={250}
-                                    name="id"
-                                    className="form-control"
-                                    placeholder="Número"
-                                    onChange={changeHandler}
-                                />
-                            </Col>
-
-                            {(reference === "campus" ||
-                                reference === "specialties" ||
-                                reference === "areas") && (
-                                <Col md={6} className="mb-3">
-                                    <Form.Label className="">
-                                        Descripción (opcional)
-                                    </Form.Label>
-                                    <Form.Control
-                                        value={data.description}
-                                        type="text"
-                                        minLength={2}
-                                        maxLength={1500}
-                                        name="description"
-                                        className="form-control"
-                                        placeholder="Descripción"
-                                        aria-label="description"
-                                        onChange={changeHandler}
-                                    />
-                                </Col>
-                            )}
-
-                            {reference === "diagnoses" && (
-                                <Col md={6} lg={4} className="mb-3">
-                                    <Form.Label className="">
-                                        Código
-                                        <span className="tw-text-red-500">
-                                            *
-                                        </span>
-                                    </Form.Label>
-                                    <Form.Control
-                                        required
-                                        value={data.code}
-                                        type="text"
-                                        minLength={2}
-                                        maxLength={250}
-                                        name="code"
-                                        className="form-control"
-                                        placeholder="Número"
-                                        aria-label="code"
-                                        onChange={changeHandler}
-                                        // title="Deben ser números del registro"
-                                        // pattern="^[0-9\s]+$"
-                                    />
-                                </Col>
-                            )}
-
-                            {reference === "diagnostician" && (
-                                <Col md={6} lg={4} className="mb-3">
-                                    <Form.Label className="">
-                                        Rut
-                                        <span className="tw-text-red-500">
-                                            *
-                                        </span>
-                                    </Form.Label>
-                                    <Form.Control
-                                        required
-                                        value={data.rut}
-                                        type="text"
-                                        minLength={2}
-                                        maxLength={250}
-                                        name="rut"
-                                        className="form-control"
-                                        placeholder="Número"
-                                        aria-label="rut"
-                                        onChange={changeHandler}
-                                        title="Deben ser números del registro"
-                                        pattern="^[0-9\s]+$"
-                                    />
-                                </Col>
-                            )}
-
-                            {reference === "agreements" && (
-                                <>
-                                    <Col md={6} className="mb-3">
-                                        <Form.Group controlId="idType">
-                                            <Form.Label className="">
-                                                Tipo de Persona
-                                                <span className="tw-text-red-500">
-                                                    *
-                                                </span>
-                                            </Form.Label>
-                                            <Select
-                                                required
-                                                noOptionsMessage={({
-                                                    inputValue,
-                                                }) =>
-                                                    `No hay resultados para "${inputValue}"`
-                                                }
-                                                value={
-                                                    data.personType
-                                                        ? personTypes.find(
-                                                              (value) =>
-                                                                  findValue(
-                                                                      value,
-                                                                      data.personType,
-                                                                  ),
-                                                          )
-                                                        : []
-                                                }
-                                                placeholder="Seleccione"
-                                                isClearable
-                                                name="personType"
-                                                options={personTypes}
-                                                id="personType"
-                                                className="basic-multi-select"
-                                                classNamePrefix="Select2"
-                                                onChange={
-                                                    selectChangeHandlerPersonType
-                                                }
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                    <Col md={6} className="mb-3">
-                                        <Form.Label className="">
-                                            Descuento(%) (Opcional)
-                                            {/* <span className="tw-text-red-500">
-                                                *
-                                            </span> */}
-                                        </Form.Label>
-                                        <Form.Control
-                                            value={data.discount}
-                                            type="text"
-                                            minLength={1}
-                                            maxLength={500}
-                                            name="discount"
-                                            className="form-control"
-                                            placeholder="Porcentaje(%)"
-                                            aria-label="discount"
-                                            onChange={changeHandler}
-                                            title="Debe ingresar porcentaje en números"
-                                            // pattern="^(\%?)?[0-9\s]+$"
-                                        />
-                                    </Col>
-                                </>
-                            )}
-
-                            {reference !== "campus" &&
-                                reference !== "specialties" &&
-                                reference !== "diagnostician" &&
-                                reference !== "diagnoses" &&
-                                reference !== "companies" &&
-                                reference !== "agreements" &&
-                                reference !== "areas" && (
-                                    <Col md={6} lg={4} className="mb-3">
-                                        <Form.Label className="">
-                                            Apellido/s
-                                            <span className="tw-text-red-500">
-                                                *
-                                            </span>
-                                        </Form.Label>
-                                        <Form.Control
-                                            required
-                                            value={data.lastName}
-                                            type="text"
-                                            minLength={1}
-                                            maxLength={250}
-                                            name="lastName"
-                                            className="form-control"
-                                            placeholder="Apellidos"
-                                            aria-label="Last name"
-                                            onChange={changeHandler}
-                                        />
-                                    </Col>
-                                )}
-
-                            {reference === "patients" && (
-                                <>
-                                    <Col md={6} lg={4} className="mb-3">
-                                        <Form.Label className="">
-                                            Fecha Nacimiento
-                                            {/* <span className="tw-text-red-500">
-                                                *
-                                            </span> */}
-                                        </Form.Label>
-                                        <Form.Control
-                                            // required
-                                            value={data.birthDate}
-                                            type="date"
-                                            name="birthDate"
-                                            className=""
-                                            aria-label="birthDate"
-                                            // onChange={handleGetBirthDate}
-                                            onChange={dateChangeHandler}
-                                        />
-                                    </Col>
-                                    <Col md={6} lg={4} className="mb-3">
-                                        <Form.Label className="">
-                                            Edad
-                                        </Form.Label>
-                                        <Form.Control
-                                            value={data.age}
-                                            disabled
-                                            type="number"
-                                            min={0}
-                                            max={9999}
-                                            name="age"
-                                            className=""
-                                            placeholder="Edad"
-                                            aria-label="Age"
-                                            // onChange={changeHandler}
-                                        />
-                                    </Col>
-                                </>
-                            )}
-                            {reference !== "campus" &&
-                                reference !== "specialties" &&
-                                reference !== "diagnoses" &&
-                                reference !== "agreements" &&
-                                reference !== "areas" && (
-                                    <Col
-                                        md={6}
-                                        lg={reference !== "campus" && 4}
-                                        className="mb-3"
-                                    >
-                                        <Form.Label className="">
-                                            Celular
-                                            <span className="tw-text-red-500">
-                                                *
-                                            </span>
-                                        </Form.Label>
-                                        <PhoneInput
-                                            autoFormat={false}
-                                            inputProps={{
-                                                name: "phone",
-                                                required: true,
-                                                pattern:
-                                                    "^(\\+?\\d{1,4})?\\s?\\d{10,15}$",
-                                                title: "Por favor, ingrese un número de teléfono válido",
-                                            }}
-                                            country={"co"}
-                                            specialLabel=""
-                                            placeholder=""
-                                            prefix="+"
-                                            dropdownStyle={{
-                                                color: "black",
-                                                borderRadius: 12,
-                                            }}
-                                            value={data.phone}
-                                            onChange={phoneChangeHandler}
-                                        />
-                                        {/* <Form.Control
-                                            required
-                                            value={data.phone}
-                                            type="tel"
-                                            maxLength={250}
-                                            name="phone"
-                                            className=""
-                                            placeholder="Número"
-                                            aria-label="Phone number"
-                                            onChange={changeHandler}
-                                            title="Deben ser números o caracteres telefónicos"
-                                            pattern="^(\+?)?[0-9\s]+$"
-                                        /> */}
-                                    </Col>
-                                )}
-
-                            {reference !== "specialties" &&
-                                reference !== "agreements" &&
-                                reference !== "diagnoses" &&
-                                reference !== "areas" && (
-                                    <>
-                                        <Col
-                                            md={6}
-                                            lg={reference !== "campus" && 4}
-                                            className="mb-3"
-                                        >
-                                            <Form.Label className="">
-                                                Teléfono fijo (opcional)
-                                            </Form.Label>
-                                            <PhoneInput
-                                                autoFormat={false}
-                                                country={"co"}
-                                                specialLabel=""
-                                                placeholder=""
-                                                prefix="+"
-                                                dropdownStyle={{
-                                                    color: "black",
-                                                    borderRadius: 12,
-                                                }}
-                                                value={data.phone2}
-                                                onChange={phoneTwoChangeHandler}
-                                            />
-                                            {/* <Form.Control
-                                                value={data.phone2}
-                                                type="tel"
-                                                min={0}
-                                                max={999999999999999}
-                                                name="phone2"
-                                                className=""
-                                                placeholder="Número"
-                                                aria-label="Phone number"
-                                                onChange={changeHandler}
-                                            /> */}
-                                        </Col>
-                                        <Col className="mb-3">
-                                            <Form.Label className="">
-                                                Dirección
-                                                {/* <span className="tw-text-red-500">
-                                                    *
-                                                </span> */}
-                                            </Form.Label>
-                                            <Form.Control
-                                                // required
-                                                value={data.address}
-                                                type="text"
-                                                minLength={2}
-                                                maxLength={550}
-                                                name="address"
-                                                className=""
-                                                placeholder="Dirección"
-                                                aria-label="address"
-                                                onChange={changeHandler}
-                                            />
-                                        </Col>
-                                        <Col
-                                            md={6}
-                                            lg={
-                                                reference !== "professionals"
-                                                    ? reference !== "campus"
-                                                        ? 4
-                                                        : 6
-                                                    : 3
-                                            }
-                                            className="mb-3"
-                                        >
-                                            <Form.Label className="">
-                                                País
-                                                {/* <span className="tw-text-red-500">
-                                                    *
-                                                </span> */}
-                                            </Form.Label>
-                                            <Select
-                                                // required
-                                                noOptionsMessage={({
-                                                    inputValue,
-                                                }: any) =>
-                                                    `No hay resultados para "${inputValue}"`
-                                                }
-                                                value={
-                                                    data.country
-                                                        ? countries.find(
-                                                              (value) =>
-                                                                  findValue(
-                                                                      value,
-                                                                      data.country,
-                                                                  ),
-                                                          )
-                                                        : []
-                                                }
-                                                defaultValue={selectedCountry}
-                                                placeholder="País"
-                                                isClearable
-                                                name="country"
-                                                options={countries}
-                                                id="inputCountry"
-                                                className="basic-multi-select"
-                                                classNamePrefix="Select2"
-                                                onChange={(e): any => {
-                                                    selectChangeHandlerCountry(
-                                                        e,
-                                                    );
-                                                }}
-                                            />
-                                        </Col>
-                                        <Col
-                                            md={6}
-                                            lg={
-                                                reference !== "professionals"
-                                                    ? reference !== "campus"
-                                                        ? 4
-                                                        : 6
-                                                    : 3
-                                            }
-                                            className="mb-3"
-                                        >
-                                            <Form.Label className="">
-                                                Departamento
-                                                {/* <span className="tw-text-red-500">
-                                                    *
-                                                </span> */}
-                                            </Form.Label>
-                                            <Select
-                                                // required
-                                                isDisabled={!data.country}
-                                                noOptionsMessage={({
-                                                    inputValue,
-                                                }: any) =>
-                                                    `No hay resultados para "${inputValue}"`
-                                                }
-                                                value={
-                                                    data.country
-                                                        ? ColombianStates.find(
-                                                              (value) =>
-                                                                  findValue(
-                                                                      value,
-                                                                      data.state,
-                                                                  ),
-                                                          )
-                                                        : []
-                                                }
-                                                defaultValue={selectedState}
-                                                placeholder="Departamento"
-                                                isClearable
-                                                name="state"
-                                                options={ColombianStates}
-                                                id="inputState1"
-                                                className="basic-multi-select"
-                                                classNamePrefix="Select2"
-                                                onChange={(value) => {
-                                                    selectChangeHandlerState(
-                                                        value,
-                                                    );
-                                                }}
-                                                styles={customStyles(theme)}
-                                            />
-                                        </Col>
-                                        <Col
-                                            md={6}
-                                            lg={
-                                                reference !== "professionals"
-                                                    ? reference !== "campus"
-                                                        ? 4
-                                                        : 6
-                                                    : 3
-                                            }
-                                            className="mb-3"
-                                        >
-                                            <Form.Label className="">
-                                                Ciudad
-                                                {/* <span className="tw-text-red-500">
-                                                    *
-                                                </span> */}
-                                            </Form.Label>
-                                            <Select
-                                                // required
-                                                isDisabled={
-                                                    !data.state || !data.country
-                                                }
-                                                noOptionsMessage={({
-                                                    inputValue,
-                                                }: any) =>
-                                                    `No hay resultados para "${inputValue}"`
-                                                }
-                                                value={
-                                                    data.state
-                                                        ? getCities(
-                                                              data.state,
-                                                          ).find((value) =>
-                                                              findValue(
-                                                                  value,
-                                                                  data.city,
-                                                              ),
-                                                          )
-                                                        : []
-                                                }
-                                                defaultValue={selectedCity}
-                                                placeholder="Ciudad"
-                                                isClearable
-                                                name="city"
-                                                options={
-                                                    data.state
-                                                        ? getCities(data.state)
-                                                        : []
-                                                }
-                                                id="city"
-                                                className="basic-multi-select"
-                                                classNamePrefix="Select2"
-                                                onChange={
-                                                    selectChangeHandlerCity
-                                                }
-                                                styles={customStyles(theme)}
-                                            />
-                                        </Col>
-                                    </>
-                                )}
-
-                            {reference !== "campus" &&
-                                reference !== "specialties" &&
-                                reference !== "agreements" &&
-                                reference !== "diagnoses" &&
-                                reference !== "areas" && (
-                                    <Col
-                                        md={6}
-                                        lg={reference !== "campus" && 4}
-                                        className="mb-3"
-                                    >
-                                        <Form.Label className="">
-                                            Email
-                                            <span className="tw-text-red-500">
-                                                *
-                                            </span>
-                                        </Form.Label>
-                                        <Form.Control
-                                            disabled={handleShowMainFormEdit}
-                                            required
-                                            value={data.email}
-                                            type="email"
-                                            name="email"
-                                            className=""
-                                            placeholder="Email"
-                                            aria-label="email"
-                                            onChange={changeHandler}
-                                        />
-                                    </Col>
-                                )}
-
-                            {reference !== "campus" &&
-                                reference !== "specialties" &&
-                                reference !== "diagnostician" &&
-                                reference !== "diagnoses" &&
-                                reference !== "agreements" &&
-                                reference !== "areas" && (
-                                    <>
-                                        {handleShowMainForm && (
-                                            <>
-                                                <Col
-                                                    md={6}
-                                                    lg={4}
-                                                    className="mb-3"
-                                                >
-                                                    <Form.Label className="">
-                                                        Contraseña
-                                                        <span className="tw-text-red-500">
-                                                            *
-                                                        </span>
-                                                    </Form.Label>
-                                                    <InputGroup>
-                                                        <Form.Control
-                                                            required
-                                                            value={
-                                                                data.password
-                                                            }
-                                                            type={
-                                                                showPassword
-                                                                    ? "text"
-                                                                    : "password"
-                                                            }
-                                                            minLength={8}
-                                                            maxLength={16}
-                                                            name="password"
-                                                            className="form-control"
-                                                            placeholder="Contraseña"
-                                                            aria-label="password"
-                                                            onChange={
-                                                                changeHandler
-                                                            }
-                                                            title="Debe contener al menos un número y una letra mayúscula y minúscula, y al menos 8 o más caracteres"
-                                                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                                                        />
-                                                        <ShowPasswordButton
-                                                            setShow={
-                                                                setShowPassword
-                                                            }
-                                                            show={showPassword}
-                                                        />
-                                                    </InputGroup>
-                                                </Col>
-                                                <Col
-                                                    md={6}
-                                                    lg={4}
-                                                    className="mb-3"
-                                                >
-                                                    <Form.Label className="">
-                                                        Confirmar Contraseña
-                                                        <span className="tw-text-red-500">
-                                                            *
-                                                        </span>
-                                                    </Form.Label>
-                                                    <InputGroup>
-                                                        <Form.Control
-                                                            required
-                                                            value={
-                                                                data.confirmPassword
-                                                            }
-                                                            type={
-                                                                showPassword
-                                                                    ? "text"
-                                                                    : "password"
-                                                            }
-                                                            minLength={8}
-                                                            maxLength={16}
-                                                            name="confirmPassword"
-                                                            className="form-control"
-                                                            placeholder="Confirmar"
-                                                            aria-label="passwordConfirm"
-                                                            onChange={
-                                                                changeHandler
-                                                            }
-                                                            title="Debe contener al menos un número y una letra mayúscula y minúscula, y al menos 8 o más caracteres"
-                                                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                                                        />
-                                                        <ShowPasswordButton
-                                                            show={showPassword}
-                                                            setShow={
-                                                                setShowPassword
-                                                            }
-                                                        />
-                                                    </InputGroup>
-                                                </Col>
-                                            </>
-                                        )}
-                                    </>
-                                )}
-
-                            {reference === "professionals" && (
-                                <>
-                                    {/* <Col md={6} lg={4} className="mb-3">
-                                        <Form.Label className="">
-                                            Número Tarjeta Profesional *
-                                        </Form.Label>
-                                        <Form.Control
-                                            required
-                                            value={data.cardNumber}
-                                            type="number"
-                                            min={0}
-                                            max={9999999999999999999}
-                                            name="cardNumber"
-                                            className=""
-                                            placeholder="Número"
-                                            aria-label="cardNumber"
-                                            onChange={changeHandler}
-                                        />
-                                    </Col> */}
-                                    {/* <Col md={6} lg={4} className="mb-3">
-                                        <Form.Label className="">
-                                            Registro Médico *
-                                        </Form.Label>
-                                        <Form.Control
-                                            required
-                                            value={data.medicalRecord}
-                                            type="text"
-                                            minLength={1}
-                                            maxLength={25}
-                                            name="medicalRecord"
-                                            className=""
-                                            placeholder="Registro"
-                                            aria-label="medicalRecord"
-                                            onChange={changeHandler}
-                                        />
-                                    </Col> */}
-                                    <Col md={6} lg={4} className="mb-3">
-                                        <Form.Label className="">
-                                            Especialidad
-                                            {/* <span className="tw-text-red-500">
-                                                *
-                                            </span> */}
-                                        </Form.Label>
-                                        <Select
-                                            // required
-                                            noOptionsMessage={({
-                                                inputValue,
-                                            }) =>
-                                                `No hay resultados para "${inputValue}"`
-                                            }
-                                            value={
-                                                data.specialty
-                                                    ? specialties?.find(
-                                                          (value) =>
-                                                              findValue(
-                                                                  value,
-                                                                  data.specialty,
-                                                              ),
-                                                      )
-                                                    : []
-                                            }
-                                            defaultValue={selectedSpecialty}
-                                            placeholder="Seleccionar..."
-                                            isClearable
-                                            name="specialty"
-                                            options={specialties}
-                                            id="specialty"
-                                            className="basic-multi-select"
-                                            classNamePrefix="Select2"
-                                            onChange={
-                                                selectChangeHandlerSpecialty
-                                            }
-                                        />
-                                    </Col>
-                                    <Col md={6} lg={4} className="mb-3">
-                                        <Form.Label className="">
-                                            Convenio (Opcional)
-                                        </Form.Label>
-                                        <Select
-                                            // required
-                                            noOptionsMessage={({
-                                                inputValue,
-                                            }) =>
-                                                `No hay resultados para "${inputValue}"`
-                                            }
-                                            value={
-                                                data.contract
-                                                    ? contracts?.find((value) =>
-                                                          findValue(
-                                                              value,
-                                                              data.contract,
-                                                          ),
-                                                      )
-                                                    : []
-                                            }
-                                            defaultValue={selectedContract}
-                                            placeholder="Seleccionar..."
-                                            isClearable
-                                            name="contract"
-                                            options={contracts}
-                                            id="contract"
-                                            className="basic-multi-select"
-                                            classNamePrefix="Select2"
-                                            onChange={
-                                                selectChangeHandlerContract
-                                            }
-                                        />
-                                    </Col>
-                                </>
-                            )}
-
-                            <Col
-                                md={6}
-                                lg={
-                                    reference !== "campus" &&
-                                    reference !== "areas" &&
-                                    reference !== "specialties" &&
-                                    reference !== "agreements"
-                                        ? 4
-                                        : 6
-                                }
-                                className="mb-3"
-                            >
-                                <Form.Label className="">
-                                    Estado
-                                    <span className="tw-text-red-500">*</span>
-                                </Form.Label>
-                                <Select
-                                    required
-                                    noOptionsMessage={({ inputValue }) =>
-                                        `No hay resultados para "${inputValue}"`
-                                    }
-                                    value={isActiveData.find((value) =>
-                                        findValue(value, data.isActive),
-                                    )}
-                                    defaultValue={selectedStatus}
-                                    placeholder="Estado"
-                                    isClearable
-                                    name="isActive"
-                                    options={isActiveData}
-                                    id="isActive"
-                                    className="basic-multi-select"
-                                    classNamePrefix="Select2"
-                                    onChange={selectChangeHandlerStatus}
-                                    components={{ Option: IconOption }}
-                                    styles={{
-                                        singleValue: (
-                                            styles,
-                                            { data }: any,
-                                        ) => ({
-                                            ...styles,
-                                            ...dot(data.color),
-                                        }),
-                                    }}
-                                />
-                            </Col>
-
-                            {/* {reference !== "specialties" &&
-                                reference !== "agreements" &&
-                                reference !== "diagnostician" && (
-                                    <Col md={6} lg={4} className="mb-3">
-                                        <Form.Label className="">
-                                            Fecha Registro
-                                        </Form.Label>
-                                        <Form.Control
-                                            // disabled
-                                            type="date"
-                                            className=""
-                                            aria-label="dateRegister"
-                                        />
-                                    </Col>
-                                )} */}
-
-                            {reference === "functionary" && (
-                                <>
-                                    <Col md={6} lg={4} className="mb-3">
-                                        <Form.Label className="">
-                                            Rol
-                                            <span className="tw-text-red-500">
-                                                *
-                                            </span>
-                                        </Form.Label>
-                                        <Select
-                                            required
-                                            noOptionsMessage={({
-                                                inputValue,
-                                            }) =>
-                                                `No hay resultados para "${inputValue}"`
-                                            }
-                                            value={
-                                                data.rol
-                                                    ? roles?.find((value) =>
-                                                          findValue(
-                                                              value,
-                                                              data.rol,
-                                                          ),
-                                                      )
-                                                    : []
-                                            }
-                                            defaultValue={selectedRol}
-                                            placeholder="Rol"
-                                            isClearable
-                                            name="rol"
-                                            options={roles}
-                                            id="rol"
-                                            className="basic-multi-select"
-                                            classNamePrefix="Select2"
-                                            onChange={selectChangeHandlerRol}
-                                        />
-                                    </Col>
-
-                                    <Col md={6} lg={4} className="mb-3">
-                                        <Form.Label className="">
-                                            Sede
-                                            <span className="tw-text-red-500">
-                                                *
-                                            </span>
-                                        </Form.Label>
-                                        <Select
-                                            required
-                                            noOptionsMessage={({
-                                                inputValue,
-                                            }) =>
-                                                `No hay resultados para "${inputValue}"`
-                                            }
-                                            value={
-                                                data.campus
-                                                    ? campus?.find((value) =>
-                                                          findValue(
-                                                              value,
-                                                              data.campus,
-                                                          ),
-                                                      )
-                                                    : []
-                                            }
-                                            defaultValue={selectedCampus}
-                                            placeholder="Sede"
-                                            isClearable
-                                            name="campus"
-                                            options={_.sortBy(campus, [
-                                                "label",
-                                            ])}
-                                            id="campus"
-                                            className="basic-multi-select"
-                                            classNamePrefix="Select2"
-                                            onChange={selectChangeHandlerCampus}
-                                        />
-                                    </Col>
-                                </>
-                            )}
-
-                            {reference === "areas" && (
-                                <Col md={6} className="mb-3">
-                                    <Form.Label className="">
-                                        Sedes
-                                        <span className="tw-text-red-500">
-                                            *
-                                        </span>
-                                    </Form.Label>
-                                    <Select
-                                        required
-                                        noOptionsMessage={({ inputValue }) =>
-                                            `No hay resultados para "${inputValue}"`
-                                        }
-                                        value={
-                                            data.availableCampus
-                                                ? campus?.filter((item) =>
-                                                      data.availableCampus.includes(
-                                                          item.value,
-                                                      ),
-                                                  )
-                                                : []
-                                        }
-                                        defaultValue={selectedAvailableCampus}
-                                        placeholder="Sedes Disponibles"
-                                        name="availableCampus"
-                                        id="availableCampus"
-                                        // closeMenuOnSelect={false}
-                                        components={animatedComponents}
-                                        isMulti
-                                        options={_.sortBy(campus, ["label"])}
-                                        className="basic-multi-select"
-                                        classNamePrefix="Select2"
-                                        onChange={
-                                            selectChangeHandlerAvailableCampus
-                                        }
-                                    />
-                                </Col>
-                            )}
-
-                            {reference === "functionary" && (
-                                <Col md={6} lg={4} className="mb-3">
-                                    <Form.Label className="">
-                                        Área
-                                        <span className="tw-text-red-500">
-                                            *
-                                        </span>
-                                    </Form.Label>
-                                    <Select
-                                        required
-                                        isDisabled={!data.campus}
-                                        styles={customStyles(theme)}
-                                        noOptionsMessage={({ inputValue }) =>
-                                            `No hay resultados para "${inputValue}"`
-                                        }
-                                        value={
-                                            data.area
-                                                ? areas?.find((value) =>
-                                                      findValue(
-                                                          value,
-                                                          data.area,
-                                                      ),
-                                                  )
-                                                : []
-                                        }
-                                        defaultValue={selectedArea}
-                                        placeholder="Área"
-                                        isClearable
-                                        name="area"
-                                        options={_.sortBy(
-                                            areasByCampus(data.campus),
-                                            ["label"],
-                                        )}
-                                        id="area"
-                                        className="basic-multi-select"
-                                        classNamePrefix="Select2"
-                                        onChange={selectChangeHandlerArea}
-                                    />
-                                </Col>
-                            )}
-
-                            {reference !== "campus" &&
-                                reference !== "specialties" &&
-                                reference !== "diagnostician" &&
-                                reference !== "diagnoses" &&
-                                reference !== "agreements" &&
-                                reference !== "areas" && (
-                                    <Col className="mb-3">
-                                        {/* <FilePond
-                                            className="multiple-filepond single-fileupload"
-                                            files={files}
-                                            onupdatefiles={setFiles}
-                                            allowMultiple={false}
-                                            maxFiles={1}
-                                            server="/api"
-                                            name="files"
-                                            labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-                                        /> */}
-                                        <Form.Group
-                                            className="mb-3"
-                                            controlId="files"
-                                        >
-                                            <Form.Label>
-                                                {reference === "companies"
-                                                    ? "Subir Icono:"
-                                                    : "Subir Imagen:"}
-                                                {/* <span className="tw-text-red-500">
-                                                    *
-                                                </span> */}
-                                            </Form.Label>
-                                            <Form.Control
-                                                type="file"
-                                                name="files"
-                                                // multiple
-                                                placeholder="Agregue una foto"
-                                                onChange={handleMultipleChange}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                )}
-                            <Col md={12} className="tw-text-end tw-pb-3">
-                                <Button
-                                    type="reset"
-                                    variant="primary"
-                                    onClick={clearSelectFields}
-                                >
-                                    Limpiar
-                                </Button>
-                            </Col>
-                        </Row>
-                        {errorForm && (
-                            <Alert
-                                variant="warning"
-                                className="alert alert-warning alert-dismissible fade show"
-                                role="alert"
-                                show={show}
-                                // onClick={() => setErrorForm(false)}
-                            >
-                                <strong>Error de envío!.</strong> Todos los
-                                campos son obligatorios!
-                                <Button
-                                    variant=""
-                                    type="button"
-                                    className="btn-close"
-                                    data-bs-dismiss="alert"
-                                    aria-label="Close"
-                                    onClick={() => setErrorForm(false)}
-                                >
-                                    <i className="bi bi-x"></i>
-                                </Button>
-                            </Alert>
-                        )}
-                        {errorPass && (
-                            <Alert
-                                variant="info"
-                                className="alert alert-info alert-dismissible fade show"
-                                role="alert"
-                                show={show}
-                                // onClick={() => setErrorForm(false)}
-                            >
-                                <strong>Contraseñas no coinciden!.</strong>
-                                Vuelva a intentar!
-                                <Button
-                                    variant=""
-                                    type="button"
-                                    className="btn-close"
-                                    data-bs-dismiss="alert"
-                                    aria-label="Close"
-                                    onClick={() => setErrorPass(false)}
-                                >
-                                    <i className="bi bi-x"></i>
-                                </Button>
-                            </Alert>
-                        )}
-                        {errorValid && (
-                            <Alert
-                                variant="warning"
-                                className="alert alert-warning alert-dismissible fade show"
-                                role="alert"
-                                show={show}
-                                // onClick={() => setErrorForm(false)}
-                            >
-                                {errorValid.includes("->") ? (
-                                    <>
-                                        {errorValid.split("->")[0]}
-                                        <strong>
-                                            {errorValid.split("->")[1]}
-                                        </strong>
-                                    </>
-                                ) : (
-                                    <>{errorValid}</>
-                                )}
-                                {/* Vuelva a intentar! */}
-                                <Button
-                                    variant=""
-                                    type="button"
-                                    className="btn-close"
-                                    data-bs-dismiss="alert"
-                                    aria-label="Close"
-                                    onClick={() => setErrorValid("")}
-                                >
-                                    <i className="bi bi-x"></i>
-                                </Button>
-                            </Alert>
-                        )}
-                    </Modal.Body>
-                ) : (
-                    <Modal.Body className="tw-px-8">
-                        <Row>
-                            {reference !== "campus" &&
-                                reference !== "specialties" &&
-                                reference !== "agreements" &&
-                                reference !== "diagnoses" &&
-                                reference !== "areas" && (
-                                    <>
-                                        {data.idType && (
-                                            <Col md={6} lg={4} className="">
-                                                <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                    <h6 className="fw-bold">
-                                                        Tipo Documento
-                                                    </h6>
-                                                    <p className="border-bottom fw-light">
-                                                        {data.idType}
-                                                    </p>
-                                                </div>
-                                            </Col>
-                                        )}
-                                        {data.id && (
-                                            <Col md={6} lg={4} className="">
-                                                <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                    <h6 className="fw-bold">
-                                                        Documento
-                                                    </h6>
-                                                    <p className="border-bottom fw-light">
-                                                        {data.id}
-                                                    </p>
-                                                </div>
-                                            </Col>
-                                        )}
-                                    </>
-                                )}
-                            {data.name && (
-                                <Col
-                                    md={6}
-                                    lg={
-                                        reference !== "agreements" &&
-                                        reference !== "areas" &&
-                                        reference !== "specialties" &&
-                                        reference !== "campus"
-                                            ? 4
-                                            : 6
-                                    }
-                                    className=""
-                                >
-                                    <div className="tw-flex-1 tw-text-star tw-text-base">
-                                        <h6 className="fw-bold">
-                                            {reference === "functionary" ||
-                                            reference === "professionals" ||
-                                            reference === "patients"
-                                                ? "Nombre/s"
-                                                : "Nombre"}
-                                        </h6>
-                                        <p className="border-bottom fw-light">
-                                            {data.name}
-                                        </p>
-                                    </div>
-                                </Col>
-                            )}
-
-                            {(reference === "campus" ||
-                                reference === "specialties" ||
-                                reference === "areas") && (
-                                <>
-                                    {data.description && (
-                                        <Col md={6} className="">
-                                            <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                <h6 className="fw-bold">
-                                                    Descripción (opcional)
-                                                </h6>
-                                                <p className="border-bottom">
-                                                    {data.description}
-                                                </p>
-                                            </div>
-                                        </Col>
-                                    )}
-                                </>
-                            )}
-
-                            {reference === "diagnoses" && (
-                                <>
-                                    {data.code && (
-                                        <Col md={6} lg={4} className="mb-3">
-                                            <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                <h6 className="fw-bold">
-                                                    Código
-                                                </h6>
-                                                <p className="border-bottom">
-                                                    {data.code}
-                                                </p>
-                                            </div>
-                                        </Col>
-                                    )}
-                                </>
-                            )}
-
-                            {reference === "diagnostician" && (
-                                <>
-                                    {data.rut && (
-                                        <Col md={6} lg={4} className="mb-3">
-                                            <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                <h6 className="fw-bold">Rut</h6>
-                                                <p className="border-bottom">
-                                                    {data.rut}
-                                                </p>
-                                            </div>
-                                        </Col>
-                                    )}
-                                </>
-                            )}
-
-                            {reference === "agreements" && (
-                                <>
-                                    {data.personType && (
-                                        <Col md={6} className="">
-                                            <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                <h6 className="fw-bold">
-                                                    Tipo de Persona
-                                                </h6>
-                                                <p className="border-bottom">
-                                                    {data.personType}
-                                                </p>
-                                            </div>
-                                        </Col>
-                                    )}
-                                    {data.discount && (
-                                        <Col md={6} className="">
-                                            <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                <h6 className="fw-bold">
-                                                    Descuento(%)
-                                                </h6>
-                                                <p className="border-bottom">
-                                                    {data.discount}
-                                                </p>
-                                            </div>
-                                        </Col>
-                                    )}
-                                </>
-                            )}
-
-                            {reference !== "campus" &&
-                                reference !== "specialties" &&
-                                reference !== "diagnostician" &&
-                                reference !== "diagnoses" &&
-                                reference !== "agreements" &&
-                                reference !== "areas" && (
-                                    <>
-                                        {data.lastName && (
-                                            <Col md={6} lg={4} className="">
-                                                <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                    <h6 className="fw-bold">
-                                                        Apellido/s
-                                                    </h6>
-                                                    <p className="border-bottom fw-light">
-                                                        {data.lastName}
-                                                    </p>
-                                                </div>
-                                            </Col>
-                                        )}
-                                    </>
-                                )}
-
-                            {reference === "c" && (
-                                <>
-                                    {data.birthDate && (
-                                        <Col md={6} lg={4} className="">
-                                            <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                <h6 className="fw-bold">
-                                                    Fecha Nacimiento
-                                                </h6>
-                                                <p className="border-bottom fw-light">
-                                                    {data.birthDate}
-                                                </p>
-                                            </div>
-                                        </Col>
-                                    )}
-
-                                    {data.age && (
-                                        <Col md={6} lg={4} className="">
-                                            <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                <h6 className="fw-bold">
-                                                    Edad
-                                                </h6>
-                                                <p className="border-bottom fw-light">
-                                                    {data.age}
-                                                </p>
-                                            </div>
-                                        </Col>
-                                    )}
-                                </>
-                            )}
-
-                            {reference !== "campus" &&
-                                reference !== "specialties" &&
-                                reference !== "diagnoses" &&
-                                reference !== "agreements" &&
-                                reference !== "areas" && (
-                                    <>
-                                        {data.phone && (
-                                            <Col
-                                                md={6}
-                                                lg={reference !== "campus" && 4}
-                                                className=""
-                                            >
-                                                <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                    <h6 className="fw-bold">
-                                                        Celular
-                                                    </h6>
-                                                    <p className="border-bottom fw-light">
-                                                        {data.phone}
-                                                    </p>
-                                                </div>
-                                            </Col>
-                                        )}
-                                    </>
-                                )}
-
-                            {reference !== "specialties" &&
-                                reference !== "agreements" &&
-                                reference !== "diagnoses" &&
-                                reference !== "areas" && (
-                                    <>
-                                        {data.phone2 && (
-                                            <Col
-                                                md={6}
-                                                lg={reference !== "campus" && 4}
-                                                className=""
-                                            >
-                                                <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                    <h6 className="fw-bold">
-                                                        Teléfono fijo (opcional)
-                                                    </h6>
-                                                    <p className="border-bottom fw-light">
-                                                        {data.phone2}
-                                                    </p>
-                                                </div>
-                                            </Col>
-                                        )}
-                                        {data.address && (
-                                            <Col md={6} className="">
-                                                <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                    <h6 className="fw-bold">
-                                                        Dirección
-                                                    </h6>
-                                                    <p className="border-bottom fw-light">
-                                                        {data.address}
-                                                    </p>
-                                                </div>
-                                            </Col>
-                                        )}
-                                        {data.country && (
-                                            <Col
-                                                md={6}
-                                                lg={
-                                                    reference !==
-                                                    "professionals"
-                                                        ? reference !== "campus"
-                                                            ? 4
-                                                            : 6
-                                                        : 3
-                                                }
-                                                className=""
-                                            >
-                                                <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                    <h6 className="fw-bold">
-                                                        País
-                                                    </h6>
-                                                    <p className="border-bottom fw-light">
-                                                        {data.country}
-                                                    </p>
-                                                </div>
-                                            </Col>
-                                        )}
-                                        {data.state && (
-                                            <Col
-                                                md={6}
-                                                lg={
-                                                    reference !==
-                                                    "professionals"
-                                                        ? reference !== "campus"
-                                                            ? 4
-                                                            : 6
-                                                        : 3
-                                                }
-                                                className="mb-3"
-                                            >
-                                                <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                    <h6 className="fw-bold">
-                                                        Departamento
-                                                    </h6>
-                                                    <p className="border-bottom fw-light">
-                                                        {data.state &&
-                                                            ColombianStates.find(
-                                                                (value) =>
-                                                                    findValue(
-                                                                        value,
-                                                                        data.state,
-                                                                    ),
-                                                            )?.label}
-                                                    </p>
-                                                </div>
-                                            </Col>
-                                        )}
-                                        {data.city && (
-                                            <Col
-                                                md={6}
-                                                lg={
-                                                    reference !==
-                                                    "professionals"
-                                                        ? reference !== "campus"
-                                                            ? 4
-                                                            : 6
-                                                        : 3
-                                                }
-                                                className="mb-3"
-                                            >
-                                                <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                    <h6 className="fw-bold">
-                                                        Ciudad
-                                                    </h6>
-                                                    <p className="border-bottom fw-light">
-                                                        {data.city &&
-                                                            getCities(
-                                                                data.state,
-                                                            ).find((value) =>
-                                                                findValue(
-                                                                    value,
-                                                                    data.city,
-                                                                ),
-                                                            )?.label}
-                                                    </p>
-                                                </div>
-                                            </Col>
-                                        )}
-                                    </>
-                                )}
-
-                            {reference !== "campus" &&
-                                reference !== "specialties" &&
-                                reference !== "agreements" &&
-                                reference !== "diagnoses" &&
-                                reference !== "areas" && (
-                                    <>
-                                        {data.email && (
-                                            <Col
-                                                md={6}
-                                                lg={reference !== "campus" && 4}
-                                                className=""
-                                            >
-                                                <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                    <h6 className="fw-bold">
-                                                        Email
-                                                    </h6>
-                                                    <p className="border-bottom fw-light">
-                                                        {data.email}
-                                                    </p>
-                                                </div>
-                                            </Col>
-                                        )}
-                                    </>
-                                )}
-
-                            {reference !== "campus" &&
-                                reference !== "specialties" &&
-                                reference !== "diagnostician" &&
-                                reference !== "agreements" &&
-                                reference !== "areas" && (
-                                    <>
-                                        {/* <Col md={6} lg={4} className="">
-                                        <div className="tw-flex-1 tw-text-star tw-text-base">
-                                            <h6 className="fw-bold">
-                                                Contraseña
-                                            </h6>
-                                            <p className="border-bottom fw-light">
-                                                **********
-                                            </p>
-                                        </div>
-                                    </Col>
-                                    <Col md={6} lg={4} className="">
-                                        <div className="tw-flex-1 tw-text-star tw-text-base">
-                                            <h6 className="fw-bold">
-                                                Confirmar Contraseña
-                                            </h6>
-                                            <p className="border-bottom fw-light">
-                                                **********
-                                            </p>
-                                        </div>
-                                    </Col> */}
-                                    </>
-                                )}
-
-                            {reference === "professionals" && (
-                                <>
-                                    {/* <Col md={6} lg={4} className="">
-                                        <div className="tw-flex-1 tw-text-star tw-text-base">
-                                            <h6 className="fw-bold">
-                                                Número Tarjeta Profesional
-                                            </h6>
-                                            <p className="border-bottom fw-light">
-                                                {data.cardNumber}
-                                            </p>
-                                        </div>
-                                    </Col>
-                                    <Col md={6} lg={4} className="">
-                                        <div className="tw-flex-1 tw-text-star tw-text-base">
-                                            <h6 className="fw-bold">
-                                                Registro Médico
-                                            </h6>
-                                            <p className="border-bottom fw-light">
-                                                {data.medicalRecord}
-                                            </p>
-                                        </div>
-                                    </Col> */}
-                                    {data.specialty && (
-                                        <Col md={6} lg={4} className="">
-                                            <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                <h6 className="fw-bold">
-                                                    Especialidad
-                                                </h6>
-                                                <p className="border-bottom fw-light">
-                                                    {data.specialty}
-                                                </p>
-                                            </div>
-                                        </Col>
-                                    )}
-                                    {data.contract && (
-                                        <Col md={6} lg={4} className="">
-                                            <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                <h6 className="fw-bold">
-                                                    Convenio
-                                                </h6>
-                                                <p className="border-bottom fw-light">
-                                                    {data.contract}
-                                                </p>
-                                            </div>
-                                        </Col>
-                                    )}
-                                </>
-                            )}
-
-                            <Col
-                                md={6}
-                                lg={
-                                    reference !== "agreements" &&
-                                    reference !== "areas" &&
-                                    reference !== "specialties" &&
-                                    reference !== "campus"
-                                        ? 4
-                                        : 6
-                                }
-                                className=""
-                            >
-                                <div className="tw-flex-1 tw-text-star tw-text-base">
-                                    <h6 className="fw-bold">Estado</h6>
-                                    <p className="border-bottom fw-light">
-                                        {data.isActive ? "Activo" : "Inactivo"}
-                                    </p>
-                                </div>
-                            </Col>
-
-                            {reference !== "specialties" &&
-                                reference !== "agreements" &&
-                                reference !== "diagnostician" &&
-                                reference !== "areas" && (
-                                    <>
-                                        {data.timestamp && (
-                                            <Col md={6} lg={4} className="">
-                                                <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                    <h6 className="fw-bold">
-                                                        Fecha Registro
-                                                    </h6>
-                                                    <p className="border-bottom fw-light">
-                                                        {moment(
-                                                            data.timestamp,
-                                                        ).format(
-                                                            "DD/MM/YYYY HH:mm:ss",
-                                                        )}
-                                                    </p>
-                                                </div>
-                                            </Col>
-                                        )}
-                                    </>
-                                )}
-
-                            {reference === "functionary" && (
-                                <>
-                                    <Col md={6} lg={4} className="">
-                                        <div className="tw-flex-1 tw-text-star tw-text-base">
-                                            <h6 className="fw-bold">Rol</h6>
-                                            <p className="border-bottom fw-light">
-                                                {/* {data.rol} */}
-                                                {data.rol &&
-                                                    roles?.find((value) =>
-                                                        findValue(
-                                                            value,
-                                                            data.rol,
-                                                        ),
-                                                    )?.label}
-                                            </p>
-                                        </div>
-                                    </Col>
-
-                                    {data.campus && (
-                                        <Col md={6} lg={4} className="">
-                                            <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                <h6 className="fw-bold">
-                                                    Sede
-                                                </h6>
-                                                <p className="border-bottom fw-light">
-                                                    {data.campus &&
-                                                        campus?.find((value) =>
-                                                            findValue(
-                                                                value,
-                                                                data.campus,
-                                                            ),
-                                                        )?.label}
-                                                </p>
-                                            </div>
-                                        </Col>
-                                    )}
-                                </>
-                            )}
-
-                            {reference === "areas" && (
-                                <>
-                                    {data.availableCampus && (
-                                        <Col md={6} lg={4} className="">
-                                            <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                <h6 className="fw-bold">
-                                                    Sedes
-                                                </h6>
-                                                <p className="border-bottom fw-light">
-                                                    {/* {data.campus &&
-                                                        campus?.find((value) =>
-                                                            findValue(
-                                                                value,
-                                                                data.campus,
-                                                            ),
-                                                            )?.label} */}
-                                                    {data.availableCampus &&
-                                                        campus
-                                                            ?.filter((item) =>
-                                                                data.availableCampus.includes(
-                                                                    item.value,
-                                                                ),
-                                                            )
-                                                            .map(
-                                                                (val) =>
-                                                                    val.label,
-                                                            )
-                                                            .join(", ")}
-                                                </p>
-                                            </div>
-                                        </Col>
-                                    )}
-                                </>
-                            )}
-
-                            {reference === "functionary" && (
-                                <>
-                                    {data.area && (
-                                        <Col md={6} lg={4} className="">
-                                            <div className="tw-flex-1 tw-text-star tw-text-base">
-                                                <h6 className="fw-bold">
-                                                    Área
-                                                </h6>
-                                                <p className="border-bottom fw-light">
-                                                    {data.area &&
-                                                        areas?.find((value) =>
-                                                            findValue(
-                                                                value,
-                                                                data.area,
-                                                            ),
-                                                        )?.label}
-                                                </p>
-                                            </div>
-                                        </Col>
-                                    )}
-                                </>
-                            )}
-
-                            {reference !== "campus" &&
-                                reference !== "specialties" &&
-                                reference !== "diagnostician" &&
-                                reference !== "diagnoses" &&
-                                reference !== "agreements" &&
-                                reference !== "areas" && (
-                                    <Col className="tw-text-center">
-                                        <h6 className="pb-3">Foto</h6>
-                                        <div className="tw-flex tw-justify-center tw-items-center">
-                                            <img
-                                                src={
-                                                    data.urlPhoto
-                                                        ? data.urlPhoto
-                                                        : "http://via.placeholder.com/150x150"
-                                                }
-                                                alt="Profile Photo"
-                                                width="150"
-                                            />
-                                        </div>
-                                    </Col>
-                                )}
-                        </Row>
-                    </Modal.Body>
-                )}
-
-                <Modal.Footer>
-                    <Button variant="light" onClick={handleClose}>
-                        Cancelar
-                    </Button>
-                    {!isEdit && handleShowMainFormEdit ? (
-                        <Button variant="primary" onClick={handleEditForm}>
-                            Editar
-                        </Button>
-                    ) : (
-                        <Button
-                            variant="primary"
-                            className={`btn  ${isLoading && "btn-loader"}`}
-                            // onClick={handleSendForm}
-                            type="submit"
-                            // disabled={dataDocumentsToSel ? false : true}
+                <Form
+                    // noValidate
+                    // validated={errorForm}
+                    onReset={handleReset}
+                    onSubmit={handleSendForm}
+                    // className="modal-admin"
+                >
+                    {/* <Modal.Header
+                        closeButton={true}
+                    >
+                        
+                    </Modal.Header> */}
+                    <ThemeProvider theme={theme}>
+                        <Modal.Title
+                            className={`${
+                                reference === "companies"
+                                    ? "modal-title"
+                                    : "modal-title-admin"
+                            } tw-pt-5 tw-px-8 tw-flex tw-flex-row tw-justify-between`}
+                            as="h6"
                         >
-                            <span className="me-2">
-                                {handleShowMainFormEdit ? "Guardar" : "Crear"}
+                            <span>
+                                {handleShowMainFormEdit &&
+                                reference === "companies"
+                                    ? "Detalle Empresa"
+                                    : "Nuevo Registro"}
                             </span>
-                            {isLoading && (
-                                <span className="loading">
-                                    <i className="ri-loader-2-fill fs-16"></i>
-                                </span>
+                            <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-center tw-items-center -tw-mt-2">
+                                <button
+                                    type="button"
+                                    onClick={handleClose}
+                                    className="tw-p-0 tw-bg-transparent tw-border-0 hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center"
+                                    style={{
+                                        padding: 0,
+                                        background: "transparent",
+                                        border: "none",
+                                    }}
+                                >
+                                    <IoMdClose
+                                        size={35}
+                                        color={
+                                            reference === "companies"
+                                                ? "gray"
+                                                : "white"
+                                        }
+                                    />
+                                </button>
+                            </div>
+                        </Modal.Title>
+                        {reference === "workAreas" && (
+                            <Modal.Body className="tw-px-8">
+                                <div className="tw-flex tw-w-full tw-flex-col tw-space-y-4">
+                                    <div className="tw-flex tw-w-full tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-admin-body">
+                                        <div className="tw-flex tw-w-full tw-justify-between">
+                                            <h6 className="main-title-sub-card tw-m-0 tw-p-2 tw-rounded">
+                                                Área Comercial
+                                            </h6>
+                                        </div>
+
+                                        <div className="tw-px-3 tw-w-full">
+                                            <CustomTextField
+                                                data={data && data.areaName}
+                                                onChange={(
+                                                    value: string,
+                                                    name: string,
+                                                ) => handleChange(value, name)}
+                                                required
+                                                name="areaName"
+                                                type="text"
+                                                theme={modeTheme}
+                                                id="areaName"
+                                                fullWidth
+                                                label="Nombre del Área"
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <WorkOutlineOutlinedIcon />
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            />
+                                            <CustomTextField
+                                                data={data && data.areaHead}
+                                                onChange={(
+                                                    value: string,
+                                                    name: string,
+                                                ) => handleChange(value, name)}
+                                                required
+                                                name="areaHead"
+                                                type="text"
+                                                theme={modeTheme}
+                                                id="areaHead"
+                                                fullWidth
+                                                label="Jefe de Área"
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <PersonOutlineOutlinedIcon />
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="tw-flex tw-w-full tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-admin-body">
+                                        <div className="tw-flex tw-w-full tw-justify-between">
+                                            <h6 className="main-title-sub-card tw-m-0 tw-p-2 tw-rounded">
+                                                Urls Área
+                                            </h6>
+                                            {/* <div
+                                        onClick={() =>
+                                            handleNewItem("urlName")
+                                        }
+                                        className="add-button-item tw-flex tw-justify-center tw-items-center tw-rounded tw-px-2 tw-text-md tw-cursor-pointer"
+                                    >
+                                        <IoAddCircle size={25} />
+                                        Agregar Dato Adicional
+                                    </div> */}
+                                        </div>
+
+                                        <div
+                                            // key={index}
+                                            className="tw-flex tw-flex-col tw-px-3 tw-w-full"
+                                        >
+                                            <CustomTextField
+                                                required
+                                                data={data && data.urlName}
+                                                onChange={(
+                                                    value: string,
+                                                    name: string,
+                                                    checked: boolean,
+                                                ) =>
+                                                    handleChange(
+                                                        value,
+                                                        name,
+                                                        checked,
+                                                    )
+                                                }
+                                                name="urlName"
+                                                type="text"
+                                                switch="true"
+                                                theme={modeTheme}
+                                                id="urlName"
+                                                fullWidth
+                                                label="Nombre del url"
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <ExploreOutlinedIcon />
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            />
+
+                                            <CustomTextField
+                                                required
+                                                data={data && data.urlLink}
+                                                onChange={(
+                                                    value: string,
+                                                    name: string,
+                                                ) => handleChange(value, name)}
+                                                name="urlLink"
+                                                type="url"
+                                                helperText={
+                                                    "Ej: https://example.com"
+                                                }
+                                                theme={modeTheme}
+                                                id="urlLink"
+                                                fullWidth
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <Typography className="tw-font-bold">
+                                                                URL
+                                                            </Typography>
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            />
+
+                                            <div className="tw-flex tw-flex-col tw-justify-start tw-items-start tw-px-3 tw-w-full">
+                                                <label
+                                                    htmlFor="iconButton"
+                                                    className="tw-flex tw-flex-col tw-items-center tw-justify-center"
+                                                >
+                                                    <IconButton
+                                                        size="small"
+                                                        component="span"
+                                                    >
+                                                        <LanguageOutlinedIcon
+                                                            className="url-label"
+                                                            style={{
+                                                                fontSize: 50,
+                                                            }}
+                                                        />
+                                                    </IconButton>
+                                                    <Typography className="tw-font-bold tw-text-sm url-label">
+                                                        {fileNameIcon
+                                                            ? fileNameIcon
+                                                            : "Seleccionar Icono"}
+                                                    </Typography>
+                                                    <input
+                                                        type="file"
+                                                        name="icon"
+                                                        id="iconButton"
+                                                        accept=".jpg, .jpeg, .png"
+                                                        hidden
+                                                        onChange={
+                                                            handleIconFileChange
+                                                        }
+                                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                                    />
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Modal.Body>
+                        )}
+
+                        {reference === "companies" && (
+                            <>
+                                {isEdit ? (
+                                    <Modal.Body className="tw-px-8">
+                                        {reference === "companies" && (
+                                            <Row className="tw-rounded sub-card-body tw-p-2">
+                                                {nextStep ? (
+                                                    <>
+                                                        <div className="tw-flex tw-w-full">
+                                                            <h6 className="main-title-sub-card tw-m-0 tw-p-2 tw-rounded">
+                                                                Datos Empresa
+                                                            </h6>
+                                                        </div>
+                                                        <Col
+                                                            md={6}
+                                                            // lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <CustomSelect
+                                                                data={
+                                                                    data &&
+                                                                    data.idType
+                                                                }
+                                                                options={
+                                                                    idTypes
+                                                                }
+                                                                onChange={(
+                                                                    value: string,
+                                                                    name: string,
+                                                                ) =>
+                                                                    handleChange(
+                                                                        value,
+                                                                        name,
+                                                                    )
+                                                                }
+                                                                required
+                                                                name="idType"
+                                                                type="text"
+                                                                theme={
+                                                                    modeTheme
+                                                                }
+                                                                id="idType"
+                                                                fullWidth
+                                                                label="Tipo Documento"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <BsPersonVcard
+                                                                                    size={
+                                                                                        24
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                inputProps={{
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col
+                                                            md={6}
+                                                            // lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <TextField
+                                                                disabled={
+                                                                    handleShowMainFormEdit
+                                                                }
+                                                                value={
+                                                                    data &&
+                                                                    data.id
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleChange(
+                                                                        e.target
+                                                                            .value,
+                                                                        e.target
+                                                                            .name,
+                                                                    )
+                                                                }
+                                                                required
+                                                                name="id"
+                                                                id="id"
+                                                                type="text"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Documento"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <IoPersonSharp
+                                                                                    size={
+                                                                                        20
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize:
+                                                                            "20px",
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        color:
+                                                                            modeTheme ===
+                                                                            "light"
+                                                                                ? "#396593"
+                                                                                : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    maxLength: 250,
+                                                                    minLength: 2,
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+
+                                                        <Col
+                                                            md={6}
+                                                            // lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <TextField
+                                                                value={
+                                                                    data &&
+                                                                    data.businessName
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleChange(
+                                                                        e.target
+                                                                            .value,
+                                                                        e.target
+                                                                            .name,
+                                                                    )
+                                                                }
+                                                                required
+                                                                name="businessName"
+                                                                id="businessName"
+                                                                type="text"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Razón Social"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <IoBusinessSharp
+                                                                                    size={
+                                                                                        20
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize:
+                                                                            "20px",
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        color:
+                                                                            modeTheme ===
+                                                                            "light"
+                                                                                ? "#396593"
+                                                                                : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    maxLength: 250,
+                                                                    minLength: 2,
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col
+                                                            md={6}
+                                                            // lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <TextField
+                                                                value={
+                                                                    data &&
+                                                                    data.tradename
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleChange(
+                                                                        e.target
+                                                                            .value,
+                                                                        e.target
+                                                                            .name,
+                                                                    )
+                                                                }
+                                                                required
+                                                                name="tradename"
+                                                                id="tradename"
+                                                                type="text"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Nombre Comercial"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <MdBusinessCenter
+                                                                                    size={
+                                                                                        20
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize:
+                                                                            "20px",
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        color:
+                                                                            modeTheme ===
+                                                                            "light"
+                                                                                ? "#396593"
+                                                                                : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    maxLength: 250,
+                                                                    minLength: 2,
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+
+                                                        <Col
+                                                            md={6}
+                                                            // lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <TextField
+                                                                value={
+                                                                    data &&
+                                                                    data.address
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleChange(
+                                                                        e.target
+                                                                            .value,
+                                                                        e.target
+                                                                            .name,
+                                                                    )
+                                                                }
+                                                                name="address"
+                                                                id="address"
+                                                                type="text"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Dirección"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <MdLocationPin
+                                                                                    size={
+                                                                                        18
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize:
+                                                                            "20px",
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        color:
+                                                                            modeTheme ===
+                                                                            "light"
+                                                                                ? "#396593"
+                                                                                : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    maxLength: 550,
+                                                                    minLength: 2,
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col
+                                                            md={6}
+                                                            lg={2}
+                                                            className="mb-3"
+                                                        >
+                                                            <CustomMUITelInput
+                                                                className="tw-mt-4 tw-w-full"
+                                                                value={
+                                                                    data &&
+                                                                    data.indicative &&
+                                                                    data.indicative.includes(
+                                                                        "+",
+                                                                    )
+                                                                        ? data.indicative
+                                                                        : "+" +
+                                                                          data.indicative
+                                                                }
+                                                                onChange={(
+                                                                    value: string,
+                                                                    name: string,
+                                                                ) =>
+                                                                    handleChange(
+                                                                        value,
+                                                                        name,
+                                                                    )
+                                                                }
+                                                                name="indicative"
+                                                                theme={
+                                                                    modeTheme
+                                                                }
+                                                                id="indicative"
+                                                                variant="standard"
+                                                                size="medium"
+                                                                label="Indicativo"
+                                                                InputProps={{
+                                                                    readOnly:
+                                                                        true,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col
+                                                            md={6}
+                                                            lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <TextField
+                                                                value={
+                                                                    data &&
+                                                                    data.phone
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleChange(
+                                                                        e.target
+                                                                            .value,
+                                                                        e.target
+                                                                            .name,
+                                                                    )
+                                                                }
+                                                                name="phone"
+                                                                id="phone"
+                                                                type="number"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Teléfono/Cel"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <FaPhone
+                                                                                    size={
+                                                                                        18
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize:
+                                                                            "20px",
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        color:
+                                                                            modeTheme ===
+                                                                            "light"
+                                                                                ? "#396593"
+                                                                                : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    maxLength: 550,
+                                                                    minLength: 2,
+                                                                    pattern:
+                                                                        "^(\\+?\\d{1,4})?\\s?\\d{10,15}$",
+                                                                    title: "Por favor, ingrese un número de teléfono válido",
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col
+                                                            md={6}
+                                                            lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <TextField
+                                                                value={
+                                                                    data &&
+                                                                    data.ext
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleChange(
+                                                                        e.target
+                                                                            .value,
+                                                                        e.target
+                                                                            .name,
+                                                                    )
+                                                                }
+                                                                name="ext"
+                                                                id="ext"
+                                                                type="number"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Ext"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <BsFillTelephoneForwardFill
+                                                                                    size={
+                                                                                        18
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize:
+                                                                            "20px",
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        color:
+                                                                            modeTheme ===
+                                                                            "light"
+                                                                                ? "#396593"
+                                                                                : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    maxLength: 550,
+                                                                    minLength: 2,
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col
+                                                            md={6}
+                                                            lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <TextField
+                                                                value={
+                                                                    data &&
+                                                                    data.webSite
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleChange(
+                                                                        e.target
+                                                                            .value,
+                                                                        e.target
+                                                                            .name,
+                                                                    )
+                                                                }
+                                                                name="webSite"
+                                                                id="webSite"
+                                                                type="text"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Sitio Web"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <LanguageOutlinedIcon />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize:
+                                                                            "20px",
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        color:
+                                                                            modeTheme ===
+                                                                            "light"
+                                                                                ? "#396593"
+                                                                                : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    maxLength: 550,
+                                                                    minLength: 2,
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col
+                                                            md={6}
+                                                            lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <TextField
+                                                                value={
+                                                                    data &&
+                                                                    data.sector
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleChange(
+                                                                        e.target
+                                                                            .value,
+                                                                        e.target
+                                                                            .name,
+                                                                    )
+                                                                }
+                                                                name="sector"
+                                                                id="sector"
+                                                                type="text"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Sector"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <WorkOutlineOutlinedIcon />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize:
+                                                                            "20px",
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        color:
+                                                                            modeTheme ===
+                                                                            "light"
+                                                                                ? "#396593"
+                                                                                : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    maxLength: 550,
+                                                                    minLength: 2,
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+
+                                                        <Col
+                                                            md={6}
+                                                            // lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <TextField
+                                                                value={
+                                                                    data &&
+                                                                    data.cards
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleChange(
+                                                                        e.target
+                                                                            .value,
+                                                                        e.target
+                                                                            .name,
+                                                                    )
+                                                                }
+                                                                required
+                                                                name="cards"
+                                                                id="cards"
+                                                                type="number"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Cantidad de tarjetas"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <AddCardOutlinedIcon />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize:
+                                                                            "20px",
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        color:
+                                                                            modeTheme ===
+                                                                            "light"
+                                                                                ? "#396593"
+                                                                                : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    min: 0,
+                                                                    max: 100000,
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col
+                                                            md={6}
+                                                            // lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <TextField
+                                                                value={
+                                                                    data &&
+                                                                    data.cardGPS
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleChange(
+                                                                        e.target
+                                                                            .value,
+                                                                        e.target
+                                                                            .name,
+                                                                    )
+                                                                }
+                                                                required
+                                                                name="cardGPS"
+                                                                id="cardGPS"
+                                                                type="number"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Cantidad con GPS"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <GpsFixedOutlinedIcon />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize:
+                                                                            "20px",
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        color:
+                                                                            modeTheme ===
+                                                                            "light"
+                                                                                ? "#396593"
+                                                                                : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    min: 0,
+                                                                    max: Number(
+                                                                        data.cards,
+                                                                    ),
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+
+                                                        <Col
+                                                            md={6}
+                                                            lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <CustomSelect
+                                                                data={
+                                                                    data &&
+                                                                    data.country
+                                                                }
+                                                                options={
+                                                                    countries
+                                                                }
+                                                                onChange={(
+                                                                    value: string,
+                                                                    name: string,
+                                                                ) =>
+                                                                    handleChange(
+                                                                        value,
+                                                                        name,
+                                                                    )
+                                                                }
+                                                                required
+                                                                name="country"
+                                                                type="text"
+                                                                theme={
+                                                                    modeTheme
+                                                                }
+                                                                id="country"
+                                                                fullWidth
+                                                                label="País"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <MdLocationPin
+                                                                                    size={
+                                                                                        24
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                inputProps={{
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col
+                                                            md={6}
+                                                            lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <CustomSelect
+                                                                disabled={
+                                                                    !data.country
+                                                                }
+                                                                data={
+                                                                    data &&
+                                                                    data.state
+                                                                }
+                                                                options={
+                                                                    ColombianStates
+                                                                }
+                                                                onChange={(
+                                                                    value: string,
+                                                                    name: string,
+                                                                ) =>
+                                                                    handleChange(
+                                                                        value,
+                                                                        name,
+                                                                    )
+                                                                }
+                                                                required
+                                                                name="state"
+                                                                type="text"
+                                                                theme={
+                                                                    modeTheme
+                                                                }
+                                                                id="state"
+                                                                fullWidth
+                                                                label="Departamento"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <MdLocationPin
+                                                                                    size={
+                                                                                        24
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                inputProps={{
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col
+                                                            md={6}
+                                                            lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <CustomSelect
+                                                                disabled={
+                                                                    !data.state ||
+                                                                    !data.country
+                                                                }
+                                                                data={
+                                                                    data &&
+                                                                    data.city
+                                                                }
+                                                                options={
+                                                                    data &&
+                                                                    data.state
+                                                                        ? getCities(
+                                                                              data.state,
+                                                                          )
+                                                                        : []
+                                                                }
+                                                                onChange={(
+                                                                    value: string,
+                                                                    name: string,
+                                                                ) =>
+                                                                    handleChange(
+                                                                        value,
+                                                                        name,
+                                                                    )
+                                                                }
+                                                                required
+                                                                name="city"
+                                                                type="text"
+                                                                theme={
+                                                                    modeTheme
+                                                                }
+                                                                id="city"
+                                                                fullWidth
+                                                                label="Ciudad"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <MdLocationPin
+                                                                                    size={
+                                                                                        24
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                inputProps={{
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col className="mb-3">
+                                                            <label
+                                                                htmlFor="iconButton"
+                                                                className="tw-flex tw-flex-col tw-items-center tw-justify-center"
+                                                            >
+                                                                <IconButton
+                                                                    size="small"
+                                                                    component="span"
+                                                                >
+                                                                    <AddPhotoAlternateOutlinedIcon
+                                                                        className="url-label"
+                                                                        style={{
+                                                                            fontSize: 50,
+                                                                        }}
+                                                                    />
+                                                                </IconButton>
+                                                                <Typography className="tw-font-bold tw-text-sm url-label">
+                                                                    {fileNameIcon
+                                                                        ? fileNameIcon
+                                                                        : "Seleccionar Icono"}
+                                                                </Typography>
+                                                                <input
+                                                                    type="file"
+                                                                    name="iconFile"
+                                                                    id="iconButton"
+                                                                    accept=".jpg, .jpeg, .png"
+                                                                    hidden
+                                                                    onChange={
+                                                                        handleIconFileChange
+                                                                    }
+                                                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                                                />
+                                                            </label>
+                                                        </Col>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <div className="tw-flex tw-w-full">
+                                                            <h6 className="main-title-sub-card tw-m-0 tw-p-2 tw-rounded">
+                                                                Detalle
+                                                                Administrador
+                                                            </h6>
+                                                        </div>
+                                                        <Col
+                                                            md={6}
+                                                            // lg={4}
+                                                            className="mb-3 tw-relative"
+                                                        >
+                                                            <TextField
+                                                                value={
+                                                                    data &&
+                                                                    data.name
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleChange(
+                                                                        e.target
+                                                                            .value,
+                                                                        e.target
+                                                                            .name,
+                                                                    )
+                                                                }
+                                                                required
+                                                                name="name"
+                                                                id="name"
+                                                                type="text"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Nombres"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <IoPersonSharp
+                                                                                    size={
+                                                                                        20
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize:
+                                                                            "20px",
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        color:
+                                                                            modeTheme ===
+                                                                            "light"
+                                                                                ? "#396593"
+                                                                                : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    maxLength: 250,
+                                                                    minLength: 2,
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col
+                                                            md={6}
+                                                            // lg={4}
+                                                            className="mb-3 tw-relative"
+                                                        >
+                                                            <TextField
+                                                                value={
+                                                                    data &&
+                                                                    data.lastName
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleChange(
+                                                                        e.target
+                                                                            .value,
+                                                                        e.target
+                                                                            .name,
+                                                                    )
+                                                                }
+                                                                required
+                                                                name="lastName"
+                                                                id="lastName"
+                                                                type="text"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Apellidos"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <IoPersonSharp
+                                                                                    size={
+                                                                                        20
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize:
+                                                                            "20px",
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        color:
+                                                                            modeTheme ===
+                                                                            "light"
+                                                                                ? "#396593"
+                                                                                : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    maxLength: 250,
+                                                                    minLength: 2,
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col
+                                                            md={6}
+                                                            // lg={4}
+                                                            className="mb-3 tw-relative"
+                                                        >
+                                                            <TextField
+                                                                disabled={
+                                                                    handleShowMainFormEdit
+                                                                }
+                                                                value={
+                                                                    data &&
+                                                                    data.email
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleChange(
+                                                                        e.target
+                                                                            .value,
+                                                                        e.target
+                                                                            .name,
+                                                                    )
+                                                                }
+                                                                required
+                                                                name="email"
+                                                                id="email"
+                                                                type="email"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Email"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <MdEmail
+                                                                                    size={
+                                                                                        20
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize:
+                                                                            "20px",
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        color:
+                                                                            modeTheme ===
+                                                                            "light"
+                                                                                ? "#396593"
+                                                                                : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    maxLength: 250,
+                                                                    minLength: 2,
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+
+                                                        <Col
+                                                            md={6}
+                                                            // lg={4}
+                                                            className="mb-3 tw-relative"
+                                                        >
+                                                            <CustomSelect
+                                                                aria-hidden="false"
+                                                                data={
+                                                                    data &&
+                                                                    data.idTypeAdmin
+                                                                }
+                                                                options={
+                                                                    idTypes
+                                                                }
+                                                                onChange={(
+                                                                    value: string,
+                                                                    name: string,
+                                                                ) =>
+                                                                    handleChange(
+                                                                        value,
+                                                                        name,
+                                                                    )
+                                                                }
+                                                                // required
+                                                                name="idTypeAdmin"
+                                                                type="text"
+                                                                theme={
+                                                                    modeTheme
+                                                                }
+                                                                id="idTypeAdmin"
+                                                                fullWidth
+                                                                label="Tipo Documento"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <BsPersonVcard
+                                                                                    size={
+                                                                                        24
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                inputProps={{
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col
+                                                            md={6}
+                                                            // lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <TextField
+                                                                value={
+                                                                    data &&
+                                                                    data.idAdmin
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleChange(
+                                                                        e.target
+                                                                            .value,
+                                                                        e.target
+                                                                            .name,
+                                                                    )
+                                                                }
+                                                                name="idAdmin"
+                                                                id="idAdmin"
+                                                                type="text"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Documento"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <IoPersonSharp
+                                                                                    size={
+                                                                                        20
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize:
+                                                                            "20px",
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        color:
+                                                                            modeTheme ===
+                                                                            "light"
+                                                                                ? "#396593"
+                                                                                : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    maxLength: 250,
+                                                                    minLength: 2,
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+
+                                                        <Col
+                                                            md={6}
+                                                            lg={2}
+                                                            className="mb-3"
+                                                        >
+                                                            <CustomMUITelInput
+                                                                className="tw-mt-4 tw-w-full"
+                                                                value={
+                                                                    data &&
+                                                                    data.indicativeTwo &&
+                                                                    data.indicativeTwo.includes(
+                                                                        "+",
+                                                                    )
+                                                                        ? data.indicativeTwo
+                                                                        : "+" +
+                                                                          data.indicativeTwo
+                                                                }
+                                                                onChange={(
+                                                                    value: string,
+                                                                    name: string,
+                                                                ) =>
+                                                                    handleChange(
+                                                                        value,
+                                                                        name,
+                                                                    )
+                                                                }
+                                                                name="indicativeTwo"
+                                                                theme={
+                                                                    modeTheme
+                                                                }
+                                                                id="indicativeTwo"
+                                                                variant="standard"
+                                                                // defaultCountry="CO"
+                                                                size="medium"
+                                                                label="Indicativo"
+                                                                InputProps={{
+                                                                    readOnly:
+                                                                        true,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col
+                                                            md={6}
+                                                            lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <TextField
+                                                                value={
+                                                                    data &&
+                                                                    data.phoneAdmin
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleChange(
+                                                                        e.target
+                                                                            .value,
+                                                                        e.target
+                                                                            .name,
+                                                                    )
+                                                                }
+                                                                name="phoneAdmin"
+                                                                id="phoneAdmin"
+                                                                type="number"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Teléfono/Cel"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <FaPhone
+                                                                                    size={
+                                                                                        18
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize:
+                                                                            "20px",
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        color:
+                                                                            modeTheme ===
+                                                                            "light"
+                                                                                ? "#396593"
+                                                                                : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    maxLength: 550,
+                                                                    minLength: 2,
+                                                                    pattern:
+                                                                        "^(\\+?\\d{1,4})?\\s?\\d{10,15}$",
+                                                                    title: "Por favor, ingrese un número de teléfono válido",
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+
+                                                        <Col
+                                                            md={6}
+                                                            // lg={4}
+                                                            className="mb-3"
+                                                        >
+                                                            <CustomSelect
+                                                                aria-hidden="false"
+                                                                data={
+                                                                    data &&
+                                                                    data.isActive
+                                                                        ? "true"
+                                                                        : ""
+                                                                }
+                                                                options={
+                                                                    isActiveData
+                                                                }
+                                                                onChange={(
+                                                                    value: boolean,
+                                                                    name: string,
+                                                                ) =>
+                                                                    handleChange(
+                                                                        value,
+                                                                        name,
+                                                                    )
+                                                                }
+                                                                required
+                                                                name="isActive"
+                                                                type="text"
+                                                                theme={
+                                                                    modeTheme
+                                                                }
+                                                                id="isActive"
+                                                                fullWidth
+                                                                label="Estado"
+                                                                InputProps={{
+                                                                    startAdornment:
+                                                                        (
+                                                                            <InputAdornment
+                                                                                className="tw-text-[#64a5e2]"
+                                                                                position="start"
+                                                                            >
+                                                                                <HiOutlineCheckCircle
+                                                                                    size={
+                                                                                        24
+                                                                                    }
+                                                                                />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                }}
+                                                                inputProps={{
+                                                                    readOnly:
+                                                                        !isEdit,
+                                                                }}
+                                                            />
+                                                        </Col>
+                                                        <Col className="mb-3">
+                                                            <label
+                                                                htmlFor="photoButton"
+                                                                className="tw-flex tw-flex-col tw-items-center tw-justify-center"
+                                                            >
+                                                                <IconButton
+                                                                    size="small"
+                                                                    component="span"
+                                                                >
+                                                                    <AddPhotoAlternateOutlinedIcon
+                                                                        className="url-label"
+                                                                        style={{
+                                                                            fontSize: 50,
+                                                                        }}
+                                                                    />
+                                                                </IconButton>
+                                                                <Typography className="tw-font-bold tw-text-sm url-label">
+                                                                    {fileNamePhoto
+                                                                        ? fileNamePhoto
+                                                                        : "Seleccionar Foto"}
+                                                                </Typography>
+                                                                <input
+                                                                    type="file"
+                                                                    name="photoFile"
+                                                                    id="photoButton"
+                                                                    accept=".jpg, .jpeg, .png"
+                                                                    hidden
+                                                                    onChange={
+                                                                        handleMultipleChange
+                                                                    }
+                                                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                                                />
+                                                            </label>
+                                                        </Col>
+                                                    </>
+                                                )}
+                                            </Row>
+                                        )}
+
+                                        {errorForm && (
+                                            <Alert
+                                                variant="warning"
+                                                className="alert alert-warning alert-dismissible fade show"
+                                                role="alert"
+                                                show={show}
+                                                // onClick={() => setErrorForm(false)}
+                                            >
+                                                <strong>
+                                                    Error de envío!.
+                                                </strong>{" "}
+                                                Todos los campos son
+                                                obligatorios!
+                                                <Button
+                                                    variant=""
+                                                    type="button"
+                                                    className="btn-close"
+                                                    data-bs-dismiss="alert"
+                                                    aria-label="Close"
+                                                    onClick={() =>
+                                                        setErrorForm(false)
+                                                    }
+                                                >
+                                                    <i className="bi bi-x"></i>
+                                                </Button>
+                                            </Alert>
+                                        )}
+                                        {errorPass && (
+                                            <Alert
+                                                variant="info"
+                                                className="alert alert-info alert-dismissible fade show"
+                                                role="alert"
+                                                show={show}
+                                                // onClick={() => setErrorForm(false)}
+                                            >
+                                                <strong>
+                                                    Contraseñas no coinciden!.
+                                                </strong>
+                                                Vuelva a intentar!
+                                                <Button
+                                                    variant=""
+                                                    type="button"
+                                                    className="btn-close"
+                                                    data-bs-dismiss="alert"
+                                                    aria-label="Close"
+                                                    onClick={() =>
+                                                        setErrorPass(false)
+                                                    }
+                                                >
+                                                    <i className="bi bi-x"></i>
+                                                </Button>
+                                            </Alert>
+                                        )}
+                                        {errorValid && (
+                                            <Alert
+                                                variant="warning"
+                                                className="alert alert-warning alert-dismissible fade show"
+                                                role="alert"
+                                                show={show}
+                                                // onClick={() => setErrorForm(false)}
+                                            >
+                                                {errorValid.includes("->") ? (
+                                                    <>
+                                                        {
+                                                            errorValid.split(
+                                                                "->",
+                                                            )[0]
+                                                        }
+                                                        <strong>
+                                                            {
+                                                                errorValid.split(
+                                                                    "->",
+                                                                )[1]
+                                                            }
+                                                        </strong>
+                                                    </>
+                                                ) : (
+                                                    <>{errorValid}</>
+                                                )}
+                                                {/* Vuelva a intentar! */}
+                                                <Button
+                                                    variant=""
+                                                    type="button"
+                                                    className="btn-close"
+                                                    data-bs-dismiss="alert"
+                                                    aria-label="Close"
+                                                    onClick={() =>
+                                                        setErrorValid("")
+                                                    }
+                                                >
+                                                    <i className="bi bi-x"></i>
+                                                </Button>
+                                            </Alert>
+                                        )}
+                                    </Modal.Body>
+                                ) : (
+                                    <Modal.Body className="tw-px-8">
+                                        <Row className="tw-rounded sub-card-body tw-p-2">
+                                            {reference === "companies" && (
+                                                <>
+                                                    <div className="tw-flex tw-w-full">
+                                                        <h6 className="main-title-sub-card tw-m-0 tw-p-2 tw-rounded tw-text-white">
+                                                            Datos Empresa
+                                                        </h6>
+                                                    </div>
+                                                    <Row>
+                                                        {data &&
+                                                            data.urlPhoto && (
+                                                                <Col
+                                                                    md={6}
+                                                                    // lg={12}
+                                                                    className="tw-text-center mb-3 tw-w-1/2"
+                                                                >
+                                                                    <h6 className="pb-3 text-textfield">
+                                                                        Foto
+                                                                    </h6>
+                                                                    <div className="tw-flex tw-justify-center tw-items-center">
+                                                                        <Image
+                                                                            className="tw-rounded-3xl"
+                                                                            src={
+                                                                                data &&
+                                                                                data.urlPhoto
+                                                                                    ? data.urlPhoto
+                                                                                    : "https://via.placeholder.com/150x150"
+                                                                            }
+                                                                            width={
+                                                                                0
+                                                                            }
+                                                                            height={
+                                                                                0
+                                                                            }
+                                                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                                            style={{
+                                                                                width: "50%",
+                                                                                height: "auto",
+                                                                            }}
+                                                                            alt="Profile Photo"
+                                                                            placeholder="blur"
+                                                                            blurDataURL={
+                                                                                data &&
+                                                                                data.urlPhoto
+                                                                                    ? data.urlPhoto
+                                                                                    : "https://via.placeholder.com/150x150"
+                                                                            }
+                                                                        />
+                                                                    </div>
+                                                                </Col>
+                                                            )}
+                                                        {data && data.icon && (
+                                                            <Col
+                                                                md={6}
+                                                                // lg={12}
+                                                                className="tw-text-center mb-3 tw-w-1/2"
+                                                            >
+                                                                <h6 className="pb-3 text-textfield">
+                                                                    Logo
+                                                                </h6>
+                                                                <div className="tw-flex tw-justify-center tw-items-center">
+                                                                    <Image
+                                                                        className="tw-rounded-3xl"
+                                                                        src={
+                                                                            data &&
+                                                                            data.icon
+                                                                                ? _.isArray(
+                                                                                      data.icon,
+                                                                                  )
+                                                                                    ? data
+                                                                                          .icon[0]
+                                                                                    : data.icon
+                                                                                : "https://via.placeholder.com/150x150"
+                                                                        }
+                                                                        width={
+                                                                            0
+                                                                        }
+                                                                        height={
+                                                                            0
+                                                                        }
+                                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                                        style={{
+                                                                            width: "50%",
+                                                                            height: "auto",
+                                                                        }}
+                                                                        alt="Icon Photo Company"
+                                                                        placeholder="blur"
+                                                                        blurDataURL={
+                                                                            data &&
+                                                                            data.icon
+                                                                                ? _.isArray(
+                                                                                      data.icon,
+                                                                                  )
+                                                                                    ? data
+                                                                                          .icon[0]
+                                                                                    : data.icon
+                                                                                : "https://via.placeholder.com/150x150"
+                                                                        }
+                                                                    />
+                                                                </div>
+                                                            </Col>
+                                                        )}
+                                                    </Row>
+                                                </>
+                                            )}
+
+                                            {/* {reference === "workAreas" && (
+                                                <>
+                                                    {data && data.areaName && (
+                                                        <Col
+                                                            md={6}
+                                                            className=""
+                                                        >
+                                                            <div className="tw-flex-1 tw-text-star tw-text-base">
+                                                                <h6 className="fw-bold">
+                                                                    Nombre Área
+                                                                </h6>
+                                                                <p className="fw-light">
+                                                                    {data &&
+                                                                        data.areaName}
+                                                                </p>
+                                                            </div>
+                                                        </Col>
+                                                    )}
+                                                    {data && data.areaHead && (
+                                                        <Col
+                                                            md={6}
+                                                            className=""
+                                                        >
+                                                            <div className="tw-flex-1 tw-text-star tw-text-base">
+                                                                <h6 className="fw-bold">
+                                                                    Jefe de Área
+                                                                </h6>
+                                                                <p className="fw-light">
+                                                                    {data &&
+                                                                        data.areaHead}
+                                                                </p>
+                                                            </div>
+                                                        </Col>
+                                                    )}
+                                                    {data && data.urlName && (
+                                                        <Col
+                                                            md={6}
+                                                            className=""
+                                                        >
+                                                            <div className="tw-flex-1 tw-text-star tw-text-base">
+                                                                <h6 className="fw-bold">
+                                                                    Nombre Área
+                                                                </h6>
+                                                                <p className="fw-light">
+                                                                    {data &&
+                                                                        data
+                                                                            .urlName[0]}
+                                                                </p>
+                                                            </div>
+                                                        </Col>
+                                                    )}
+                                                    {data && data.urlLink && (
+                                                        <Col
+                                                            md={6}
+                                                            className=""
+                                                        >
+                                                            <div className="tw-flex-1 tw-text-star tw-text-base">
+                                                                <h6 className="fw-bold">
+                                                                    Enlace
+                                                                </h6>
+                                                                <p className="fw-light">
+                                                                    {data &&
+                                                                        data.urlLink}
+                                                                </p>
+                                                            </div>
+                                                        </Col>
+                                                    )}
+                                                    {data.icon && (
+                                                        <Col
+                                                            md={6}
+                                                            // lg={4}
+                                                            className="tw-text-center mb-3"
+                                                        >
+                                                            <h6 className="pb-3">
+                                                                Icono
+                                                            </h6>
+                                                            <div className="tw-flex tw-justify-center tw-items-center">
+                                                                <img
+                                                                    src={
+                                                                        data.icon
+                                                                            ? _.isArray(
+                                                                                  data.icon,
+                                                                              )
+                                                                                ? data
+                                                                                      .icon[0]
+                                                                                : data.icon
+                                                                            : "https://via.placeholder.com/150x150"
+                                                                    }
+                                                                    alt="logo image"
+                                                                    width="150"
+                                                                />
+                                                            </div>
+                                                        </Col>
+                                                    )}
+                                                </>
+                                            )} */}
+
+                                            {data && data.idType && (
+                                                <Col
+                                                    md={6}
+                                                    // lg={4}
+                                                    className="mb-3 tw-relative"
+                                                >
+                                                    <div className="tw-flex tw-w-full tw-flex-col tw-text-star tw-text-base">
+                                                        <h6 className="label-textfield fw-bolder tw-text-base">
+                                                            Tipo Documento
+                                                        </h6>
+                                                        <span className="fw-normal custom-border-bottom tw-pl-8 text-textfield tw-pb-1">
+                                                            {data &&
+                                                                data.idType}
+                                                        </span>
+                                                    </div>
+                                                    <span className="tw-absolute tw-left-3 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                        <BsPersonVcard
+                                                            size={24}
+                                                        />
+                                                    </span>
+                                                </Col>
+                                            )}
+                                            {data && data.id && (
+                                                <Col
+                                                    md={6}
+                                                    // lg={4}
+                                                    className="mb-3 tw-relative"
+                                                >
+                                                    <div className="tw-flex tw-w-full tw-flex-col tw-text-star tw-text-base">
+                                                        <h6 className="label-textfield fw-bolder tw-text-base">
+                                                            Documento
+                                                        </h6>
+                                                        <span className="fw-normal custom-border-bottom tw-pl-8 text-textfield tw-pb-1">
+                                                            {data && data.id}
+                                                        </span>
+                                                    </div>
+                                                    <span className="tw-absolute tw-left-3 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                        <IoPersonSharp
+                                                            size={20}
+                                                        />
+                                                    </span>
+                                                </Col>
+                                            )}
+
+                                            {data && data.tradename && (
+                                                <Col
+                                                    md={6}
+                                                    className="mb-3 tw-relative"
+                                                >
+                                                    <div className="tw-flex tw-w-full tw-flex-col tw-text-star tw-text-base">
+                                                        <h6 className="label-textfield fw-bolder tw-text-base">
+                                                            Nombre Comercial
+                                                        </h6>
+                                                        <span className="fw-normal custom-border-bottom tw-pl-8 text-textfield tw-pb-1">
+                                                            {data &&
+                                                                data.tradename}
+                                                        </span>
+                                                    </div>
+                                                    <span className="tw-absolute tw-left-3 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                        <MdBusinessCenter
+                                                            size={20}
+                                                        />
+                                                    </span>
+                                                </Col>
+                                            )}
+
+                                            {data && data.phone && (
+                                                <Col
+                                                    md={6}
+                                                    className="mb-3 tw-relative"
+                                                >
+                                                    <div className="tw-flex tw-w-full tw-flex-col tw-text-star tw-text-base">
+                                                        <h6 className="label-textfield fw-bolder tw-text-base">
+                                                            Celular
+                                                        </h6>
+                                                        <span className="fw-normal custom-border-bottom tw-pl-8 text-textfield tw-pb-1">
+                                                            {data && data.phone}
+                                                        </span>
+                                                    </div>
+                                                    <span className="tw-absolute tw-left-3 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                        <FaPhone size={18} />
+                                                    </span>
+                                                </Col>
+                                            )}
+
+                                            {/* {data && data.phone2 && (
+                                        <Col md={6} className="">
+                                            <div className="tw-flex-1 tw-text-star tw-text-base">
+                                                <h6 className="fw-bold">
+                                                    Teléfono fijo (opcional)
+                                                </h6>
+                                                <p className="fw-light">
+                                                    {data && data.phone2}
+                                                </p>
+                                            </div>
+                                        </Col>
+                                    )} */}
+
+                                            {data && data.address && (
+                                                <Col
+                                                    md={6}
+                                                    className="mb-3 tw-relative"
+                                                >
+                                                    <div className="tw-flex tw-w-full tw-flex-col tw-text-star tw-text-base">
+                                                        <h6 className="label-textfield fw-bolder tw-text-base">
+                                                            Dirección
+                                                        </h6>
+                                                        <span className="fw-normal custom-border-bottom tw-pl-8 text-textfield tw-pb-1">
+                                                            {data &&
+                                                                data.address}
+                                                        </span>
+                                                    </div>
+                                                    <span className="tw-absolute tw-left-3 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                        <MdLocationPin
+                                                            size={18}
+                                                        />
+                                                    </span>
+                                                </Col>
+                                            )}
+
+                                            {data && data.country && (
+                                                <Col
+                                                    md={6}
+                                                    className="mb-3 tw-relative"
+                                                >
+                                                    <div className="tw-flex tw-w-full tw-flex-col tw-text-star tw-text-base">
+                                                        <h6 className="label-textfield fw-bolder tw-text-base">
+                                                            País
+                                                        </h6>
+                                                        <span className="fw-normal custom-border-bottom tw-pl-8 text-textfield tw-pb-1">
+                                                            {data &&
+                                                                data.country}
+                                                        </span>
+                                                    </div>
+                                                    <span className="tw-absolute tw-left-3 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                        <MdLocationPin
+                                                            size={18}
+                                                        />
+                                                    </span>
+                                                </Col>
+                                            )}
+
+                                            {data && data.state && (
+                                                <Col
+                                                    md={6}
+                                                    className="mb-3 tw-relative"
+                                                >
+                                                    <div className="tw-flex tw-w-full tw-flex-col tw-text-star tw-text-base">
+                                                        <h6 className="label-textfield fw-bolder tw-text-base">
+                                                            Departamento
+                                                        </h6>
+                                                        <span className="fw-normal custom-border-bottom tw-pl-8 text-textfield tw-pb-1">
+                                                            {data &&
+                                                                data.state &&
+                                                                ColombianStates.find(
+                                                                    (value) =>
+                                                                        findValue(
+                                                                            value,
+                                                                            data.state,
+                                                                        ),
+                                                                )?.label}
+                                                        </span>
+                                                    </div>
+                                                    <span className="tw-absolute tw-left-3 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                        <MdLocationPin
+                                                            size={18}
+                                                        />
+                                                    </span>
+                                                </Col>
+                                            )}
+
+                                            {data && data.city && (
+                                                <Col
+                                                    md={6}
+                                                    className="mb-3 tw-relative"
+                                                >
+                                                    <div className="tw-flex tw-w-full tw-flex-col tw-text-star tw-text-base">
+                                                        <h6 className="label-textfield fw-bolder tw-text-base">
+                                                            Ciudad
+                                                        </h6>
+                                                        <span className="fw-normal custom-border-bottom tw-pl-8 text-textfield tw-pb-1">
+                                                            {data &&
+                                                                data.city &&
+                                                                getCities(
+                                                                    data.state,
+                                                                ).find(
+                                                                    (value) =>
+                                                                        findValue(
+                                                                            value,
+                                                                            data.city,
+                                                                        ),
+                                                                )?.label}
+                                                        </span>
+                                                    </div>
+                                                    <span className="tw-absolute tw-left-3 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                        <MdLocationPin
+                                                            size={18}
+                                                        />
+                                                    </span>
+                                                </Col>
+                                            )}
+
+                                            {reference === "companies" && (
+                                                <>
+                                                    <Col
+                                                        md={12}
+                                                        className="tw-mb-5"
+                                                    >
+                                                        <div className="tw-flex tw-w-full">
+                                                            <h6 className="main-title-sub-card tw-m-0 tw-p-2 tw-rounded tw-text-white">
+                                                                Datos
+                                                                Administrador
+                                                            </h6>
+                                                        </div>
+                                                    </Col>
+                                                    {data && data.name && (
+                                                        <Col
+                                                            md={6}
+                                                            className="mb-3 tw-relative"
+                                                        >
+                                                            <div className="tw-flex tw-w-full tw-flex-col tw-text-star tw-text-base">
+                                                                <h6 className="label-textfield fw-bolder tw-text-base">
+                                                                    Nombres
+                                                                </h6>
+                                                                <span className="fw-normal custom-border-bottom tw-pl-8 text-textfield tw-pb-1">
+                                                                    {data &&
+                                                                        data.name}
+                                                                </span>
+                                                            </div>
+                                                            <span className="tw-absolute tw-left-3 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                                <IoPersonSharp
+                                                                    size={20}
+                                                                />
+                                                            </span>
+                                                        </Col>
+                                                    )}
+
+                                                    {data && data.lastName && (
+                                                        <Col
+                                                            md={6}
+                                                            className="mb-3 tw-relative"
+                                                        >
+                                                            <div className="tw-flex tw-w-full tw-flex-col tw-text-star tw-text-base">
+                                                                <h6 className="label-textfield fw-bolder tw-text-base">
+                                                                    Apellidos
+                                                                </h6>
+                                                                <span className="fw-normal custom-border-bottom tw-pl-8 text-textfield tw-pb-1">
+                                                                    {data &&
+                                                                        data.lastName}
+                                                                </span>
+                                                            </div>
+                                                            <span className="tw-absolute tw-left-3 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                                <IoPersonSharp
+                                                                    size={20}
+                                                                />
+                                                            </span>
+                                                        </Col>
+                                                    )}
+                                                    {data && data.idAdmin && (
+                                                        <Col
+                                                            md={6}
+                                                            // lg={4}
+                                                            className="mb-3 tw-relative"
+                                                        >
+                                                            <div className="tw-flex tw-w-full tw-flex-col tw-text-star tw-text-base">
+                                                                <h6 className="label-textfield fw-bolder tw-text-base">
+                                                                    Documento
+                                                                </h6>
+                                                                <span className="fw-normal custom-border-bottom tw-pl-8 text-textfield tw-pb-1">
+                                                                    {data &&
+                                                                        data.idAdmin}
+                                                                </span>
+                                                            </div>
+                                                            <span className="tw-absolute tw-left-3 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                                <IoPersonSharp
+                                                                    size={20}
+                                                                />
+                                                            </span>
+                                                        </Col>
+                                                    )}
+                                                </>
+                                            )}
+
+                                            {data && data.email && (
+                                                <Col
+                                                    md={6}
+                                                    className="mb-3 tw-relative"
+                                                >
+                                                    <div className="tw-flex tw-w-full tw-flex-col tw-text-star tw-text-base">
+                                                        <h6 className="label-textfield fw-bolder tw-text-base">
+                                                            Email
+                                                        </h6>
+                                                        <span className="fw-normal custom-border-bottom tw-pl-8 text-textfield tw-pb-1">
+                                                            {data && data.email}
+                                                        </span>
+                                                    </div>
+                                                    <span className="tw-absolute tw-left-3 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                        <MdEmail size={18} />
+                                                    </span>
+                                                </Col>
+                                            )}
+
+                                            <Col
+                                                md={6}
+                                                className="mb-3 tw-relative"
+                                            >
+                                                <div className="tw-flex tw-w-full tw-flex-col tw-text-star tw-text-base">
+                                                    <h6 className="label-textfield fw-bolder tw-text-base">
+                                                        Estado
+                                                    </h6>
+                                                    <span className="fw-normal custom-border-bottom tw-pl-8 text-textfield tw-pb-1">
+                                                        {data && data.isActive
+                                                            ? "Activo"
+                                                            : "Inactivo"}
+                                                    </span>
+                                                </div>
+                                                <span className="tw-absolute tw-left-3 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                    <HiOutlineCheckCircle
+                                                        size={24}
+                                                    />
+                                                </span>
+                                            </Col>
+
+                                            {data && data.timestamp && (
+                                                <Col
+                                                    md={6}
+                                                    className="mb-3 tw-relative"
+                                                >
+                                                    <div className="tw-flex tw-w-full tw-flex-col tw-text-star tw-text-base">
+                                                        <h6 className="label-textfield fw-bolder tw-text-base">
+                                                            Fecha Registro
+                                                        </h6>
+                                                        <span className="fw-normal custom-border-bottom tw-pl-8 text-textfield tw-pb-1">
+                                                            {moment(
+                                                                data.timestamp,
+                                                            ).format(
+                                                                "DD/MM/YYYY HH:mm:ss",
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                    <span className="tw-absolute tw-left-3 tw-bottom-2 tw-text-[#64a5e2] tw-text-base">
+                                                        <MdAccessTime
+                                                            size={24}
+                                                        />
+                                                    </span>
+                                                </Col>
+                                            )}
+                                        </Row>
+                                    </Modal.Body>
+                                )}
+                            </>
+                        )}
+                    </ThemeProvider>
+
+                    <Modal.Footer className="tw-flex tw-flex-row tw-justify-between">
+                        {isEdit &&
+                            handleShowMainFormEdit &&
+                            reference === "companies" && (
+                                <Col>{nextStep ? "Paso 1/2" : "Paso 2/2"}</Col>
                             )}
-                        </Button>
-                    )}
-                </Modal.Footer>
-            </Form>
-        </Modal>
+
+                        {reference === "workAreas" ? (
+                            <Col className="tw-flex tw-flex-row tw-space-x-2 tw-items-center tw-justify-end">
+                                <button
+                                    type="button"
+                                    className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
+                                    onClick={handleClose}
+                                >
+                                    <ImCancelCircle size={28} />
+                                    {/* Cancelar */}
+                                </button>
+
+                                {!isEdit && handleShowMainFormEdit ? (
+                                    <button
+                                        type="submit"
+                                        className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
+                                        onClick={handleEditForm}
+                                    >
+                                        <FiEdit size={28} />
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="submit"
+                                        className={`tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
+                                    >
+                                        <span className="tw-text-white">
+                                            <RiSave2Fill size={28} />
+                                        </span>
+                                    </button>
+                                )}
+                            </Col>
+                        ) : (
+                            <Col className="tw-flex tw-flex-row tw-space-x-2 tw-items-center tw-justify-end">
+                                <Button
+                                    className="tw-flex tw-items-center btn-admin"
+                                    variant="light"
+                                    onClick={handleClose}
+                                >
+                                    <ImCancelCircle size={20} />
+                                    {/* Cancelar */}
+                                </Button>
+                                {!isEdit && handleShowMainFormEdit ? (
+                                    <Button
+                                        variant="primary"
+                                        onClick={handleEditForm}
+                                    >
+                                        <FiEdit size={20} />
+                                    </Button>
+                                ) : (
+                                    <>
+                                        {reference === "companies" &&
+                                        nextStep ? (
+                                            <Button
+                                                className=""
+                                                type={
+                                                    companyVal
+                                                        ? "button"
+                                                        : "submit"
+                                                }
+                                                variant="primary"
+                                                onClick={() =>
+                                                    companyVal &&
+                                                    setNextStep(false)
+                                                }
+                                            >
+                                                {/* Siguiente &nbsp; */}
+                                                <GrNext size={17} />
+                                            </Button>
+                                        ) : (
+                                            <div className="tw-flex tw-flex-row w-full mx-16">
+                                                {reference === "companies" && (
+                                                    <Button
+                                                        className=""
+                                                        type="button"
+                                                        variant="primary"
+                                                        onClick={() =>
+                                                            setNextStep(true)
+                                                        }
+                                                    >
+                                                        <GrPrevious size={17} />
+                                                        {/* &nbsp; Regresar */}
+                                                    </Button>
+                                                )}
+                                                <Button
+                                                    // variant="primary"
+                                                    className={`tw-ml-5 btn-save-admin`}
+                                                    type="submit"
+                                                >
+                                                    <span className="">
+                                                        <VscSave size={18} />
+                                                    </span>
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                            </Col>
+                        )}
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+        )
     );
 };
 

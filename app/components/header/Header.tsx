@@ -1,19 +1,21 @@
+import { useState } from "react";
 import { Tab } from "react-bootstrap";
 import BannerMenu from "../bannerMenu/BannerMenu";
+import CompanyPage from "../company/CompanyPage";
 import HomeDash from "../dashBoard/homeDash/HomeDash";
 import DataTableComponent from "../dataTable/DataTableComponent";
+import GoogleMapsPage from "../maps/GoogleMapsPage";
 import Profile from "../profile/page";
+import TempladeContent from "../views/home/HomeContent";
 import HeaderContent from "./components/headerContent/HeaderContent";
 
 const Header = ({ hamburger }: { hamburger?: boolean }) => {
+    const [theme, setTheme] = useState<string>("light");
     return (
         <Tab.Container defaultActiveKey="first">
-
-            <HeaderContent />
+            <HeaderContent setTheme={setTheme} />
 
             <Tab.Content>
-
-
                 {/* Vista del home */}
                 <Tab.Pane
                     className="tab-pane show  text-muted"
@@ -24,6 +26,196 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     <HomeDash />
                 </Tab.Pane>
 
+                {/* Vista de Áreas de trabajo */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="workAreas"
+                    role="tabpanel"
+                    eventKey="workAreas"
+                >
+                    <BannerMenu
+                        seoTitle="Áreas de Trabajo"
+                        title="Áreas de Trabajo"
+                        item="Dashboard"
+                        activeItem="Registro de Áreas de Trabajo"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla del Listado de Áreas de Trabajo."
+                        componentDescription="En esta tabla se encuentran listados todas áreas de Trabajo para su administración."
+                        tableTitle="Áreas de Trabajo"
+                        reference="workAreas"
+                    />
+                </Tab.Pane>
+
+                {/* Vista de Sedes */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="campus"
+                    role="tabpanel"
+                    eventKey="campus"
+                >
+                    <BannerMenu
+                        seoTitle="Sedes"
+                        title="Sedes"
+                        item="Dashboard"
+                        activeItem="Registro de Sedes"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla de Sedes"
+                        componentDescription="En esta tabla se encuentran las sedes para su administración."
+                        tableTitle="Sedes"
+                        reference="campus"
+                    />
+                </Tab.Pane>
+
+                {/* Vista de Estados de Reunión */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="meetingStatus"
+                    role="tabpanel"
+                    eventKey="meetingStatus"
+                >
+                    <BannerMenu
+                        seoTitle="Estados de Reunión"
+                        title="Estados de Reunión"
+                        item="Dashboard"
+                        activeItem="Registro de Estados de Reunión"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla de Estados de Reunión."
+                        componentDescription="En esta tabla se encuentran los Estados de Reunión para su administración."
+                        tableTitle="Estados de Reunión"
+                        reference="meetingStatus"
+                    />
+                </Tab.Pane>
+
+                {/* Vista de Categorías/Puntos Fijos */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="fixedPoints"
+                    role="tabpanel"
+                    eventKey="fixedPoints"
+                >
+                    <BannerMenu
+                        seoTitle="Puntos Fijos"
+                        title="Puntos Fijos"
+                        item="Dashboard"
+                        activeItem="Registro de Puntos Fijos"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla de Puntos Fijos."
+                        componentDescription="En esta tabla se encuentran los Puntos Fijos para su administración."
+                        tableTitle="Puntos Fijos"
+                        reference="fixedPoints"
+                    />
+                </Tab.Pane>
+
+                {/* >------ Comunicaciones -------< */}
+
+                {/* Vista Circulares */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="circular"
+                    role="tabpanel"
+                    eventKey="circular"
+                >
+                    <BannerMenu
+                        seoTitle="Circulares"
+                        title="Circulares"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <DataTableComponent
+                        componentTitle=""
+                        componentDescription=""
+                        tableTitle="Circulares"
+                        reference="circular"
+                    />
+                </Tab.Pane>
+
+                {/* Vista Eventos */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="events"
+                    role="tabpanel"
+                    eventKey="events"
+                >
+                    <BannerMenu
+                        seoTitle="Eventos"
+                        title="Eventos"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <DataTableComponent
+                        componentTitle=""
+                        componentDescription=""
+                        tableTitle="Eventos"
+                        reference="events"
+                    />
+                </Tab.Pane>
+
+                {/* Vista Políticas */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="policy"
+                    role="tabpanel"
+                    eventKey="policy"
+                >
+                    <BannerMenu
+                        seoTitle="Políticas"
+                        title="Políticas"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <DataTableComponent
+                        componentTitle=""
+                        componentDescription=""
+                        tableTitle="Políticas"
+                        reference="policy"
+                    />
+                </Tab.Pane>
+
+                {/* Vista Formularios y Solicitudes */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="forms"
+                    role="tabpanel"
+                    eventKey="forms"
+                >
+                    <BannerMenu
+                        seoTitle="Formularios y Solicitudes"
+                        title="Formularios y Solicitudes"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <DataTableComponent
+                        componentTitle=""
+                        componentDescription=""
+                        tableTitle="Formularios y Solicitudes"
+                        reference="forms"
+                    />
+                </Tab.Pane>
+
+                {/* Vista Noticias */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="news"
+                    role="tabpanel"
+                    eventKey="news"
+                >
+                    <BannerMenu
+                        seoTitle="Noticias"
+                        title="Noticias"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <DataTableComponent
+                        componentTitle=""
+                        componentDescription=""
+                        tableTitle="Noticias"
+                        reference="news"
+                    />
+                </Tab.Pane>
 
                 {/* Vista de Funcionarios */}
                 <Tab.Pane
@@ -33,20 +225,83 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     eventKey="second"
                 >
                     <BannerMenu
-                        seoTitle="Funcionarios"
-                        title="Funcionarios"
+                        seoTitle="Tabla limpia"
+                        title="Tabla limpia"
                         item="Dashboard"
-                        activeItem="Registro de Funcionarios"
+                        activeItem=""
                     />
                     <DataTableComponent
-                        componentTitle="Tabla del Listado de Funcionarios."
-                        componentDescription="En esta tabla se encuentran listados todos los usuarios para su administración."
-                        tableTitle="Funcionarios"
-                        reference="functionary"
+                        componentTitle=""
+                        componentDescription=""
+                        tableTitle="Tabla limpia"
+                        reference="emptyTable"
                     />
                 </Tab.Pane>
 
-                {/* Vista de Paises */}
+                {/* Vista de Notificaciones */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="notifications"
+                    role="tabpanel"
+                    eventKey="notifications"
+                >
+                    <BannerMenu
+                        seoTitle="Notificaciones"
+                        title="Notificaciones"
+                        item="Dashboard"
+                        activeItem="Registro de Notificaciones"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla del Listado de Notificaciones."
+                        componentDescription="En esta tabla se encuentran listados todos los usuarios para su administración."
+                        tableTitle="Notificaciones"
+                        reference="notifications"
+                    />
+                </Tab.Pane>
+
+                {/* Vista de Zonas */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="zones"
+                    role="tabpanel"
+                    eventKey="zones"
+                >
+                    <BannerMenu
+                        seoTitle="Zonas"
+                        title="Zonas"
+                        item="Dashboard"
+                        activeItem="Registro de Zonas"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla del Listado de Zonas."
+                        componentDescription="En esta tabla se encuentran listados todos los usuarios para su administración."
+                        tableTitle="Zonas"
+                        reference="zones"
+                    />
+                </Tab.Pane>
+
+                {/* Vista de Rutas */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="routes"
+                    role="tabpanel"
+                    eventKey="routes"
+                >
+                    <BannerMenu
+                        seoTitle="Rutas"
+                        title="Rutas"
+                        item="Dashboard"
+                        activeItem="Registro de Rutas"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla del Listado de Rutas."
+                        componentDescription="En esta tabla se encuentran listados todos los usuarios para su administración."
+                        tableTitle="Rutas"
+                        reference="routes"
+                    />
+                </Tab.Pane>
+
+                {/* Vista de Países */}
                 <Tab.Pane
                     className="tab-pane text-muted"
                     id="users"
@@ -67,7 +322,7 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
-                {/* Vista de Paises */}
+                {/* Vista de Departamentos */}
                 <Tab.Pane
                     className="tab-pane text-muted"
                     id="users"
@@ -109,7 +364,6 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
-
                 {/* Vista de tipos documentos */}
                 <Tab.Pane
                     className="tab-pane text-muted"
@@ -131,8 +385,7 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
-
-                {/* Vista de Empresas */}
+                {/* Vista de Empresas Super Admin */}
                 <Tab.Pane
                     className="tab-pane text-muted"
                     id="companies"
@@ -142,8 +395,8 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     <BannerMenu
                         seoTitle="Empresas"
                         title="Empresas"
-                        item="Dashboard"
-                        activeItem="Registro de Empresas"
+                        item=""
+                        activeItem="Registro"
                     />
                     <DataTableComponent
                         componentTitle="Tabla del Listado de Empresas."
@@ -152,7 +405,6 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         reference="companies"
                     />
                 </Tab.Pane>
-
 
                 {/* Vista de los Roles */}
                 <Tab.Pane
@@ -175,6 +427,101 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     />
                 </Tab.Pane>
 
+                {/* Vista de los mapas */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="maps"
+                    role="tabpanel"
+                    eventKey="maps"
+                >
+                    <BannerMenu
+                        seoTitle="Mapa General"
+                        title="Mapa General"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <GoogleMapsPage mapToShow={"all"} />
+                </Tab.Pane>
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="zonesMap"
+                    role="tabpanel"
+                    eventKey="zonesMap"
+                >
+                    <BannerMenu
+                        seoTitle="Mapa de Zonas"
+                        title="Mapa Zonas"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <GoogleMapsPage mapToShow={"areas"} />
+                </Tab.Pane>
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="campusMap"
+                    role="tabpanel"
+                    eventKey="campusMap"
+                >
+                    <BannerMenu
+                        seoTitle="Mapa de Sedes"
+                        title="Mapa Sedes"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <GoogleMapsPage mapToShow={"campus"} />
+                </Tab.Pane>
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="employeesMaps"
+                    role="tabpanel"
+                    eventKey="employeesMaps"
+                >
+                    <BannerMenu
+                        seoTitle="Mapa de Empleados"
+                        title="Mapa Empleados"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <GoogleMapsPage mapToShow={"employees"} />
+                </Tab.Pane>
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="routesMaps"
+                    role="tabpanel"
+                    eventKey="routesMaps"
+                >
+                    <BannerMenu
+                        seoTitle="Mapa de Rutas"
+                        title="Mapa Rutas"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <GoogleMapsPage mapToShow={"routes"} />
+                </Tab.Pane>
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="fixedPointsMaps"
+                    role="tabpanel"
+                    eventKey="fixedPointsMaps"
+                >
+                    <BannerMenu
+                        seoTitle="Mapa de Puntos Fijos"
+                        title="Mapa Puntos Fijos"
+                        item="Dashboard"
+                        activeItem=""
+                    />
+                    <GoogleMapsPage mapToShow={"fixedPoints"} />
+                </Tab.Pane>
+
+                {/* Vista de la Empresa */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="company"
+                    role="tabpanel"
+                    eventKey="company"
+                >
+                    <CompanyPage theme={theme} />
+                </Tab.Pane>
 
                 {/* Vista del perfil */}
                 <Tab.Pane
@@ -186,7 +533,84 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                     <Profile />
                 </Tab.Pane>
 
+                {/* Vista del Empleados */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="Empleados"
+                    role="tabpanel"
+                    eventKey="employees"
+                >
+                    <BannerMenu
+                        seoTitle="Empleados"
+                        title="Empleados"
+                        item="Dashboard"
+                        activeItem="Empleados"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla del Listado de Empleados."
+                        componentDescription="En esta tabla se encuentran los Empleados disponibles."
+                        tableTitle="Empleados"
+                        reference="employees"
+                    />
+                </Tab.Pane>
 
+                {/* Vista del Logos */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="logos"
+                    role="tabpanel"
+                    eventKey="logos"
+                >
+                    <BannerMenu
+                        seoTitle="Logos"
+                        title="Logos"
+                        item="Dashboard"
+                        activeItem="Registro de Logos"
+                    />
+                    <DataTableComponent
+                        componentTitle="Tabla del Listado de Logos."
+                        componentDescription="En esta tabla se encuentran listados todos los usuarios para su administración."
+                        tableTitle="Logos"
+                        reference="logos"
+                    />
+                </Tab.Pane>
+
+                {/* Vista de Plantillas */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="plantillas"
+                    role="tabpanel"
+                    eventKey="plantillas"
+                >
+                    <BannerMenu
+                        seoTitle="Plantillas"
+                        title="Plantillas"
+                        item="Dashboard"
+                        activeItem="Seleccionar Plantilla"
+                    />
+                    <TempladeContent />
+                </Tab.Pane>
+
+                {/* Vista del reporte de Jornada Laboral */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="workingday"
+                    role="tabpanel"
+                    eventKey="workingday"
+                >
+                    <BannerMenu
+                        seoTitle="Jornada Laboral"
+                        title="Jornada Laboral"
+                        item="Dashboard"
+                        activeItem="Reporte de Jornadas Laborales"
+                    />
+                    <DataTableComponent
+                        componentTitle="Reporte de Jornadas Laborales"
+                        componentDescription="En esta tabla se encuentran el reporte de las jornadas laborales."
+                        tableTitle="Jornada Laboral"
+                        reference="workingday"
+                    />
+                </Tab.Pane>
             </Tab.Content>
         </Tab.Container>
     );

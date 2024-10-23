@@ -1,9 +1,19 @@
+import { Coords } from "./googleMaps";
+
 export interface DataMainFormObject {
     uid: string;
+    adminId: string;
     icon: string;
     idType: string;
+    idTypeAdmin: string;
     id: string;
+    companyId: string;
+    idAdmin: string;
     name: string;
+    businessName: string;
+    tradename: string;
+    cards: string;
+    cardGPS: string;
     description: string;
     personType: string;
     discount: string;
@@ -12,8 +22,15 @@ export interface DataMainFormObject {
     lastName: string;
     birthDate: string;
     age: string;
-    phone: any;
-    phone2: any;
+    indicative: string;
+    indicativeTwo: string;
+    phone: string;
+    phoneAdmin: string;
+    phone2: string;
+    ext: string;
+    webSite: string;
+    sector: string;
+    geolocation: Coords;
     address: string;
     country: string;
     state: any;
@@ -27,11 +44,14 @@ export interface DataMainFormObject {
     contract: string;
     rol: string;
     campus: string;
-    availableCampus: string[];
     area: string;
     availableAreas: string[];
     urlPhoto: string;
-    timestamp: Date;
+    timestamp: string;
+    areaName: string;
+    areaHead: string;
+    urlName: [string, boolean];
+    urlLink: string;
     isActive: boolean;
     isDeleted: boolean;
 }
@@ -52,7 +72,6 @@ export type DataFunctionaryObject = {
     password: string;
     confirmPassword: string;
     rol: string;
-    campus: string;
     area: string;
     urlPhoto: string;
     timestamp: Date;
@@ -143,6 +162,18 @@ export type DataDiagnosesObject = {
     isDeleted: boolean;
 };
 
+export type DataWorkAreasObject = {
+    uid: string;
+    companyId: string;
+    areaName: string;
+    areaHead: string;
+    urlName: [string, boolean];
+    urlLink: string;
+    icon: string;
+    isActive: boolean;
+    isDeleted: boolean;
+};
+
 export type DataAgreementsObject = {
     uid: string;
     name: string;
@@ -152,30 +183,41 @@ export type DataAgreementsObject = {
     isDeleted: boolean;
 };
 
-export type DataAreasObject = {
+export type DataAdminCompanyObject = {
     uid: string;
     name: string;
-    description: string;
-    availableCampus: string[];
-    isActive: boolean;
-    isDeleted: boolean;
+    lastName: string;
+    email: string;
+    idTypeAdmin: string;
+    idAdmin: string;
+    indicativeTwo: string;
+    phoneAdmin: string;
+    urlPhoto: string;
+    companyId: string;
+    rolId: string;
 };
 
 export type DataCompanyObject = {
     uid: string;
+    adminId: string;
+    idType: string;
     id: string;
-    name: string;
-    phone: any;
-    phone2: any;
-    email: string;
-    password: string;
-    confirmPassword: string;
+    icon: string;
+    businessName: string;
+    tradename: string;
+    cards: string;
+    cardGPS: string;
+    indicative: string;
+    phone: string;
+    ext: string;
+    webSite: string;
+    sector: string;
+    geolocation: Coords;
     address: string;
     country: string;
     state: any;
     city: string;
-    urlPhoto: string;
-    timestamp: Date;
+    timestamp: string;
     isActive: boolean;
     isDeleted: boolean;
 };

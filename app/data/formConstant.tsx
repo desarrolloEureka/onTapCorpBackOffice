@@ -1,4 +1,5 @@
 import { colombianCitiesData } from "@/data/colombianCitiesData";
+import { getCoordinates } from "@/queries/GeoMapsQueries";
 
 export const roles = [
     { value: "Super Administrador", label: "Super Administrador" },
@@ -40,7 +41,6 @@ export const idTypesTable = [
 
 export const countries = [{ value: "CO", label: "Colombia" }];
 
-
 export const countriesTable = [{ id: 1, label: "Colombia" }];
 
 export const personTypes = [
@@ -58,6 +58,30 @@ export const getCities = (id: number) =>
         value: city,
         label: city,
     }));
+
+export const getStateName = (id: number): string | undefined => {
+    const findValue = (item: any, dataValue: any) => item.value === dataValue;
+
+    const result = ColombianStates.find((value) => findValue(value, id))?.label;
+    return result;
+};
+
+export const getGeolocation = async (
+    address: string,
+    companyData: any,
+): Promise<{
+    lat: number;
+    lng: number;
+} | null> => {
+    //Dirección formateada: "{dirección}, {ciudad}, {departamento}, {país}"
+    const formattedAddress: string = `${address}, ${
+        companyData.city[0]
+    }, ${getStateName(companyData.state[0])},${companyData.country[0]}`;
+
+    const coords = await getCoordinates(formattedAddress);
+
+    return coords;
+};
 
 export const specialties = [{ value: "Example", label: "Example" }];
 
@@ -77,11 +101,7 @@ export const isActiveData = [
         color: "#dc3545",
     },
 ];
-export const campus = [
-    { value: "Marly", label: "Marly" },
-    { value: "Santa Barbara", label: "Santa Barbara" },
-    { value: "Country", label: "Country" },
-];
+
 export const areas = [
     { value: "Administrativo", label: "Administrativo" },
     { value: "Despachos", label: "Despachos" },
@@ -90,4 +110,32 @@ export const areas = [
     { value: "Modelos", label: "Modelos" },
     { value: "Radiología", label: "Radiología" },
     { value: "Recepción/Caja", label: "Recepción/Caja" },
+];
+
+export const colorList: string[] = [
+    "#f44336",
+    "#e91e63",
+    "#9c27b0",
+    "#673ab7",
+    "#3f51b5",
+    "#2196f3",
+    "#03a9f4",
+    "#00bcd4",
+    "#009688",
+    "#4caf50",
+    "#8bc34a",
+    "#cddc39",
+    "#ffeb3b",
+    "#ffc107",
+    "#ff9800",
+    "#ff5722",
+    "#795548",
+    "#607d8b",
+    "#00239C",
+    "#FFB3AB",
+    "#782F40",
+    "#00573F",
+    "#25282A",
+    "#BBDDE6",
+    "#B6ADA5",
 ];

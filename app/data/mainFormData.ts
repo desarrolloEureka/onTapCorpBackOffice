@@ -1,23 +1,32 @@
 import {
+    DataAdminCompanyObject,
+    DataAgreementsObject,
+    DataCampusObject,
+    DataCompanyObject,
+    DataDiagnosesObject,
+    DataDiagnosticianObject,
     DataFunctionaryObject,
     DataMainFormObject,
     DataPatientObject,
     DataProfessionalObject,
-    DataCampusObject,
     DataSpecialtyObject,
-    DataDiagnosticianObject,
-    DataAgreementsObject,
-    DataAreasObject,
-    DataDiagnosesObject,
-    DataCompanyObject,
+    DataWorkAreasObject,
 } from "@/types/mainForm";
 
 export const dataMainFormObject = {
     uid: "",
+    adminId: "",
     icon: "",
     idType: "",
+    idTypeAdmin: "",
     id: "",
+    companyId: "",
+    idAdmin: "",
     name: "",
+    businessName: "",
+    tradename: "",
+    cards: "",
+    cardGPS: "",
     description: "",
     personType: "",
     discount: "",
@@ -26,8 +35,15 @@ export const dataMainFormObject = {
     lastName: "",
     birthDate: "",
     age: "",
+    indicative: "57",
+    indicativeTwo: "57",
     phone: "",
+    phoneAdmin: "",
     phone2: "",
+    ext: "",
+    webSite: "",
+    sector: "",
+    geolocation: { lat: 4.709870567688981, lng: -74.07280277961777 }, //4.709870567688981, -74.07280277961777 Bogotá
     address: "",
     country: "",
     state: "",
@@ -41,11 +57,14 @@ export const dataMainFormObject = {
     contract: "",
     rol: "",
     campus: "",
-    availableCampus: [],
     area: "",
     availableAreas: [],
     urlPhoto: "",
-    timestamp: new Date(),
+    timestamp: "",
+    areaName: "",
+    areaHead: "",
+    urlName: ["", false],
+    urlLink: "",
     isActive: true,
     isDeleted: false,
 } as DataMainFormObject;
@@ -66,7 +85,6 @@ export const dataFunctionaryObject = {
     password: "",
     confirmPassword: "",
     rol: "",
-    campus: "",
     area: "",
     urlPhoto: "",
     timestamp: new Date(),
@@ -157,6 +175,18 @@ export const dataDiagnosesObject = {
     isDeleted: false,
 } as DataDiagnosesObject;
 
+export const dataWorkAreasObject = {
+    uid: "",
+    companyId: "",
+    areaName: "",
+    areaHead: "",
+    urlName: ["", false],
+    urlLink: "",
+    icon: "",
+    isActive: false,
+    isDeleted: false,
+} as DataWorkAreasObject;
+
 export const dataAgreementsObject = {
     uid: "",
     name: "",
@@ -166,29 +196,42 @@ export const dataAgreementsObject = {
     isDeleted: false,
 } as DataAgreementsObject;
 
-export const dataAreasObject = {
+export const dataAdminCompanyObject = {
     uid: "",
     name: "",
-    description: "",
-    availableCampus: [],
-    isActive: false,
-    isDeleted: false,
-} as DataAreasObject;
+    lastName: "",
+    email: "",
+    idTypeAdmin: "",
+    idAdmin: "",
+    indicativeTwo: "57",
+    phoneAdmin: "",
+    urlPhoto: "",
+    // rolId: "TZ3vIk6qaQ97Pej1qqwV", //  UID Administrador de la empresa DESARROLLO
+    rolId: "pLBTcNDk2DtYwgJzrtFE", // UID Administrador de la empresa PRODUCCION
+    companyId: "",
+} as DataAdminCompanyObject;
 
 export const dataCompanyObject = {
     uid: "",
+    adminId: "",
+    idType: "",
     id: "",
-    name: "",
+    icon: "",
+    businessName: "",
+    tradename: "",
+    cards: "",
+    cardGPS: "",
+    indicative: "",
     phone: "",
-    phone2: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    ext: "",
+    webSite: "",
+    sector: "",
     address: "",
+    geolocation: { lat: 4.709870567688981, lng: -74.07280277961777 }, //4.709870567688981, -74.07280277961777 Bogotá
     country: "",
     state: "",
     city: "",
-    urlPhoto: "",
+    timestamp: "",
     isActive: false,
     isDeleted: false,
 } as DataCompanyObject;

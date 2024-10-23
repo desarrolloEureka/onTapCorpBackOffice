@@ -1,23 +1,19 @@
 "use client";
-import { dataObject } from "@/data/documentsData";
+import {
+    dataFunctionaryObject,
+    dataPatientObject,
+    dataProfessionalObject
+} from "@/data/mainFormData";
 import {
     getDocumentReference,
-    saveDataDocumentsQuery,
-    saveDocumentsQuery,
+    saveDataDocumentsQuery
 } from "@/queries/documentsQueries";
 import { DataObject, ErrorData } from "@/types/documents";
 import { ModalParamsCsv } from "@/types/modals";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import { useCSVReader } from "react-papaparse";
-import { DEFAULT_REMOVE_HOVER_COLOR } from "../styles/stylesUploadCsv";
 import Swal from "sweetalert2";
-import {
-    dataCampusObject,
-    dataFunctionaryObject,
-    dataPatientObject,
-    dataProfessionalObject,
-} from "@/data/mainFormData";
+import { DEFAULT_REMOVE_HOVER_COLOR } from "../styles/stylesUploadCsv";
 
 const confirmAlert = (title: string) => {
     Swal.fire({
@@ -68,8 +64,7 @@ const UploadDocumentHook = ({
                 currentDataObject.password = val[7];
                 currentDataObject.confirmPassword = val[8];
                 // currentDataObject.rol = val[0];
-                currentDataObject.campus = val[9];
-                currentDataObject.area = val[10];
+                currentDataObject.area = val[9];
                 // currentDataObject.isActive = val[11];
                 // currentDataObject.urlPhoto = urlName;
 
@@ -95,7 +90,7 @@ const UploadDocumentHook = ({
                 currentDataObject.email = val[12];
                 currentDataObject.password = val[13];
                 currentDataObject.confirmPassword = val[14];
-                currentDataObject.isActive = val[15] === "true" ? true : false;;
+                currentDataObject.isActive = val[15] === "true" ? true : false;
                 currentDataObject.rol = val[16];
 
                 newData = { ...currentDataObject };
@@ -124,36 +119,6 @@ const UploadDocumentHook = ({
                 currentDataObject.contract = val[16];
                 currentDataObject.isActive = val[17] === "true" ? true : false;
                 currentDataObject.rol = val[18];
-
-                newData = { ...currentDataObject };
-            }
-
-            if (reference === "campus") {
-                const currentDataObject = { ...dataCampusObject };
-
-                currentDataObject.uid = documentRef.id;
-                currentDataObject.name = val[0];
-                currentDataObject.description = val[1];
-                currentDataObject.phone2 = val[2];
-                currentDataObject.address = val[3];
-                currentDataObject.country = val[4];
-                currentDataObject.state = val[5];
-                currentDataObject.city = val[6];
-                currentDataObject.isActive = val[7] === "true" ? true : false;;
-
-                newData = { ...currentDataObject };
-            }
-
-            if (reference === "campus") {
-                const currentDataObject = { ...dataCampusObject };
-
-                currentDataObject.uid = documentRef.id;
-                currentDataObject.name = val[0];
-                currentDataObject.description = val[1];
-                currentDataObject.name = val[2];
-                currentDataObject.description = val[3];
-                // currentDataObject.icon = val[1];
-                currentDataObject.isActive = val[4] === "true" ? true : false;;
 
                 newData = { ...currentDataObject };
             }
