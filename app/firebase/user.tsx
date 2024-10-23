@@ -46,7 +46,6 @@ export const addUser = async ({
                 email,
                 password,
             });
-            console.log(data.status);
             if (data.status === 200) {
                 resolve(data);
             } else {
@@ -71,7 +70,6 @@ export const updateUserPassword = async ({
                 uid,
                 password,
             });
-            console.log(data.status);
             if (data.status === 200) {
                 resolve(data);
             } else {

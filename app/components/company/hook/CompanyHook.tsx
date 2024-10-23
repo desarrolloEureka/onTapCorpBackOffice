@@ -164,13 +164,11 @@ const CompanyHook = () => {
                 }
             }
         }
-        console.log("newErrors", newErrors)
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
     const handleSendForm = async (e: any) => {
-        console.log("data", data)
         e.preventDefault();
         // Validar los campos antes de continuar
         if (!validateFields()) return;

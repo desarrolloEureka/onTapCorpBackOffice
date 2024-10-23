@@ -23,7 +23,9 @@ export const handleSendWelcomeEmail = async (data: any) => {
                 userEmail: data.email,
                 password: data.id,
                 //Cambiar la URL de login a producción
-                loginUrl: "https://one-tap-corp-dev.vercel.app/components/signIn/",
+                /* loginUrl: "https://one-tap-corp-dev.vercel.app/components/signIn/",
+                 LINK DE LOGUEO DE BIENVENIDA DESARROLLO VERCEL*/
+                loginUrl: "https://one-tap-corp.vercel.app/components/signIn/",
                 contactEmail: "ceo@eurekadreams.com",
             }),
         });

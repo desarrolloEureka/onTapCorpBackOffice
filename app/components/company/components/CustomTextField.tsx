@@ -43,9 +43,6 @@ const CustomTextField = (props: any) => {
         }
     }, [props.data]);
     
-console.log("props.helperText", props.helperText)
-console.log("error", props.error)
-
     return (
         <div className="tw-flex tw-flex-row tw-mt-4 tw-w-full">
             <ThemeProvider theme={theme}>

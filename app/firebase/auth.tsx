@@ -41,20 +41,24 @@ const useAuth = () => {
                 };
 
                 switch (roleId) {
-                    case "vE7NrHpiRU2s1Gjv5feg":
+                    //case "vE7NrHpiRU2s1Gjv5feg":  // UID SUPERADMIN DESARROLLO
+                    case "xzF2CqDF9xvbsrazI6Md":  // UID SUPERADMIN PRODUCCION
                         role.name = "Superadmin";
                         role.slug = "superadmin";
                         break;
-                    case "LJTfIeCONNjlxsyooofx":
+                    //case "LJTfIeCONNjlxsyooofx": // UID Seguimiento y reportes del Backoffice DESARROLLO
+                    case "THgHuVWvN3UGrrXiFjMr":  // UID Seguimiento y reportes del Backoffice PRODUCCION
                         role.name = "Operativo";
                         role.slug = "operativo";
                         break;
-                    case "TZ3vIk6qaQ97Pej1qqwV":
+                    //case "TZ3vIk6qaQ97Pej1qqwV": // UID Administrador de la empresa DESARROLLO
+                    case "pLBTcNDk2DtYwgJzrtFE":  // UID Administrador de la empresa PRODUCCION
                         role.name = "Administrativo";
                         role.slug = "administrativo";
                         role.isAdmin = true;
                         break;
-                    case "uysG1ULyEDklfbGDFate":
+                    //case "uysG1ULyEDklfbGDFate": //  UID Empleados de la empresa DESARROLLO
+                    case "9nBswv3gVcLukzhQtvM3":    // UID Empleados de la empresa PRODUCCION
                         role.name = "Empleado";
                         role.slug = "empleado";
                         break;

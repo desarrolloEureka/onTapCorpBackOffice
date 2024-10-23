@@ -479,11 +479,11 @@ const HeaderContent = ({
                                 </NavDropdown>
                             )}
 
-                            {/*  Plantillas, quitar userRole === "superadmin" || despues del desarrollo */}
+                            {/*  Plantillas  */}
                             {(
                                 userRole === "operativo" ||
-                                userRole === "administrativo" ||
-                                userRole === "superadmin") && (
+                                userRole === "administrativo"
+                                ) && (
                                 <NavDropdown
                                     title={
                                         <>
@@ -537,7 +537,7 @@ const HeaderContent = ({
                                     id="nav-dropdown"
                                     className="nav-item dropdown"
                                 >
-                                    <NavDropdown.Item
+                                    {/* <NavDropdown.Item
                                         //href="#functionary"
                                         eventKey="metrics"
                                     >
@@ -566,6 +566,16 @@ const HeaderContent = ({
                                             className="tw-mb-1 tw-mr-1"
                                         />
                                         Clics
+                                    </NavDropdown.Item> */}
+                                    <NavDropdown.Item
+                                        href="#workingday"
+                                        eventKey="workingday"
+                                    >
+                                        <IoDocumentOutline
+                                            size={20}
+                                            className="tw-mb-1 tw-mr-1"
+                                        />
+                                        Jornada Laboral
                                     </NavDropdown.Item>
                                 </NavDropdown>
                             )}

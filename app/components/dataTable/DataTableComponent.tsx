@@ -40,10 +40,14 @@ const DataTableComponent = ({
         handleShowMainFormEdit,
         editData,
         isEmptyDataRef,
-        handleSearch,
+        handleSearchAndFilter,
         searchTerm,
         clearSearch,
         handleDeleteItem,
+        startDate, 
+        setStartDate,
+        endDate, 
+        setEndDate,
     } = DataTablesHook(reference);
 
     return (
@@ -73,8 +77,12 @@ const DataTableComponent = ({
                                     tableTitle={tableTitle}
                                     reference={reference}
                                     isEmptyDataRef={isEmptyDataRef}
-                                    handleSearch={handleSearch}
+                                    handleSearchAndFilter={handleSearchAndFilter}
                                     searchTerm={searchTerm}
+                                    startDate={startDate}
+                                    setStartDate={setStartDate}
+                                    endDate={endDate}
+                                    setEndDate={setEndDate}
                                     clearSearch={clearSearch}
                                 />
                             </div>

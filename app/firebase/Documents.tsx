@@ -359,7 +359,9 @@ export const getDocsByCompanyRolId = async (
         const q = query(
             collection(db, reference),
             where("idCompany", "==", companyId),
-            where("rolId", "==", "vE7NrHpiRU2s1Gjv5feg"),
+            where("rolId", "==", "xzF2CqDF9xvbsrazI6Md"),  // UID SUPERADMIN PRODUCCION
+            //where("rolId", "==", "vE7NrHpiRU2s1Gjv5feg"), // UID SUPERADMIN DESARROLLO
+
         );
 
         const querySnapshot = await getDocs(q);
@@ -553,12 +555,43 @@ export const getHeadquartersByCompanyId = async (companyId: any) => {
     }
 };
 
+export const getLocationsByCompanyIdAndWorkingday = async (companyId: any) => {
+    try {
+        const q1 = query(
+            collection(db, "locations"),
+            where("companyId", "==", companyId),
+            where("subject", "==", "endDay")
+        );
+
+        const q2 = query(
+            collection(db, "locations"),
+            where("companyId", "==", companyId),
+            where("subject", "==", "startDay")
+        );
+
+        const querySnapshot1 = await getDocs(q1);
+        const querySnapshot2 = await getDocs(q2);
+
+        const Locations = [
+            ...querySnapshot1.docs.map((doc) => ({...doc.data() })),
+            ...querySnapshot2.docs.map((doc) => ({...doc.data() })),
+        ]
+        return Locations;
+    } catch (error) {
+        console.error("Error fetching routes", error);
+        return [];
+    }
+};
+
 export const getEmployeesByCompanyId = async (companyId: any) => {
     try {
         const q = query(
             collection(db, "users"),
-            where("idCompany", "==", companyId),
-            where("rolId", "==", "uysG1ULyEDklfbGDFate"),
+            where("idCompany", "==", companyId), 
+            where("rolId", "==", "9nBswv3gVcLukzhQtvM3"),  //  ID DEL ROL DE EMPLEADO EN PRODUCCION
+            //where("rolId", "==", "uysG1ULyEDklfbGDFate"),  //  ID DEL ROL DE EMPLEADO EN DESARROLLO
+
+            
         );
 
         const querySnapshot = await getDocs(q);
@@ -580,14 +613,18 @@ export const saveEmployee = async (dataSave: any) => {
             ...dataSave,
             //Fecha de creación
             // dejar switch_activateCardy no employeeCardStatus
-            rolId: "uysG1ULyEDklfbGDFate",
+            // rolId: "uysG1ULyEDklfbGDFate", //  ID DEL ROL DE EMPLEADO EN DESARROLLO
+            rolId: "9nBswv3gVcLukzhQtvM3", // ID DEL ROL DE EMPLEADO EN PRODUCCION
             views: 0,
             isActive: true,
-            preview: `https://one-tap-corp-dev.vercel.app/components/views/cardView/?uid=${dataSave.uid}`,
+            preview: `https://one-tap-corp.vercel.app/components/views/cardView/?uid=${dataSave.uid}`,
+            /*preview: `https://one-tap-corp-dev.vercel.app/components/views/cardView/?uid=${dataSave.uid}`,
+              LINK DE DESARROLLO VERCEL*/ 
             switch_activateCard: true,
             templateData: [
                 {
-                    id: "VGMUWYOP3RK374gi30I8",
+                    id: "KrkhptNP1edvGjHJNaKt", // ID DEL TEMPLATE 1 DE PRODUCCION
+                    /* id: "VGMUWYOP3RK374gi30I8",  ID DEL TEMPLATE 1 DE DESAROLLO*/
                     checked: true,
                 },
             ],

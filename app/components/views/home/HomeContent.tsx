@@ -14,7 +14,7 @@ interface TemplateType {
     image: string;
 }
 
-const HomeContent = () => {
+const TempladeContent = () => {
     const [templateSelect, setTemplateSelect] = useState<any>({
         id: "",
         name: "",
@@ -162,4 +162,4 @@ const HomeContent = () => {
     );
 };
 
-export default HomeContent;
+export default TempladeContent;
