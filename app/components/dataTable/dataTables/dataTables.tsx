@@ -47,7 +47,7 @@ function convertArrayOfObjectsToCSV(array: object[], reference: string): string 
 
     if( reference == "workingday") {
         keys = ["firstName", "lastName", "documentType", "documentNumber", "position", "longitude", "latitude", "startDay", "endDay", "totalTime"];
-        const headers = {
+        const headers: Record<string, string> = {
             firstName: "Nombres",
             lastName: "Apellidos",
             documentType: "Tipo de Documento",
@@ -59,7 +59,7 @@ function convertArrayOfObjectsToCSV(array: object[], reference: string): string 
             endDay: "Final jornada",
             totalTime: "Jornada laboral"
         };
-        result += keys.map(key => headers[key]).join(columnDelimiter);
+        result += keys.map((key: string) => headers[key]).join(columnDelimiter);
     } else {
         keys = Object.keys(array[0]);
         result += keys.join(columnDelimiter);

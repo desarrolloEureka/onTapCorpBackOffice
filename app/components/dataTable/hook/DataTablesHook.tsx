@@ -79,11 +79,7 @@ const DataTablesHook = (reference: string) => {
         }
     };
 
-    const formatearHora = (horaDuracionISO: any): string => {
-
-        const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT_KEY || "")
-        console.log("serviceAccount", serviceAccount)
-        
+    const formatearHora = (horaDuracionISO: any): string => {        
         if (horaDuracionISO !== "-") {
             const hours = Math.floor(
                 (horaDuracionISO % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
