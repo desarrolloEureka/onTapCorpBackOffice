@@ -359,8 +359,7 @@ export const getDocsByCompanyRolId = async (
         const q = query(
             collection(db, reference),
             where("idCompany", "==", companyId),
-            where("rolId", "==", "xzF2CqDF9xvbsrazI6Md"),  // UID SUPERADMIN PRODUCCION
-            //where("rolId", "==", "vE7NrHpiRU2s1Gjv5feg"), // UID SUPERADMIN DESARROLLO
+            where("rolId", "==", "vE7NrHpiRU2s1Gjv5feg"), // UID SUPERADMIN
 
         );
 
@@ -588,8 +587,7 @@ export const getEmployeesByCompanyId = async (companyId: any) => {
         const q = query(
             collection(db, "users"),
             where("idCompany", "==", companyId), 
-            where("rolId", "==", "9nBswv3gVcLukzhQtvM3"),  //  ID DEL ROL DE EMPLEADO EN PRODUCCION
-            //where("rolId", "==", "uysG1ULyEDklfbGDFate"),  //  ID DEL ROL DE EMPLEADO EN DESARROLLO
+            where("rolId", "==", "uysG1ULyEDklfbGDFate"),  //  ID DEL ROL DE EMPLEADO
 
             
         );
@@ -613,8 +611,7 @@ export const saveEmployee = async (dataSave: any) => {
             ...dataSave,
             //Fecha de creación
             // dejar switch_activateCardy no employeeCardStatus
-            // rolId: "uysG1ULyEDklfbGDFate", //  ID DEL ROL DE EMPLEADO EN DESARROLLO
-            rolId: "9nBswv3gVcLukzhQtvM3", // ID DEL ROL DE EMPLEADO EN PRODUCCION
+            rolId: "uysG1ULyEDklfbGDFate", //  ID DEL ROL DE EMPLEADO
             views: 0,
             isActive: true,
             preview: `https://one-tap-corp.vercel.app/components/views/cardView/?uid=${dataSave.uid}`,
@@ -623,8 +620,7 @@ export const saveEmployee = async (dataSave: any) => {
             switch_activateCard: true,
             templateData: [
                 {
-                    id: "KrkhptNP1edvGjHJNaKt", // ID DEL TEMPLATE 1 DE PRODUCCION
-                    /* id: "VGMUWYOP3RK374gi30I8",  ID DEL TEMPLATE 1 DE DESAROLLO*/
+                    id: "VGMUWYOP3RK374gi30I8", // ID DEL TEMPLATE 1
                     checked: true,
                 },
             ],
