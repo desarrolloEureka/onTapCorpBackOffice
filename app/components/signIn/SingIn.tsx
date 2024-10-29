@@ -177,7 +177,7 @@ const SingIn = () => {
                                             </Form>
                                             <div className="text-start mt-5 ms-0">
                                                 <div className="mb-1" style={{ color: '#fff' }}>
-                                                    <Link href="/components/forgotPassword" style={{ color: 'white' }}>
+                                                    <Link href="/components/forgotPassword" style={{ color: 'white', textDecoration: 'underline' }}>
                                                         Has olvidado tu contraseña ?
                                                     </Link>
                                                 </div>

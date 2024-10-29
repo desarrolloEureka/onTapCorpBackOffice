@@ -64,7 +64,8 @@ export const dataMainFormObject = {
     areaName: "",
     areaHead: "",
     urlName: ["", false],
-    urlLink: "",
+    urlLink: " ",
+    iconName: " ",
     isActive: true,
     isDeleted: false,
 } as DataMainFormObject;
@@ -180,8 +181,6 @@ export const dataWorkAreasObject = {
     companyId: "",
     areaName: "",
     areaHead: "",
-    urlName: ["", false],
-    urlLink: "",
     icon: "",
     isActive: false,
     isDeleted: false,

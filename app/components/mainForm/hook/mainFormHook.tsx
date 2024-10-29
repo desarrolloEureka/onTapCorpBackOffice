@@ -22,6 +22,8 @@ import {
     saveEditDataDocumentsQuery,
     saveFilesDocuments,
     saveIconFile,
+    listenToDocumentsQuery,
+    saveDataDocumentsQueryById
 } from "@/queries/documentsQueries";
 import { getCoordinates } from "@/queries/GeoMapsQueries";
 import { getAllRolesQuery } from "@/queries/RolesQueries";
@@ -40,6 +42,7 @@ import {
     useCallback,
     useEffect,
     useState,
+    
 } from "react";
 import Swal from "sweetalert2";
 
@@ -52,12 +55,12 @@ const MainFormHook = ({
     title,
     reference,
 }: ModalParamsMainForm) => {
-    const { accessTokenUser, userData } = useAuth();
+    const { accessTokenUser, userData, companyData } = useAuth();
 
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
-    const [data, setData] = useState(dataMainFormObject);
+    const [data, setData] = useState<any>(dataMainFormObject);
     const [errorValid, setErrorValid] = useState("");
     const [errorForm, setErrorForm] = useState(false);
     const [errorPass, setErrorPass] = useState(false);
@@ -71,9 +74,22 @@ const MainFormHook = ({
     const [roles, setRoles] = useState<RolesSelector[]>();
     const [diagnostician, setDiagnostician] = useState<any[]>();
     const [adminUsers, setAdminUsers] = useState<any[]>();
+    const [emailError, setEmailError] = useState<string>('');
+    const [objToArrayItems, setObjToArrayItems] = useState<any>({});
+
+    //Modal Iconos
+    const [isOpenModalIcons, setIsOpenModalIcons] = useState<boolean>(false);
+    const [itemUrlKey, setItemUrlKey] = useState(0);
+    const [dataLogos, setDataLogos] = useState<any>(null);
+    const [itemUrlSelected, setItemUrlSelected] = useState([]);
 
     const theme = localStorage.getItem("@theme");
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
+
+    useEffect(() => {
+        const fetchDocuments = listenToDocumentsQuery("logos", setDataLogos, companyData?.uid);
+        return () => fetchDocuments();
+    }, [companyData?.uid]);
 
     const handleEditForm = (e: any) => {
         e.preventDefault();
@@ -122,9 +138,19 @@ const MainFormHook = ({
         name: string,
         isChecked?: boolean,
     ) => {
+        // Validación del campo "email"
+        if (!handleShowMainFormEdit && name === "email") {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value as string)) {
+                setEmailError('Correo no valido.');
+            } else {
+                setEmailError('');
+            }
+        }
+
         // Actualiza el campo "isActive" convirtiendo el valor a booleano.
         if (name === "isActive") {
-            setData((prevData) => ({
+            setData((prevData: any) => ({
                 ...prevData,
                 [name]: value as boolean,
             }));
@@ -133,7 +159,7 @@ const MainFormHook = ({
 
         // Si `isChecked` está definido, actualiza como un array con el valor y su opuesto.
         if (typeof isChecked !== "undefined") {
-            setData((prevData) => ({
+            setData((prevData: any) => ({
                 ...prevData,
                 [name]: [value, !isChecked],
             }));
@@ -141,7 +167,7 @@ const MainFormHook = ({
         }
 
         // Por defecto, actualiza el valor normalmente.
-        setData((prevData) => ({
+        setData((prevData: any) => ({
             ...prevData,
             [name]: value,
         }));
@@ -377,28 +403,24 @@ const MainFormHook = ({
                 : (currentDataObject.uid = documentRef.id);
             currentDataObject.areaName = data.areaName;
             currentDataObject.areaHead = data.areaHead;
-            currentDataObject.urlName = data.urlName;
-            currentDataObject.urlLink = data.urlLink;
             currentDataObject.isActive = data.isActive;
             userData && (currentDataObject.companyId = userData.companyId);
 
-            if (iconFile) {
-                const urlName = iconFile.name.split(".")[0];
-                await saveIconFile({
-                    urlName,
-                    record: iconFile,
-                    uid: handleShowMainFormEdit ? data.uid : documentRef.id,
-                    reference,
-                })
-                    .then((result) => {
-                        currentDataObject.icon = result;
-                        // error.push(...result);
-                    })
-                    .catch((err) => {
-                        error.push({ success: false, urlName });
-                        // console.log(error);
-                    });
-            }
+            const newElements = ["urlName", "urlLink", "iconName"];
+            console.log("data", data)
+            newElements.forEach((newItem) => {
+                let index = 1;
+                let key = newItem;
+                
+                // Mientras la clave exista en `data`, vamos agregando los elementos al objeto
+                while (Object.keys(data).includes(key)) {
+                    (currentDataObject as any)[key] = data[key];
+                  
+                  // Intentamos buscar el siguiente, como urlName2, urlLink2, etc.
+                  index += 1;
+                  key = `${newItem}${index}`;
+                }
+              });
 
             newData = { ...currentDataObject };
         }
@@ -512,8 +534,9 @@ const MainFormHook = ({
             };
         }
 
-        // console.log("newData", newData, "data");
-        // console.log("reference", reference);
+        console.log("newData", newData);
+        console.log("data", data);
+        //console.log("reference", reference);
 
         // Función auxiliar para guardar datos del administrador y la compañía
         const saveCompanyData = async (
@@ -576,9 +599,9 @@ const MainFormHook = ({
             if (reference === "companies") {
                 await saveCompanyData(data, newData, reference);
             } else {
-                await saveEditDataDocumentsQuery({
+                await saveDataDocumentsQueryById({
                     id: data.uid,
-                    data: newData,
+                    data: {...newData},
                     reference,
                 });
             }
@@ -747,6 +770,122 @@ const MainFormHook = ({
         setNextStep(true);
     };
 
+    const handleOpenModalIcons = (item: any, index: any) => {
+        setItemUrlKey(index);
+        setItemUrlSelected(item);
+        setIsOpenModalIcons(true);
+    };
+
+    const handleCloseModalIcons = () => {
+        setItemUrlKey(0);
+        setItemUrlSelected([]);
+        setIsOpenModalIcons(false);
+    };
+
+    const handleDataNetworks = (text: any, index: any) => {
+        setData({
+            ...data,
+            ["iconName" + "" + (index === 0 ? "" : index + 1)]: text,
+        });
+        setItemUrlSelected({
+            ...objToArrayItems.urlName[index],
+            iconName: text,
+        });
+        setTimeout(() => {
+            setIsOpenModalIcons(false);
+        }, 1000);
+    };
+
+    const handleNewItem = (type: string) => {
+        const listNewItem: string[] = ["urlName", "urlLink", "iconName"];
+            const newItemUrl: { [key: string]: any[] | string } = {};
+            const itemIndex = objToArrayItems[type ?? "urlName"].length
+                ? objToArrayItems[type ?? "urlName"].length
+                : 0;
+
+            listNewItem.forEach((item) => {
+                const currentIndex = `${item}${itemIndex + 1}`;
+
+                newItemUrl[currentIndex] =
+                    item === "urlName"
+                        ? ["", false]
+                        : item === "urlLink"
+                        ? " "
+                        : item === "iconName"
+                        ? " "
+                        : " ";
+            });
+            setData({ ...data, ...newItemUrl });
+    }
+
+    const handleDeleteItem = (item: any) => {
+        if (item[0].includes("url")) {
+            const dataFiltered = _.omit(_.cloneDeep(data), [
+                item[0],
+                item[3],
+                item[5],
+            ]);
+            console.log("dataFiltered", dataFiltered)
+            setData(dataFiltered);
+        }
+    };
+
+    const createNewArray = useCallback(() => {
+        const newObject: any = {};
+
+        const keysNameSelected = ["urlName"];
+        keysNameSelected.forEach((element) => {
+            //Verifica que en esa key coincida o este en la palabra
+            const keysFiltered = Object.fromEntries(
+                Object.entries(_.cloneDeep(data)).filter(([key, value]) =>
+                    key.includes(element),
+                ),
+            );
+            //Obtiene solo los valores de cada propiedad
+
+            const arrayWithKey = _.sortBy(Object.entries(keysFiltered));
+            //Agrega el elemento a ese array
+            arrayWithKey.map(([key, value]: any, index: number) => {
+                if (_.isArray(value)) {
+                    value.unshift(key);
+
+                    if (element === "urlName") {
+                        const newElements = ["urlLink", "iconName"];
+                        newElements.forEach((newItem) => {
+                            if (
+                                Object.keys(_.cloneDeep(data)).includes(newItem)
+                            ) {
+                                const itemsFiltered = Object.fromEntries(
+                                    Object.entries(_.cloneDeep(data)).filter(
+                                        ([subKey, value]) => {
+                                            if (index === 0) {
+                                                return subKey === newItem;
+                                            } else {
+                                                return (
+                                                    subKey.includes(newItem) &&
+                                                    subKey.at(-1) === key.at(-1)
+                                                );
+                                            }
+                                        },
+                                    ),
+                                );
+                                const newItems = Object.entries(itemsFiltered);
+                                newItems.forEach((element) => {
+                                    value.push(...element);
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+
+            newObject[element] = arrayWithKey.map((item) =>
+                _.uniq(item.flat()),
+            );
+        });
+        return newObject;
+    }, [data]);
+
     const clearSelectFields = () => {
         setData(dataMainFormObject);
     };
@@ -828,6 +967,10 @@ const MainFormHook = ({
         }
     }, [editData, getAdminAndCompanyData, handleShowMainFormEdit, reference]);
 
+    useEffect(() => {
+        data && setObjToArrayItems(createNewArray());
+    }, [createNewArray, data]);
+
     return {
         modeTheme: themeParsed?.dataThemeMode,
         show,
@@ -841,6 +984,7 @@ const MainFormHook = ({
         companyVal,
         fileNameIcon,
         fileNamePhoto,
+        emailError,
         setNextStep,
         setErrorPass,
         setErrorValid,
@@ -853,6 +997,19 @@ const MainFormHook = ({
         handleEditForm,
         handleMultipleChange,
         handleIconFileChange,
+        handleOpenModalIcons,
+        handleCloseModalIcons,
+        isOpenModalIcons,
+        setIsOpenModalIcons,
+        itemUrlKey,
+        setItemUrlKey,
+        dataLogos,
+        itemUrlSelected,
+        setItemUrlSelected,
+        handleDataNetworks,
+        handleNewItem,
+        objToArrayItems,
+        handleDeleteItem
     };
 };
 
