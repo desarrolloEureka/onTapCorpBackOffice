@@ -611,6 +611,26 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         reference="workingday"
                     />
                 </Tab.Pane>
+                {/* Vista del reporte de Visitas/reuniones */}
+                <Tab.Pane
+                    className="tab-pane text-muted"
+                    id="meetings"
+                    role="tabpanel"
+                    eventKey="meetings"
+                >
+                    <BannerMenu
+                        seoTitle="Reuniones"
+                        title="Reuniones"
+                        item="Dashboard"
+                        activeItem="Reporte de Reuniones"
+                    />
+                    <DataTableComponent
+                        componentTitle="Reporte de Reuniones"
+                        componentDescription="En esta tabla se encuentran el reporte de las reuniones realizadas."
+                        tableTitle="Reuniones"
+                        reference="meetings"
+                    />
+                </Tab.Pane>
             </Tab.Content>
         </Tab.Container>
     );

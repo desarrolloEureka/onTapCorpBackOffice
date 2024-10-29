@@ -26,7 +26,7 @@ export const handleSendWelcomeEmail = async (data: any) => {
                 /* loginUrl: "https://one-tap-corp-dev.vercel.app/components/signIn/",
                  LINK DE LOGUEO DE BIENVENIDA DESARROLLO VERCEL*/
                 loginUrl: "https://one-tap-corp.vercel.app/components/signIn/",
-                contactEmail: "ceo@eurekadreams.com",
+                contactEmail: "info@onetap.com.co",
             }),
         });
     } catch (error) {

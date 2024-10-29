@@ -14,6 +14,7 @@ import "react-data-table-component-extensions/dist/index.css";
 import { TfiClose, TfiExport } from "react-icons/tfi";
 import { VscAdd } from "react-icons/vsc";
 // import Swal from "sweetalert2";
+import moment from "moment";
 
 const DataTableExtensions: any = dynamic(
     () => import("react-data-table-component-extensions"),
@@ -45,19 +46,59 @@ function convertArrayOfObjectsToCSV(array: object[], reference: string): string 
         return `${hours} hora${hours !== 1 ? 's' : ''} y ${minutes} minuto${minutes !== 1 ? 's' : ''}`;
     };
 
+    const formatearFecha = (fechaISO: string): string => {
+        if (fechaISO != "-") {
+            return moment(fechaISO).format("DD/MM/YYYY HH:mm:ss");
+        } else {
+            return "-"
+        }
+    };
+
+    const formatearFechaDias = (fechaISO: string): string => {
+        if (fechaISO != "-") {
+            return moment(fechaISO).format("DD/MM/YYYY");
+        } else {
+            return "-"
+        }
+    };
+
+    const formatearFechaHoras = (fechaISO: string): string => {
+        if (fechaISO != "-") {
+            return moment(fechaISO).format("HH:mm:ss");
+        } else {
+            return "-"
+        }
+    };
+
     if( reference == "workingday") {
-        keys = ["firstName", "lastName", "documentType", "documentNumber", "position", "longitude", "latitude", "startDay", "endDay", "totalTime"];
+        keys = ["startDay", "endDay", "firstName", "lastName", "documentType", "documentNumber", "position", "longitude", "latitude",  "totalTime"];
         const headers: Record<string, string> = {
+            startDay: "Fecha Inicio",
+            endDay: "Fecha Final",
             firstName: "Nombres",
             lastName: "Apellidos",
             documentType: "Tipo de Documento",
-            documentNumber: "Numero de Documento",
+            documentNumber: "Documento",
             position: "Posicion",
             longitude: "Longitud",
             latitude: "Latitud",
-            startDay: "Inicio jornada",
-            endDay: "Final jornada",
             totalTime: "Jornada laboral"
+        };
+        result += keys.map((key: string) => headers[key]).join(columnDelimiter);
+    } else if (reference == "meetings") {
+        keys = ["date", "meetingStart", "meetingEnd", "firstName", "lastName", "companyNameToVisit", "contactName", "email", "subject", "name",  "observations"];
+        const headers: Record<string, string> = {
+            date: "Fecha",
+            meetingStart: "Hora Inicio",
+            meetingEnd: "Hora Final",
+            firstName: "Nombres",
+            lastName: "Apellidos",
+            companyNameToVisit: "Cliente",
+            contactName: "Contacto",
+            email: "Correo Contacto",
+            subject: "Asunto",
+            name: "Estado Reunion",
+            observations: "Observaciones"
         };
         result += keys.map((key: string) => headers[key]).join(columnDelimiter);
     } else {
@@ -71,6 +112,12 @@ function convertArrayOfObjectsToCSV(array: object[], reference: string): string 
             if (ctr > 0) result += columnDelimiter;
             if (reference === "workingday" && key === "totalTime" && typeof item[key] === "number"){ 
                 result += convertToHoursAndMinutes(item[key]);
+            } else if (reference === "workingday" && key === "startDay" || key === "endDay" ){ 
+                result += formatearFecha(item[key]);
+            } else if (reference === "meetings" && key === "date" ){ 
+                result += formatearFechaDias(item[key]);
+            } else if (reference === "meetings" && key === "meetingStart" || key === "meetingEnd" ){ 
+                result += formatearFechaHoras(item[key]);
             } else {result += item[key] !== undefined ? item[key] : "";}
             ctr++;
         });
@@ -231,7 +278,7 @@ export const ExportCSV = ({
                     )}
                 </div>
                 <div className="tw-flex tw-items-center tw-space-x-4">
-                    {["workingday"].includes(reference) && (
+                    {["workingday", "meetings"].includes(reference) && (
                         <>
                             <StartDayInput 
                                 startDate={startDate}
@@ -251,7 +298,8 @@ export const ExportCSV = ({
                         "departments",
                         "cities",
                         "documentTypes",
-                        "workingday"
+                        "workingday",
+                        "meetings"
                     ].includes(reference) &&
                         onMainFormModal && (
                             <MainFormModal onMainFormModal={onMainFormModal} />

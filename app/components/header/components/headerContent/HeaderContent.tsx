@@ -536,8 +536,8 @@ const HeaderContent = ({
                                     }
                                     id="nav-dropdown"
                                     className="nav-item dropdown"
-                                >
-                                    {/* <NavDropdown.Item
+                                > {/*
+                                    <NavDropdown.Item
                                         //href="#functionary"
                                         eventKey="metrics"
                                     >
@@ -546,17 +546,18 @@ const HeaderContent = ({
                                             className="tw-mb-1 tw-mr-1"
                                         />
                                         Métricas
-                                    </NavDropdown.Item>
+                                    </NavDropdown.Item> */}
                                     <NavDropdown.Item
                                         //href="#functionary"
-                                        eventKey="visits"
+                                        eventKey="meetings"
                                     >
                                         <IoDocumentOutline
                                             size={20}
                                             className="tw-mb-1 tw-mr-1"
                                         />
-                                        Visitas
+                                        Reuniones
                                     </NavDropdown.Item>
+                                    {/*
                                     <NavDropdown.Item
                                         //href="#functionary"
                                         eventKey="clics"
@@ -568,7 +569,7 @@ const HeaderContent = ({
                                         Clics
                                     </NavDropdown.Item> */}
                                     <NavDropdown.Item
-                                        href="#workingday"
+                                        //href="#workingday"
                                         eventKey="workingday"
                                     >
                                         <IoDocumentOutline

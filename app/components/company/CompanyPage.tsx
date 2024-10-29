@@ -493,7 +493,6 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                 />
                                                             </div>
                                                             <CustomTextField
-                                                                required
                                                                 data={item[4]}
                                                                 onChange={(
                                                                     value: string,

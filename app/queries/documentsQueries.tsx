@@ -34,6 +34,7 @@ import {
     updateRoute,
     updateSocialNetwork,
     updateZone,
+    getMeetingByCompanyId
 } from "@/firebase/Documents";
 import {
     uploadFile,
@@ -47,6 +48,8 @@ import {
     saveFilesDocumentsProps,
     saveFilesDocumentsQueryProps,
 } from "@/types/files";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "shared/firebase/firebase";
 
 export const saveDocumentsQuery = async ({
     data,
@@ -140,6 +143,27 @@ export const getAllDocumentsQuery = async (ref: string) => {
     return documents;
 };
 
+export const listenToDocumentsQuery = (ref: string, setData: (data: any[]) => void, uid: any) => {
+    const collectionRef = collection(db, ref); // Asegúrate de tener acceso a dataBase
+    if (!uid) {
+        // Si uid no es válido, no se establece el listener
+        setData([]); // O puedes manejarlo de otra manera
+        return () => {}; // Retorna una función de limpieza vacía
+    } 
+    // Crea una consulta que filtre por idCompany
+     const q = query(collectionRef, where("idCompany", "==", uid));
+    
+    const unsubscribe = onSnapshot(q, (snapshot: any) => {
+        const updatedData = snapshot.docs.map((doc: any) => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        setData(updatedData); // Actualiza el estado con los datos obtenidos
+    });
+
+    return unsubscribe; // Devuelve la función de limpieza
+}
+
 export const getDocsByCompanyIdQuery = async (
     idCompany: string,
     reference: string,
@@ -198,6 +222,11 @@ export const getWorkAreasByCompanyIdQuery = async (idCompany: string) => {
 
 export const getMeetingStatusByCompanyIdQuery = async (idCompany: string) => {
     const documents = await getMeetingStatusByCompanyId(idCompany);
+    return documents;
+};
+
+export const getMeetingsByCompanyIdQuery = async (idCompany: string) => {
+    const documents = await getMeetingByCompanyId(idCompany);
     return documents;
 };
 

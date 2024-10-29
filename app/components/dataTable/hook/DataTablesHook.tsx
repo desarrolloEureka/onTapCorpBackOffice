@@ -15,7 +15,8 @@ import {
     getRoutesByCompanyIdQuery,
     getWorkAreasByCompanyIdQuery,
     getZonesByCompanyIdQuery,
-    getLocationsByCompanyIdAndWorkingdayQuery
+    getLocationsByCompanyIdAndWorkingdayQuery,
+    getMeetingsByCompanyIdQuery
 } from "@/queries/documentsQueries";
 import { DataMainFormObject } from "@/types/mainForm";
 import { setDataTable } from "@/types/tables";
@@ -74,6 +75,22 @@ const DataTablesHook = (reference: string) => {
     const formatearFecha = (fechaISO: string): string => {
         if (fechaISO != "-") {
             return moment(fechaISO).format("DD/MM/YYYY HH:mm:ss");
+        } else {
+            return "-"
+        }
+    };
+
+    const formatearFechaDias = (fechaISO: string): string => {
+        if (fechaISO != "-") {
+            return moment(fechaISO).format("DD/MM/YYYY");
+        } else {
+            return "-"
+        }
+    };
+
+    const formatearFechaHoras = (fechaISO: string): string => {
+        if (fechaISO != "-") {
+            return moment(fechaISO).format("HH:mm:ss");
         } else {
             return "-"
         }
@@ -219,6 +236,30 @@ const DataTablesHook = (reference: string) => {
         return result.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
     };
 
+    const formatReportDataMeetings = (documents: any[], employees: any[], meetingStatus: any[]) => {
+        if (!Array.isArray(documents)) { return [] }
+        const documentsDate = documents.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        const result: any[] = [];  
+        documentsDate.forEach((document) => {
+            const employeeData = employees.find((employee) => employee.uid === document.employeeId);
+            const meetingStatusData = meetingStatus.find((meeting) => meeting.uid === document.meetingStatusId);
+
+            if (employeeData && meetingStatusData) {
+                result.push({
+                    ...document,
+                    firstName: employeeData.firstName[0],
+                    lastName: employeeData.lastName[0],
+                    name: meetingStatusData.name,
+                    date: document?.timestamp,
+                    meetingStart: document?.meetingStart?.timestamp,
+                    meetingEnd: document?.meetingEnd?.timestamp,
+                });
+            }
+        });
+        return result.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+    }
+    
+
     const getAllDocuments = useCallback(async () => {
         const documents: any =
             reference === "country"
@@ -291,6 +332,20 @@ const DataTablesHook = (reference: string) => {
                     ,      
                     userData && userData?.companyId ?   
                     await getEmployeesByCompanyIdQuery(userData?.companyId)
+                    : []
+                )
+                : reference === "meetings"
+                ? formatReportDataMeetings(
+                    userData && userData?.companyId ? 
+                    await getMeetingsByCompanyIdQuery(userData?.companyId)
+                    : []
+                    ,      
+                    userData && userData?.companyId ?   
+                    await getEmployeesByCompanyIdQuery(userData?.companyId)
+                    : []
+                    ,
+                    userData && userData?.companyId ? 
+                    await getMeetingStatusByCompanyIdQuery(userData?.companyId)
                     : []
                 )
                 : await getAllDocumentsQuery(reference);
@@ -413,13 +468,26 @@ const DataTablesHook = (reference: string) => {
                 };
             } else if (reference === "workingday") {
                 columnNamesToDisplay = {
-                    firstName: "Nombre",
-                    lastName: "Apellido",
-                    documentType: "Tipo de Documento",
-                    documentNumber: "Número de Documento",
-                    startDay: "Inicio de Jornada",
-                    endDay: "Final de Jornada",
+                    startDay: "Fecha Inicio",
+                    endDay: "Fecha Final",
+                    firstName: "Nombres",
+                    lastName: "Apellidos",
+                    documentNumber: "Documento",
                     totalTime: "Jornada Laboral",
+                };
+            } else if (reference === "meetings") {
+                columnNamesToDisplay = {
+                    date: "Fecha",
+                    meetingStart: "Hora Inicio",
+                    meetingEnd: "Hora Final",
+                    firstName: "Nombres",
+                    lastName: "Apellidos",
+                    companyNameToVisit: "Cliente",
+                    contactName: "Contacto",
+                    email: "Correo Contacto",
+                    subject: "Asunto",
+                    name: "Estado Reunion",
+                    observations: "Observaciones"
                 };
             } else {
                 columnNamesToDisplay = {
@@ -531,6 +599,11 @@ const DataTablesHook = (reference: string) => {
                             formatearFecha(row[val])
                         ) : val === "totalTime" ? (
                             formatearHora(row[val])
+                        ) : val === "date" ? (
+                            formatearFechaDias(row[val])
+                        ) : val === "meetingStart" || 
+                            val === "meetingEnd" ? (
+                            formatearFechaHoras(row[val])
                         ) : val === "imageUrl" ? (
                             <div>
                                 <Image
@@ -571,6 +644,10 @@ const DataTablesHook = (reference: string) => {
                             ? val === "timestamp" || val === "urlLink"
                                 ? "15%"
                                 : "auto"
+                            : reference === "meetings"
+                            ? val === "date" || val === "meetingStart" || val === "meetingEnd" 
+                                ? "8%"
+                                : "200px"
                             : "auto",
                     omit: !omittedColumns.includes(val),
                     style:
