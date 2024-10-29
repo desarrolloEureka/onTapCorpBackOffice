@@ -4,7 +4,8 @@ import useAuth from "@/firebase/auth";
 import {
     getAllDocumentsQuery,
     saveDataDocumentsQueryById,
-    saveIconFile
+    saveIconFile,
+    listenToDocumentsQuery
 } from "@/queries/documentsQueries";
 import { getCoordinates } from "@/queries/GeoMapsQueries";
 import { MyStateType } from "@/types/company";
@@ -32,17 +33,9 @@ const CompanyHook = () => {
     const [itemUrlSelected, setItemUrlSelected] = useState([]);
 
     useEffect(() => {
-        const fetchDocuments = async () => {
-            try {
-                const docs = await getAllDocumentsQuery("logos");
-                setDataLogos(docs);
-            } catch (error) {
-                console.error("Error fetching documents: ", error);
-            }
-        };
-
-        fetchDocuments();
-    }, []);
+        const fetchDocuments = listenToDocumentsQuery("logos", setDataLogos, companyData?.uid);
+        return () => fetchDocuments();
+    }, [companyData?.uid]);
 
     const saveAlert = async (callbackFc: () => Promise<void>) => {
         Swal.fire({

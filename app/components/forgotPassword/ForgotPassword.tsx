@@ -114,11 +114,8 @@ const ForgotPassword = () => {
                             </Button>
                           </Form>
                           <div className='border-top-0 ps-0 mt-3 text-start mb-3'>
-                            <p className='mb-1' style={{ color: 'white' }}>Recuerdas tu contraseña?</p>
-                            <p className='mb-0' style={{ color: 'white' }}>
-                              Intenta
-                              <Link href={`/components/signIn`}> Ingresar</Link>
-                            </p>
+                            <p className='mb-1' style={{ color: 'white' }}>Recuerdas tu contraseña?</p>                              
+                            <Link href={`/components/signIn`} style={{ color: 'white', textDecoration: 'underline' }}>Intenta Ingresar</Link>
                           </div>
                         </Card.Body>
                       </Row>

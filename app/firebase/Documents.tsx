@@ -497,6 +497,22 @@ export const getMeetingStatusByCompanyId = async (companyId: any) => {
     }
 };
 
+export const getMeetingByCompanyId = async (companyId: any) => { 
+    try {
+        const q = query(
+            collection(db, "meetings")
+        );
+        const querySnapshot = await getDocs(q);
+        const meetingStatus = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+        }));
+        return meetingStatus;
+    } catch (error) {
+        console.error("Error fetching Meeting Status:", error);
+        return [];
+    }
+}
+
 export const getRoutesByCompanyId = async (companyId: any) => {
     try {
         const q = query(
@@ -588,8 +604,6 @@ export const getEmployeesByCompanyId = async (companyId: any) => {
             collection(db, "users"),
             where("idCompany", "==", companyId), 
             where("rolId", "==", "uysG1ULyEDklfbGDFate"),  //  ID DEL ROL DE EMPLEADO
-
-            
         );
 
         const querySnapshot = await getDocs(q);

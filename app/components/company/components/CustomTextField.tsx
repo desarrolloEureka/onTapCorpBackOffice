@@ -1,9 +1,12 @@
 "use client";
-import { IconButton, TextField } from "@mui/material";
+import { IconButton, TextField, Typography, Avatar } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { FaTrashCan } from "react-icons/fa6";
 import CustomSwitch from "./CustomSwitch";
+import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
+import { Button } from "react-bootstrap";
+import Image from "next/image";
 
 const CustomTextField = (props: any) => {
     const [value, setValue] = useState<string>("");
@@ -87,7 +90,7 @@ const CustomTextField = (props: any) => {
                     />
                 )}
                 {props.deleted && (
-                    <div className="tw-flex tw-w-1/5  tw-items-center tw-justify-center">
+                    <div className={`tw-flex tw-items-center tw-justify-center ${props.icon ? 'tw-w-1/12' : 'tw-w-1/5'}`} >
                         <IconButton
                             onClick={() => props.onClick()}
                             size="small"
@@ -97,6 +100,51 @@ const CustomTextField = (props: any) => {
                         </IconButton>
                     </div>
                 )}
+
+                {props.icon && (
+                    <div className="tw-flex tw-flex-col tw-justify-center tw-items-center">
+                        <Button
+                            onClick={() =>
+                                props.handleOpenModalIcons(
+                                    props.item,
+                                    props.index,
+                                )
+                            }
+                            variant="text"
+                            style={{padding: 0}}
+                        >
+                            <Avatar
+                                sx={{
+                                    backgroundColor:
+                                        "transparent",
+                                    width: 40,
+                                    height: 40,
+                                }}
+                            >
+                                {props.datafilter &&
+                                props.datafilter?.imageUrl ? (
+                                    <Image
+                                        src={props.datafilter.imageUrl}
+                                        alt="avatar"
+                                        width={34}
+                                        height={34}
+                                    />
+                                ) : (
+                                    <LanguageOutlinedIcon
+                                        className="url-label"
+                                        style={{
+                                            fontSize: 34,
+                                        }}
+                                     />
+                                )}
+                            </Avatar>
+                        </Button>
+                        <Typography className="tw-font-normal tw-text-sm url-label" align="center">
+                            URL
+                        </Typography>
+                    </div>
+                )}
+
             </ThemeProvider>
         </div>
     );

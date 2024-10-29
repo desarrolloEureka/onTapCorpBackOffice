@@ -6,6 +6,7 @@ import {
     getZonesByIdQuery,
     saveRouteQuery,
     updateRouteQuery,
+    listenToDocumentsQuery
 } from "@/queries/documentsQueries";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
@@ -296,14 +297,10 @@ const RoutesFormHook = ({
         setAddresses([...addresses, ""]);
     };
 
-    const getZonesData = async () => {
-        const dataZones = await getAllDocumentsQuery("zones");
-        setZonesData(dataZones);
-    };
-
     useEffect(() => {
-        getZonesData();
-    }, []);
+        const getZonesData = listenToDocumentsQuery("zones", setZonesData, companyData?.uid);
+        return () => getZonesData(); // Limpia el listener cuando el componente se desmonte
+    }, [companyData?.uid]);
 
     useEffect(() => {
         handleShowMainForm && (setShow(true), setIsEdit(true));

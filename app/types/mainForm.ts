@@ -52,6 +52,7 @@ export interface DataMainFormObject {
     areaHead: string;
     urlName: [string, boolean];
     urlLink: string;
+    iconName: string;
     isActive: boolean;
     isDeleted: boolean;
 }
@@ -167,8 +168,6 @@ export type DataWorkAreasObject = {
     companyId: string;
     areaName: string;
     areaHead: string;
-    urlName: [string, boolean];
-    urlLink: string;
     icon: string;
     isActive: boolean;
     isDeleted: boolean;
