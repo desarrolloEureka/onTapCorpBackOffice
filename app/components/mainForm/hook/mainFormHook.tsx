@@ -407,7 +407,6 @@ const MainFormHook = ({
             userData && (currentDataObject.companyId = userData.companyId);
 
             const newElements = ["urlName", "urlLink", "iconName"];
-            console.log("data", data)
             newElements.forEach((newItem) => {
                 let index = 1;
                 let key = newItem;
@@ -534,8 +533,8 @@ const MainFormHook = ({
             };
         }
 
-        console.log("newData", newData);
-        console.log("data", data);
+        // console.log("newData", newData);
+        // console.log("data", data);
         //console.log("reference", reference);
 
         // Función auxiliar para guardar datos del administrador y la compañía
@@ -717,7 +716,6 @@ const MainFormHook = ({
     // console.log("editData", editData);
 
     const handleSendForm = async (e?: any) => {
-        // console.log(data);
         if (
             workAreasVal ||
             companyVal ||
@@ -731,7 +729,7 @@ const MainFormHook = ({
         ) {
             e.preventDefault();
             e.stopPropagation();
-            console.log("Entró");
+            //console.log("Entró");
             saveAlert(uploadHandle).then(handleClose);
         } else {
             e.preventDefault();
@@ -742,7 +740,7 @@ const MainFormHook = ({
                 reference === "patients") &&
                 !passValidation &&
                 setErrorPass(true);
-            console.log("Falló");
+            //console.log("Falló");
             reference === "diagnostician" &&
                 itemExist &&
                 setErrorValid(
@@ -825,7 +823,6 @@ const MainFormHook = ({
                 item[3],
                 item[5],
             ]);
-            console.log("dataFiltered", dataFiltered)
             setData(dataFiltered);
         }
     };

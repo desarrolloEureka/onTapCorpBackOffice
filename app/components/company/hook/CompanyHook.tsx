@@ -15,7 +15,6 @@ import Swal from "sweetalert2";
 
 const CompanyHook = () => {
     const { companyData } = useAuth();
-
     const [data, setData] = useState<any>();
     const [allChecked, setAllChecked] = useState<string>("none");
     const [files, setFiles] = useState<any>();
@@ -74,7 +73,7 @@ const CompanyHook = () => {
                 // confirmButtonColor: "#1f2937",
                 // confirmButtonText: "Regresar",
             }).then((err) => {
-                console.log(err, error);
+                //console.log(err, error);
                 setFileName(null);
             });
         }
@@ -122,7 +121,7 @@ const CompanyHook = () => {
                         // error.push(...result);
                     })
                     .catch((err) => {
-                        console.log(err);
+                        //console.log(err);
                     });
             }
         }
@@ -469,7 +468,12 @@ const CompanyHook = () => {
 
     useEffect(() => {
         if (companyData) {
-            setData(companyData);
+            setData({
+                ...companyData,
+                urlName: companyData.urlName || ["", false],
+                urlLink: companyData.urlLink || " ",
+                iconName: companyData.iconName || " "
+            });
         }
     }, [companyData]);
 
