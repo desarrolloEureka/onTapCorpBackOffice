@@ -686,41 +686,24 @@ const CompanyPage = ({ theme }: CompanyProps) => {
 
                                                                 <CustomTextField
                                                                     required
-                                                                    data={
-                                                                        item[4]
-                                                                    }
+                                                                    data={item[4]}
                                                                     onChange={(
                                                                         value: string,
                                                                         name: string,
-                                                                    ) =>
-                                                                        handleChange(
-                                                                            value,
-                                                                            name,
-                                                                        )
+                                                                    ) => handleChange(value, name)
                                                                     }
                                                                     onClick={() => {
                                                                         handleDeleteItem(
                                                                             item,
                                                                         );
                                                                     }}
-                                                                    name={
-                                                                        item[3]
-                                                                    }
+                                                                    name={item[3]}
                                                                     type="url"
                                                                     helperText={errors.urlLink}
                                                                     error={!!errors.urlLink}
-                                                                    deleted={
-                                                                        index !==
-                                                                        0
-                                                                            ? "true"
-                                                                            : ""
-                                                                    }
-                                                                    theme={
-                                                                        theme
-                                                                    }
+                                                                    theme={theme}
                                                                     id={item[3]}
                                                                     fullWidth
-                                                                    label="Dato"
                                                                     InputProps={{
                                                                         startAdornment:
                                                                             (
@@ -731,9 +714,21 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                                 </InputAdornment>
                                                                             ),
                                                                     }}
+                                                                    deleted={
+                                                                        index !==
+                                                                        0
+                                                                            ? "true"
+                                                                            : ""
+                                                                    }
+                                                                    icon={true}
+                                                                    handleOpenModalIcons={handleOpenModalIcons}
+                                                                    datafilter={datafilter}
+                                                                    item={item}
+                                                                    index={index}
+                                                                    label="Dato"
                                                                 />
 
-                                                                <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-px-3 tw-mt-4 tw-w-full">
+                                                                {/* <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-px-3 tw-mt-4 tw-w-full">
                                                                     <Button
                                                                         onClick={() =>
                                                                             handleOpenModalIcons(
@@ -781,7 +776,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                     <Typography className="tw-font-bold tw-text-black">
                                                                         URL
                                                                     </Typography>
-                                                                </div>
+                                                                </div> */}
                                                             </div>
                                                         );
                                                     },
