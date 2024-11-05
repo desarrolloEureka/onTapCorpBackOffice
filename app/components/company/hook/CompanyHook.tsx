@@ -454,9 +454,11 @@ const CompanyHook = () => {
                 }
             });
 
-            newObject[element] = arrayWithKey.map((item) =>
-                _.uniq(item.flat()),
-            );
+            newObject[element] = arrayWithKey.map((item) => {
+                const flatArray = item.flat();
+                // Si el primer y segundo elemento son iguales, eliminamos el primero
+                return flatArray[0] === flatArray[1] ? flatArray.slice(1) : flatArray;
+            });
         });
 
         return newObject;

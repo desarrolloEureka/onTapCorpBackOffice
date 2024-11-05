@@ -326,7 +326,6 @@ const CardView = () => {
                 cityView: city,
                 countryView: country,
             };
-            console.log("dataSend ", dataSend);
             SendDataMetrics(uid, dataSend);
         }
     }, [

@@ -435,6 +435,7 @@ const DataTablesHook = (reference: string) => {
                     uid: "Acciones",
                     timestamp: "Fecha Registro",
                     name: "Nombre Estado Reunión",
+                    isActive: "Estado"
                 };
             } else if (reference === "campus") {
                 columnNamesToDisplay = {
@@ -642,8 +643,11 @@ const DataTablesHook = (reference: string) => {
                             ? "200px"
                             : reference === "workAreas"
                             ? val === "timestamp" || val === "urlLink"
-                                ? "15%"
-                                : "auto"
+                            ? "15%"
+                            : "auto"
+                            : reference === "meetingStatus"
+                            ? val === "uid"
+                            ? "10%" : "auto"
                             : reference === "meetings"
                             ? val === "date" || val === "meetingStart" || val === "meetingEnd" 
                                 ? "8%"
@@ -651,13 +655,19 @@ const DataTablesHook = (reference: string) => {
                             : "auto",
                     omit: !omittedColumns.includes(val),
                     style:
-                        val === "uid"
+                        val === "uid" && reference === "meetingStatus"
+                            ? {
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "flex-start",
+                            }
+                        : val === "uid"
                             ? {
                                   display: "flex",
                                   alignItems: "center",
                                   justifyContent: "center",
                               }
-                            : {},
+                        : {},
                 };
 
                 cols.push(columnsData);
@@ -828,7 +838,11 @@ const DataTablesHook = (reference: string) => {
 
     useEffect(() => {
         getAllDocuments();
-    }, [getAllDocuments]);
+        if (!endDate && startDate) {
+            const today = new Date().toISOString().split('T')[0];
+            setEndDate(today); // Establece la fecha de hoy al estado endDate si está vacío
+          }
+    }, [getAllDocuments, endDate, startDate]);
 
     useEffect(() => {
         if (!handleShowMainForm || !handleShowMainFormEdit || !isEmptyDataRef) {

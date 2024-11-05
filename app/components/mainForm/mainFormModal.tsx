@@ -363,7 +363,6 @@ const MainFormModal = ({
 
                                                 <CustomTextField
                                                     required
-                                                    data={item[4]}
                                                     onChange={(
                                                         value: string,
                                                         name: string,
