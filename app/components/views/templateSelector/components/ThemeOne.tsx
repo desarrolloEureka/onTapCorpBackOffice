@@ -85,7 +85,7 @@ const ThemeOne = ({
             if (isActive) {
               Object.keys(userObjects || {}).forEach((userKey) => {
                 const userInfo = userObjects[userKey];
-                if (userInfo.uid === uidUser) {
+                if (userInfo.uid === uidUser && userInfo.isActive === true) {
                   areaDataUrls.urls.push({
                     url,
                     name: nameOrIcon,

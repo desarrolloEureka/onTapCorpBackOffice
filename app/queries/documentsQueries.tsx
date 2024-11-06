@@ -15,6 +15,8 @@ import {
     getReference,
     getRoutesByCompanyId,
     getWorkAreasByCompanyId,
+    getWorkAreaByUid,
+    updateArea,
     getZoneById,
     getZonesByCompanyId,
     saveCampus,
@@ -389,6 +391,16 @@ export const saveEmployeeQuery = async (dataSave: any) => {
 export const editEmployeeQuery = async (dataSave: any, docId: string) => {
     const result = await updateEmployee(docId, dataSave);
     return result;
+};
+
+export const editAreaQuery = async (dataSave: any, docId: string) => {
+    const result = await updateArea(dataSave, docId);
+    return result;
+};
+
+export const getWorkAreaByUidQuery = async (uidArea: string) => {
+    const documents = await getWorkAreaByUid(uidArea);
+    return documents;
 };
 
 export const saveRouteQuery = async (dataSave: any) => {

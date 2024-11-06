@@ -220,10 +220,12 @@ const MainFormModal = ({
                                 as="h6"
                             >
                                 <span>
-                                    {handleShowMainFormEdit &&
-                                    reference === "companies"
-                                        ? "Detalle Empresa"
-                                        : "Nuevo Registro"}
+                                    {
+                                        !handleShowMainFormEdit ? "Nuevo Registro" : 
+                                        reference === "companies" ? "Detalle Empresa" :
+                                        reference === "workAreas" ? "Editar Area" : ""
+
+                                    }
                                 </span>
                                 <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-center tw-items-center -tw-mt-2">
                                     <button
@@ -321,7 +323,7 @@ const MainFormModal = ({
                                                             dataLogos?.find(
                                                                 (val: any) =>
                                                                     val.logoName ===
-                                                                    item[6],
+                                                                    item[7],
                                                             );
                                                         return (
                                             <div
@@ -372,13 +374,14 @@ const MainFormModal = ({
                                                             item,
                                                         );
                                                     }}
-                                                    name={item[3]}
+                                                    data={item[5]}
+                                                    name={item[4]}
                                                     type="url"
                                                     helperText={
                                                         "Ej: https://example.com"
                                                     }
                                                     theme={modeTheme}
-                                                    id={item[3]}
+                                                    id={item[4]}
                                                     fullWidth
                                                     InputProps={{
                                                         startAdornment: (
@@ -2512,7 +2515,6 @@ const MainFormModal = ({
                         </ThemeProvider>
 
                         <Modal.Footer className="tw-flex tw-flex-row tw-justify-between">
-                            {}
                             {isEdit &&
                                 handleShowMainFormEdit &&
                                 reference === "companies" && (
@@ -2540,7 +2542,7 @@ const MainFormModal = ({
                                         <button
                                             type="submit"
                                             className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
-                                            onClick={handleEditForm}
+                                            // onClick={handleEditForm}
                                         >
                                             <FiEdit size={28} />
                                         </button>

@@ -23,7 +23,8 @@ import {
     saveFilesDocuments,
     saveIconFile,
     listenToDocumentsQuery,
-    saveDataDocumentsQueryById
+    saveDataDocumentsQueryById,
+    getEmployeesByCompanyIdQuery
 } from "@/queries/documentsQueries";
 import { getCoordinates } from "@/queries/GeoMapsQueries";
 import { getAllRolesQuery } from "@/queries/RolesQueries";
@@ -76,6 +77,8 @@ const MainFormHook = ({
     const [adminUsers, setAdminUsers] = useState<any[]>();
     const [emailError, setEmailError] = useState<string>('');
     const [objToArrayItems, setObjToArrayItems] = useState<any>({});
+
+    const [employees, setEmployees] = useState<any>([]);
 
     //Modal Iconos
     const [isOpenModalIcons, setIsOpenModalIcons] = useState<boolean>(false);
@@ -161,7 +164,12 @@ const MainFormHook = ({
         if (typeof isChecked !== "undefined") {
             setData((prevData: any) => ({
                 ...prevData,
-                [name]: [value, !isChecked],
+                [name]: [
+                    value,                // Primer valor: nuevo `value`
+                    !isChecked,           // Segundo valor: opuesto de `isChecked`
+                    prevData[name][2],    // Tercer valor: mantiene el objeto original en la posición 2
+                    ...prevData[name].slice(3), // Resto de elementos (si existen)
+                ],
             }));
             return;
         }
@@ -796,32 +804,40 @@ const MainFormHook = ({
 
     const handleNewItem = (type: string) => {
         const listNewItem: string[] = ["urlName", "urlLink", "iconName"];
-            const newItemUrl: { [key: string]: any[] | string } = {};
-            const itemIndex = objToArrayItems[type ?? "urlName"].length
-                ? objToArrayItems[type ?? "urlName"].length
-                : 0;
+        const newItemUrl: { [key: string]: any[] | string } = {};
+        const itemIndex = objToArrayItems[type ?? "urlName"].length
+            ? objToArrayItems[type ?? "urlName"].length
+            : 0;
 
-            listNewItem.forEach((item) => {
-                const currentIndex = `${item}${itemIndex + 1}`;
+        listNewItem.forEach((item) => {
+            const currentIndex = `${item}${itemIndex + 1}`;
 
-                newItemUrl[currentIndex] =
-                    item === "urlName"
-                        ? ["", false]
-                        : item === "urlLink"
-                        ? " "
-                        : item === "iconName"
-                        ? " "
-                        : " ";
-            });
-            setData({ ...data, ...newItemUrl });
+            newItemUrl[currentIndex] =
+                item === "urlName"
+                    ? [
+                        "", 
+                        false,
+                        // Construimos el objeto con los uid de employees
+                        employees?.reduce((acc: any, employee: any) => {
+                        acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
+                        return acc;
+                    }, {})
+                        ]
+                    : item === "urlLink"
+                    ? " "
+                    : item === "iconName"
+                    ? " "
+                    : " ";
+        });
+        setData({ ...data, ...newItemUrl });
     }
 
     const handleDeleteItem = (item: any) => {
         if (item[0].includes("url")) {
             const dataFiltered = _.omit(_.cloneDeep(data), [
                 item[0],
-                item[3],
-                item[5],
+                item[4],
+                item[6],
             ]);
             setData(dataFiltered);
         }
@@ -968,7 +984,33 @@ const MainFormHook = ({
     }, [editData, getAdminAndCompanyData, handleShowMainFormEdit, reference]);
 
     useEffect(() => {
-        data && setObjToArrayItems(createNewArray());
+        const fetchData = async () => {            
+            if (companyData?.uid) {
+                const employees: any = await getEmployeesByCompanyIdQuery(companyData.uid);
+                setEmployees(employees);
+                
+                if (employees.length > 0) {
+                    // Construir el objeto con los uid de employees y actualizar urlName en data
+                    setData((prevData: any) => ({
+                        ...prevData,
+                        urlName: [
+                            "",
+                            false,
+                            employees.reduce((acc: any, employee: any) => {
+                                acc[employee.uid] = { isActive: true, uid: employee.uid, views: []  };
+                                return acc;
+                            }, {}),
+                        ],
+                    }));
+                }
+            }
+        };
+        fetchData();
+    }, [companyData?.uid]);
+
+    useEffect(() => {
+        // Actualizar objToArrayItems una vez que data esté completamente actualizado
+        if (data) {setObjToArrayItems(createNewArray())}
     }, [createNewArray, data]);
 
     return {

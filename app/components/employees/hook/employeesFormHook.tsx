@@ -7,6 +7,8 @@ import {
     getHeadquartersByCompanyIdQuery,
     getRoutesByCompanyIdQuery,
     saveEmployeeQuery,
+    getWorkAreaByUidQuery,
+    editAreaQuery,
 } from "@/queries/documentsQueries";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
@@ -550,6 +552,7 @@ const EmployeesFormHook = ({
                 );
 
                 if (employeeQueryResult.success) {
+                    await addUserUrls(selectedArea, documentRefUser.id)
                     Swal.fire({
                         icon: "success",
                         title: "Usuario creado",
@@ -636,6 +639,7 @@ const EmployeesFormHook = ({
                 );
 
                 if (employeeQueryResult.success) {
+                    await addUserUrls(selectedArea, idRow)
                     Swal.fire({
                         icon: "success",
                         title: "Empleado actualizado",
@@ -778,6 +782,33 @@ const EmployeesFormHook = ({
             setAreaData(dataAreas);
         }
     };
+
+    const addUserUrls = async (selectAreaUid: string , userUid: string) => {
+        const dataArea = await getWorkAreaByUidQuery(selectAreaUid)
+        
+          // Filtrar solo las propiedades que comienzan con "urlName"
+        const urlsDataArea = Object.fromEntries(
+            Object.entries(dataArea[0]).filter(([key, value]) => key.startsWith("urlName"))
+          );
+
+        // Recorrer cada urlName, urlName2, ..., urlNameN
+        for (const [key, value] of Object.entries(urlsDataArea)) {
+            if (Array.isArray(value) && typeof value[2] === 'object') {
+                const userObjects = value[2];
+
+                // Verificar si el usuario ya existe en la propiedad
+                if (!userObjects[userUid]) {
+                    // Si no existe, agregar el usuario con las propiedades deseadas
+                    userObjects[userUid] = {
+                    isActive: true,
+                    uid: userUid,
+                    views: []
+                    };
+                }
+            }
+        }
+        await editAreaQuery( urlsDataArea, selectAreaUid);
+    }
 
     useEffect(() => {
         getRouteData();
