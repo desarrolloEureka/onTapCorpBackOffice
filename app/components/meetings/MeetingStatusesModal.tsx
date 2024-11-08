@@ -8,6 +8,7 @@ import { ImCancelCircle } from "react-icons/im";
 import { IoMdClose } from "react-icons/io";
 import { RiSave2Fill } from "react-icons/ri";
 import MeetingStatusesHook from "./hook/MeetingStatusesHook";
+import CustomSwitch from "../company/components/CustomSwitch";
 
 const MeetingStatusesModal = ({
     handleShowMainForm,
@@ -25,6 +26,8 @@ const MeetingStatusesModal = ({
         isEdit,
         meetingNameError,
         meetingName,
+        isActive,
+        setIsActive,
         setMeetingName,
         handleReset,
         handleClose,
@@ -55,6 +58,7 @@ const MeetingStatusesModal = ({
             aria-hidden="false"
             aria-modal="true"
             contentClassName={reference !== "companies" ? "modal-admin" : ""}
+            backdrop="static"
         >
             <Form onReset={handleReset} onSubmit={handleSendForm}>
                 <ThemeProvider theme={theme}>
@@ -62,7 +66,7 @@ const MeetingStatusesModal = ({
                         className={`modal-title-admin tw-pt-5 tw-px-8 tw-flex tw-flex-row tw-justify-between`}
                         as="h6"
                     >
-                        <span>Nuevo Estado de Reunión</span>
+                        <span>{!isEdit && handleShowMainFormEdit ? 'Editar' : 'Nuevo'} Estado de Reunión</span>
                         <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-center tw-items-center -tw-mt-2">
                             <button
                                 type="button"
@@ -80,42 +84,49 @@ const MeetingStatusesModal = ({
                     </Modal.Title>
 
                     <Modal.Body className="tw-px-8">
-                        <div className="tw-flex tw-w-full tw-flex-col">
-                            <div className="tw-flex tw-w-full tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-admin-body">
-                                <div className="tw-flex tw-flex-col tw-px-3 tw-w-full">
-                                    <div className="tw-flex tw-flex-row tw-px-3 tw-my-6 tw-w-full">
-                                        <TextField
-                                            value={meetingName}
-                                            onChange={(e) =>
-                                                setMeetingName(e.target.value)
-                                            }
-                                            type="text"
-                                            id="meetingName"
-                                            fullWidth
-                                            label="Nombre Estado"
-                                            variant="standard"
-                                            color="primary"
-                                            helperText={meetingNameError}
-                                            error={!!meetingNameError}
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <ExploreOutlinedIcon />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                            InputLabelProps={{
-                                                style: {
-                                                    fontSize: "20px",
-                                                    fontWeight: "bold",
-                                                    color:
-                                                        modeTheme === "light"
-                                                            ? "#396593"
-                                                            : "#8bb8e7",
-                                                },
-                                            }}
-                                        />
-                                    </div>
+                        <div className="tw-flex tw-w-full tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-admin-body">
+                            <div className="tw-flex tw-flex-row tw-px-3 tw-w-full">
+                                <div className="tw-flex tw-flex-col tw-px-3 tw-my-6 tw-w-full tw-space-y-4">
+                                    <TextField
+                                        value={meetingName}
+                                        onChange={(e) =>
+                                            setMeetingName(e.target.value)
+                                        }
+                                        type="text"
+                                        id="meetingName"
+                                        fullWidth
+                                        label="Nombre Estado"
+                                        variant="standard"
+                                        color="primary"
+                                        helperText={meetingNameError}
+                                        error={!!meetingNameError}
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <ExploreOutlinedIcon />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        InputLabelProps={{
+                                            style: {
+                                                fontSize: "20px",
+                                                fontWeight: "bold",
+                                                color:
+                                                    modeTheme === "light"
+                                                        ? "#396593"
+                                                        : "#8bb8e7",
+                                            },
+                                        }}
+                                    />
+                                </div>
+                                <div className="tw-flex tw-flex-col tw-px-3 tw-my-6 tw-w-auto tw-space-y-4 tw-justify-center tw-items-center">
+                                    <CustomSwitch
+                                        onChange={(e) =>
+                                            setIsActive(e.target.checked)
+                                        }
+                                        checked={isActive}
+                                        modeTheme={modeTheme as string}
+                                    />
                                 </div>
                             </div>
                         </div>

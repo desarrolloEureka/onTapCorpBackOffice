@@ -76,18 +76,20 @@ const ThemeOne = ({
         const index = urlMatch[1] === "" ? "" : urlMatch[1]; // Obtener el índice
         const url = areaData[key];
         const nameKey = `urlName${index}`; // Construir el nombre correspondiente
+        const iconNameKey = `iconName${index}`; // Construir el nombre correspondiente
         if (nameKey in areaData) {
           if (uidUser) {
             const [nameOrIcon, isActive, userObjects] = areaData[nameKey];
+            const iconName = areaData[iconNameKey];
 
             if (isActive) {
               Object.keys(userObjects || {}).forEach((userKey) => {
                 const userInfo = userObjects[userKey];
-                if (userInfo.uid === uidUser) {
+                if (userInfo.uid === uidUser && userInfo.isActive === true) {
                   areaDataUrls.urls.push({
                     url,
                     name: nameOrIcon,
-                    icon: nameOrIcon,
+                    icon: iconName,
                     checked: isActive,
                     isActiveSwitch: userInfo.isActive, // Agregar isActive del usuario
                   });
@@ -96,10 +98,11 @@ const ThemeOne = ({
             }
           } else {
             const [nameOrIcon, checked] = areaData[nameKey];
+            const iconName = areaData[iconNameKey];
             areaDataUrls.urls.push({
               url,
               name: nameOrIcon, // Puedes ajustar esto si necesitas diferenciar entre nombre e ícono
-              icon: nameOrIcon, // Asumiendo que nameOrIcon puede ser un ícono o nombre
+              icon: iconName, // Asumiendo que nameOrIcon puede ser un ícono o nombre
               checked,
             });
           }

@@ -64,6 +64,7 @@ const LogosFormModal = ({
             aria-hidden="false"
             aria-modal="true"
             contentClassName={reference !== "companies" ? "modal-admin" : ""}
+            backdrop="static"
         >
             <Form onReset={handleReset} onSubmit={handleSendForm}>
                 <ThemeProvider theme={theme}>

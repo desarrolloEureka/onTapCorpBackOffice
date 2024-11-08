@@ -63,7 +63,7 @@ export const dataMainFormObject = {
     timestamp: "",
     areaName: "",
     areaHead: "",
-    urlName: ["", false],
+    urlName: ["", false, {}],
     urlLink: " ",
     iconName: " ",
     isActive: true,

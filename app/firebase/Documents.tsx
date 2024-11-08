@@ -478,6 +478,25 @@ export const getWorkAreasByCompanyId = async (companyId: any) => {
     }
 };
 
+export const getWorkAreaByUid = async (uid: any) => {
+    try {
+        const q = query(
+            collection(db, "workAreas"),
+            where("uid", "==", uid),
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        const workAreas = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+        }));
+        return workAreas;
+    } catch (error) {
+        console.error("Error fetching Work Areas:", error);
+        return [];
+    }
+};
+
 export const getMeetingStatusByCompanyId = async (companyId: any) => {
     try {
         const q = query(
@@ -662,6 +681,19 @@ export const updateEmployee = async (id: string, dataSave: any) => {
         return { success: false, message: "Error updating route", error };
     }
 };
+
+export const updateArea = async (dataSave: any, id: string) => {
+    try {
+        //const zoneRef = doc(db, "employees", id);
+        const zoneRef = doc(db, "workAreas", id);
+        await updateDoc(zoneRef, dataSave);
+
+        return { success: true, message: "Employee updated successfully" };
+    } catch (error) {
+        console.error("Error updating employee:", error);
+        return { success: false, message: "Error updating route", error };
+    }
+}
 
 export const registerFirebase = async (user: string, password: string) => {
     const registerF = await createUserWithEmailAndPassword(

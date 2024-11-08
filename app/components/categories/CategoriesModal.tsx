@@ -71,6 +71,7 @@ const CategoriesModal = ({
             aria-hidden="false"
             aria-modal="true"
             contentClassName={"modal-admin"}
+            backdrop="static"
         >
             <Form onReset={handleReset} onSubmit={handleSendForm}>
                 <ThemeProvider theme={theme}>

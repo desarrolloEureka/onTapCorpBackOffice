@@ -176,17 +176,17 @@ const CampusHook = ({
         }
 
         // Validación del campo 'url'
-        if (!data.url[0].trim()) {
-            setCampusUrlError("El Url de la sede es requerido");
-            valid = false;
-        } else if (data.url[0].length < 3) {
-            setCampusUrlError(
-                "El Url de la sede debe tener al menos 3 caracteres",
-            );
-            valid = false;
-        } else {
-            setCampusUrlError("");
-        }
+        // if (!data.url[0].trim()) {
+        //     setCampusUrlError("El Url de la sede es requerido");
+        //     valid = false;
+        // } else if (data.url[0].length < 3) {
+        //     setCampusUrlError(
+        //         "El Url de la sede debe tener al menos 3 caracteres",
+        //     );
+        //     valid = false;
+        // } else {
+        //     setCampusUrlError("");
+        // }
 
         return valid;
     };

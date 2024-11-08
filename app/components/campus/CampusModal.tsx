@@ -85,6 +85,7 @@ const CampusModal = ({
             aria-hidden="false"
             aria-modal="true"
             contentClassName={reference !== "companies" ? "modal-admin" : ""}
+            backdrop="static"
         >
             <Form onReset={handleReset} onSubmit={handleSendForm}>
                 <Modal.Title
@@ -165,7 +166,7 @@ const CampusModal = ({
                                             ),
                                         }}
                                     />
-                                    <CustomTextField
+                                    {/* <CustomTextField
                                         data={dataForm.url}
                                         onChange={(
                                             value: string,
@@ -192,7 +193,7 @@ const CampusModal = ({
                                             ),
                                             title: 'Ingrese una URL válida Ej: "https://example.com"',
                                         }}
-                                    />
+                                    /> */}
                                 </div>
                             </div>
                             <div className="tw-flex tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-admin-body">

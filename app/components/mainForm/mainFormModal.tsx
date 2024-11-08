@@ -143,6 +143,7 @@ const MainFormModal = ({
         errorValid,
         nextStep,
         companyVal,
+        urlVal,
         fileNameIcon,
         fileNamePhoto,
         emailError,
@@ -197,6 +198,7 @@ const MainFormModal = ({
                     contentClassName={
                         reference !== "companies" ? "modal-admin" : ""
                     }
+                    backdrop="static"
                 >
                     <Form
                         // noValidate
@@ -220,10 +222,12 @@ const MainFormModal = ({
                                 as="h6"
                             >
                                 <span>
-                                    {handleShowMainFormEdit &&
-                                    reference === "companies"
-                                        ? "Detalle Empresa"
-                                        : "Nuevo Registro"}
+                                    {
+                                        !handleShowMainFormEdit ? "Nuevo Registro" : 
+                                        reference === "companies" ? "Detalle Empresa" :
+                                        reference === "workAreas" ? "Editar Area" : ""
+
+                                    }
                                 </span>
                                 <div className="tw-flex tw-w-[7%] tw-flex-col tw-justify-center tw-items-center -tw-mt-2">
                                     <button
@@ -321,7 +325,7 @@ const MainFormModal = ({
                                                             dataLogos?.find(
                                                                 (val: any) =>
                                                                     val.logoName ===
-                                                                    item[6],
+                                                                    item[7],
                                                             );
                                                         return (
                                             <div
@@ -363,7 +367,6 @@ const MainFormModal = ({
 
                                                 <CustomTextField
                                                     required
-                                                    data={item[4]}
                                                     onChange={(
                                                         value: string,
                                                         name: string,
@@ -373,13 +376,14 @@ const MainFormModal = ({
                                                             item,
                                                         );
                                                     }}
-                                                    name={item[3]}
+                                                    data={item[5]}
+                                                    name={item[4]}
                                                     type="url"
                                                     helperText={
                                                         "Ej: https://example.com"
                                                     }
                                                     theme={modeTheme}
-                                                    id={item[3]}
+                                                    id={item[4]}
                                                     fullWidth
                                                     InputProps={{
                                                         startAdornment: (
@@ -533,8 +537,8 @@ const MainFormModal = ({
                                                                         },
                                                                     }}
                                                                     inputProps={{
-                                                                        maxLength: 250,
-                                                                        minLength: 2,
+                                                                        maxLength: data?.idType === "NIT" ? 9 : 12,
+                                                                        minLength: data?.idType === "NIT" ? 9 : 6,
                                                                         readOnly:
                                                                             !isEdit,
                                                                     }}
@@ -622,7 +626,6 @@ const MainFormModal = ({
                                                                                 .name,
                                                                         )
                                                                     }
-                                                                    required
                                                                     name="tradename"
                                                                     id="tradename"
                                                                     type="text"
@@ -1322,7 +1325,7 @@ const MainFormModal = ({
                                                                     <Typography className="tw-font-bold tw-text-sm url-label">
                                                                         {fileNameIcon
                                                                             ? fileNameIcon
-                                                                            : "Seleccionar Icono"}
+                                                                            : "Subir Logo"}
                                                                     </Typography>
                                                                     <input
                                                                         type="file"
@@ -2513,7 +2516,6 @@ const MainFormModal = ({
                         </ThemeProvider>
 
                         <Modal.Footer className="tw-flex tw-flex-row tw-justify-between">
-                            {}
                             {isEdit &&
                                 handleShowMainFormEdit &&
                                 reference === "companies" && (
@@ -2541,7 +2543,7 @@ const MainFormModal = ({
                                         <button
                                             type="submit"
                                             className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
-                                            onClick={handleEditForm}
+                                            // onClick={handleEditForm}
                                         >
                                             <FiEdit size={28} />
                                         </button>
@@ -2580,14 +2582,17 @@ const MainFormModal = ({
                                                 <Button
                                                     className=""
                                                     type={
-                                                        companyVal
+                                                        companyVal &&
+                                                        urlVal()
                                                             ? "button"
                                                             : "submit"
                                                     }
                                                     variant="primary"
-                                                    onClick={() =>
+                                                    onClick={() => {
+                                                        urlVal() &&
                                                         companyVal &&
                                                         setNextStep(false)
+                                                        }
                                                     }
                                                 >
                                                     {/* Siguiente &nbsp; */}

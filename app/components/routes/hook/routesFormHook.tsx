@@ -36,8 +36,7 @@ const RoutesFormHook = ({
     const [routeName, setRouteName] = useState("");
     const [routeManager, setRouteManager] = useState("");
     const [selectedZone, setSelectedZone] = useState("");
-    //const [addresses, setAddresses] = useState<string[]>([]);
-    const [addresses, setAddresses] = useState([""]);
+    const [addresses, setAddresses] = useState(["", ""]);
     const [hours, setHours] = useState(0);
     const [minutes, setMinutes] = useState(0);
 
@@ -152,7 +151,7 @@ const RoutesFormHook = ({
     const handleReset = () => {
         setRouteName("");
         setRouteManager("");
-        setAddresses([""]);
+        setAddresses(["", ""]);
         setRouteNameError("");
         setRouteManagerError("");
         setAddressesError("");
@@ -297,6 +296,11 @@ const RoutesFormHook = ({
         setAddresses([...addresses, ""]);
     };
 
+    const handleDeleteAddress = (index: number) => {
+        const newAddresses = addresses.filter((_, i) => i !== index);
+        setAddresses(newAddresses);
+    };
+
     useEffect(() => {
         const getZonesData = listenToDocumentsQuery("zones", setZonesData, companyData?.uid);
         return () => getZonesData(); // Limpia el listener cuando el componente se desmonte
@@ -359,6 +363,7 @@ const RoutesFormHook = ({
         handleEditForm,
         handleAddressChange,
         handleAddAddress,
+        handleDeleteAddress,
         zonesData,
         handleChangeZone,
         selectedZone,

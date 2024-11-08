@@ -26,6 +26,7 @@ const MeetingStatusesHook = ({
 
     // Datos
     const [meetingName, setMeetingName] = useState("");
+    const [isActive, setIsActive] = useState(false);
     const [idRow, setIdRow] = useState("");
 
     // Errores
@@ -66,6 +67,7 @@ const MeetingStatusesHook = ({
                     name: meetingName,
                     isDeleted: false,
                     uid: documentRef.id,
+                    isActive: isActive
                 };
                 const meetingQueryResult = await saveMeetingQuery(
                     formData,
@@ -106,6 +108,7 @@ const MeetingStatusesHook = ({
 
     const handleReset = () => {
         setMeetingName("");
+        setIsActive(false)
         setMeetingNameError("");
     };
 
@@ -124,6 +127,7 @@ const MeetingStatusesHook = ({
                     idCompany: userData.companyId,
                     name: meetingName,
                     isDeleted: false,
+                    isActive: isActive
                 };
 
                 const meetingQueryResult = await updateMeetingQuery(
@@ -174,7 +178,8 @@ const MeetingStatusesHook = ({
         handleShowMainFormEdit &&
             (setShow(true),
             setMeetingName(editData?.name),
-            setIdRow(editData?.uid));
+            setIdRow(editData?.uid)),
+            setIsActive(editData?.isActive)
     }, [editData, handleShowMainFormEdit]);
 
     return {
@@ -183,6 +188,8 @@ const MeetingStatusesHook = ({
         isLoading,
         isEdit,
         meetingName,
+        isActive,
+        setIsActive,
         setMeetingName,
         meetingNameError,
         handleSendForm,
