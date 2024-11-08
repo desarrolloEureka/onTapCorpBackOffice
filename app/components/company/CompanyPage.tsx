@@ -96,7 +96,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                 <CustomSwitch
                                     modeTheme={theme}
                                     onChange={(e) => handleAllChecked(e)}
-                                    checked={allChecked === "none"}
+                                    checked={allChecked === "all"}
                                 />
                             </div>
                             <div className="banner tw-px-8 tw-py-2 tw-rounded-tr-[35px] tw-rounded-bl-[35px]">

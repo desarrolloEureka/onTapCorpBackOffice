@@ -155,6 +155,19 @@ const DataTablesHook = (reference: string) => {
         return documents.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
     };
 
+    const formatFixedPointsData = (documents: any[] | { [key: string]: any } ) => { 
+        if (!Array.isArray(documents)) { return [] }
+        const documentsDate = documents.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        const result: any[] = [];  
+        documentsDate.forEach((document) => {
+            result.push({
+                ...document,
+                namePoint: document?.directions[0]?.pointName,
+            });
+        });
+        return result
+    }
+
     const formatReportData = (documents: any[], employees: any[]  ) => {
         if (!Array.isArray(documents)) { return [] }
         const documentsDate = documents.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
@@ -299,7 +312,7 @@ const DataTablesHook = (reference: string) => {
                       )
                     : [])
                 : reference === "fixedPoints"
-                ? formatDataByDate(userData && userData?.companyId
+                ? formatFixedPointsData(userData && userData?.companyId
                     ? await getDocsByCompanyIdQuery(
                           userData?.companyId,
                           reference,
@@ -317,7 +330,8 @@ const DataTablesHook = (reference: string) => {
                   reference === "events" ||
                   reference === "policy" ||
                   reference === "forms" ||
-                  reference === "news"
+                  reference === "news" ||
+                  reference === "logos" 
                 ? formatDataByDate(userData && userData?.companyId
                     ? await getDocsByCompanyIdQuery(
                           userData?.companyId,
@@ -435,6 +449,7 @@ const DataTablesHook = (reference: string) => {
                     uid: "Acciones",
                     timestamp: "Fecha Registro",
                     name: "Nombre Estado Reunión",
+                    isActive: "Estado"
                 };
             } else if (reference === "campus") {
                 columnNamesToDisplay = {
@@ -442,7 +457,7 @@ const DataTablesHook = (reference: string) => {
                     timestamp: "Fecha Registro",
                     name: "Nombre Sede",
                     address: "Dirección",
-                    url: "Url Locación",
+                    // url: "Url Locación",
                     isActive: "Estado",
                 };
             } else if (reference === "fixedPoints") {
@@ -450,6 +465,7 @@ const DataTablesHook = (reference: string) => {
                     uid: "Acciones",
                     timestamp: "Fecha Registro",
                     name: "Nombre Categoría",
+                    namePoint: "Nombre Punto",
                     color: "Color",
                 };
             } else if (
@@ -642,8 +658,11 @@ const DataTablesHook = (reference: string) => {
                             ? "200px"
                             : reference === "workAreas"
                             ? val === "timestamp" || val === "urlLink"
-                                ? "15%"
-                                : "auto"
+                            ? "15%"
+                            : "auto"
+                            : reference === "meetingStatus"
+                            ? val === "uid"
+                            ? "10%" : "auto"
                             : reference === "meetings"
                             ? val === "date" || val === "meetingStart" || val === "meetingEnd" 
                                 ? "8%"
@@ -651,13 +670,19 @@ const DataTablesHook = (reference: string) => {
                             : "auto",
                     omit: !omittedColumns.includes(val),
                     style:
-                        val === "uid"
+                        val === "uid" && reference === "meetingStatus"
+                            ? {
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "flex-start",
+                            }
+                        : val === "uid"
                             ? {
                                   display: "flex",
                                   alignItems: "center",
                                   justifyContent: "center",
                               }
-                            : {},
+                        : {},
                 };
 
                 cols.push(columnsData);
@@ -765,7 +790,7 @@ const DataTablesHook = (reference: string) => {
 
     // Función combinada
     const handleSearchAndFilter = async (e: any) => {
-        const value = e?.target?.value.toLowerCase();
+        const value = e?.target?.value?.toLowerCase();
         setSearchTerm(value);
         
         // Filtrar por búsqueda
@@ -828,7 +853,11 @@ const DataTablesHook = (reference: string) => {
 
     useEffect(() => {
         getAllDocuments();
-    }, [getAllDocuments]);
+        if (!endDate && startDate) {
+            const today = new Date().toISOString().split('T')[0];
+            setEndDate(today); // Establece la fecha de hoy al estado endDate si está vacío
+          }
+    }, [getAllDocuments, endDate, startDate]);
 
     useEffect(() => {
         if (!handleShowMainForm || !handleShowMainFormEdit || !isEmptyDataRef) {

@@ -61,10 +61,28 @@ const NewsHook = ({
 
     //Para guardar los datos.
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setData((prevData) => ({
-            ...prevData,
-            [e.target.name]: e.target.value,
-        }));
+        if (e.target.name.startsWith('url')) {
+            // Verificación de la URL solo si hay un valor completo
+            if (!(e.target.value.toString().startsWith('https://') || e.target.value.toString().startsWith('http://') || e.target.value.toString().startsWith('h'))) {
+                // Si no comienza con http o https, agregar https://
+                setData((prevData: any) => ({
+                    ...prevData,
+                    [e.target.name]: "https://" + e.target.value,
+                }));
+                return;
+            } else {
+                // Si es válido, simplemente actualizar
+                setData((prevData: any) => ({
+                    ...prevData,
+                    [e.target.name]: e.target.value,
+                }));
+            }
+        } else {
+            setData((prevData) => ({
+                ...prevData,
+                [e.target.name]: e.target.value,
+            }));
+        }        
     };
 
     //Para guardar el estado de la comunicación.

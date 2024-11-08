@@ -54,7 +54,7 @@ const NotificationsFormModal = ({
     });
 
     return (
-        <Modal size="lg" centered show={show} onHide={handleClose}>
+        <Modal size="lg" centered show={show} onHide={handleClose} backdrop="static">
             <Form onReset={handleReset} onSubmit={handleSendForm}>
                 <Modal.Body style={{ padding: 0, margin: 0 }}>
                     <Card

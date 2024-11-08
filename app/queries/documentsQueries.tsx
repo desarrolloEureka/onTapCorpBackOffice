@@ -15,6 +15,8 @@ import {
     getReference,
     getRoutesByCompanyId,
     getWorkAreasByCompanyId,
+    getWorkAreaByUid,
+    updateArea,
     getZoneById,
     getZonesByCompanyId,
     saveCampus,
@@ -158,6 +160,11 @@ export const listenToDocumentsQuery = (ref: string, setData: (data: any[]) => vo
             id: doc.id,
             ...doc.data()
         }));
+        if (ref === "zones") {
+            updatedData.sort((a: any, b: any) => a.zoneName.localeCompare(b.zoneName));
+        } else if (ref === "logos" ) {
+            updatedData.sort((a: any, b: any) => a.logoName.localeCompare(b.logoName));
+        }
         setData(updatedData); // Actualiza el estado con los datos obtenidos
     });
 
@@ -389,6 +396,16 @@ export const saveEmployeeQuery = async (dataSave: any) => {
 export const editEmployeeQuery = async (dataSave: any, docId: string) => {
     const result = await updateEmployee(docId, dataSave);
     return result;
+};
+
+export const editAreaQuery = async (dataSave: any, docId: string) => {
+    const result = await updateArea(dataSave, docId);
+    return result;
+};
+
+export const getWorkAreaByUidQuery = async (uidArea: string) => {
+    const documents = await getWorkAreaByUid(uidArea);
+    return documents;
 };
 
 export const saveRouteQuery = async (dataSave: any) => {

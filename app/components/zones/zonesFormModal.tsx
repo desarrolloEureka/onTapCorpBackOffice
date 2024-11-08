@@ -10,6 +10,7 @@ import { ImCancelCircle } from "react-icons/im";
 import { IoMdClose } from "react-icons/io";
 import { RiSave2Fill } from "react-icons/ri";
 import ZonesFormHook from "./hook/zonesFormHook";
+import CustomTextField from "../company/components/CustomTextField";
 
 const ZonesFormModal = ({
     handleShowMainForm,
@@ -37,6 +38,7 @@ const ZonesFormModal = ({
         handleReset,
         handleAddressChange,
         handleAddAddress,
+        handleDeleteAddress,
         isEdit,
         handleEditForm,
     } = ZonesFormHook({
@@ -64,6 +66,7 @@ const ZonesFormModal = ({
             aria-hidden="false"
             aria-modal="true"
             contentClassName={reference !== "companies" ? "modal-admin" : ""}
+            backdrop="static"
         >
             <Form onReset={handleReset} onSubmit={handleSendForm}>
                 <ThemeProvider theme={theme}>
@@ -163,22 +166,20 @@ const ZonesFormModal = ({
                                             key={index}
                                             className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full"
                                         >
-                                            <TextField
-                                                value={address}
-                                                onChange={(e) =>
-                                                    handleAddressChange(
-                                                        index,
-                                                        e.target.value,
-                                                    )
+                                            <CustomTextField
+                                                data={address}
+                                                onChange={(newValue: string, name: string, checked: boolean) =>
+                                                    handleAddressChange(index, newValue)
                                                 }
                                                 type="text"
                                                 id={`address-${index}`}
                                                 fullWidth
-                                                label={`Dirección ${
-                                                    index + 1
-                                                }`}
+                                                label={`Dirección ${index + 1}`}
                                                 variant="standard"
                                                 color="primary"
+                                                theme={modeTheme}
+                                                deleted={index < 3 ? "" : "true" }
+                                                onClick={() => {handleDeleteAddress(index)}}
                                                 helperText={
                                                     index ===
                                                     addresses.length - 1
@@ -196,31 +197,22 @@ const ZonesFormModal = ({
                                                             <ExploreOutlinedIcon />
                                                         </InputAdornment>
                                                     ),
-                                                }}
-                                                InputLabelProps={{
-                                                    style: {
-                                                        fontSize: "20px",
-                                                        fontWeight: "bold",
-                                                        color:
-                                                            modeTheme ===
-                                                            "light"
-                                                                ? "#396593"
-                                                                : "#8bb8e7",
-                                                    },
-                                                }}
+                                                }}                                               
                                             />
                                         </div>
                                     ))}
                                     <div className="tw-flex tw-flex-row tw-px-3 tw-mt-7 tw-mb-4 tw-w-full">
-                                        <div className="tw-flex tw-flex-row tw-w-38 tw-rounded-3xl tw-bg-[#396593]">
-                                            <Button
-                                                variant="outlined"
-                                                onClick={handleAddAddress}
-                                                className="tw-text-white"
-                                            >
-                                                Añadir Dirección
-                                            </Button>
-                                        </div>
+                                        {addresses?.length < 4 && (
+                                            <div className="tw-flex tw-flex-row tw-w-38 tw-rounded-3xl tw-bg-[#396593]">
+                                                <Button
+                                                    variant="outlined"
+                                                    onClick={handleAddAddress}
+                                                    className="tw-text-white"
+                                                >
+                                                    Añadir Dirección
+                                                </Button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>

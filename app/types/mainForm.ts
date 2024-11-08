@@ -50,7 +50,7 @@ export interface DataMainFormObject {
     timestamp: string;
     areaName: string;
     areaHead: string;
-    urlName: [string, boolean];
+    urlName: [string, boolean, object];
     urlLink: string;
     iconName: string;
     isActive: boolean;

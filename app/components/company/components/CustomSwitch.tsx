@@ -25,7 +25,7 @@ const IOSSwitch = styled((props: SwitchProps) => (
             color: "#fff",
             "& + .MuiSwitch-track": {
                 backgroundColor:
-                    theme.palette.mode === "dark" ? "#39393D" : "#39393D",
+                    theme.palette.mode === "light" ? "#396593" : "#8bb8e7",
                 opacity: 1,
                 border: 0,
             },
@@ -54,7 +54,7 @@ const IOSSwitch = styled((props: SwitchProps) => (
     },
     "& .MuiSwitch-track": {
         borderRadius: 26 / 2,
-        backgroundColor: theme.palette.mode === "light" ? "#396593" : "#8bb8e7",
+        backgroundColor: "#39393D",
         opacity: 1,
         transition: theme.transitions.create(["background-color"], {
             duration: 500,
@@ -89,7 +89,7 @@ const CustomSwitch = ({
                         }}
                     />
                 }
-                label="On/Off"
+                label="Off/On"
                 sx={{ color: modeTheme === "light" ? "#396593" : "#8bb8e7" }}
                 labelPlacement="bottom"
             />

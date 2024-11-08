@@ -20,6 +20,7 @@ const IconsUrlModal = ({
             onHide={handleClose}
             aria-hidden="false"
             aria-modal="true"
+            backdrop="static"
         >
             <Modal.Title
                 className={`modal-title tw-pt-5 tw-px-8 tw-flex tw-flex-row tw-justify-between`}

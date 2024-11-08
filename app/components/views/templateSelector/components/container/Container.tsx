@@ -141,7 +141,7 @@ const TemplateContainer = ({
           sx={{ textTransform: "none", backgroundColor: color }}
           className={`tw-rounded-s-2xl tw-rounded-e-2xl tw-drop-shadow-sm tw-w-[90%] ${
             isSmallScreen ? "tw-h-[35px]" : "tw-h-[34px]"
-          } tw-px-1 tw-relative tw-my-2 tw-shadow-[0_0px_05px_05px_rgba(0,0,0,0.1)]`}
+          } tw-px-1 tw-relative tw-my-1.5 tw-shadow-[0_0px_05px_05px_rgba(0,0,0,0.1)]`}
           key={key}
           onClick={() =>
             val.icon &&
@@ -263,21 +263,34 @@ const TemplateContainer = ({
               }}
             >
               {finalArray.map((item: any, i: any) => (
-                <Box
-                  key={i}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <div
-                    className={`tw-overflow-y-auto tw-h-full tw-max-h-[230px]`}
-                  >
-                    <Item item={item} />
+                <>
+                {i === 2 && (
+                  <div className="tw-flex tw-pt-6">
+                    <Typography
+                      style={{ fontSize: "15px" }}
+                      className={`tw-w-[90%] tw-text-start tw-truncate tw-font-bold tw-text-white`}
+                    >
+                      Horario
+                    </Typography>
                   </div>
-                </Box>
+                )}
+                  
+                  <Box
+                    key={i}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      className={`tw-overflow-y-auto tw-h-full tw-max-h-[230px]`}
+                    >
+                      <Item item={item} />
+                    </div>
+                  </Box>
+                </>
               ))}
             </Carousel>
           )}

@@ -13,6 +13,7 @@ import DataTable, { createTheme } from "react-data-table-component";
 import "react-data-table-component-extensions/dist/index.css";
 import { TfiClose, TfiExport } from "react-icons/tfi";
 import { VscAdd } from "react-icons/vsc";
+import { FiFilter } from 'react-icons/fi';
 // import Swal from "sweetalert2";
 import moment from "moment";
 
@@ -170,7 +171,7 @@ const MainFormModal = ({ onMainFormModal }: UploadDataButtonModalProps) => (
 const StartDayInput = ({ startDate, setStartDate }
     : { startDate: string, setStartDate: (value: string) => void}) => (
     <Form.Group controlId="startDate">
-        <Form.Label>Fecha Inicio</Form.Label>
+        <Form.Label style={{fontSize: '15px'}}>Fecha Inicio</Form.Label>
         <Form.Control
             type="date"
             value={startDate || ''}
@@ -186,7 +187,7 @@ const StartDayInput = ({ startDate, setStartDate }
 const EndDayInput = ({ endDate, startDate, setEndDate}
     : { endDate: string, startDate: string , setEndDate: (value: string) => void}) => (
     <Form.Group controlId="endDate">
-        <Form.Label>Fecha Fin</Form.Label>
+        <Form.Label style={{fontSize: '15px'}}>Fecha Fin</Form.Label>
         <Form.Control
             type="date"
             value={endDate || ''}
@@ -202,7 +203,7 @@ const EndDayInput = ({ endDate, startDate, setEndDate}
 
 const Filter = ({ handleSearchAndFilter }: {handleSearchAndFilter: (e: any) => void; }) => (
     <Button onClick={handleSearchAndFilter}>
-        Filtrar
+        <FiFilter size={18} className="" />
     </Button>
 );
 

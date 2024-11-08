@@ -25,7 +25,7 @@ const IOSSwitch = styled((props: SwitchProps) => (
             color: "#fff",
             "& + .MuiSwitch-track": {
                 backgroundColor:
-                    theme.palette.mode === "dark" ? "#39393D" : "#39393D",
+                    theme.palette.mode === "light" ? "#396593" : "#8bb8e7",
                 opacity: 1,
                 border: 0,
             },
@@ -54,7 +54,7 @@ const IOSSwitch = styled((props: SwitchProps) => (
     },
     "& .MuiSwitch-track": {
         borderRadius: 38 / 2,
-        backgroundColor: theme.palette.mode === "light" ? "#396593" : "#8bb8e7",
+        backgroundColor: theme.palette.mode === "dark" ? "#39393D" : "#39393D",
         opacity: 1,
         transition: theme.transitions.create(["background-color"], {
             duration: 500,
@@ -101,8 +101,8 @@ const SwitchForm = ({
                                 fontSize: "0.875rem",
                             }}
                         >
-                            <span style={{ color: checked ? "#fff" : "#000", marginLeft: 30 }}>On</span>
-                            <span style={{ color: checked ? "#000" : "#fff", marginRight: 24 }}>Off</span>
+                            <span style={{ color: checked ? "#fff" : "#000", marginLeft: 30 }}>Off</span>
+                            <span style={{ color: checked ? "#000" : "#fff", marginRight: 24 }}>On</span>
                         </Box>
                     </Box>
                 }

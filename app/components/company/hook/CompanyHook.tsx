@@ -179,17 +179,53 @@ const CompanyHook = () => {
 
     const handleChange = (value: string, name: string, isChecked?: boolean) => {
         if (isChecked === undefined) {
-            setData({ ...data, [name]: (value || "-") ?? "-" });
+            // Manejo del cambio para el campo webSite
+            if (name === "webSite" || name.startsWith('urlLink')) {
+                // Si el valor está vacío, simplemente actualizar a vacío
+                if (value === "") {
+                    setData({ ...data, [name]: "" });
+                } else {
+                    // Verificación de la URL solo si hay un valor completo
+                    if (!(value.startsWith('https://') || value.startsWith('http://') || value.startsWith('h'))) {
+                        // Si no comienza con http o https, agregar https://
+                        setData({ ...data, [name]: "https://" + value });
+                    } else {
+                        // Si es válido, simplemente actualizar
+                        setData({ ...data, [name]: value });
+                    }
+                }
+            } else {
+                // Manejo de otros campos
+                setData({ ...data, [name]: (value || "-") ?? "-" });
+            }
         } else {
-            setData({ ...data, [name]: [(value || "") ?? "", !isChecked] });
+            // Manejo del cambio para el campo webSite
+            if (name === "webSite" || name.startsWith('urlLink')) {
+                // Si el valor está vacío, simplemente actualizar a vacío
+                if (value === "") {
+                    setData({ ...data, [name]: ["", !isChecked] });
+                } else {
+                    // Verificación de la URL solo si hay un valor completo
+                    if (!(value.startsWith('https://') || value.startsWith('http://') || value.startsWith('h'))) {
+                        // Si no comienza con http o https, agregar https://
+                        setData({ ...data, [name]: [("https://" + value || "") ?? "", !isChecked] });
+                    } else {
+                        // Si es válido, simplemente actualizar
+                        setData({ ...data, [name]: [(value || "") ?? "", !isChecked] });
+                    }
+                }
+            } else {
+                // Manejo de otros campos
+                setData({ ...data, [name]: [(value || "") ?? "", !isChecked] });
+            }
         }
     };
 
     const handleAllChecked = (e: ChangeEvent<HTMLInputElement>) => {
-        setAllChecked(e.target.checked ? "none" : "all");
+        setAllChecked(e.target.checked ? "all" : "none" );
         const dataChecked = _.forEach(_.cloneDeep(data), (value, key) => {
             if (_.isArray(value) && value.length > 1) {
-                value[1] = !e.target.checked;
+                value[1] = e.target.checked;
             }
         });
         setData(dataChecked);
@@ -454,9 +490,11 @@ const CompanyHook = () => {
                 }
             });
 
-            newObject[element] = arrayWithKey.map((item) =>
-                _.uniq(item.flat()),
-            );
+            newObject[element] = arrayWithKey.map((item) => {
+                const flatArray = item.flat();
+                // Si el primer y segundo elemento son iguales, eliminamos el primero
+                return flatArray[0] === flatArray[1] ? flatArray.slice(1) : flatArray;
+            });
         });
 
         return newObject;

@@ -79,12 +79,12 @@ const CustomTextField = (props: any) => {
                 {props.switch && (
                     <CustomSwitch
                         modeTheme={props.theme}
-                        checked={checked}
+                        checked={!checked}
                         onChange={(e) =>
                             handleCustomChange(
                                 value,
                                 props.name,
-                                e.target.checked,
+                                !e.target.checked,
                             )
                         }
                     />
