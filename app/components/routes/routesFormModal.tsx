@@ -18,6 +18,7 @@ import { ImCancelCircle } from "react-icons/im";
 import { IoMdClose } from "react-icons/io";
 import { RiSave2Fill } from "react-icons/ri";
 import RoutesFormHook from "./hook/routesFormHook";
+import CustomTextField from "../company/components/CustomTextField";
 
 const RoutesFormModal = ({
     handleShowMainForm,
@@ -49,6 +50,7 @@ const RoutesFormModal = ({
         handleEditForm,
         handleAddressChange,
         handleAddAddress,
+        handleDeleteAddress,
         zonesData,
         handleChangeZone,
         selectedZone,
@@ -106,6 +108,7 @@ const RoutesFormModal = ({
             aria-hidden="false"
             aria-modal="true"
             contentClassName={reference !== "companies" ? "modal-admin" : ""}
+            backdrop="static"
         >
             <Form onReset={handleReset} onSubmit={handleSendForm}>
                 <ThemeProvider theme={theme}>
@@ -278,57 +281,38 @@ const RoutesFormModal = ({
                                                                     : "tw-mt-2"
                                                             } tw-w-full`}
                                                         >
-                                                            <TextField
-                                                                value={address}
-                                                                onChange={(e) =>
-                                                                    handleAddressChange(
-                                                                        index,
-                                                                        e.target
-                                                                            .value,
-                                                                    )
+                                                            <CustomTextField
+                                                                data={address}
+                                                                onChange={(newValue: string, name: string, checked: boolean) =>
+                                                                    handleAddressChange(index, newValue)
                                                                 }
                                                                 type="text"
                                                                 id={`address-${index}`}
                                                                 fullWidth
-                                                                label={`Dirección ${
-                                                                    index + 1
-                                                                }`}
+                                                                label={`Dirección ${index + 1}`}
                                                                 variant="standard"
                                                                 color="primary"
+                                                                theme={modeTheme}
+                                                                deleted={index < 2 ? "" : "true" }
+                                                                onClick={() => {handleDeleteAddress(index)}}
                                                                 helperText={
                                                                     index ===
-                                                                    addresses.length -
-                                                                        1
+                                                                    addresses.length - 1
                                                                         ? addressesError
                                                                         : ""
                                                                 }
                                                                 error={
                                                                     index ===
-                                                                        addresses.length -
-                                                                            1 &&
+                                                                        addresses.length - 1 &&
                                                                     !!addressesError
                                                                 }
                                                                 InputProps={{
-                                                                    startAdornment:
-                                                                        (
-                                                                            <InputAdornment position="start">
-                                                                                <ExploreOutlinedIcon />
-                                                                            </InputAdornment>
-                                                                        ),
-                                                                }}
-                                                                InputLabelProps={{
-                                                                    style: {
-                                                                        fontSize:
-                                                                            "20px",
-                                                                        fontWeight:
-                                                                            "bold",
-                                                                        color:
-                                                                            modeTheme ===
-                                                                            "light"
-                                                                                ? "#396593"
-                                                                                : "#8bb8e7",
-                                                                    },
-                                                                }}
+                                                                    startAdornment: (
+                                                                        <InputAdornment position="start">
+                                                                            <ExploreOutlinedIcon />
+                                                                        </InputAdornment>
+                                                                    ),
+                                                                }}                                               
                                                             />
                                                         </div>
                                                     ),

@@ -1,6 +1,6 @@
 "use client";
 import CustomSwitch from "@/components/company/components/CustomSwitch";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
+import CreditCard from "@mui/icons-material/CreditCard";
 import {
     InputAdornment,
     InputLabel,
@@ -78,7 +78,7 @@ const CustomSelectSwitch = (props: any) => {
                         }
                         startAdornment={
                             <InputAdornment position="start">
-                                <AttachFileIcon />
+                                <CreditCard />
                             </InputAdornment>
                         }
                     >
@@ -101,7 +101,7 @@ const CustomSelectSwitch = (props: any) => {
                 </FormControl>
             </ThemeProvider>
 
-            <div className="tw-flex tw-items-center tw-ml-0">
+            {/* <div className="tw-flex tw-items-center tw-ml-0">
                 <CustomSwitch
                     modeTheme={props.theme}
                     checked={checked}
@@ -109,7 +109,7 @@ const CustomSelectSwitch = (props: any) => {
                         handleCustomChange(value, props.name, e.target.checked)
                     }
                 />
-            </div>
+            </div> */}
         </div>
     );
 };

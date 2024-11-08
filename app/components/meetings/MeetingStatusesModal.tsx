@@ -58,6 +58,7 @@ const MeetingStatusesModal = ({
             aria-hidden="false"
             aria-modal="true"
             contentClassName={reference !== "companies" ? "modal-admin" : ""}
+            backdrop="static"
         >
             <Form onReset={handleReset} onSubmit={handleSendForm}>
                 <ThemeProvider theme={theme}>
@@ -121,9 +122,9 @@ const MeetingStatusesModal = ({
                                 <div className="tw-flex tw-flex-col tw-px-3 tw-my-6 tw-w-auto tw-space-y-4 tw-justify-center tw-items-center">
                                     <CustomSwitch
                                         onChange={(e) =>
-                                            setIsActive(!e.target.checked)
+                                            setIsActive(e.target.checked)
                                         }
-                                        checked={!isActive}
+                                        checked={isActive}
                                         modeTheme={modeTheme as string}
                                     />
                                 </div>

@@ -227,19 +227,6 @@ const HeaderContent = ({
                                                     Áreas de Trabajo
                                                 </span>
                                             </NavDropdown.Item>
-                                            <NavDropdown.Item
-                                                className="tw-flex tw-items-center tw-justify-center"
-                                                href="#meetingStatus"
-                                                eventKey="meetingStatus"
-                                            >
-                                                <MdOutlineChecklist
-                                                    size={20}
-                                                    className="tw-mb-1 tw-mr-1"
-                                                />
-                                                <span className="tw-text-wrap">
-                                                    Estados Reunión
-                                                </span>
-                                            </NavDropdown.Item>
                                             {/* <NavDropdown.Item
                                                 // href="#functionary"
                                                 eventKey="second"
@@ -289,43 +276,61 @@ const HeaderContent = ({
                                                 size={20}
                                                 className="tw-mb-1 tw-mr-1"
                                             />
-                                            Configuraciones
+                                            { userRole === "superadmin" ? "Configuraciones" : "Notificaciones"}
                                         </>
                                     }
                                     id="nav-dropdown"
                                     className="nav-item dropdown"
                                 >
-                                    <NavDropdown.Item
-                                        href="#company"
-                                        eventKey="roles"
-                                    >
-                                        <BsPersonCircle
-                                            size={20}
-                                            className="tw-mb-1 tw-mr-1"
-                                        />
-                                        Roles
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        href="#company"
-                                        eventKey="documentTypes"
-                                    >
-                                        <FaRegAddressCard
-                                            size={20}
-                                            className="tw-mb-1 tw-mr-1"
-                                        />
-                                        Tipos Documento
-                                    </NavDropdown.Item>
-                                    {userRole !== "superadmin" && (
-                                        <NavDropdown.Item
-                                            href="#roles"
-                                            eventKey="notifications"
-                                        >
-                                            <IoMdNotifications
-                                                size={20}
-                                                className="tw-mb-1 tw-mr-1"
-                                            />
-                                            Notificaciones
-                                        </NavDropdown.Item>
+                                    {userRole !== "superadmin" ? (
+                                        <>
+                                            <NavDropdown.Item
+                                                href="#roles"
+                                                eventKey="notifications"
+                                            >
+                                                <IoMdNotifications
+                                                    size={20}
+                                                    className="tw-mb-1 tw-mr-1"
+                                                />
+                                                Notificaciones
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item
+                                                className="tw-flex tw-items-center tw-justify-center"
+                                                href="#meetingStatus"
+                                                eventKey="meetingStatus"
+                                            >
+                                                <MdOutlineChecklist
+                                                    size={20}
+                                                    className="tw-mb-1 tw-mr-1"
+                                                />
+                                                <span className="tw-text-wrap">
+                                                    Estados Reunión
+                                                </span>
+                                            </NavDropdown.Item>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <NavDropdown.Item
+                                            href="#company"
+                                            eventKey="roles"
+                                            >
+                                                <BsPersonCircle
+                                                    size={20}
+                                                    className="tw-mb-1 tw-mr-1"
+                                                />
+                                                Roles
+                                            </NavDropdown.Item>
+                                            <NavDropdown.Item
+                                                href="#company"
+                                                eventKey="documentTypes"
+                                            >
+                                                <FaRegAddressCard
+                                                    size={20}
+                                                    className="tw-mb-1 tw-mr-1"
+                                                />
+                                                Tipos Documento
+                                            </NavDropdown.Item>
+                                        </>
                                     )}
                                 </NavDropdown>
                             )}

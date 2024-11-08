@@ -37,11 +37,11 @@ const EmployeesFormHook = ({
         uid: "",
         firstName: ["", false],
         lastName: ["", false],
-        documentType: ["", false],
-        documentNumber: ["", false],
-        dateOfBirth: ["", false],
+        documentType: ["", true],
+        documentNumber: ["", true],
+        dateOfBirth: ["", true],
         position: ["", false],
-        phones: [{ text: "", checked: false, indicative: "", ext: "" }],
+        phones: [{ text: "", checked: false, indicative: "+57", ext: "" }],
         emails: [{ text: "", checked: false }],
         additional: [{ autodato: "", dato: "", checked: false }],
     };
@@ -86,25 +86,25 @@ const EmployeesFormHook = ({
     const [routeApplicable, setRouteApplicable] = useState<boolean>(true);
     const [routeApplicableError, setRouteApplicableError] = useState("");
 
-    const [mondayRoute, setMondayRoute] = useState("");
+    const [mondayRoute, setMondayRoute] = useState("default");
     const [mondayRouteError, setMondayRouteError] = useState("");
 
-    const [tuesdayRoute, setTuesdayRoute] = useState("");
+    const [tuesdayRoute, setTuesdayRoute] = useState("default");
     const [tuesdayRouteError, setTuesdayRouteError] = useState("");
 
-    const [wednesdayRoute, setWednesdayRoute] = useState("");
+    const [wednesdayRoute, setWednesdayRoute] = useState("default");
     const [wednesdayRouteError, setWednesdayRouteError] = useState("");
 
-    const [thursdayRoute, setThursdayRoute] = useState("");
+    const [thursdayRoute, setThursdayRoute] = useState("default");
     const [thursdayRouteError, setThursdayRouteError] = useState("");
 
-    const [fridayRoute, setFridayRoute] = useState("");
+    const [fridayRoute, setFridayRoute] = useState("default");
     const [fridayRouteError, setFridayRouteError] = useState("");
 
-    const [saturdayRoute, setSaturdayRoute] = useState("");
+    const [saturdayRoute, setSaturdayRoute] = useState("default");
     const [saturdayRouteError, setSaturdayRouteError] = useState("");
 
-    const [sundayRoute, setSundayRoute] = useState("");
+    const [sundayRoute, setSundayRoute] = useState("default");
     const [sundayRouteError, setSundayRouteError] = useState("");
 
     const [employeeCardStatus, setEmployeeCardStatus] = useState(false);
@@ -126,7 +126,7 @@ const EmployeesFormHook = ({
                 if ((prevData.phones || []).length < maxItems) {
                     const updatedPhones: DataPhone[] = [
                         ...(prevData.phones || []),
-                        { text: "", checked: false, indicative: "", ext: "" },
+                        { text: "", checked: false, indicative: "+57", ext: "" },
                     ];
                     newData = { ...newData, phones: updatedPhones };
                 }
@@ -362,6 +362,10 @@ const EmployeesFormHook = ({
 
         if (!data.documentNumber[0]?.trim()) {
             newErrors.documentNumber = "El número de documento es obligatorio";
+        } else if (data.documentNumber[0].length < 6) {
+            newErrors.documentNumber = "El número de documento debe ser mayor de 5 caracteres";
+        } else if (data.documentNumber[0].length > 12) {
+            newErrors.documentNumber = "El número de documento debe ser menor de 12 caracteres";
         }
 
         if (!data.dateOfBirth[0]?.trim()) {
@@ -768,6 +772,10 @@ const EmployeesFormHook = ({
 
     const getRouteData = async () => {
         if (userData?.companyId) {
+            const defaultOption = {
+                routeName: "N/A",
+                uid: "default"
+            }
             const dataRoutes = await getRoutesByCompanyIdQuery(
                 userData.companyId,
             );
@@ -776,7 +784,11 @@ const EmployeesFormHook = ({
             );
             const dataHeadquarters = await getHeadquartersByCompanyIdQuery(
                 userData.companyId,
-            );
+            );        
+            dataRoutes.sort((a: any, b: any) => a.routeName.localeCompare(b.routeName));
+            dataAreas.sort((a: any, b: any) => a.areaName.localeCompare(b.areaName));
+            dataHeadquarters.sort((a: any, b: any) => a.name[0].localeCompare(b.name[0]));
+            dataRoutes.unshift(defaultOption)
             setHeadquartersData(dataHeadquarters);
             setRouteData(dataRoutes);
             setAreaData(dataAreas);
@@ -832,13 +844,13 @@ const EmployeesFormHook = ({
             setSelectedArea(editData?.selectedArea || ""),
             setSelectedHeadquarter(editData?.selectedHeadquarter || ""),
             setRouteApplicable(editData?.routeApplicable || false),
-            setMondayRoute(editData?.mondayRoute || ""),
-            setTuesdayRoute(editData?.tuesdayRoute || ""),
-            setWednesdayRoute(editData?.wednesdayRoute || ""),
-            setThursdayRoute(editData?.thursdayRoute || ""),
-            setFridayRoute(editData?.fridayRoute || ""),
-            setSaturdayRoute(editData?.saturdayRoute || ""),
-            setSundayRoute(editData?.sundayRoute || ""),
+            setMondayRoute(editData?.mondayRoute || "default"),
+            setTuesdayRoute(editData?.tuesdayRoute || "default"),
+            setWednesdayRoute(editData?.wednesdayRoute || "default"),
+            setThursdayRoute(editData?.thursdayRoute || "default"),
+            setFridayRoute(editData?.fridayRoute || "default"),
+            setSaturdayRoute(editData?.saturdayRoute || "default"),
+            setSundayRoute(editData?.sundayRoute || "default"),
             setEmployeeCardStatus(editData?.switch_activateCard || false));
         getRouteData();
         // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -5,6 +5,9 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import InfoOutlined from "@mui/icons-material/InfoOutlined";
+import CreditCard from "@mui/icons-material/CreditCard";
+ 
 import {
     FormControlLabel,
     IconButton,
@@ -143,6 +146,7 @@ const EmployeesFormModal = ({
                 onHide={handleClose}
                 aria-hidden="false"
                 aria-modal="true"
+                backdrop="static"
             >
                 <Form
                     onReset={handleReset}
@@ -438,7 +442,6 @@ const EmployeesFormModal = ({
                                                         required
                                                         name="documentNumber"
                                                         type="text"
-                                                        switch="true"
                                                         theme={modeTheme}
                                                         id="documentNumber"
                                                         fullWidth
@@ -455,7 +458,7 @@ const EmployeesFormModal = ({
                                                         InputProps={{
                                                             startAdornment: (
                                                                 <InputAdornment position="start">
-                                                                    <AttachFileIcon />
+                                                                    <CreditCard />
                                                                 </InputAdornment>
                                                             ),
                                                         }}
@@ -482,7 +485,6 @@ const EmployeesFormModal = ({
                                                         required
                                                         name="dateOfBirth"
                                                         type="date"
-                                                        switch="true"
                                                         theme={modeTheme}
                                                         id="dateOfBirth"
                                                         fullWidth
@@ -867,7 +869,7 @@ const EmployeesFormModal = ({
                                                                             startAdornment:
                                                                                 (
                                                                                     <InputAdornment position="start">
-                                                                                        <AttachFileIcon />
+                                                                                        <InfoOutlined />
                                                                                     </InputAdornment>
                                                                                 ),
                                                                         }}
@@ -913,7 +915,7 @@ const EmployeesFormModal = ({
                                                                             startAdornment:
                                                                                 (
                                                                                     <InputAdornment position="start">
-                                                                                        <AttachFileIcon />
+                                                                                        <InfoOutlined />
                                                                                     </InputAdornment>
                                                                                 ),
                                                                         }}

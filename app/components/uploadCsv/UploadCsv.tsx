@@ -27,7 +27,7 @@ export default function CSVReader({
   } = UploadDocumentHook({ handleShowCsv, setHandleShowCsv, reference, title });
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} backdrop="static">
       <Modal.Header closeButton>
         <Modal.Title as='h6'>
           {`Crear ${title} masivos desde archivo Csv`}

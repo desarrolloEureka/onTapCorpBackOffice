@@ -174,6 +174,25 @@ const MainFormHook = ({
             return;
         }
 
+        if (name.startsWith('urlLink')) {
+            // Verificación de la URL solo si hay un valor completo
+            if (!(value.toString().startsWith('https://') || value.toString().startsWith('http://') || value.toString().startsWith('h'))) {
+                // Si no comienza con http o https, agregar https://
+                setData((prevData: any) => ({
+                    ...prevData,
+                    [name]: "https://" + value,
+                }));
+                return;
+            } else {
+                // Si es válido, simplemente actualizar
+                setData((prevData: any) => ({
+                    ...prevData,
+                    [name]: value,
+                }));
+                return;
+            }
+        }
+
         // Por defecto, actualiza el valor normalmente.
         setData((prevData: any) => ({
             ...prevData,
@@ -665,8 +684,28 @@ const MainFormHook = ({
         parseInt(data.cards) >= parseInt(data.cardGPS) &&
         data.country &&
         data.state &&
-        data.city;
+        data.city &&
+        data.id.length > 6 &&   
+        data.id.length < 12;
 
+    const urlVal = () => {
+        if (data?.webSite) {
+            if (data.webSite.startsWith('https://') || data.webSite.startsWith('http://') || data.webSite.startsWith('h')) {
+                return true
+            } else {
+                setData((prevData: any) => {
+                    const updatedWebSite = "https://" + data.webSite;
+                    return {
+                        ...prevData,
+                        ["webSite"]: updatedWebSite,
+                    };
+                });
+                return true
+            }
+        }
+        return true
+    }
+    
     const companyAdminVal =
         reference === "companies" &&
         // data.idTypeAdmin &&
@@ -726,7 +765,7 @@ const MainFormHook = ({
     const handleSendForm = async (e?: any) => {
         if (
             workAreasVal ||
-            companyVal ||
+            companyVal && urlVal() ||
             companyAdminVal ||
             specialtyVal ||
             diagnosticianVal ||
@@ -1024,6 +1063,7 @@ const MainFormHook = ({
         errorValid,
         nextStep,
         companyVal,
+        urlVal,
         fileNameIcon,
         fileNamePhoto,
         emailError,

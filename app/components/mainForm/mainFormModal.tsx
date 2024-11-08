@@ -143,6 +143,7 @@ const MainFormModal = ({
         errorValid,
         nextStep,
         companyVal,
+        urlVal,
         fileNameIcon,
         fileNamePhoto,
         emailError,
@@ -197,6 +198,7 @@ const MainFormModal = ({
                     contentClassName={
                         reference !== "companies" ? "modal-admin" : ""
                     }
+                    backdrop="static"
                 >
                     <Form
                         // noValidate
@@ -535,8 +537,8 @@ const MainFormModal = ({
                                                                         },
                                                                     }}
                                                                     inputProps={{
-                                                                        maxLength: 250,
-                                                                        minLength: 2,
+                                                                        maxLength: data?.idType === "NIT" ? 9 : 12,
+                                                                        minLength: data?.idType === "NIT" ? 9 : 6,
                                                                         readOnly:
                                                                             !isEdit,
                                                                     }}
@@ -624,7 +626,6 @@ const MainFormModal = ({
                                                                                 .name,
                                                                         )
                                                                     }
-                                                                    required
                                                                     name="tradename"
                                                                     id="tradename"
                                                                     type="text"
@@ -1324,7 +1325,7 @@ const MainFormModal = ({
                                                                     <Typography className="tw-font-bold tw-text-sm url-label">
                                                                         {fileNameIcon
                                                                             ? fileNameIcon
-                                                                            : "Seleccionar Icono"}
+                                                                            : "Subir Logo"}
                                                                     </Typography>
                                                                     <input
                                                                         type="file"
@@ -2581,14 +2582,17 @@ const MainFormModal = ({
                                                 <Button
                                                     className=""
                                                     type={
-                                                        companyVal
+                                                        companyVal &&
+                                                        urlVal()
                                                             ? "button"
                                                             : "submit"
                                                     }
                                                     variant="primary"
-                                                    onClick={() =>
+                                                    onClick={() => {
+                                                        urlVal() &&
                                                         companyVal &&
                                                         setNextStep(false)
+                                                        }
                                                     }
                                                 >
                                                     {/* Siguiente &nbsp; */}

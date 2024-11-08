@@ -58,6 +58,7 @@ const NewsModal = ({
             aria-hidden="false"
             aria-modal="true"
             contentClassName={"modal-admin"}
+            backdrop="static"
         >
             <Form onReset={handleReset} onSubmit={handleSendForm}>
                 <ThemeProvider theme={theme}>
@@ -158,9 +159,9 @@ const NewsModal = ({
                                 <div className="tw-flex tw-flex-col tw-px-3 tw-my-6 tw-w-auto tw-space-y-4 tw-justify-center tw-items-center">
                                     <CustomSwitch
                                         onChange={(e) =>
-                                            handleChecked(!e.target.checked)
+                                            handleChecked(e.target.checked)
                                         }
-                                        checked={!data.isActive}
+                                        checked={data.isActive}
                                         modeTheme={modeTheme as string}
                                     />
                                 </div>
