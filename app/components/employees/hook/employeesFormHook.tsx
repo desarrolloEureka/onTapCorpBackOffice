@@ -346,6 +346,23 @@ const EmployeesFormHook = ({
         setStep(2);
     };
 
+    function isAdult(dateOfBirth: string) {
+        const today = new Date();
+        const birthDate = new Date(dateOfBirth);
+        
+        // Calcular la edad
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+        const dayDifference = today.getDate() - birthDate.getDate();
+    
+        // Ajustar edad si aún no se ha cumplido el año
+        if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+            age--;
+        }
+    
+        return age >= 18;
+    }
+
     const validateFields = () => {
         const newErrors: { [key: string]: string } = {};
         if (!data.firstName[0]?.trim()) {
@@ -370,6 +387,10 @@ const EmployeesFormHook = ({
 
         if (!data.dateOfBirth[0]?.trim()) {
             newErrors.dateOfBirth = "La fecha de nacimiento es obligatoria";
+        }
+
+        if (!isAdult(data.dateOfBirth[0])) {
+            newErrors.dateOfBirth = "El usuario debe ser mayor de edad";
         }
 
         if (!data.position[0]?.trim()) {

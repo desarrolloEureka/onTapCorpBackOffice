@@ -7,7 +7,6 @@ import { InputAdornment, MenuItem, Select, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import { Col, Form, Modal } from "react-bootstrap";
 import { BsBuildingAdd } from "react-icons/bs";
-import { FiEdit } from "react-icons/fi";
 import { ImCancelCircle } from "react-icons/im";
 import { IoMdClose } from "react-icons/io";
 import { IoAddCircle } from "react-icons/io5";
@@ -276,7 +275,7 @@ const CampusModal = ({
                                                             )
                                                         }
                                                         name="text"
-                                                        type="number"
+                                                        type="text"
                                                         switch="true"
                                                         theme={modeTheme}
                                                         id={`phone-${index}`}
@@ -308,7 +307,7 @@ const CampusModal = ({
                                                         handleDeleteItem(index);
                                                     }}
                                                     name="ext"
-                                                    type="number"
+                                                    type="text"
                                                     deleted={"true"}
                                                     theme={modeTheme}
                                                     id="ext"
@@ -490,7 +489,7 @@ const CampusModal = ({
                                 className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
                                 onClick={handleEditForm}
                             >
-                                <FiEdit size={28} />
+                                <RiSave2Fill size={28} />
                             </button>
                         ) : (
                             <button

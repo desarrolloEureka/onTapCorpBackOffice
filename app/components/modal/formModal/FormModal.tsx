@@ -68,7 +68,7 @@ const FormModal = ({
                                 <span className="tw-text-red-500">*</span>
                             </Form.Label>
                             <Form.Control
-                                type="number"
+                                type="text"
                                 name="buy_value"
                                 placeholder="30000"
                                 onChange={changeHandler}

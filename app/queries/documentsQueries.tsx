@@ -150,11 +150,11 @@ export const listenToDocumentsQuery = (ref: string, setData: (data: any[]) => vo
     if (!uid) {
         // Si uid no es válido, no se establece el listener
         setData([]); // O puedes manejarlo de otra manera
-        return () => {}; // Retorna una función de limpieza vacía
-    } 
+        return () => { }; // Retorna una función de limpieza vacía
+    }
     // Crea una consulta que filtre por idCompany
-     const q = query(collectionRef, where("idCompany", "==", uid));
-    
+    const q = query(collectionRef, where("idCompany", "==", uid));
+
     const unsubscribe = onSnapshot(q, (snapshot: any) => {
         const updatedData = snapshot.docs.map((doc: any) => ({
             id: doc.id,
@@ -162,7 +162,7 @@ export const listenToDocumentsQuery = (ref: string, setData: (data: any[]) => vo
         }));
         if (ref === "zones") {
             updatedData.sort((a: any, b: any) => a.zoneName.localeCompare(b.zoneName));
-        } else if (ref === "logos" ) {
+        } else if (ref === "logos") {
             updatedData.sort((a: any, b: any) => a.logoName.localeCompare(b.logoName));
         }
         setData(updatedData); // Actualiza el estado con los datos obtenidos
@@ -256,6 +256,53 @@ export const getEmployeesByCompanyIdQuery = async (idCompany: string) => {
     const documents = await getEmployeesByCompanyId(idCompany);
     return documents;
 };
+
+export const listenToEmployeesByCompanyIdQuery = (ref: string, setData: (data: any[]) => void, uid: any) => {
+    const collectionRef = collection(db, ref); // Asegúrate de tener acceso a dataBase
+    if (!uid) {
+        // Si uid no es válido, no se establece el listener
+        setData([]); // O puedes manejarlo de otra manera
+        return () => { }; // Retorna una función de limpieza vacía
+    }
+    // Crea una consulta que filtre por idCompany
+    const q = query(
+        collectionRef,
+        where("idCompany", "==", uid),
+        where("rolId", "==", "uysG1ULyEDklfbGDFate"),  //  ID DEL ROL DE EMPLEADO
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot: any) => {
+        const updatedData = snapshot.docs.map((doc: any) => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        setData(updatedData); // Actualiza el estado con los datos obtenidos
+    });
+
+    return unsubscribe; // Devuelve la función de limpieza
+}
+
+export const listenToWorkAreaByCompanyIdQuery = (ref: string, setData: (data: any[]) => void, uid: any) => {
+    const collectionRef = collection(db, ref); // Asegúrate de tener acceso a dataBase
+    if (!uid) {
+        // Si uid no es válido, no se establece el listener
+        setData([]); // O puedes manejarlo de otra manera
+        return () => { }; // Retorna una función de limpieza vacía
+    }
+    // Crea una consulta que filtre por idCompany
+    const q = query(
+        collectionRef,
+        where("companyId", "==", uid),
+    );
+    const unsubscribe = onSnapshot(q, (snapshot: any) => {
+        const updatedData = snapshot.docs.map((doc: any) => ({
+            ...doc.data()
+        }));
+        setData(updatedData); // Actualiza el estado con los datos obtenidos
+    });
+
+    return unsubscribe; // Devuelve la función de limpieza
+}
 
 export const getLocationsByCompanyIdAndWorkingdayQuery = async (idCompany: string) => {
     const documents = await getLocationsByCompanyIdAndWorkingday(idCompany);
