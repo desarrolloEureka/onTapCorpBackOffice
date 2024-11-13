@@ -62,7 +62,7 @@ export const GoogleMapsHook = () => {
 
     const [dataZones, setDataZones] = useState<any>();
 
-    const [day, setDay] = useState("mondayRoute");
+    const [day, setDay] = useState("");
 
     // Define las opciones para el mapa
     const mapContainerStyle = {
@@ -368,6 +368,22 @@ export const GoogleMapsHook = () => {
             setCenter(companyData.geolocation);
         }
     }, [companyData]);
+
+    useEffect(() => {
+        const today = new Date().getDay();
+        // Mapeo de días a las rutas correspondientes
+        const routes: { [key: number]: string } = {
+            0: "sundayRoute",
+            1: "mondayRoute",
+            2: "tuesdayRoute",
+            3: "wednesdayRoute",
+            4: "thursdayRoute",
+            5: "fridayRoute",
+            6: "saturdayRoute",
+        };
+        // Establece la ruta correspondiente al día actual
+        setDay(routes[today]);
+    }, []);
 
     return {
         mapContainerStyle,

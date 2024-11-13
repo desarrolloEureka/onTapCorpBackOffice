@@ -10,7 +10,6 @@ import {
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Circle from "@uiw/react-color-circle";
 import { Col, Form, Modal } from "react-bootstrap";
-import { FiEdit } from "react-icons/fi";
 import { ImCancelCircle } from "react-icons/im";
 import { IoIosArrowDown, IoMdClose } from "react-icons/io";
 import { RiSave2Fill } from "react-icons/ri";
@@ -115,7 +114,7 @@ const CategoriesModal = ({
                                         name="name"
                                         id="name"
                                         fullWidth
-                                        label="Nombre"
+                                        label="Nombre Categoria"
                                         variant="standard"
                                         color="primary"
                                         helperText={nameError}
@@ -358,7 +357,7 @@ const CategoriesModal = ({
                                 className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
                                 onClick={handleEditForm}
                             >
-                                <FiEdit size={28} />
+                                <RiSave2Fill size={28} />
                             </button>
                         ) : (
                             <button

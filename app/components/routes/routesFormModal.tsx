@@ -13,7 +13,6 @@ import {
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { styled } from "@mui/system";
 import { Button, Col, Form, Modal } from "react-bootstrap";
-import { FiEdit } from "react-icons/fi";
 import { ImCancelCircle } from "react-icons/im";
 import { IoMdClose } from "react-icons/io";
 import { RiSave2Fill } from "react-icons/ri";
@@ -450,7 +449,7 @@ const RoutesFormModal = ({
                                 className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
                                 onClick={handleEditForm}
                             >
-                                <FiEdit size={28} />
+                                <RiSave2Fill size={28} />
                             </button>
                         ) : (
                             <button

@@ -636,7 +636,7 @@ const EmployeesFormModal = ({
                                                                                 )
                                                                             }
                                                                             name="text"
-                                                                            type="number"
+                                                                            type="text"
                                                                             switch="true"
                                                                             theme={
                                                                                 modeTheme
@@ -677,7 +677,7 @@ const EmployeesFormModal = ({
                                                                             );
                                                                         }}
                                                                         name="ext"
-                                                                        type="number"
+                                                                        type="text"
                                                                         deleted={
                                                                             "true"
                                                                         }
@@ -1316,7 +1316,7 @@ const EmployeesFormModal = ({
                                                                                         : "#8bb8e7",
                                                                             }}
                                                                         >
-                                                                            X
+                                                                            M
                                                                         </TableCell>
                                                                         <TableCell
                                                                             sx={{

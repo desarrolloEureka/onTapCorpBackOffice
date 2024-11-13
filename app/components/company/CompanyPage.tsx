@@ -473,7 +473,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                     name={
                                                                         item[0]
                                                                     }
-                                                                    type="number"
+                                                                    type="text"
                                                                     switch="true"
                                                                     theme={
                                                                         theme
@@ -509,7 +509,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                     );
                                                                 }}
                                                                 name={item[3]}
-                                                                type="number"
+                                                                type="text"
                                                                 deleted={
                                                                     index !== 0
                                                                         ? "true"
@@ -720,8 +720,8 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                             ? "true"
                                                                             : ""
                                                                     }
-                                                                    icon={true}
-                                                                    handleOpenModalIcons={handleOpenModalIcons}
+                                                                    icon="true"
+                                                                    handleOpenModalIcons={() => {handleOpenModalIcons(item, index)}}
                                                                     datafilter={datafilter}
                                                                     item={item}
                                                                     index={index}

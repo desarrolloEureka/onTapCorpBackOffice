@@ -84,7 +84,7 @@ const TempladeContent = () => {
                                             <div className="tw-w-[95%] tw-h-[90%] tw-flex tw-items-start tw-justify-center">
                                                 <div className="tw-w-[100%] tw-h-[25%] tw-flex tw-items-center tw-justify-center ">
                                                     <div className="tw-w-[50%] tw-h-[100%] tw-flex tw-items-start tw-justify-start">
-                                                        <Button
+                                                        {/* <Button
                                                             onClick={() =>
                                                                 handlePreview()
                                                             }
@@ -118,11 +118,11 @@ const TempladeContent = () => {
                                                                     </span>
                                                                 </div>
                                                             </div>
-                                                        </Button>
+                                                        </Button> */}
                                                     </div>
                                                     <div className="tw-w-[50%] tw-h-[100%] tw-flex tw-items-start tw-justify-end ">
                                                         <div className="tw-w-[35%] tw-h-[80%] tw-flex tw-items-start tw-justify-center">
-                                                            {data && (
+                                                            {/* {data && (
                                                                 <CustomCheckbox
                                                                     uid={
                                                                         data.uid
@@ -137,7 +137,7 @@ const TempladeContent = () => {
                                                                         true : false
                                                                     }
                                                                 />
-                                                            )}
+                                                            )} */}
                                                         </div>
                                                     </div>
                                                 </div>

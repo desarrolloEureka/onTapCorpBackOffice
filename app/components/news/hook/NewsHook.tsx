@@ -63,7 +63,7 @@ const NewsHook = ({
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.name.startsWith('url')) {
             // Verificación de la URL solo si hay un valor completo
-            if (!(e.target.value.toString().startsWith('https://') || e.target.value.toString().startsWith('http://') || e.target.value.toString().startsWith('h'))) {
+            if (!(e.target.value.toString().startsWith('https://') || e.target.value.toString().startsWith('http://') || e.target.value.toString().startsWith('h')) && e.target.value !='') {
                 // Si no comienza con http o https, agregar https://
                 setData((prevData: any) => ({
                     ...prevData,
