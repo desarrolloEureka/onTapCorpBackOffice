@@ -304,6 +304,51 @@ const MainFormModal = ({
                                                         ),
                                                     }}
                                                 />
+                                                <CustomSelect
+                                                    aria-hidden="false"
+                                                    data={
+                                                        data &&
+                                                        data.isActive
+                                                            ? "true"
+                                                            : ""
+                                                    }
+                                                    options={
+                                                        isActiveData
+                                                    }
+                                                    onChange={(
+                                                        value: boolean,
+                                                        name: string,
+                                                    ) =>
+                                                        handleChange(
+                                                            value,
+                                                            name,
+                                                        )
+                                                    }
+                                                    required
+                                                    name="isActive"
+                                                    type="text"
+                                                    theme={
+                                                        modeTheme
+                                                    }
+                                                    id="isActive"
+                                                    fullWidth
+                                                    label="Estado"
+                                                    InputProps={{
+                                                        startAdornment:
+                                                            (
+                                                                <InputAdornment
+                                                                    className="tw-text-[#64a5e2]"
+                                                                    position="start"
+                                                                >
+                                                                    <HiOutlineCheckCircle
+                                                                        size={
+                                                                            24
+                                                                        }
+                                                                    />
+                                                                </InputAdornment>
+                                                            ),
+                                                    }}
+                                                />
                                             </div>
                                         </div>
                                         <div className="tw-flex tw-w-full tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-admin-body">
@@ -400,8 +445,8 @@ const MainFormModal = ({
                                                             ? "true"
                                                             : ""
                                                     }
-                                                    icon={true}
-                                                    handleOpenModalIcons={handleOpenModalIcons}
+                                                    icon="true"
+                                                    handleOpenModalIcons={() => {handleOpenModalIcons(item, index)}}
                                                     datafilter={datafilter}
                                                     item={item}
                                                     index={index}
@@ -793,7 +838,7 @@ const MainFormModal = ({
                                                                     }
                                                                     name="phone"
                                                                     id="phone"
-                                                                    type="number"
+                                                                    type="text"
                                                                     variant="standard"
                                                                     color="primary"
                                                                     fullWidth
@@ -858,7 +903,7 @@ const MainFormModal = ({
                                                                     }
                                                                     name="ext"
                                                                     id="ext"
-                                                                    type="number"
+                                                                    type="text"
                                                                     variant="standard"
                                                                     color="primary"
                                                                     fullWidth
@@ -1038,7 +1083,7 @@ const MainFormModal = ({
                                                                     required
                                                                     name="cards"
                                                                     id="cards"
-                                                                    type="number"
+                                                                    type="text"
                                                                     variant="standard"
                                                                     color="primary"
                                                                     fullWidth
@@ -1097,7 +1142,7 @@ const MainFormModal = ({
                                                                     required
                                                                     name="cardGPS"
                                                                     id="cardGPS"
-                                                                    type="number"
+                                                                    type="text"
                                                                     variant="standard"
                                                                     color="primary"
                                                                     fullWidth
@@ -1306,7 +1351,10 @@ const MainFormModal = ({
                                                                     }}
                                                                 />
                                                             </Col>
-                                                            <Col className="mb-3">
+                                                            <Col 
+                                                                md={6}
+                                                                className="mb-3 d-flex align-items-center justify-content-end"
+                                                            >
                                                                 <label
                                                                     htmlFor="iconButton"
                                                                     className="tw-flex tw-flex-col tw-items-center tw-justify-center"
@@ -1339,6 +1387,18 @@ const MainFormModal = ({
                                                                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                                                     />
                                                                 </label>
+                                                            </Col>
+                                                            <Col 
+                                                                md={6}
+                                                                className="mb-3 d-flex align-items-center justify-content-start"
+                                                            >
+                                                                <p style={{ fontSize: "11px", fontWeight: 300, margin: 0, color:
+                                                                    modeTheme === "light" ? "#000" : "#fff"}} >
+                                                                   Recomendaciones:<br />
+                                                                    - Dimensiones: 250 x 200 px<br />
+                                                                    - Tamaño: 100 KB<br />
+                                                                    - Formato: JPG, JPEG o PNG<br />
+                                                                </p>
                                                             </Col>
                                                         </>
                                                     ) : (
@@ -1721,7 +1781,7 @@ const MainFormModal = ({
                                                                     }
                                                                     name="phoneAdmin"
                                                                     id="phoneAdmin"
-                                                                    type="number"
+                                                                    type="text"
                                                                     variant="standard"
                                                                     color="primary"
                                                                     fullWidth
@@ -1822,7 +1882,7 @@ const MainFormModal = ({
                                                                     }}
                                                                 />
                                                             </Col>
-                                                            <Col className="mb-3">
+                                                            <Col className="mb-3 d-flex align-items-center justify-content-end">
                                                                 <label
                                                                     htmlFor="photoButton"
                                                                     className="tw-flex tw-flex-col tw-items-center tw-justify-center"
@@ -1855,6 +1915,15 @@ const MainFormModal = ({
                                                                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                                                     />
                                                                 </label>
+                                                            </Col>
+                                                            <Col className="mb-3 d-flex align-items-center justify-content-start" >
+                                                                <p style={{ fontSize: "11px", fontWeight: 300, margin: 0, color:
+                                                                    modeTheme === "light" ? "#000" : "#fff"}} >
+                                                                   Recomendaciones:<br />
+                                                                    - Dimensiones: 200 x 200 px<br />
+                                                                    - Tamaño: 100 KB<br />
+                                                                    - Formato: JPG, JPEG o PNG<br />
+                                                                </p>
                                                             </Col>
                                                         </>
                                                     )}
@@ -1974,7 +2043,7 @@ const MainFormModal = ({
                                                                         // lg={12}
                                                                         className="tw-text-center mb-3 tw-w-1/2"
                                                                     >
-                                                                        <h6 className="pb-3 text-textfield">
+                                                                        <h6 className="pb-3 text-textfield m-0">
                                                                             Foto
                                                                         </h6>
                                                                         <div className="tw-flex tw-justify-center tw-items-center">
@@ -1994,8 +2063,10 @@ const MainFormModal = ({
                                                                                 }
                                                                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                                                 style={{
-                                                                                    width: "50%",
-                                                                                    height: "auto",
+                                                                                    width: "auto",
+                                                                                    height: "35%",
+                                                                                    maxHeight: "35%",
+                                                                                    maxWidth: "35%"
                                                                                 }}
                                                                                 alt="Profile Photo"
                                                                                 placeholder="blur"
@@ -2015,7 +2086,7 @@ const MainFormModal = ({
                                                                     // lg={12}
                                                                     className="tw-text-center mb-3 tw-w-1/2"
                                                                 >
-                                                                    <h6 className="pb-3 text-textfield">
+                                                                    <h6 className="pb-3 text-textfield m-0">
                                                                         Logo
                                                                     </h6>
                                                                     <div className="tw-flex tw-justify-center tw-items-center">
@@ -2040,8 +2111,10 @@ const MainFormModal = ({
                                                                             }
                                                                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                                             style={{
-                                                                                width: "50%",
-                                                                                height: "auto",
+                                                                                width: "auto",
+                                                                                height: "35%",
+                                                                                maxHeight: "35%",
+                                                                                maxWidth: "35%"
                                                                             }}
                                                                             alt="Icon Photo Company"
                                                                             placeholder="blur"
@@ -2545,7 +2618,7 @@ const MainFormModal = ({
                                             className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
                                             // onClick={handleEditForm}
                                         >
-                                            <FiEdit size={28} />
+                                            <RiSave2Fill size={28} />
                                         </button>
                                     ) : (
                                         <button

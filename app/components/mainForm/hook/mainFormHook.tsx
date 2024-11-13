@@ -2,15 +2,8 @@
 import { getStateName } from "@/data/formConstant";
 import {
     dataAdminCompanyObject,
-    dataAgreementsObject,
     dataCompanyObject,
-    dataDiagnosesObject,
-    dataDiagnosticianObject,
-    dataFunctionaryObject,
     dataMainFormObject,
-    dataPatientObject,
-    dataProfessionalObject,
-    dataSpecialtyObject,
     dataWorkAreasObject,
 } from "@/data/mainFormData";
 import useAuth from "@/firebase/auth";
@@ -24,26 +17,21 @@ import {
     saveIconFile,
     listenToDocumentsQuery,
     saveDataDocumentsQueryById,
-    getEmployeesByCompanyIdQuery
+    listenToEmployeesByCompanyIdQuery
 } from "@/queries/documentsQueries";
 import { getCoordinates } from "@/queries/GeoMapsQueries";
-import { getAllRolesQuery } from "@/queries/RolesQueries";
-import { getAllSpecialtiesQuery } from "@/queries/SpecialtiesQueries";
 import { ErrorDataForm } from "@/types/documents";
 import { LocalVariable } from "@/types/global";
 import { Coords } from "@/types/googleMaps";
 import { ModalParamsMainForm } from "@/types/modals";
-import { RolesSelector } from "@/types/roles";
-import { SpecialtySelector } from "@/types/specialty";
 import { handleSendWelcomeEmail } from "lib/brevo/handlers/actions";
 import _ from "lodash";
 import {
     ChangeEvent,
-    SetStateAction,
     useCallback,
     useEffect,
     useState,
-    
+
 } from "react";
 import Swal from "sweetalert2";
 
@@ -71,9 +59,6 @@ const MainFormHook = ({
     const [fileNameIcon, setFileNameIcon] = useState<any>();
     const [fileNamePhoto, setFileNamePhoto] = useState<any>();
     const [iconFile, setIconFile] = useState<any>();
-    const [specialties, setSpecialties] = useState<SpecialtySelector[]>();
-    const [roles, setRoles] = useState<RolesSelector[]>();
-    const [diagnostician, setDiagnostician] = useState<any[]>();
     const [adminUsers, setAdminUsers] = useState<any[]>();
     const [emailError, setEmailError] = useState<string>('');
     const [objToArrayItems, setObjToArrayItems] = useState<any>({});
@@ -174,9 +159,9 @@ const MainFormHook = ({
             return;
         }
 
-        if (name.startsWith('urlLink')) {
+        if (name.startsWith('urlLink') || name === "webSite") {
             // Verificación de la URL solo si hay un valor completo
-            if (!(value.toString().startsWith('https://') || value.toString().startsWith('http://') || value.toString().startsWith('h'))) {
+            if (!(value.toString().startsWith('https://') || value.toString().startsWith('http://') || value.toString().startsWith('h')) && value !='') {
                 // Si no comienza con http o https, agregar https://
                 setData((prevData: any) => ({
                     ...prevData,
@@ -226,202 +211,6 @@ const MainFormHook = ({
         const documentRef: any = getDocumentReference(reference);
         const documentRefUser: any = getDocumentReference("users");
 
-        if (reference === "functionary") {
-            const currentDataObject = { ...dataFunctionaryObject };
-
-            handleShowMainFormEdit
-                ? (currentDataObject.uid = data.uid)
-                : (currentDataObject.uid = documentRef.id);
-            currentDataObject.idType = data.idType;
-            currentDataObject.id = data.id;
-            currentDataObject.name = data.name;
-            currentDataObject.lastName = data.lastName;
-            currentDataObject.phone = data.phone;
-            currentDataObject.email = data.email;
-            currentDataObject.phone2 = data.phone2;
-            currentDataObject.address = data.address;
-            currentDataObject.country = data.country;
-            currentDataObject.state = data.state;
-            currentDataObject.city = data.city;
-            currentDataObject.rol = data.rol;
-            // currentDataObject.password = data.password;
-            // currentDataObject.confirmPassword = data.confirmPassword;
-            currentDataObject.area = data.area;
-            currentDataObject.isActive = data.isActive;
-
-            for (const record of files) {
-                const urlName = record.name.split(".")[0];
-                await saveFilesDocuments({
-                    urlName,
-                    record,
-                    uid: handleShowMainFormEdit ? data.uid : documentRef.id,
-                    reference,
-                })
-                    .then((result) => {
-                        currentDataObject.urlPhoto = result;
-                        // error.push(...result);
-                    })
-                    .catch((err) => {
-                        error.push({ success: false, urlName });
-                        // console.log(error);
-                    });
-            }
-
-            newData = { ...currentDataObject };
-        }
-
-        if (reference === "patients") {
-            const currentDataObject = { ...dataPatientObject };
-
-            handleShowMainFormEdit
-                ? (currentDataObject.uid = data.uid)
-                : (currentDataObject.uid = documentRef.id);
-            currentDataObject.idType = data.idType;
-            currentDataObject.id = data.id;
-            currentDataObject.name = data.name;
-            currentDataObject.lastName = data.lastName;
-            currentDataObject.birthDate = data.birthDate;
-            currentDataObject.age = data.age;
-            currentDataObject.phone = data.phone;
-            currentDataObject.phone2 = data.phone2;
-            currentDataObject.address = data.address;
-            currentDataObject.country = data.country;
-            currentDataObject.state = data.state;
-            currentDataObject.city = data.city;
-            currentDataObject.email = data.email;
-            // currentDataObject.password = data.password;
-            // currentDataObject.confirmPassword = data.confirmPassword;
-            currentDataObject.isActive = data.isActive;
-
-            for (const record of files) {
-                const urlName = record.name.split(".")[0];
-                await saveFilesDocuments({
-                    urlName,
-                    record,
-                    uid: handleShowMainFormEdit ? data.uid : documentRef.id,
-                    reference,
-                })
-                    .then((result) => {
-                        currentDataObject.urlPhoto = result;
-                        // error.push(...result);
-                    })
-                    .catch((err) => {
-                        error.push({ success: false, urlName });
-                        // console.log(error);
-                    });
-            }
-
-            newData = { ...currentDataObject };
-        }
-
-        if (reference === "professionals") {
-            const currentDataObject = { ...dataProfessionalObject };
-
-            handleShowMainFormEdit
-                ? (currentDataObject.uid = data.uid)
-                : (currentDataObject.uid = documentRef.id);
-            currentDataObject.idType = data.idType;
-            currentDataObject.id = data.id;
-            currentDataObject.name = data.name;
-            currentDataObject.lastName = data.lastName;
-            currentDataObject.phone = data.phone;
-            currentDataObject.phone2 = data.phone2;
-            currentDataObject.address = data.address;
-            currentDataObject.country = data.country;
-            currentDataObject.state = data.state;
-            currentDataObject.city = data.city;
-            currentDataObject.email = data.email;
-            // currentDataObject.password = data.password;
-            // currentDataObject.confirmPassword = data.confirmPassword;
-            currentDataObject.specialty = data.specialty;
-            currentDataObject.contract = data.contract;
-            currentDataObject.isActive = data.isActive;
-            currentDataObject.urlPhoto = data.urlPhoto;
-
-            for (const record of files) {
-                const urlName = record.name.split(".")[0];
-                await saveFilesDocuments({
-                    urlName,
-                    record,
-                    uid: handleShowMainFormEdit ? data.uid : documentRef.id,
-                    reference,
-                })
-                    .then((result) => {
-                        currentDataObject.urlPhoto = result;
-                        // error.push(...result);
-                    })
-                    .catch((err) => {
-                        error.push({ success: false, urlName });
-                        // console.log(error);
-                    });
-            }
-
-            newData = { ...currentDataObject };
-        }
-
-        if (reference === "specialties") {
-            const currentDataObject = { ...dataSpecialtyObject };
-
-            handleShowMainFormEdit
-                ? (currentDataObject.uid = data.uid)
-                : (currentDataObject.uid = documentRef.id);
-            currentDataObject.name = data.name;
-            currentDataObject.description = data.description;
-            currentDataObject.icon = data.icon;
-            currentDataObject.isActive = data.isActive;
-
-            newData = { ...currentDataObject };
-        }
-
-        if (reference === "diagnoses") {
-            const currentDataObject = { ...dataDiagnosesObject };
-
-            handleShowMainFormEdit
-                ? (currentDataObject.uid = data.uid)
-                : (currentDataObject.uid = documentRef.id);
-            currentDataObject.name = data.name;
-            currentDataObject.code = data.code;
-            currentDataObject.isActive = data.isActive;
-
-            newData = { ...currentDataObject };
-        }
-
-        if (reference === "diagnostician") {
-            const currentDataObject = { ...dataDiagnosticianObject };
-
-            handleShowMainFormEdit
-                ? (currentDataObject.uid = data.uid)
-                : (currentDataObject.uid = documentRef.id);
-            currentDataObject.idType = data.idType;
-            currentDataObject.id = data.id;
-            currentDataObject.name = data.name;
-            currentDataObject.rut = data.rut;
-            currentDataObject.phone = data.phone;
-            currentDataObject.phone2 = data.phone2;
-            currentDataObject.email = data.email;
-            currentDataObject.address = data.address;
-            currentDataObject.country = data.country;
-            currentDataObject.state = data.state;
-            currentDataObject.city = data.city;
-            currentDataObject.isActive = data.isActive;
-
-            newData = { ...currentDataObject };
-        }
-
-        if (reference === "agreements") {
-            const currentDataObject = { ...dataAgreementsObject };
-
-            handleShowMainFormEdit
-                ? (currentDataObject.uid = data.uid)
-                : (currentDataObject.uid = documentRef.id);
-            currentDataObject.name = data.name;
-            currentDataObject.personType = data.personType;
-            currentDataObject.discount = data.discount;
-            currentDataObject.isActive = data.isActive;
-
-            newData = { ...currentDataObject };
-        }
-
         if (reference === "workAreas") {
             const currentDataObject = { ...dataWorkAreasObject };
 
@@ -437,16 +226,16 @@ const MainFormHook = ({
             newElements.forEach((newItem) => {
                 let index = 1;
                 let key = newItem;
-                
+
                 // Mientras la clave exista en `data`, vamos agregando los elementos al objeto
                 while (Object.keys(data).includes(key)) {
                     (currentDataObject as any)[key] = data[key];
-                  
-                  // Intentamos buscar el siguiente, como urlName2, urlLink2, etc.
-                  index += 1;
-                  key = `${newItem}${index}`;
+
+                    // Intentamos buscar el siguiente, como urlName2, urlLink2, etc.
+                    index += 1;
+                    key = `${newItem}${index}`;
                 }
-              });
+            });
 
             newData = { ...currentDataObject };
         }
@@ -463,15 +252,15 @@ const MainFormHook = ({
 
             handleShowMainFormEdit
                 ? ((currentDataObjectCompany.uid = data.uid),
-                  (currentDataObjectAdmin.uid = data.adminId),
-                  (currentDataObjectCompany.adminId = data.adminId),
-                  (currentDataObjectAdmin.companyId = data.companyId),
-                  (currentDataObjectCompany.icon = data.icon),
-                  (currentDataObjectAdmin.urlPhoto = data.urlPhoto))
+                    (currentDataObjectAdmin.uid = data.adminId),
+                    (currentDataObjectCompany.adminId = data.adminId),
+                    (currentDataObjectAdmin.companyId = data.companyId),
+                    (currentDataObjectCompany.icon = data.icon),
+                    (currentDataObjectAdmin.urlPhoto = data.urlPhoto))
                 : ((currentDataObjectCompany.uid = documentRef.id),
-                  (currentDataObjectCompany.adminId = documentRefUser.id),
-                  (currentDataObjectAdmin.uid = documentRefUser.id),
-                  (currentDataObjectAdmin.companyId = documentRef.id));
+                    (currentDataObjectCompany.adminId = documentRefUser.id),
+                    (currentDataObjectAdmin.uid = documentRefUser.id),
+                    (currentDataObjectAdmin.companyId = documentRef.id));
 
             currentDataObjectCompany.idType = data.idType;
             currentDataObjectCompany.id = data.id;
@@ -627,7 +416,7 @@ const MainFormHook = ({
             } else {
                 await saveDataDocumentsQueryById({
                     id: data.uid,
-                    data: {...newData},
+                    data: { ...newData },
                     reference,
                 });
             }
@@ -651,29 +440,6 @@ const MainFormHook = ({
         return [...error];
     };
 
-    const functionaryVal =
-        reference === "functionary" &&
-        data.idType &&
-        data.id &&
-        data.name &&
-        data.lastName &&
-        data.phone &&
-        data.email &&
-        data.rol &&
-        // data.password &&
-        // data.confirmPassword &&
-        data.area;
-
-    const diagnosticianVal =
-        reference === "diagnostician" &&
-        data.idType &&
-        data.id &&
-        data.name &&
-        data.rut &&
-        data.phone &&
-        !itemExist &&
-        data.email;
-
     const companyVal =
         reference === "companies" &&
         data.idType &&
@@ -685,7 +451,7 @@ const MainFormHook = ({
         data.country &&
         data.state &&
         data.city &&
-        data.id.length > 6 &&   
+        data.id.length > 6 &&
         data.id.length < 12;
 
     const urlVal = () => {
@@ -705,7 +471,7 @@ const MainFormHook = ({
         }
         return true
     }
-    
+
     const companyAdminVal =
         reference === "companies" &&
         // data.idTypeAdmin &&
@@ -714,50 +480,12 @@ const MainFormHook = ({
         data.lastName &&
         data.email;
 
-    const agreementsVal =
-        reference === "agreements" && data.name && data.personType;
-
-    const diagnosesVal = reference === "diagnoses" && data.name && data.code;
-
     const workAreasVal =
         reference === "workAreas" &&
         data.areaName &&
         data.urlName &&
         data.areaHead &&
         data.urlLink;
-
-    const specialtyVal =
-        !itemExist && reference === "specialties" && data.name.length > 1;
-
-    const professionalsVal =
-        reference === "professionals" &&
-        data.idType &&
-        data.id &&
-        data.name &&
-        data.lastName &&
-        data.phone &&
-        data.email;
-    // data.password &&
-    // data.confirmPassword;
-
-    const patientVal =
-        reference === "patients" &&
-        data.idType &&
-        data.id &&
-        data.name &&
-        data.lastName &&
-        // data.birthDate &&
-        // data.age &&
-        data.phone &&
-        data.email;
-    // data.password &&
-    // data.confirmPassword;
-
-    const passValidation = handleShowMainFormEdit
-        ? data.confirmPassword === data.password
-        : data.confirmPassword === data.password &&
-          data.password &&
-          data.confirmPassword;
 
     // console.log("data", data);
     // console.log("editData", editData);
@@ -766,13 +494,7 @@ const MainFormHook = ({
         if (
             workAreasVal ||
             companyVal && urlVal() ||
-            companyAdminVal ||
-            specialtyVal ||
-            diagnosticianVal ||
-            diagnosesVal ||
-            agreementsVal ||
-            ((functionaryVal || professionalsVal || patientVal) &&
-                passValidation)
+            companyAdminVal
         ) {
             e.preventDefault();
             e.stopPropagation();
@@ -781,23 +503,6 @@ const MainFormHook = ({
         } else {
             e.preventDefault();
             e.stopPropagation();
-            // setErrorForm(true);
-            (reference === "functionary" ||
-                reference === "professionals" ||
-                reference === "patients") &&
-                !passValidation &&
-                setErrorPass(true);
-            //console.log("Falló");
-            reference === "diagnostician" &&
-                itemExist &&
-                setErrorValid(
-                    `¡Ya existe un usuario con ese documento: -> ${data.id}!`,
-                );
-            (reference === "areas" || reference === "specialties") &&
-                itemExist &&
-                setErrorValid(
-                    `¡Ya existe un registro con ese nombre: -> ${data.name}!`,
-                );
         }
     };
 
@@ -854,19 +559,19 @@ const MainFormHook = ({
             newItemUrl[currentIndex] =
                 item === "urlName"
                     ? [
-                        "", 
+                        "",
                         false,
                         // Construimos el objeto con los uid de employees
                         employees?.reduce((acc: any, employee: any) => {
-                        acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
-                        return acc;
-                    }, {})
-                        ]
+                            acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
+                            return acc;
+                        }, {})
+                    ]
                     : item === "urlLink"
-                    ? " "
-                    : item === "iconName"
-                    ? " "
-                    : " ";
+                        ? " "
+                        : item === "iconName"
+                            ? " "
+                            : " ";
         });
         setData({ ...data, ...newItemUrl });
     }
@@ -986,17 +691,6 @@ const MainFormHook = ({
 
     const getAllSelectOptions = useCallback(async () => {
         if (handleShowMainForm || handleShowMainFormEdit) {
-            const specialtyResult = await getAllSpecialtiesQuery();
-            specialtyResult && setSpecialties(specialtyResult);
-
-            const rolesResult = await getAllRolesQuery();
-            rolesResult && setRoles(rolesResult);
-
-            const diagnosticianResult = await getAllDocumentsQuery(
-                "diagnostician",
-            );
-            diagnosticianResult && setDiagnostician(diagnosticianResult);
-
             const usersResult = await getAllDocumentsQuery("users");
             usersResult && setAdminUsers(usersResult);
         }
@@ -1023,34 +717,32 @@ const MainFormHook = ({
     }, [editData, getAdminAndCompanyData, handleShowMainFormEdit, reference]);
 
     useEffect(() => {
-        const fetchData = async () => {            
-            if (companyData?.uid) {
-                const employees: any = await getEmployeesByCompanyIdQuery(companyData.uid);
-                setEmployees(employees);
-                
-                if (employees.length > 0) {
-                    // Construir el objeto con los uid de employees y actualizar urlName en data
-                    setData((prevData: any) => ({
-                        ...prevData,
-                        urlName: [
-                            "",
-                            false,
-                            employees.reduce((acc: any, employee: any) => {
-                                acc[employee.uid] = { isActive: true, uid: employee.uid, views: []  };
-                                return acc;
-                            }, {}),
-                        ],
-                    }));
-                }
-            }
-        };
-        fetchData();
+        const fetchData = listenToEmployeesByCompanyIdQuery("users", setEmployees, companyData?.uid);
+        return () => fetchData();
     }, [companyData?.uid]);
 
     useEffect(() => {
-        // Actualizar objToArrayItems una vez que data esté completamente actualizado
-        if (data) {setObjToArrayItems(createNewArray())}
+        if (data) {
+            setObjToArrayItems(createNewArray());
+        }
     }, [createNewArray, data]);
+
+    useEffect(() => {
+        if (employees.length > 0) {
+            // Si employees tiene datos y urlName aún no se ha inicializado
+            setData((prevData: any) => ({
+                ...prevData,
+                urlName: [
+                    "",
+                    false,
+                    employees.reduce((acc: any, employee: any) => {
+                        acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
+                        return acc;
+                    }, {}),
+                ],
+            }));
+        }
+    }, [show, employees]);
 
     return {
         modeTheme: themeParsed?.dataThemeMode,

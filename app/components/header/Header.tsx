@@ -586,7 +586,7 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
                         seoTitle="Plantillas"
                         title="Plantillas"
                         item="Dashboard"
-                        activeItem="Seleccionar Plantilla"
+                        activeItem="Plantillas corporativas"
                     />
                     <TempladeContent />
                 </Tab.Pane>

@@ -22,22 +22,22 @@ export const plantillaBienvenida = ({
     <body style="background-color: #e2e8f0;">
         <div style="max-width: 32rem; margin: 2.5rem auto; background-color: #ffffff; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);">
             <div style="background-color: #2563eb; color: #ffffff; text-align: center; padding: 1rem; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
-                <h1 style="font-size: 1.5rem; font-weight: bold;">¡Bienvenido a One Tap Corp</h1>
+                <h1 style="font-size: 1.5rem; font-weight: bold;">Bienvenidos a One Tap</h1>
             </div>
             <div style="padding: 1.5rem;">
                 <p style="color: #4a5568; font-size: 1.125rem;">Hola <span style="font-weight: bold;">${userName}</span>,</p>
                 <p style="margin-top: 1rem; color: #4a5568;">
-                    Estamos encantados de tenerte con nosotros. Gracias por regístrate en nuestra plataforma. Esperamos que tengas la mejor experiencia posible.
+                    Es un gusto para nosotros recibirte en One Tap, para que juntos construyamos la nueva manera compartir información.
                 </p>
                 <p style="margin-top: 1rem; color: #4a5568;">
-                    Aquí están tus credenciales para iniciar sesión:
+                    A continuación, relacionamos los datos para que inicies sesión:
                 </p>
                 <div style="background-color: #f7fafc; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem;">
                     <p style="color: #4a5568;"><strong>Email:</strong> ${userEmail}</p>
                     <p style="color: #4a5568;"><strong>Contraseña:</strong> ${password}</p>
                 </div>
                 <p style="margin-top: 1rem; color: #4a5568;">
-                    Puedes comenzar explorando nuestras características y realizar todos tus procesos satisfactoriamente.
+                    Te invitamos a que ingreses a nuestro Back y conozcas todo lo que desarrollamos para que nuestra comunicación sea veraz y oportuna.
                 </p>
                 <a href="${loginUrl}" style="margin-top: 1.5rem; display: inline-block; background-color: #2563eb; color: #ffffff; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none;">Iniciar Sesión</a>
             </div>

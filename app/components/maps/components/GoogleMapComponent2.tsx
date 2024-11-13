@@ -487,7 +487,7 @@ const GoogleMapComponent2 = ({
                                             </div>
 
                                             <div className="tw-flex tw-w-full tw-flex-row tw-justify-center tw-items-center tw-pb-4">
-                                                <div className="tw-flex tw-w-full tw-flex-col tw-space-y-1">
+                                                {/* <div className="tw-flex tw-w-full tw-flex-col tw-space-y-1">
                                                     <h5 className="tw-m-0">
                                                         Día de Ruta:
                                                     </h5>
@@ -529,15 +529,16 @@ const GoogleMapComponent2 = ({
                                                                 ),
                                                             )}
                                                     </CustomSelect>
-                                                </div>
+                                                </div> */}
                                                 <div className="tw-flex tw-w-full tw-flex-col tw-space-y-1">
                                                     <h5 className="tw-m-0">
                                                         Nombre de Ruta:
                                                     </h5>
                                                     <span className="tw-text-base text-black">
                                                         {
-                                                            dataEmployee
-                                                                ?.routes[day]
+                                                            dataEmployee?.routes[day] ? 
+                                                                dataEmployee?.routes[day]
+                                                                : "N/A"
                                                         }
                                                     </span>
                                                 </div>
