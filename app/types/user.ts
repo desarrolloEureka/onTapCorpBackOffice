@@ -77,4 +77,5 @@ export type FormValuesData = {
     ImageProfile?: string;
     routes?: ScheduleRoutes;
     isActive: boolean;
+    isGPSActive: boolean;
 };

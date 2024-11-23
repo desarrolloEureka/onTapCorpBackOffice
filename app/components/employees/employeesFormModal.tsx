@@ -65,7 +65,9 @@ const EmployeesFormModal = ({
         handleChangeItem,
         step,
         employeeCardStatus,
+        employeeStatusGPS,
         handleChangeSwitch,
+        handleChangeSwitch2,
         routeData,
         areaData,
         mondayRoute,
@@ -1740,7 +1742,7 @@ const EmployeesFormModal = ({
                                             )}
 
                                             <div
-                                                className="tw-flex tw-flex-col tw-justify-center tw-items-start tw-mt-7"
+                                                className="tw-flex tw-flex-row tw-justify-between tw-items-start tw-mt-7"
                                                 style={{
                                                     borderTop:
                                                         "1px solid #DFDFDF",
@@ -1755,8 +1757,21 @@ const EmployeesFormModal = ({
                                                         onChange={(e) => {
                                                             handleChangeSwitch();
                                                         }}
+                                                        text={"Estado tarjeta empleado"}
                                                     />
                                                     {/* {employeeCardStatusError ? <div style={{ color: '#d32f2f', fontSize: '12px' }}>{employeeCardStatusError}</div> : null} */}
+                                                </div>
+                                                <div className="tw-flex tw-flex-col tw-h-24 tw-justify-center tw-items-start tw-w-100">
+                                                    <SwitchForm
+                                                        modeTheme={"light"}
+                                                        checked={
+                                                            employeeStatusGPS
+                                                        }
+                                                        onChange={(e) => {
+                                                            handleChangeSwitch2();
+                                                        }}
+                                                        text={"Estado GPS empleado"}
+                                                    />
                                                 </div>
                                             </div>
                                         </div>

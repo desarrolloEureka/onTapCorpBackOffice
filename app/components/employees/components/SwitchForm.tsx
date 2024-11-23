@@ -66,10 +66,12 @@ const SwitchForm = ({
     checked,
     onChange,
     modeTheme,
+    text,
 }: {
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     checked: boolean;
     modeTheme: string;
+    text: string;
 }) => {
     const theme = createTheme({
         palette: {
@@ -110,7 +112,7 @@ const SwitchForm = ({
                 sx={{ color: "#000" }}
                 labelPlacement="bottom"
             />
-            <p className="tw-text-left">Estado tarjeta empleado</p>
+            <p className="tw-text-left">{text}</p>
         </ThemeProvider>
     );
 };

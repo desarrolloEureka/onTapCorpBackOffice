@@ -45,6 +45,7 @@ const EmployeesFormHook = ({
         emails: [{ text: "", checked: false }],
         additional: [{ autodato: "", dato: "", checked: false }],
         isActive: true,
+        isGPSActive: true,
     };
 
     const initialErrors = {
@@ -59,6 +60,7 @@ const EmployeesFormHook = ({
         saturdayRoute: "",
         sundayRoute: "",
         employeeCardStatus: "",
+        employeeStatusGPS: ""
     };
 
     const { accessTokenUser, userData } = useAuth();
@@ -110,6 +112,8 @@ const EmployeesFormHook = ({
 
     const [employeeCardStatus, setEmployeeCardStatus] = useState(false);
     const [employeeCardStatusError, setEmployeeCardStatusError] = useState("");
+
+    const [employeeStatusGPS, setEmployeeStatusGPS] = useState(false);
 
     //Data Selects
     const [headquartersData, setHeadquartersData] = useState<any[] | null>(
@@ -351,6 +355,10 @@ const EmployeesFormHook = ({
         setEmployeeCardStatus(!employeeCardStatus);
     };
 
+    const handleChangeSwitch2 = () => {
+        setEmployeeStatusGPS(!employeeStatusGPS);
+    };
+
     const handleChangeStep = () => {
         if (!validateFields()) return;
         setStep(2);
@@ -359,17 +367,17 @@ const EmployeesFormHook = ({
     function isAdult(dateOfBirth: string) {
         const today = new Date();
         const birthDate = new Date(dateOfBirth);
-        
+
         // Calcular la edad
         let age = today.getFullYear() - birthDate.getFullYear();
         const monthDifference = today.getMonth() - birthDate.getMonth();
         const dayDifference = today.getDate() - birthDate.getDate();
-    
+
         // Ajustar edad si aún no se ha cumplido el año
         if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
             age--;
         }
-    
+
         return age >= 18;
     }
 
@@ -411,13 +419,11 @@ const EmployeesFormHook = ({
         if (data.emails) {
             data.emails.forEach((email, index) => {
                 if (!email.text.trim()) {
-                    newErrors[`email-${index}`] = `El correo ${
-                        index + 1
-                    } es obligatorio`;
+                    newErrors[`email-${index}`] = `El correo ${index + 1
+                        } es obligatorio`;
                 } else if (!isValidEmail(email.text)) {
-                    newErrors[`email-${index}`] = `El correo ${
-                        index + 1
-                    } no es válido`;
+                    newErrors[`email-${index}`] = `El correo ${index + 1
+                        } no es válido`;
                 }
             });
         }
@@ -537,6 +543,7 @@ const EmployeesFormHook = ({
             selectedArea: selectedArea,
             selectedHeadquarter: selectedHeadquarter,
             switch_activateCard: employeeCardStatus,
+            isGPSActive: employeeStatusGPS,
             mondayRoute: mondayRoute,
             tuesdayRoute: tuesdayRoute,
             wednesdayRoute: wednesdayRoute,
@@ -618,7 +625,7 @@ const EmployeesFormHook = ({
             console.error("Error al enviar el formulario:", error);
         } finally {
             // setIsLoading(false);
-            
+
             // Enviar correo de bienvenida
             await handleSendWelcomeEmail(dataToSendOnEmail);
             Swal.hideLoading();
@@ -649,6 +656,7 @@ const EmployeesFormHook = ({
             selectedArea: selectedArea,
             selectedHeadquarter: selectedHeadquarter,
             switch_activateCard: employeeCardStatus,
+            isGPSActive: employeeStatusGPS,
             //employeeCardStatus: employeeCardStatus,
         };
 
@@ -815,7 +823,7 @@ const EmployeesFormHook = ({
             );
             const dataHeadquarters = await getHeadquartersByCompanyIdQuery(
                 userData.companyId,
-            );        
+            );
             dataRoutes.sort((a: any, b: any) => a.routeName.localeCompare(b.routeName));
             dataAreas.sort((a: any, b: any) => a.areaName.localeCompare(b.areaName));
             dataHeadquarters.sort((a: any, b: any) => a.name[0].localeCompare(b.name[0]));
@@ -826,13 +834,13 @@ const EmployeesFormHook = ({
         }
     };
 
-    const addUserUrls = async (selectAreaUid: string , userUid: string) => {
+    const addUserUrls = async (selectAreaUid: string, userUid: string) => {
         const dataArea = await getWorkAreaByUidQuery(selectAreaUid)
-        
-          // Filtrar solo las propiedades que comienzan con "urlName"
+
+        // Filtrar solo las propiedades que comienzan con "urlName"
         const urlsDataArea = Object.fromEntries(
             Object.entries(dataArea[0]).filter(([key, value]) => key.startsWith("urlName"))
-          );
+        );
 
         // Recorrer cada urlName, urlName2, ..., urlNameN
         for (const [key, value] of Object.entries(urlsDataArea)) {
@@ -843,14 +851,14 @@ const EmployeesFormHook = ({
                 if (!userObjects[userUid]) {
                     // Si no existe, agregar el usuario con las propiedades deseadas
                     userObjects[userUid] = {
-                    isActive: true,
-                    uid: userUid,
-                    views: []
+                        isActive: true,
+                        uid: userUid,
+                        views: []
                     };
                 }
             }
         }
-        await editAreaQuery( urlsDataArea, selectAreaUid);
+        await editAreaQuery(urlsDataArea, selectAreaUid);
     }
 
     useEffect(() => {
@@ -865,8 +873,8 @@ const EmployeesFormHook = ({
     }, [handleShowMainForm]);
 
     useEffect(() => {
-        handleShowMainFormEdit &&
-            (setShow(true),
+        handleShowMainFormEdit && (
+            setShow(true),
             setIdRow(editData?.uid),
             //Paso 1
             getDataEmployee(editData),
@@ -882,7 +890,9 @@ const EmployeesFormHook = ({
             setFridayRoute(editData?.fridayRoute || "default"),
             setSaturdayRoute(editData?.saturdayRoute || "default"),
             setSundayRoute(editData?.sundayRoute || "default"),
-            setEmployeeCardStatus(editData?.switch_activateCard || false));
+            setEmployeeStatusGPS(editData?.isGPSActive || false),
+            setEmployeeCardStatus(editData?.switch_activateCard || false)
+        );
         getRouteData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editData, handleShowMainFormEdit]);
@@ -902,7 +912,9 @@ const EmployeesFormHook = ({
         handleChangeItem,
         step,
         employeeCardStatus,
+        employeeStatusGPS,
         handleChangeSwitch,
+        handleChangeSwitch2,
         routeData,
         areaData,
         mondayRoute,

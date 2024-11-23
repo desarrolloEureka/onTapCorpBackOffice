@@ -35,9 +35,9 @@ require("dotenv").config();
 const CustomTitle = ({ row }: any) => (
     <div data-tag="allowRowEvents">
         <span
-            className={`status ${row.isActive ? "bg-success" : "bg-danger"} `}
+            className={`status ${row.isActive || row.isGPSActive ? "bg-success" : "bg-danger"} `}
         ></span>
-        {row.isActive ? "Activo" : "Inactivo"}
+        {row.isActive || row.isGPSActive? "Activo" : "Inactivo"}
     </div>
 );
 
@@ -463,6 +463,7 @@ const DataTablesHook = (reference: string) => {
                     phone: "Teléfono",
                     email: "Correo Empleado",
                     isActive: "Estado",
+                    // isGPSActive: "Estado GPS",
                 };
             } else if (reference === "routes") {
                 columnNamesToDisplay = {
@@ -599,7 +600,7 @@ const DataTablesHook = (reference: string) => {
                         </span>
                     ),
                     selector: (row: any) =>
-                        val === "isActive" ? (
+                        val === "isActive" || val === "isGPSActive" ? (
                             <CustomTitle row={row} />
                         ) : val === "color" ? (
                             <CustomColor row={row} />
