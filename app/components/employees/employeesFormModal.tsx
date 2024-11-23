@@ -7,7 +7,9 @@ import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import CreditCard from "@mui/icons-material/CreditCard";
- 
+import CustomSelect2 from "../company/components/CustomSelect";
+import { HiOutlineCheckCircle } from "react-icons/hi";
+import { isActiveData } from "@/data/formConstant";
 import {
     FormControlLabel,
     IconButton,
@@ -549,6 +551,49 @@ const EmployeesFormModal = ({
                                                         }}
                                                     />
                                                 </div>
+                                                <div className="tw-flex tw-flex-row tw-px-3 tw-mt-1 tw-w-full">
+                                                    <CustomSelect2
+                                                        aria-hidden="false"
+                                                        data={
+                                                            dataForm &&
+                                                                dataForm.isActive
+                                                                ? "true"
+                                                                : ""
+                                                        }
+                                                        options={isActiveData}
+                                                        onChange={(
+                                                            value: boolean,
+                                                            name: string,
+                                                        ) =>
+                                                            handleChange(
+                                                                value,
+                                                                name,
+                                                            )
+                                                        }
+                                                        required
+                                                        name="isActive"
+                                                        type="text"
+                                                        theme={modeTheme}
+                                                        id="isActive"
+                                                        fullWidth
+                                                        label="Estado"
+                                                        InputProps={{
+                                                            startAdornment:
+                                                                (
+                                                                    <InputAdornment
+                                                                        className="tw-text-[#64a5e2]"
+                                                                        position="start"
+                                                                    >
+                                                                        <HiOutlineCheckCircle
+                                                                            size={
+                                                                                24
+                                                                            }
+                                                                        />
+                                                                    </InputAdornment>
+                                                                ),
+                                                        }}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
 
@@ -585,12 +630,12 @@ const EmployeesFormModal = ({
                                                                             className="tw-mt-4 tw-w-1/3"
                                                                             value={
                                                                                 item.indicative &&
-                                                                                item.indicative.includes(
-                                                                                    "+",
-                                                                                )
+                                                                                    item.indicative.includes(
+                                                                                        "+",
+                                                                                    )
                                                                                     ? item.indicative
                                                                                     : "+" +
-                                                                                      item.indicative
+                                                                                    item.indicative
                                                                             }
                                                                             onChange={(
                                                                                 value: string,
@@ -764,7 +809,7 @@ const EmployeesFormModal = ({
                                                                         type="text"
                                                                         deleted={
                                                                             index !==
-                                                                            0
+                                                                                0
                                                                                 ? "true"
                                                                                 : ""
                                                                         }
@@ -782,12 +827,12 @@ const EmployeesFormModal = ({
                                                                         // }
                                                                         helperText={
                                                                             errors[
-                                                                                `email-${index}`
+                                                                            `email-${index}`
                                                                             ]
                                                                         }
                                                                         error={
                                                                             !!errors[
-                                                                                `email-${index}`
+                                                                            `email-${index}`
                                                                             ]
                                                                         }
                                                                         InputProps={{
@@ -1124,7 +1169,7 @@ const EmployeesFormModal = ({
                                                                                     "center",
                                                                                 color:
                                                                                     modeTheme ===
-                                                                                    "light"
+                                                                                        "light"
                                                                                         ? "#000000"
                                                                                         : "#8bb8e7",
                                                                             }}
@@ -1138,7 +1183,7 @@ const EmployeesFormModal = ({
                                                                                     "center",
                                                                                 color:
                                                                                     modeTheme ===
-                                                                                    "light"
+                                                                                        "light"
                                                                                         ? "#000000"
                                                                                         : "#8bb8e7",
                                                                             }}
@@ -1157,7 +1202,7 @@ const EmployeesFormModal = ({
                                                                                     "center",
                                                                                 color:
                                                                                     modeTheme ===
-                                                                                    "light"
+                                                                                        "light"
                                                                                         ? "#000000"
                                                                                         : "#8bb8e7",
                                                                             }}
@@ -1234,7 +1279,7 @@ const EmployeesFormModal = ({
                                                                                     "center",
                                                                                 color:
                                                                                     modeTheme ===
-                                                                                    "light"
+                                                                                        "light"
                                                                                         ? "#000000"
                                                                                         : "#8bb8e7",
                                                                             }}
@@ -1311,7 +1356,7 @@ const EmployeesFormModal = ({
                                                                                     "center",
                                                                                 color:
                                                                                     modeTheme ===
-                                                                                    "light"
+                                                                                        "light"
                                                                                         ? "#000000"
                                                                                         : "#8bb8e7",
                                                                             }}
@@ -1388,7 +1433,7 @@ const EmployeesFormModal = ({
                                                                                     "center",
                                                                                 color:
                                                                                     modeTheme ===
-                                                                                    "light"
+                                                                                        "light"
                                                                                         ? "#000000"
                                                                                         : "#8bb8e7",
                                                                             }}
@@ -1465,7 +1510,7 @@ const EmployeesFormModal = ({
                                                                                     "center",
                                                                                 color:
                                                                                     modeTheme ===
-                                                                                    "light"
+                                                                                        "light"
                                                                                         ? "#000000"
                                                                                         : "#8bb8e7",
                                                                             }}
@@ -1542,7 +1587,7 @@ const EmployeesFormModal = ({
                                                                                     "center",
                                                                                 color:
                                                                                     modeTheme ===
-                                                                                    "light"
+                                                                                        "light"
                                                                                         ? "#000000"
                                                                                         : "#8bb8e7",
                                                                             }}
@@ -1619,7 +1664,7 @@ const EmployeesFormModal = ({
                                                                                     "center",
                                                                                 color:
                                                                                     modeTheme ===
-                                                                                    "light"
+                                                                                        "light"
                                                                                         ? "#000000"
                                                                                         : "#8bb8e7",
                                                                             }}

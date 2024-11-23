@@ -44,6 +44,7 @@ const EmployeesFormHook = ({
         phones: [{ text: "", checked: false, indicative: "+57", ext: "" }],
         emails: [{ text: "", checked: false }],
         additional: [{ autodato: "", dato: "", checked: false }],
+        isActive: true,
     };
 
     const initialErrors = {
@@ -216,7 +217,16 @@ const EmployeesFormHook = ({
         return false;
     };
 
-    const handleChange = (value: string, name: string, isChecked?: boolean) => {
+    const handleChange = (value: any, name: string, isChecked?: boolean) => {
+        // Actualiza el campo "isActive" convirtiendo el valor a booleano.
+        if (name === "isActive") {
+            setData((prevData: any) => ({
+                ...prevData,
+                [name]: value as boolean,
+            }));
+            return;
+        }
+
         if (isChecked === undefined) {
             setData({ ...data, [name]: (value || "-") ?? "-" });
         } else {

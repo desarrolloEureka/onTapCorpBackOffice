@@ -646,11 +646,9 @@ export const saveEmployee = async (dataSave: any) => {
             // dejar switch_activateCardy no employeeCardStatus
             rolId: "uysG1ULyEDklfbGDFate", //  ID DEL ROL DE EMPLEADO
             views: 0,
-            isActive: true,
             preview: `https://one-tap-corp.vercel.app/components/views/cardView/?uid=${dataSave.uid}`,
             /*preview: `https://one-tap-corp-dev.vercel.app/components/views/cardView/?uid=${dataSave.uid}`,
               LINK DE DESARROLLO VERCEL*/ 
-            switch_activateCard: true,
             templateData: [
                 {
                     id: "VGMUWYOP3RK374gi30I8", // ID DEL TEMPLATE 1

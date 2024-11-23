@@ -461,7 +461,8 @@ const DataTablesHook = (reference: string) => {
                     documentNumber: "Número de Documento",
                     position: "Cargo",
                     phone: "Teléfono",
-                    email: "Correo Empleado"
+                    email: "Correo Empleado",
+                    isActive: "Estado",
                 };
             } else if (reference === "routes") {
                 columnNamesToDisplay = {
