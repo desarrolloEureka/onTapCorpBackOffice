@@ -77,6 +77,7 @@ const DataTablesHook = (reference: string) => {
     const [employeesData, setEmployeesData] = useState<any>([]);
 
     const [createdValid, setCreatedValid] = useState(false);
+    const [createdGPSValid, setCreatedGPSValid] = useState(false);
 
 
     const formatearFecha = (fechaISO: string): string => {
@@ -936,6 +937,18 @@ const DataTablesHook = (reference: string) => {
         canOpenMainForm();
     }, [employeesData, companyData]);
 
+    useEffect(() => {
+        // Validar si se puede abrir el modal de creación
+        const canOpenMainForm = () => {
+            const activeEmployeesCount = employeesData.filter((emp: any) => emp.isGPSActive).length;
+            const validate = activeEmployeesCount < (companyData?.cardGPS || 0); // Verificar límite
+            setCreatedGPSValid(validate)
+            console.log(validate)
+            console.log(activeEmployeesCount)
+        };
+        canOpenMainForm();
+    }, [employeesData, companyData]);
+
     // console.log(!isEmptyDataRef);
 
     return {
@@ -965,6 +978,7 @@ const DataTablesHook = (reference: string) => {
         endDate,
         setEndDate,
         createdValid,
+        createdGPSValid,
     };
 };
 

@@ -39,6 +39,7 @@ import CustomTextField from "../company/components/CustomTextField";
 import CustomSelectSwitch from "./components/CustomSelectSwitch";
 import SwitchForm from "./components/SwitchForm";
 import EmployeesFormHook from "./hook/employeesFormHook";
+import DataTablesHook from "../dataTable/hook/DataTablesHook";
 
 const EmployeesFormModal = ({
     handleShowMainForm,
@@ -113,6 +114,7 @@ const EmployeesFormModal = ({
         title,
         reference,
     });
+    const { createdGPSValid } = DataTablesHook(reference);
 
     const CustomSelect = styled(Select)({
         backgroundColor: "#396593",
@@ -1762,18 +1764,51 @@ const EmployeesFormModal = ({
                                                     {/* {employeeCardStatusError ? <div style={{ color: '#d32f2f', fontSize: '12px' }}>{employeeCardStatusError}</div> : null} */}
                                                 </div>
                                                 <div className="tw-flex tw-flex-col tw-h-24 tw-justify-center tw-items-start tw-w-100">
-                                                    <SwitchForm
-                                                        modeTheme={"light"}
-                                                        checked={
-                                                            employeeStatusGPS
-                                                        }
-                                                        onChange={(e) => {
-                                                            handleChangeSwitch2();
-                                                        }}
-                                                        text={"Estado GPS empleado"}
-                                                    />
+                                                    {!isEdit && handleShowMainFormEdit && !createdGPSValid ?
+                                                        <SwitchForm
+                                                            modeTheme={"light"}
+                                                            checked={employeeStatusGPS === true ? employeeStatusGPS : false}
+                                                            onChange={(e) => {
+                                                                dataForm?.isGPSActive === true ?
+                                                                    handleChangeSwitch2() :
+                                                                    null
+                                                            }}
+                                                            text={"Estado GPS empleado"}
+                                                        />
+                                                        : !isEdit && handleShowMainFormEdit && !createdGPSValid && employeeStatusGPS ?
+                                                            <SwitchForm
+                                                                modeTheme={"light"}
+                                                                checked={employeeStatusGPS}
+                                                                onChange={(e) => {
+                                                                    handleChangeSwitch2();
+                                                                }}
+                                                                text={"Estado GPS empleado"}
+                                                            />
+                                                            :
+                                                            <SwitchForm
+                                                                modeTheme={"light"}
+                                                                checked={createdGPSValid ? employeeStatusGPS : false}
+                                                                onChange={(e) => {
+                                                                    handleChangeSwitch2();
+                                                                }}
+                                                                text={"Estado GPS empleado"}
+                                                            />
+                                                    }
+
                                                 </div>
                                             </div>
+                                            {!isEdit && handleShowMainFormEdit && !createdGPSValid && !dataForm?.isGPSActive ?
+                                                <p style={{ color: "red" }}>
+                                                    La cantidad de licencias GPS ha llegado a su limite, por favor comunicarse con Redacol
+                                                </p>
+                                                : !isEdit && handleShowMainFormEdit && !createdGPSValid && dataForm?.isGPSActive ?
+                                                    null
+                                                    :
+                                                    !createdGPSValid &&
+                                                    <p style={{ color: "red" }}>
+                                                        La cantidad de licencias GPS ha llegado a su limite, por favor comunicarse con Redacol
+                                                    </p>
+                                            }
                                         </div>
                                     </div>
                                 )}
