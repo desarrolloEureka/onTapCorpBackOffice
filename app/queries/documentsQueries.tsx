@@ -273,7 +273,7 @@ export const listenToEmployeesByCompanyIdQuery = (ref: string, setData: (data: a
 
     const unsubscribe = onSnapshot(q, (snapshot: any) => {
         const updatedData = snapshot.docs.map((doc: any) => ({
-            id: doc.id,
+            uid: doc.uid,
             ...doc.data()
         }));
         setData(updatedData); // Actualiza el estado con los datos obtenidos

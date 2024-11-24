@@ -3,6 +3,7 @@ import { DataTableComponentProps } from "@/types/tables";
 import { Card, Col, Row } from "react-bootstrap";
 import CampusModal from "../campus/CampusModal";
 import EmployeesFormModal from "../employees/employeesFormModal";
+import AlertModal from "../employees/alertModal";
 import LogosFormModal from "../logos/logosFormModal";
 import MainFormModal from "../mainForm/mainFormModal";
 import MeetingStatusesModal from "../meetings/MeetingStatusesModal";
@@ -48,6 +49,7 @@ const DataTableComponent = ({
         setStartDate,
         endDate, 
         setEndDate,
+        createdValid
     } = DataTablesHook(reference);
 
     return (
@@ -121,8 +123,28 @@ const DataTableComponent = ({
                         title={tableTitle}
                         reference={reference}
                     />
-                ) : reference === "employees" ? (
+                ) : handleShowMainFormEdit && reference === "employees" ? (
                     <EmployeesFormModal
+                        handleShowMainForm={handleShowMainForm}
+                        setHandleShowMainForm={setHandleShowMainForm}
+                        handleShowMainFormEdit={handleShowMainFormEdit}
+                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                        editData={editData}
+                        title={tableTitle}
+                        reference={reference}
+                    />
+                ) : createdValid && reference === "employees" ? (
+                    <EmployeesFormModal
+                        handleShowMainForm={handleShowMainForm}
+                        setHandleShowMainForm={setHandleShowMainForm}
+                        handleShowMainFormEdit={handleShowMainFormEdit}
+                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+                        editData={editData}
+                        title={tableTitle}
+                        reference={reference}
+                    />
+                ) : !createdValid && reference === "employees" ? (
+                    <AlertModal 
                         handleShowMainForm={handleShowMainForm}
                         setHandleShowMainForm={setHandleShowMainForm}
                         handleShowMainFormEdit={handleShowMainFormEdit}
