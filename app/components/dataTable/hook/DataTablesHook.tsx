@@ -19,10 +19,14 @@ import {
   getMeetingsByCompanyIdQuery,
   listenToWorkAreaByCompanyIdQuery,
   listenToEmployeesByCompanyIdQuery,
+  getAllEmployeesQuery,
 } from "@/queries/documentsQueries";
 import { DataMainFormObject } from "@/types/mainForm";
 import { setDataTable } from "@/types/tables";
 import { IconButton } from "@mui/material";
+import QrCodeIcon from "@mui/icons-material/QrCode";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import InsertLinkIcon from "@mui/icons-material/InsertLink";
 import _ from "lodash";
 import moment from "moment";
 import Image from "next/image";
@@ -39,15 +43,6 @@ const CustomTitle = ({ row }: any) => (
       className={`status ${row.isActive ? "bg-success" : "bg-danger"} `}
     ></span>
     {row.isActive ? "Activo" : "Inactivo"}
-  </div>
-);
-
-const CustomTitleTwo = ({ row }: any) => (
-  <div data-tag="allowRowEvents">
-    <span
-      className={`status ${row.isGPSActive ? "bg-success" : "bg-danger"} `}
-    ></span>
-    { row.isGPSActive ? "Activo" : "Inactivo"}
   </div>
 );
 
@@ -78,15 +73,19 @@ const DataTablesHook = (reference: string) => {
   const [columns, setColumns] = useState<any[]>();
   const [editData, setEditData] = useState<any>();
   const [searchTerm, setSearchTerm] = useState("");
+  const [handleShowQr, setHandleShowQr] = useState(false);
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [metadata, setMetadata] = useState<any>();
+  const [selectReport, setSelectReport] = useState("");
 
   const [workAreas, setWorkAreas] = useState<any>([]);
   const [employeesData, setEmployeesData] = useState<any>([]);
 
   const [createdValid, setCreatedValid] = useState(false);
   const [createdGPSValid, setCreatedGPSValid] = useState(false);
+  const [statisticsDetail, setStatisticsDetail] = useState<any>();
 
   const formatearFecha = (fechaISO: string): string => {
     if (fechaISO != "-") {
@@ -382,103 +381,128 @@ const DataTablesHook = (reference: string) => {
   };
 
   const getAllDocuments = useCallback(async () => {
-    const documents: any =
-      reference === "country"
-        ? countriesTable
-        : reference === "departments"
-        ? colombianCitiesData
-        : reference === "cities"
-        ? transformCitiesData(colombianCitiesData)
-        : reference === "documentTypes"
-        ? idTypesTable
-        : reference === "zones"
-        ? formatZoneData(
-            userData && userData?.companyId
-              ? await getZonesByCompanyIdQuery(userData?.companyId)
-              : []
-          )
-        : reference === "notifications"
-        ? formatDataByDate(
-            userData && userData?.companyId
-              ? await getNotificationsByCompanyIdQuery(userData?.companyId)
-              : []
-          )
-        : reference === "workAreas" && workAreas.length > 0
-        ? formatDataByDate(workAreas)
-        : reference === "employees"
-        ? formatEmployeesData(employeesData)
-        : reference === "meetingStatus"
-        ? formatDataByDate(
-            userData && userData?.companyId
-              ? await getMeetingStatusByCompanyIdQuery(userData?.companyId)
-              : []
-          )
-        : reference === "fixedPoints"
-        ? formatFixedPointsData(
-            userData && userData?.companyId
-              ? await getDocsByCompanyIdQuery(userData?.companyId, reference)
-              : []
-          )
-        : reference === "routes"
-        ? formatReportDataRoutes(
-            userData && userData?.companyId
-              ? await getRoutesByCompanyIdQuery(userData?.companyId)
-              : []
-          )
-        : reference === "campus"
-        ? formatDataByDate(
-            userData && userData?.companyId
-              ? await getHeadquartersByCompanyIdQuery(userData?.companyId)
-              : []
-          )
-        : reference === "circular" ||
-          reference === "events" ||
-          reference === "policy" ||
-          reference === "forms" ||
-          reference === "news" ||
-          reference === "logos"
-        ? formatDataByDate(
-            userData && userData?.companyId
-              ? await getDocsByCompanyIdQuery(userData?.companyId, reference)
-              : []
-          )
-        : reference === "workingday"
-        ? formatReportData(
-            userData && userData?.companyId
-              ? await getLocationsByCompanyIdAndWorkingdayQuery(
-                  userData?.companyId
-                )
-              : [],
-            userData && userData?.companyId
-              ? await getEmployeesByCompanyIdQuery(userData?.companyId)
-              : []
-          )
-        : reference === "meetings"
-        ? formatReportDataMeetings(
-            userData && userData?.companyId
-              ? await getMeetingsByCompanyIdQuery(userData?.companyId)
-              : [],
-            userData && userData?.companyId
-              ? await getEmployeesByCompanyIdQuery(userData?.companyId)
-              : [],
-            userData && userData?.companyId
-              ? await getMeetingStatusByCompanyIdQuery(userData?.companyId)
-              : []
-          )
-        : await getAllDocumentsQuery(reference);
+    let documents: any = [];
+    if (selectReport === "metadatos") {
+      setStatisticsDetail(documents);
+      documents = metadata?.DataMetrics;
+      //console.log("datos", documents);
+    } else {
+      documents =
+        reference === "country"
+          ? countriesTable
+          : reference === "departments"
+          ? colombianCitiesData
+          : reference === "cities"
+          ? transformCitiesData(colombianCitiesData)
+          : reference === "documentTypes"
+          ? idTypesTable
+          : reference === "zones"
+          ? formatZoneData(
+              userData && userData?.companyId
+                ? await getZonesByCompanyIdQuery(userData?.companyId)
+                : []
+            )
+          : reference === "notifications"
+          ? formatDataByDate(
+              userData && userData?.companyId
+                ? await getNotificationsByCompanyIdQuery(userData?.companyId)
+                : []
+            )
+          : reference === "workAreas" && workAreas.length > 0
+          ? formatDataByDate(workAreas)
+          : reference === "employees" && employeesData.length > 0
+          ? formatEmployeesData(employeesData)
+          : reference === "superadminEmployees"
+          ? formatEmployeesData(await getAllEmployeesQuery())
+          : reference === "statisticalReports"
+          ? formatEmployeesData(
+              userData && userData?.companyId
+                ? await getEmployeesByCompanyIdQuery(userData?.companyId)
+                : []
+            )
+          : reference === "meetingStatus"
+          ? formatDataByDate(
+              userData && userData?.companyId
+                ? await getMeetingStatusByCompanyIdQuery(userData?.companyId)
+                : []
+            )
+          : reference === "fixedPoints"
+          ? formatFixedPointsData(
+              userData && userData?.companyId
+                ? await getDocsByCompanyIdQuery(userData?.companyId, reference)
+                : []
+            )
+          : reference === "routes"
+          ? formatReportDataRoutes(
+              userData && userData?.companyId
+                ? await getRoutesByCompanyIdQuery(userData?.companyId)
+                : []
+            )
+          : reference === "campus"
+          ? formatDataByDate(
+              userData && userData?.companyId
+                ? await getHeadquartersByCompanyIdQuery(userData?.companyId)
+                : []
+            )
+          : reference === "circular" ||
+            reference === "events" ||
+            reference === "policy" ||
+            reference === "forms" ||
+            reference === "news" ||
+            reference === "logos"
+          ? formatDataByDate(
+              userData && userData?.companyId
+                ? await getDocsByCompanyIdQuery(userData?.companyId, reference)
+                : []
+            )
+          : reference === "workingday"
+          ? formatReportData(
+              userData && userData?.companyId
+                ? await getLocationsByCompanyIdAndWorkingdayQuery(
+                    userData?.companyId
+                  )
+                : [],
+              userData && userData?.companyId
+                ? await getEmployeesByCompanyIdQuery(userData?.companyId)
+                : []
+            )
+          : reference === "meetings"
+          ? formatReportDataMeetings(
+              userData && userData?.companyId
+                ? await getMeetingsByCompanyIdQuery(userData?.companyId)
+                : [],
+              userData && userData?.companyId
+                ? await getEmployeesByCompanyIdQuery(userData?.companyId)
+                : [],
+              userData && userData?.companyId
+                ? await getMeetingStatusByCompanyIdQuery(userData?.companyId)
+                : []
+            )
+          : await getAllDocumentsQuery(reference);
+    }
 
+    //console.log("datos = ", documents);
     const labelToDisplay = ["professionals", "patients", "functionary"];
     //reference === "employees" && console.log('documents ', documents);
 
-    if (documents.length > 0) {
+    if (documents?.length > 0) {
       const cols: any[] = [];
       const docs = documents[0];
       const entries = Object.keys(docs);
 
       // Define column names based on reference
       let columnNamesToDisplay: ColumnNamesToDisplay = {};
-
-      if (reference === "documentTypes" || reference === "country") {
+      if (selectReport === "metadatos") {
+        columnNamesToDisplay = {
+          viewsDate: "Fecha visualización",
+          viewsTime: "Hora visualización",
+          ipAddress: "IP",
+          typeDevice: "Tipo dispositivo",
+          so: "Sistema Opetativo",
+          countryView: "Pais",
+          cityView: "Ciudad",
+        };
+      } else if (reference === "documentTypes" || reference === "country") {
         columnNamesToDisplay = {
           // id: "Id",
           label: "Nombre",
@@ -530,7 +554,29 @@ const DataTablesHook = (reference: string) => {
           phone: "Teléfono",
           email: "Correo Empleado",
           isActive: "Estado",
-          isGPSActive: "Estado GPS",
+          isGPSActive: "GPS",
+        };
+      } else if (reference === "superadminEmployees") {
+        columnNamesToDisplay = {
+          uid: "Acciones",
+          createdDate: "Fecha creación",
+          firstName: "Nombre",
+          lastName: "Apellido",
+          documentType: "Tipo de Documento",
+          documentNumber: "Número de Documento",
+          position: "Cargo",
+          phone: "Teléfono",
+          email: "Correo Empleado",
+        };
+      } else if (reference === "statisticalReports") {
+        columnNamesToDisplay = {
+          uid: "Acciones",
+          createdDate: "Fecha Registro",
+          firstName: "Nombre",
+          lastName: "Apellido",
+          documentNumber: "Número de Identificación",
+          phone: "Teléfono",
+          email: "Correo",
         };
       } else if (reference === "routes") {
         columnNamesToDisplay = {
@@ -646,6 +692,8 @@ const DataTablesHook = (reference: string) => {
 
       const omittedColumns = Object.keys(columnNamesToDisplay);
 
+      //console.log("omittedColumns", omittedColumns);
+
       const entriesFiltered = entries.filter((item) =>
         omittedColumns.includes(item)
       );
@@ -662,22 +710,54 @@ const DataTablesHook = (reference: string) => {
             </span>
           ),
           selector: (row: any) =>
-            val === "isActive"? (
+            val === "isActive" ? (
               <CustomTitle row={row} />
-            ) : val === "isGPSActive" ? (
-              <CustomTitleTwo row={row} />
             ) : val === "color" ? (
               <CustomColor row={row} />
             ) : val === "uid" ? (
               <div>
-                {reference !== "routes" &&
-                reference !== "logos" &&
-                reference !== "meetingStatus" &&
-                reference !== "circular" &&
-                reference !== "events" &&
-                reference !== "policy" &&
-                reference !== "forms" &&
-                reference !== "news" ? (
+                {reference === "superadminEmployees" ? (
+                  <>
+                    <IconButton onClick={() => onShowQr()}>
+                      <QrCodeIcon
+                        font-size={20}
+                        className="icon-actions-table"
+                      />
+                    </IconButton>
+                    <IconButton onClick={() => {}}>
+                      <InsertLinkIcon
+                        font-size={20}
+                        className="icon-actions-table"
+                      />
+                    </IconButton>
+                  </>
+                ) : reference === "statisticalReports" ? (
+                  <>
+                    <IconButton
+                      onClick={() => {
+                        filterDataMetrics(row);
+                      }}
+                    >
+                      <VisibilityIcon
+                        font-size={20}
+                        className="icon-actions-table"
+                      />
+                    </IconButton>
+                  </>
+                ) : reference === "employees" ? (
+                  <>
+                    <IconButton onClick={() => onMainFormModalEdit(row)}>
+                      <MdModeEdit size={20} className="icon-actions-table" />
+                    </IconButton>
+                  </>
+                ) : reference !== "routes" &&
+                  reference !== "logos" &&
+                  reference !== "meetingStatus" &&
+                  reference !== "circular" &&
+                  reference !== "events" &&
+                  reference !== "policy" &&
+                  reference !== "forms" &&
+                  reference !== "news" ? (
                   <>
                     <IconButton onClick={() => onMainFormModalEdit(row)}>
                       <MdModeEdit size={20} className="icon-actions-table" />
@@ -698,7 +778,8 @@ const DataTablesHook = (reference: string) => {
               </div>
             ) : val === "timestamp" ||
               val === "startDay" ||
-              val === "endDay" ? (
+              val === "endDay" ||
+              val === "createdDate" ? (
               formatearFecha(row[val])
             ) : val === "totalTime" ? (
               formatearHora(row[val])
@@ -743,8 +824,6 @@ const DataTablesHook = (reference: string) => {
               : reference === "companies" || reference === "employees"
               ? val === "uid"
                 ? "auto"
-                :  val === "isActive" || val === "isGPSActive"
-                ? "150px"
                 : "250px"
               : reference === "workAreas"
               ? val === "timestamp"
@@ -758,7 +837,7 @@ const DataTablesHook = (reference: string) => {
               ? val === "date" || val === "meetingStart" || val === "meetingEnd"
                 ? "8%"
                 : "200px"
-              :"auto",
+              : "auto",
           omit: !omittedColumns.includes(val),
           style:
             val === "uid" && reference === "meetingStatus"
@@ -785,7 +864,7 @@ const DataTablesHook = (reference: string) => {
       };
 
       // console.log("cols", cols);
-      // console.log("currentData", currentData);
+      //console.log("currentData", currentData);
       // console.log("documents", documents);
 
       setColumns(cols);
@@ -800,36 +879,7 @@ const DataTablesHook = (reference: string) => {
       setDataTable(currentData); //obtain dataTable
       setGetDocuments(currentData.data); //obtain data
     }
-  }, [reference, userData, workAreas, employeesData]);
-
-  // const handleSearch = async (e: any) => {
-  //     const value = e.target.value.toLowerCase();
-  //     setSearchTerm(value);
-
-  //     const filtered = getDocuments?.filter((item: any) => {
-  //         return _.some(item, (prop, key) => {
-  //             if (reference === "departments") {
-  //                 // Si reference es 'departments', filtra solo por el campo 'departamento'
-  //                 return (
-  //                     key === "departamento" &&
-  //                     prop.toString().toLowerCase().includes(value)
-  //                 );
-  //             } else if (Array.isArray(prop)) {
-  //                 const dataFiltered = prop;
-  //                 return dataFiltered.some((subProp) =>
-  //                     subProp.toString().toLowerCase().includes(value),
-  //                 );
-  //             }
-  //             return prop.toString().toLowerCase().includes(value);
-  //         });
-  //     });
-
-  //     const currentData = {
-  //         columns,
-  //         data: filtered,
-  //     };
-  //     setDataTable(currentData);
-  // };
+  }, [reference, userData, workAreas, employeesData, selectReport, metadata]);
 
   const clearSearch = () => {
     setSearchTerm("");
@@ -905,10 +955,17 @@ const DataTablesHook = (reference: string) => {
 
   const onMainFormModal = () => setHandleShowMainForm(true);
 
+  const onShowQr = () => setHandleShowQr(true);
+
   const onMainFormModalEdit = (row: any) => {
     setHandleShowMainFormEdit(true);
     setEditData(row);
     // console.log(row);
+  };
+
+  const filterDataMetrics = (row: any) => {
+    setMetadata(row);
+    setSelectReport("metadatos");
   };
 
   const confirmAlert = () => {
@@ -953,7 +1010,12 @@ const DataTablesHook = (reference: string) => {
   }, [getAllDocuments, endDate, startDate]);
 
   useEffect(() => {
-    if (!handleShowMainForm || !handleShowMainFormEdit || !isEmptyDataRef) {
+    if (
+      !handleShowMainForm ||
+      !handleShowMainFormEdit ||
+      !isEmptyDataRef ||
+      handleShowQr
+    ) {
       getAllDocuments();
     }
   }, [
@@ -961,6 +1023,7 @@ const DataTablesHook = (reference: string) => {
     handleShowMainForm,
     handleShowMainFormEdit,
     isEmptyDataRef,
+    handleShowQr,
   ]);
 
   useEffect(() => {
@@ -1001,6 +1064,8 @@ const DataTablesHook = (reference: string) => {
       ).length;
       const validate = activeEmployeesCount < (companyData?.cardGPS || 0); // Verificar límite
       setCreatedGPSValid(validate);
+      console.log(validate);
+      console.log(activeEmployeesCount);
     };
     canOpenMainForm();
   }, [employeesData, companyData]);
@@ -1013,9 +1078,11 @@ const DataTablesHook = (reference: string) => {
     handleShowCsv,
     handleShowPdf,
     handleShowMainForm,
+    handleShowQr,
     setHandleShowCsv,
     setHandleShowPdf,
     setHandleShowMainForm,
+    setHandleShowQr,
     setHandleShowMainFormEdit,
     onUploadDataModalCsv,
     onUploadDataModalPdf,
@@ -1035,6 +1102,14 @@ const DataTablesHook = (reference: string) => {
     setEndDate,
     createdValid,
     createdGPSValid,
+    metadata,
+    setMetadata,
+    selectReport,
+    setSelectReport,
+    onShowQr,
+    userData,
+    statisticsDetail,
+    setStatisticsDetail,
   };
 };
 
