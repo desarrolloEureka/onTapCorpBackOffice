@@ -378,7 +378,6 @@ const MainFormModal = ({
                                                 className="tw-flex tw-flex-col tw-px-3 tw-w-full"
                                             >
                                                 <CustomTextField
-                                                    required
                                                     data={[
                                                         item[1],
                                                         item[2],

@@ -113,7 +113,7 @@ export const GoogleMapsHook = () => {
             ]);
 
             const employeesLocations: FormValuesData[] = employees.map(
-                (employee: any) => {
+                (employee) => {
                     const {
                         uid,
                         firstName,
@@ -127,6 +127,8 @@ export const GoogleMapsHook = () => {
                         ImageProfile,
                         selectedHeadquarter,
                         selectedArea,
+                        isActive,
+                        isGPSActive,
                         mondayRoute,
                         tuesdayRoute,
                         wednesdayRoute,
@@ -185,6 +187,8 @@ export const GoogleMapsHook = () => {
                             ext: phone.ext,
                         })),
                         emails: emails?.map((email: any) => email.text),
+                        isActive,
+                        isGPSActive,
                     };
                 },
             );

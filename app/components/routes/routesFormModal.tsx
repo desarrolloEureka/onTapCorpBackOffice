@@ -204,72 +204,83 @@ const RoutesFormModal = ({
                                         />
                                     </div>
 
-                                    <div className="tw-flex tw-flex-col tw-px-3 tw-mt-6 tw-w-full">
-                                        <div className="tw-flex tw-pt-1 tw-rounded tw-flex-col tw-justify-center tw-items-start">
-                                            <div
-                                                style={{
-                                                    fontSize: "14.5px",
-                                                    fontWeight: "bold",
-                                                    color:
-                                                        modeTheme === "light"
-                                                            ? "#396593"
-                                                            : "#8bb8e7",
-                                                }}
-                                            >
-                                                Zona a la que corresponde
+                                    <div className="tw-flex tw-flex-row tw-px-3 tw-mt-7 tw-w-full">
+                                        <div className="tw-flex tw-flex-col tw-w-full">
+                                            <div className="tw-flex tw-rounded tw-flex-col tw-justify-center tw-items-start">
+                                                <div
+                                                    style={{
+                                                        fontSize: "14.5px",
+                                                        fontWeight: "bold",
+                                                        color:
+                                                            modeTheme === "light"
+                                                                ? "#396593"
+                                                                : "#8bb8e7",
+                                                    }}
+                                                >
+                                                    Zona a la que corresponde
+                                                </div>
+                                            </div>
+                                            <div className="tw-flex tw-h-14 tw-rounded tw-flex-row tw-justify-start tw-items-center">
+                                                <div className="tw-flex tw-rounded tw-flex-col tw-h-10 tw-justify-center tw-items-center tw-w-5">
+                                                    <InputAdornment position="start">
+                                                        <ExploreOutlinedIcon />
+                                                    </InputAdornment>
+                                                </div>
+                                                <div className="tw-flex tw-rounded tw-flex-col tw-justify-center tw-items-start tw-w-60 tw-ml-1">
+                                                    <CustomSelect
+                                                        labelId="area-label"
+                                                        value={selectedZone}
+                                                        onChange={(e: any) =>
+                                                            handleChangeZone(e)
+                                                        }
+                                                        label=""
+                                                    >
+                                                        {zonesData &&
+                                                            zonesData.map(
+                                                                (zone, index) => (
+                                                                    <MenuItem
+                                                                        key={index}
+                                                                        value={
+                                                                            zone.uid
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            zone.zoneName
+                                                                        }
+                                                                    </MenuItem>
+                                                                ),
+                                                            )}
+                                                    </CustomSelect>
+                                                    {zoneError && (
+                                                        <div
+                                                            style={{
+                                                                color: "#d32f2f",
+                                                                fontSize: "12px",
+                                                            }}
+                                                        >
+                                                            {zoneError}
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="tw-flex tw-h-14 tw-rounded tw-flex-row tw-justify-start tw-items-center">
-                                            <div className="tw-flex tw-rounded tw-flex-col tw-h-10 tw-justify-center tw-items-center tw-w-5">
-                                                <InputAdornment position="start">
-                                                    <ExploreOutlinedIcon />
-                                                </InputAdornment>
-                                            </div>
-                                            <div className="tw-flex tw-rounded tw-flex-col tw-justify-center tw-items-start tw-w-60 tw-ml-1">
-                                                <CustomSelect
-                                                    labelId="area-label"
-                                                    value={selectedZone}
-                                                    onChange={(e: any) =>
-                                                        handleChangeZone(e)
-                                                    }
-                                                    label=""
+                                        <div className="tw-flex tw-flex-row tw-w-full tw-justify-end tw-items-center">
+                                            <div className="tw-flex tw-flex-row tw-w-38 tw-rounded-3xl tw-bg-[#396593]">
+                                                <Button
+                                                    variant="outlined"
+                                                    onClick={handleAddAddress}
+                                                    className="tw-text-white"
                                                 >
-                                                    {zonesData &&
-                                                        zonesData.map(
-                                                            (zone, index) => (
-                                                                <MenuItem
-                                                                    key={index}
-                                                                    value={
-                                                                        zone.uid
-                                                                    }
-                                                                >
-                                                                    {
-                                                                        zone.zoneName
-                                                                    }
-                                                                </MenuItem>
-                                                            ),
-                                                        )}
-                                                </CustomSelect>
-                                                {zoneError && (
-                                                    <div
-                                                        style={{
-                                                            color: "#d32f2f",
-                                                            fontSize: "12px",
-                                                        }}
-                                                    >
-                                                        {zoneError}
-                                                    </div>
-                                                )}
+                                                    Añadir Dirección
+                                                </Button>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="tw-flex tw-flex-col tw-px-1 tw-w-full tw-mt-3 tw-justify-end">
-                                        <div className="tw-flex tw-flex-col tw-w-full tw-h-[95%]">
+                                        <div className="tw-flex tw-flex-col tw-w-full tw-h-auto">
                                             <div
-                                                className="tw-overflow-y-auto tw-max-h-56 tw-px-2 tw-pb-4 tw-scrollbar-thin tw-scrollbar-thumb-gray-400 tw-scrollbar-track-gray-200"
-                                                style={{ maxHeight: "250px" }}
-                                            >
+                                                className="tw-px-2 tw-pb-4">
                                                 {addresses.map(
                                                     (address, index) => (
                                                         <div
@@ -415,17 +426,6 @@ const RoutesFormModal = ({
                                             {hoursError}
                                         </div>
                                     )}
-                                    <div className="tw-flex tw-flex-row tw-px-3 tw-mt-7 tw-mb-4 tw-w-full">
-                                        <div className="tw-flex tw-flex-row tw-w-38 tw-rounded-3xl tw-bg-[#396593]">
-                                            <Button
-                                                variant="outlined"
-                                                onClick={handleAddAddress}
-                                                className="tw-text-white"
-                                            >
-                                                Añadir Dirección
-                                            </Button>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>

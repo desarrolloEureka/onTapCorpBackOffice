@@ -90,7 +90,6 @@ const orderArray = (profile: any, headquarterData: any) => {
       },
     ],
   ];
-
   return finalArray;
 };
 
@@ -134,14 +133,13 @@ const TemplateContainer = ({
   };
 
   const Item = ({ item }: { item: any[] }) => (
-    <>
+    <div className="tw-flex tw-flex-col tw-items-center tw-w-full tw-overflow-y-auto">
       {item.map((val, key) => (
         <Button
           variant="contained"
           sx={{ textTransform: "none", backgroundColor: color }}
-          className={`tw-rounded-s-2xl tw-rounded-e-2xl tw-drop-shadow-sm tw-w-[90%] ${
-            isSmallScreen ? "tw-h-[35px]" : "tw-h-[34px]"
-          } tw-px-1 tw-relative tw-my-1.5 tw-shadow-[0_0px_05px_05px_rgba(0,0,0,0.1)]`}
+          className={`tw-rounded-s-2xl tw-rounded-e-2xl tw-drop-shadow-sm tw-w-full ${isSmallScreen ? "tw-h-[35px]" : "tw-h-[34px]"
+            } tw-px-1 tw-relative tw-my-1.5 tw-shadow-[0_0px_05px_05px_rgba(0,0,0,0.1)]`}
           key={key}
           onClick={() =>
             val.icon &&
@@ -206,19 +204,17 @@ const TemplateContainer = ({
         >
           <Typography
             style={{ fontSize: val.label === "Correo" ? "14px" : undefined }}
-            className={`tw-w-[90%] tw-pr-9 tw-text-center tw-truncate ${
-              val.order != 10 && "tw-capitalize"
-            }`}
+            className={`tw-w-[90%] tw-pr-9 tw-text-center tw-truncate`}
           >
             {val.label === "phones" ||
-            val.label === "Telefono" ||
-            val.label === "Teléfono"
+              val.label === "Telefono" ||
+              val.label === "Teléfono"
               ? getCountryName(val.indicative) + "" + val.text
-              : val.text}
+              : val?.text?.length > 21 ? val?.text.substring(0, 18) + "..." : val?.text}
           </Typography>
         </Button>
       ))}
-    </>
+    </div>
   );
 
   return (
@@ -226,9 +222,8 @@ const TemplateContainer = ({
     companyData &&
     headquarterData && (
       <Container
-        className={`tw-h-[50%] tw-flex tw-flex-col tw-content-center tw-items-center tw-justify-center ${
-          isSmallScreen ? "tw-mt-2" : "tw-mt-0"
-        }`}
+        className={`tw-h-[50%] tw-flex tw-flex-col tw-content-center tw-items-center tw-justify-center tw-p-0 ${isSmallScreen ? "tw-mt-2" : "tw-mt-0"
+          }`}
       >
         <SaveContactButtonColor
           colorButton={color}
@@ -239,11 +234,13 @@ const TemplateContainer = ({
           second={false}
         />
         <Container
-          className={`tw-flex tw-flex-col tw-items-center tw-justify-center tw-z-10 tw-h-[85%]`}
+          className={`tw-flex tw-flex-col tw-items-center tw-justify-center tw-z-10 tw-h-[90%] tw-p-0`}
         >
           {finalArray.length > 0 && (
             <Carousel
-              className={`tw-flex tw-flex-col tw-w-[100%] tw-h-[100%] tw-content-center tw-items-center tw-justify-center `}
+              navButtonsAlwaysVisible
+              swipe={false}
+              className={`tw-flex tw-flex-col tw-w-full tw-h-full tw-content-center tw-items-center tw-justify-center `}
               autoPlay={false}
               activeIndicatorIconButtonProps={{
                 style: {
@@ -254,43 +251,48 @@ const TemplateContainer = ({
                 style: {
                   position: "absolute",
                   top: 0, // Posiciona los indicadores en la parte superior
+                  margin: 0,
                   width: "100%",
+                  height: "12%", // Ajusta la altura del contenedor de indicadores
                   textAlign: "center",
+                  alignContent: "center",
                   zIndex: 1,
-                  height: "28px", // Ajusta la altura del contenedor de indicadores
-                  marginTop: isSmallScreen ? "5px" : "15px", // Ajusta el margen superior según sea necesario
                 },
               }}
+              navButtonsProps={{
+                style: {
+                  margin: "0 10px"
+              }
+              }}  
             >
-              {finalArray.map((item: any, i: any) => (
-                <>
-                {i === 2 && (
-                  <div className="tw-flex tw-pt-6">
-                    <Typography
-                      style={{ fontSize: "15px" }}
-                      className={`tw-w-[90%] tw-text-start tw-truncate tw-font-bold tw-text-white`}
-                    >
-                      Horario
-                    </Typography>
-                  </div>
-                )}
-                  
-                  <Box
-                    key={i}
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div
-                      className={`tw-overflow-y-auto tw-h-full tw-max-h-[230px]`}
-                    >
-                      <Item item={item} />
+              {finalArray.map((item: any, i: number) => (
+                <Box
+                  key={`carousel-item-${i}`}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    textAlign: "center", // Esto asegura que todo quede centrado
+                    width: "100%", // Asegúrate de que use todo el ancho
+                  }}
+                >
+                  {i === 2 && (
+                    <div className="tw-flex tw-pt-6 tw-w-[60%]">
+                      <Typography
+                        style={{ fontSize: "15px" }}
+                        className={`tw-w-[90%] tw-text-start tw-truncate tw-font-bold tw-text-white`}
+                      >
+                        Horario
+                      </Typography>
                     </div>
-                  </Box>
-                </>
+                  )}
+                  <div
+                    className={`tw-overflow-y-auto tw-h-full tw-max-h-[230px]`}
+                  >
+                    <Item item={item} />
+                  </div>
+                </Box>
               ))}
             </Carousel>
           )}

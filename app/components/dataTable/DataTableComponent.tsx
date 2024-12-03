@@ -3,6 +3,7 @@ import { DataTableComponentProps } from "@/types/tables";
 import { Card, Col, Row } from "react-bootstrap";
 import CampusModal from "../campus/CampusModal";
 import EmployeesFormModal from "../employees/employeesFormModal";
+import AlertModal from "../employees/alertModal";
 import LogosFormModal from "../logos/logosFormModal";
 import MainFormModal from "../mainForm/mainFormModal";
 import MeetingStatusesModal from "../meetings/MeetingStatusesModal";
@@ -15,200 +16,288 @@ import { ExportCSV } from "./dataTables/dataTables";
 import DataTablesHook from "./hook/DataTablesHook";
 import CategoriesModal from "../categories/CategoriesModal";
 import NewsModal from "../news/NewsModal";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
+import { Key } from "react";
 
 const DataTableComponent = ({
-    componentTitle,
-    componentDescription,
-    tableTitle,
-    reference,
+  componentTitle,
+  componentDescription,
+  tableTitle,
+  reference,
 }: DataTableComponentProps) => {
-    const {
-        columns,
-        data,
-        handleShowCsv,
-        setHandleShowCsv,
-        handleShowPdf,
-        setHandleShowPdf,
-        onUploadDataModalCsv,
-        onUploadDataModalPdf,
-        onMainFormModal,
-        onMainFormModalEdit,
-        dataTable,
-        setHandleShowMainForm,
-        setHandleShowMainFormEdit,
-        handleShowMainForm,
-        handleShowMainFormEdit,
-        editData,
-        isEmptyDataRef,
-        handleSearchAndFilter,
-        searchTerm,
-        clearSearch,
-        handleDeleteItem,
-        startDate, 
-        setStartDate,
-        endDate, 
-        setEndDate,
-    } = DataTablesHook(reference);
+  const {
+    columns,
+    data,
+    handleShowCsv,
+    setHandleShowCsv,
+    handleShowPdf,
+    setHandleShowPdf,
+    onUploadDataModalCsv,
+    onUploadDataModalPdf,
+    onMainFormModal,
+    onMainFormModalEdit,
+    dataTable,
+    setHandleShowMainForm,
+    setHandleShowMainFormEdit,
+    handleShowMainForm,
+    handleShowMainFormEdit,
+    editData,
+    isEmptyDataRef,
+    handleSearchAndFilter,
+    searchTerm,
+    clearSearch,
+    handleDeleteItem,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    createdValid,
+    handleShowQr,
+    onShowQr,
+    setHandleShowQr,
+    metadata,
+    setMetadata,
+    selectReport,
+    setSelectReport,
+    statisticsDetail,
+    setStatisticsDetail,
+  } = DataTablesHook(reference);
 
-    return (
-        dataTable && (
-            <Row className="row-sm">
-                <Col lg={12}>
-                    <Card className="custom-card">
-                        <Card.Body>
-                            {/* <div>
-                                <h6 className="main-content-label mb-1">
-                                    {componentTitle}
-                                </h6>
-                                <p className="text-muted card-sub-title">
-                                    {componentDescription}
-                                </p>
-                            </div> */}
-
-                            <div className="table-responsive">
-                                <ExportCSV
-                                    // onUploadDataModalPdf={onUploadDataModalPdf}
-                                    onUploadDataModalCsv={onUploadDataModalCsv}
-                                    onMainFormModal={onMainFormModal}
-                                    onMainFormModalEdit={onMainFormModalEdit}
-                                    data={data} // solo data
-                                    tableData={dataTable} // data + columnas
-                                    columns={columns}
-                                    tableTitle={tableTitle}
-                                    reference={reference}
-                                    isEmptyDataRef={isEmptyDataRef}
-                                    handleSearchAndFilter={handleSearchAndFilter}
-                                    searchTerm={searchTerm}
-                                    startDate={startDate}
-                                    setStartDate={setStartDate}
-                                    endDate={endDate}
-                                    setEndDate={setEndDate}
-                                    clearSearch={clearSearch}
-                                />
-                            </div>
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <FormModal
-                    handleShowPdf={handleShowPdf}
-                    setHandleShowPdf={setHandleShowPdf}
-                    title={tableTitle}
-                    reference={reference}
-                />
-                <CSVReader
-                    handleShowCsv={handleShowCsv}
-                    setHandleShowCsv={setHandleShowCsv}
-                    title={tableTitle}
-                    reference={reference}
-                />
-                {reference === "notifications" ? (
-                    <NotificationsFormModal
-                        handleShowMainForm={handleShowMainForm}
-                        setHandleShowMainForm={setHandleShowMainForm}
-                        handleShowMainFormEdit={handleShowMainFormEdit}
-                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                        editData={editData}
-                        title={tableTitle}
-                        reference={reference}
-                    />
-                ) : reference === "zones" ? (
-                    <ZonesFormModal
-                        handleShowMainForm={handleShowMainForm}
-                        setHandleShowMainForm={setHandleShowMainForm}
-                        handleShowMainFormEdit={handleShowMainFormEdit}
-                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                        editData={editData}
-                        title={tableTitle}
-                        reference={reference}
-                    />
-                ) : reference === "employees" ? (
-                    <EmployeesFormModal
-                        handleShowMainForm={handleShowMainForm}
-                        setHandleShowMainForm={setHandleShowMainForm}
-                        handleShowMainFormEdit={handleShowMainFormEdit}
-                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                        editData={editData}
-                        title={tableTitle}
-                        reference={reference}
-                    />
-                ) : reference === "routes" ? (
-                    <RoutesFormModal
-                        handleShowMainForm={handleShowMainForm}
-                        setHandleShowMainForm={setHandleShowMainForm}
-                        handleShowMainFormEdit={handleShowMainFormEdit}
-                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                        editData={editData}
-                        title={tableTitle}
-                        reference={reference}
-                    />
-                ) : reference === "logos" ? (
-                    <LogosFormModal
-                        handleShowMainForm={handleShowMainForm}
-                        setHandleShowMainForm={setHandleShowMainForm}
-                        handleShowMainFormEdit={handleShowMainFormEdit}
-                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                        editData={editData}
-                        title={tableTitle}
-                        reference={reference}
-                    />
-                ) : reference === "meetingStatus" ? (
-                    <MeetingStatusesModal
-                        handleShowMainForm={handleShowMainForm}
-                        setHandleShowMainForm={setHandleShowMainForm}
-                        handleShowMainFormEdit={handleShowMainFormEdit}
-                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                        editData={editData}
-                        title={tableTitle}
-                        reference={reference}
-                    />
-                ) : reference === "campus" ? (
-                    <CampusModal
-                        handleShowMainForm={handleShowMainForm}
-                        setHandleShowMainForm={setHandleShowMainForm}
-                        handleShowMainFormEdit={handleShowMainFormEdit}
-                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                        editData={editData}
-                        title={tableTitle}
-                        reference={reference}
-                    />
-                ) : reference === "fixedPoints" ? (
-                    <CategoriesModal
-                        handleShowMainForm={handleShowMainForm}
-                        setHandleShowMainForm={setHandleShowMainForm}
-                        handleShowMainFormEdit={handleShowMainFormEdit}
-                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                        editData={editData}
-                        title={tableTitle}
-                        reference={reference}
-                    />
-                ) : reference === "circular" ||
-                  reference === "events" ||
-                  reference === "policy" ||
-                  reference === "forms" ||
-                  reference === "news" ? (
-                    <NewsModal
-                        handleShowMainForm={handleShowMainForm}
-                        setHandleShowMainForm={setHandleShowMainForm}
-                        handleShowMainFormEdit={handleShowMainFormEdit}
-                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                        editData={editData}
-                        title={tableTitle}
-                        reference={reference}
-                    />
-                ) : (
-                    <MainFormModal
-                        handleShowMainForm={handleShowMainForm}
-                        setHandleShowMainForm={setHandleShowMainForm}
-                        handleShowMainFormEdit={handleShowMainFormEdit}
-                        setHandleShowMainFormEdit={setHandleShowMainFormEdit}
-                        editData={editData}
-                        title={tableTitle}
-                        reference={reference}
-                    />
+  return (
+    dataTable && (
+      <Row className="row-sm">
+        <Col lg={12}>
+          <Card className="custom-card">
+            <Card.Body>
+              <div className="table-responsive">
+                {selectReport && (
+                  <div>
+                    <button
+                      onClick={() => {
+                        setSelectReport("");
+                        setMetadata([]);
+                      }}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        color: "black",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <ArrowBackIcon
+                        style={{ color: "black", fontSize: "2rem" }}
+                      />
+                    </button>
+                    {/* Información de usuarios */}
+                    <TableContainer component={Paper}>
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Nombre completo</TableCell>
+                            <TableCell>Email</TableCell>
+                            <TableCell>Total Vistas</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {metadata ? (
+                            <TableRow key={metadata?.uid}>
+                              <TableCell>
+                                {metadata?.firstName?.[0]}{" "}
+                                {metadata?.lastName?.[0]}
+                              </TableCell>
+                              <TableCell>
+                                {metadata?.emails?.[0]?.text || "N/A"}
+                              </TableCell>
+                              <TableCell>{metadata?.views || 0}</TableCell>
+                            </TableRow>
+                          ) : (
+                            <TableRow>
+                              <TableCell colSpan={4} align="center">
+                                No data available
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </div>
                 )}
-            </Row>
-        )
-    );
+
+                <ExportCSV
+                  // onUploadDataModalPdf={onUploadDataModalPdf}
+                  onUploadDataModalCsv={onUploadDataModalCsv}
+                  onMainFormModal={onMainFormModal}
+                  onShowQr={onShowQr}
+                  onMainFormModalEdit={onMainFormModalEdit}
+                  data={data} // solo data
+                  tableData={dataTable} // data + columnas
+                  columns={columns}
+                  tableTitle={tableTitle}
+                  reference={reference}
+                  isEmptyDataRef={isEmptyDataRef}
+                  handleSearchAndFilter={handleSearchAndFilter}
+                  searchTerm={searchTerm}
+                  startDate={startDate}
+                  setStartDate={setStartDate}
+                  endDate={endDate}
+                  setEndDate={setEndDate}
+                  clearSearch={clearSearch}
+                />
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+        <FormModal
+          handleShowPdf={handleShowPdf}
+          setHandleShowPdf={setHandleShowPdf}
+          title={tableTitle}
+          reference={reference}
+        />
+        <CSVReader
+          handleShowCsv={handleShowCsv}
+          setHandleShowCsv={setHandleShowCsv}
+          title={tableTitle}
+          reference={reference}
+        />
+        {reference === "notifications" ? (
+          <NotificationsFormModal
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            handleShowMainFormEdit={handleShowMainFormEdit}
+            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+            editData={editData}
+            title={tableTitle}
+            reference={reference}
+          />
+        ) : reference === "zones" ? (
+          <ZonesFormModal
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            handleShowMainFormEdit={handleShowMainFormEdit}
+            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+            editData={editData}
+            title={tableTitle}
+            reference={reference}
+          />
+        ) : handleShowMainFormEdit && reference === "employees" ? (
+          <EmployeesFormModal
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            handleShowMainFormEdit={handleShowMainFormEdit}
+            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+            editData={editData}
+            title={tableTitle}
+            reference={reference}
+          />
+        ) : createdValid && reference === "employees" ? (
+          <EmployeesFormModal
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            handleShowMainFormEdit={handleShowMainFormEdit}
+            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+            editData={editData}
+            title={tableTitle}
+            reference={reference}
+          />
+        ) : !createdValid && reference === "employees" ? (
+          <AlertModal
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            handleShowMainFormEdit={handleShowMainFormEdit}
+            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+            editData={editData}
+            title={tableTitle}
+            reference={reference}
+          />
+        ) : reference === "routes" ? (
+          <RoutesFormModal
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            handleShowMainFormEdit={handleShowMainFormEdit}
+            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+            editData={editData}
+            title={tableTitle}
+            reference={reference}
+          />
+        ) : reference === "logos" ? (
+          <LogosFormModal
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            handleShowMainFormEdit={handleShowMainFormEdit}
+            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+            editData={editData}
+            title={tableTitle}
+            reference={reference}
+          />
+        ) : reference === "meetingStatus" ? (
+          <MeetingStatusesModal
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            handleShowMainFormEdit={handleShowMainFormEdit}
+            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+            editData={editData}
+            title={tableTitle}
+            reference={reference}
+          />
+        ) : reference === "campus" ? (
+          <CampusModal
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            handleShowMainFormEdit={handleShowMainFormEdit}
+            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+            editData={editData}
+            title={tableTitle}
+            reference={reference}
+          />
+        ) : reference === "fixedPoints" ? (
+          <CategoriesModal
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            handleShowMainFormEdit={handleShowMainFormEdit}
+            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+            editData={editData}
+            title={tableTitle}
+            reference={reference}
+          />
+        ) : reference === "circular" ||
+          reference === "events" ||
+          reference === "policy" ||
+          reference === "forms" ||
+          reference === "news" ? (
+          <NewsModal
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            handleShowMainFormEdit={handleShowMainFormEdit}
+            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+            editData={editData}
+            title={tableTitle}
+            reference={reference}
+          />
+        ) : (
+          <MainFormModal
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            handleShowMainFormEdit={handleShowMainFormEdit}
+            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+            editData={editData}
+            title={tableTitle}
+            reference={reference}
+          />
+        )}
+      </Row>
+    )
+  );
 };
 
 export default DataTableComponent;

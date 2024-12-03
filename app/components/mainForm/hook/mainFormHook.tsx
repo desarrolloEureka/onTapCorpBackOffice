@@ -560,7 +560,7 @@ const MainFormHook = ({
                 item === "urlName"
                     ? [
                         "",
-                        false,
+                        true,
                         // Construimos el objeto con los uid de employees
                         employees?.reduce((acc: any, employee: any) => {
                             acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
@@ -734,7 +734,7 @@ const MainFormHook = ({
                 ...prevData,
                 urlName: [
                     "",
-                    false,
+                    true,
                     employees.reduce((acc: any, employee: any) => {
                         acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
                         return acc;

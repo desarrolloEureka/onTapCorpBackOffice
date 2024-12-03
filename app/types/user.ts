@@ -76,4 +76,6 @@ export type FormValuesData = {
     selectedArea?: string;
     ImageProfile?: string;
     routes?: ScheduleRoutes;
+    isActive: boolean;
+    isGPSActive: boolean;
 };

@@ -35,7 +35,7 @@ const Footer = ({socialNetworks}: {socialNetworks: any}) => {
     <div className={`tw-flex tw-h-[15%] tw-w-[100%] tw-overflow-scroll tw-relative no-scrollbar tw-items-center tw-justify-center ${isSmallScreen ? '-tw-mt-5' : 'tw-mt-0'}`}>
       <div style={{ display: 'flex', height: '70%', width: '94%' }}>
         <CustomHorizontalContainer className="tw-flex tw-p-0 tw-overflow-scroll tw-z-10 tw-overflow-y-hidden" style={{ transform: 'rotateX(180deg)', justifyContent: shouldCenterItems ? 'center' : 'flex-start', }}>
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} style={{ transform: 'rotateX(180deg)' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }} style={{ transform: 'rotateX(180deg)' }}>
             {reversedArray.length > 0 && reversedArray.map((val, i) => (
               <CustomButton
                 key={i}
