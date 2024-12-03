@@ -644,7 +644,6 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                                                 className="tw-flex tw-flex-col tw-px-3 tw-w-full"
                                                             >
                                                                 <CustomTextField
-                                                                    required
                                                                     checked={
                                                                         allChecked
                                                                     }

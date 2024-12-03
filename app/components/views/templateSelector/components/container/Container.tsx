@@ -90,7 +90,6 @@ const orderArray = (profile: any, headquarterData: any) => {
       },
     ],
   ];
-
   return finalArray;
 };
 
@@ -205,14 +204,13 @@ const TemplateContainer = ({
         >
           <Typography
             style={{ fontSize: val.label === "Correo" ? "14px" : undefined }}
-            className={`tw-w-[90%] tw-pr-9 tw-text-center tw-truncate ${val.order != 10 && "tw-capitalize"
-              }`}
+            className={`tw-w-[90%] tw-pr-9 tw-text-center tw-truncate`}
           >
             {val.label === "phones" ||
               val.label === "Telefono" ||
               val.label === "Teléfono"
               ? getCountryName(val.indicative) + "" + val.text
-              : val.text}
+              : val?.text?.length > 21 ? val?.text.substring(0, 18) + "..." : val?.text}
           </Typography>
         </Button>
       ))}
@@ -224,7 +222,7 @@ const TemplateContainer = ({
     companyData &&
     headquarterData && (
       <Container
-        className={`tw-h-[50%] tw-flex tw-flex-col tw-content-center tw-items-center tw-justify-center ${isSmallScreen ? "tw-mt-2" : "tw-mt-0"
+        className={`tw-h-[50%] tw-flex tw-flex-col tw-content-center tw-items-center tw-justify-center tw-p-0 ${isSmallScreen ? "tw-mt-2" : "tw-mt-0"
           }`}
       >
         <SaveContactButtonColor
@@ -261,6 +259,11 @@ const TemplateContainer = ({
                   zIndex: 1,
                 },
               }}
+              navButtonsProps={{
+                style: {
+                  margin: "0 10px"
+              }
+              }}  
             >
               {finalArray.map((item: any, i: number) => (
                 <Box

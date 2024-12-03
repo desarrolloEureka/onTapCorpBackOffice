@@ -25,6 +25,7 @@ import {
     saveEmployee,
     saveMeeting,
     saveNotification,
+    sendNotificationsToUsers,
     saveOneDocumentFb,
     saveRoute,
     saveSocialNetworkImage,
@@ -278,7 +279,6 @@ export const listenToEmployeesByCompanyIdQuery = (ref: string, setData: (data: a
         }));
         setData(updatedData); // Actualiza el estado con los datos obtenidos
     });
-
     return unsubscribe; // Devuelve la función de limpieza
 }
 
@@ -402,6 +402,11 @@ export const saveEditDataDocumentsQuery = async ({
 
 export const saveNotificationQuery = async (dataSave: any) => {
     const result = await saveNotification(dataSave);
+    return result;
+};
+
+export const sendNotificationsToUsersQuery = async (tokens: string[], title: string, body: string, image: string) => {
+    const result = await sendNotificationsToUsers(tokens, title, body, image);
     return result;
 };
 

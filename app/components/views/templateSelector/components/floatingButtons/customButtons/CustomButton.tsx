@@ -97,10 +97,10 @@ const CustomButton = ({
             color={"white"}
           >
             {nameLabel
-              ? nameLabel.length > 9
+              && nameLabel.length > 9
                 ? nameLabel.substring(0, 6) + "..."
                 : nameLabel
-              : name}
+              }
           </Typography>
         </div>
       </Link>

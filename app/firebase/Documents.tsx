@@ -27,6 +27,7 @@ import {
 import moment from "moment";
 import { db } from "shared/firebase/firebase";
 import { v4 as uuidv4 } from "uuid";
+
 const auth = getAuth();
 
 export const allRef = ({ ref }: AllRefPropsFirebase) => collection(db, ref);
@@ -161,6 +162,35 @@ export const saveNotification = async (dataSave: any) => {
     }
 };
 
+export const sendNotificationsToUsers = async (tokens: string[], title: string, body: string, image: string) => {
+    try {
+        if (tokens?.length === 0) {
+            console.log("No hay tokens disponibles para los usuarios proporcionados.");
+            return { success: false, message: "No tokens provided" };
+        }
+        const responses = await Promise.all(
+            tokens.map(async token => {
+                try {
+                    const response = await fetch("/api/notifications", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ token, title, body, image }),
+                    });
+                    const data = await response.json();
+                    return { token, success: response.ok, ...data };
+                } catch (error) {
+                    return { token, success: false, error: error };
+                }
+            })
+        );
+        console.log("Resultados:", responses);
+        return { success: true, message: "Notification sent successfully" };
+    } catch (error) {
+        console.error("Error al enviar la notificación:", error);
+        return { success: false, message: "Error sent notification", error };
+    }
+};
+
 export const saveZone = async (dataSave: any) => {
     try {
         const documentId = uuidv4();
@@ -256,14 +286,14 @@ export const getDocsByCompanyId = async (
         const q =
             fieldPathInDB && valueToFound
                 ? query(
-                      collection(db, reference),
-                      where("idCompany", "==", companyId),
-                      where(fieldPathInDB, "==", valueToFound),
-                  )
+                    collection(db, reference),
+                    where("idCompany", "==", companyId),
+                    where(fieldPathInDB, "==", valueToFound),
+                )
                 : query(
-                      collection(db, reference),
-                      where("idCompany", "==", companyId),
-                  );
+                    collection(db, reference),
+                    where("idCompany", "==", companyId),
+                );
 
         const querySnapshot = await getDocs(q);
 
@@ -288,14 +318,14 @@ export const getDocsByCompanyIdInRealTime = (
         const q =
             fieldPathInDB && valueToFound
                 ? query(
-                      collection(db, reference),
-                      where("idCompany", "==", companyId),
-                      where(fieldPathInDB, "==", valueToFound),
-                  )
+                    collection(db, reference),
+                    where("idCompany", "==", companyId),
+                    where(fieldPathInDB, "==", valueToFound),
+                )
                 : query(
-                      collection(db, reference),
-                      where("idCompany", "==", companyId),
-                  );
+                    collection(db, reference),
+                    where("idCompany", "==", companyId),
+                );
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             if (!querySnapshot.empty) {
@@ -309,7 +339,7 @@ export const getDocsByCompanyIdInRealTime = (
         return unsubscribe; // Retornar la variable inicializada
     } catch (error) {
         console.error("Error fetching Docs:", error);
-        const unsubscribe = () => {};
+        const unsubscribe = () => { };
         return unsubscribe; // Retornar array vacío en caso de error
     }
 };
@@ -325,14 +355,14 @@ export const getLocationsByCompanyIdInRealTime = (
         const q =
             fieldPathInDB && valueToFound
                 ? query(
-                      collection(db, reference),
-                      where("companyId", "==", companyId),
-                      where(fieldPathInDB, "==", valueToFound),
-                  )
+                    collection(db, reference),
+                    where("companyId", "==", companyId),
+                    where(fieldPathInDB, "==", valueToFound),
+                )
                 : query(
-                      collection(db, reference),
-                      where("companyId", "==", companyId),
-                  );
+                    collection(db, reference),
+                    where("companyId", "==", companyId),
+                );
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             if (!querySnapshot.empty) {
@@ -346,7 +376,7 @@ export const getLocationsByCompanyIdInRealTime = (
         return unsubscribe; // Retornar la variable inicializada
     } catch (error) {
         console.error("Error fetching Docs:", error);
-        const unsubscribe = () => {};
+        const unsubscribe = () => { };
         return unsubscribe; // Retornar array vacío en caso de error
     }
 };
@@ -384,14 +414,14 @@ export const getLocationsByCompanyId = async (
         const q =
             fieldPathInDB && valueToFound
                 ? query(
-                      collection(db, "locations"),
-                      where("companyId", "==", companyId),
-                      where(fieldPathInDB, "==", valueToFound),
-                  )
+                    collection(db, "locations"),
+                    where("companyId", "==", companyId),
+                    where(fieldPathInDB, "==", valueToFound),
+                )
                 : query(
-                      collection(db, "locations"),
-                      where("companyId", "==", companyId),
-                  );
+                    collection(db, "locations"),
+                    where("companyId", "==", companyId),
+                );
 
         const querySnapshot = await getDocs(q);
 
@@ -516,7 +546,7 @@ export const getMeetingStatusByCompanyId = async (companyId: any) => {
     }
 };
 
-export const getMeetingByCompanyId = async (companyId: any) => { 
+export const getMeetingByCompanyId = async (companyId: any) => {
     try {
         const q = query(
             collection(db, "meetings")
@@ -607,8 +637,8 @@ export const getLocationsByCompanyIdAndWorkingday = async (companyId: any) => {
         const querySnapshot2 = await getDocs(q2);
 
         const Locations = [
-            ...querySnapshot1.docs.map((doc) => ({...doc.data() })),
-            ...querySnapshot2.docs.map((doc) => ({...doc.data() })),
+            ...querySnapshot1.docs.map((doc) => ({ ...doc.data() })),
+            ...querySnapshot2.docs.map((doc) => ({ ...doc.data() })),
         ]
         return Locations;
     } catch (error) {
@@ -621,7 +651,7 @@ export const getEmployeesByCompanyId = async (companyId: any) => {
     try {
         const q = query(
             collection(db, "users"),
-            where("idCompany", "==", companyId), 
+            where("idCompany", "==", companyId),
             where("rolId", "==", "uysG1ULyEDklfbGDFate"),  //  ID DEL ROL DE EMPLEADO
         );
 
@@ -648,7 +678,7 @@ export const saveEmployee = async (dataSave: any) => {
             views: 0,
             preview: `https://one-tap-corp.vercel.app/components/views/cardView/?uid=${dataSave.uid}`,
             /*preview: `https://one-tap-corp-dev.vercel.app/components/views/cardView/?uid=${dataSave.uid}`,
-              LINK DE DESARROLLO VERCEL*/ 
+              LINK DE DESARROLLO VERCEL*/
             templateData: [
                 {
                     id: "VGMUWYOP3RK374gi30I8", // ID DEL TEMPLATE 1
