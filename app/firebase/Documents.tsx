@@ -165,7 +165,6 @@ export const saveNotification = async (dataSave: any) => {
 export const sendNotificationsToUsers = async (tokens: string[], title: string, body: string, image: string) => {
     try {
         if (tokens?.length === 0) {
-            console.log("No hay tokens disponibles para los usuarios proporcionados.");
             return { success: false, message: "No tokens provided" };
         }
         const responses = await Promise.all(
@@ -183,7 +182,6 @@ export const sendNotificationsToUsers = async (tokens: string[], title: string, 
                 }
             })
         );
-        console.log("Resultados:", responses);
         return { success: true, message: "Notification sent successfully" };
     } catch (error) {
         console.error("Error al enviar la notificación:", error);

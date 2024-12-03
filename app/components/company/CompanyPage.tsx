@@ -326,14 +326,13 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                             </div>
                           )}
                         </div>
-
                         {objToArrayItems?.phone?.map((item, index) => (
                           <div
                             key={index}
                             className="tw-flex tw-flex-col tw-px-3 tw-w-full"
                           >
                             <div className="tw-flex tw-flex-row tw-mt-4 tw-w-full">
-                              <div className="tw-relative tw-w-1/4 tw-mt-4">
+                              <div className="tw-relative tw-w-1/3 tw-mt-4">
                                 <ArrowDropDownIcon
                                   className="tw-absolute tw-top-1/2 tw-left-2 tw-transform tw--translate-y-1/2"
                                   style={{ color: "black" }}
@@ -359,7 +358,6 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                   }}
                                 />
                               </div>
-
                               <CustomTextField
                                 required
                                 checked={allChecked}
@@ -386,7 +384,6 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                 }}
                               />
                             </div>
-
                             <CustomTextField
                               data={item[4]}
                               onChange={(value: string, name: string) =>

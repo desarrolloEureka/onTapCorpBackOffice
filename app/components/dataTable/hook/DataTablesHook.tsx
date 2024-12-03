@@ -46,6 +46,15 @@ const CustomTitle = ({ row }: any) => (
   </div>
 );
 
+const CustomTitleTwo = ({ row }: any) => (
+  <div data-tag="allowRowEvents">
+    <span
+      className={`status ${row.isGPSActive ? "bg-success" : "bg-danger"} `}
+    ></span>
+    {row.isGPSActive ? "Activo" : "Inactivo"}
+  </div>
+);
+
 const CustomColor = ({ row }: any) => (
   <div>
     <div
@@ -712,6 +721,8 @@ const DataTablesHook = (reference: string) => {
           selector: (row: any) =>
             val === "isActive" ? (
               <CustomTitle row={row} />
+            ) : val === "isGPSActive" ? (
+              <CustomTitleTwo row={row} />
             ) : val === "color" ? (
               <CustomColor row={row} />
             ) : val === "uid" ? (
@@ -815,6 +826,8 @@ const DataTablesHook = (reference: string) => {
           width:
             val === "ext" || val === "idType"
               ? "80px"
+              : val === "isActive" || val === "isGPSActive"
+              ? "120px"
               : val === "content"
               ? "50%"
               : val === "issue"
@@ -1064,8 +1077,6 @@ const DataTablesHook = (reference: string) => {
       ).length;
       const validate = activeEmployeesCount < (companyData?.cardGPS || 0); // Verificar límite
       setCreatedGPSValid(validate);
-      console.log(validate);
-      console.log(activeEmployeesCount);
     };
     canOpenMainForm();
   }, [employeesData, companyData]);

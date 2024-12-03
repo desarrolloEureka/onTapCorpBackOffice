@@ -527,37 +527,38 @@ const EmployeesFormModal = ({
                                 className="tw-flex tw-flex-col tw-px-3 tw-w-full"
                               >
                                 <div className="tw-flex tw-flex-row tw-mt-4 tw-w-full">
-                                  <ArrowDropDownIcon
-                                    className="tw-absolute tw-top-1/2 tw-left-2 tw-transform tw--translate-y-1/2"
-                                    sx={{ color: "black" }}
-                                  />
-                                  <CustomMUITelInput
-                                    className="tw-mt-4 tw-w-1/3"
-                                    value={
-                                      item.indicative &&
-                                      item.indicative.includes("+")
-                                        ? item.indicative
-                                        : "+" + item.indicative
-                                    }
-                                    onChange={(value: string, name: string) =>
-                                      handleChangeItem(
-                                        "phones",
-                                        index,
-                                        name,
-                                        value
-                                      )
-                                    }
-                                    name="indicative"
-                                    theme={modeTheme}
-                                    id={`indicative-${index}`}
-                                    variant="standard"
-                                    size="medium"
-                                    label="Indicativo"
-                                    InputProps={{
-                                      readOnly: true,
-                                    }}
-                                  />
-
+                                  <div className="tw-relative tw-w-1/3 tw-mt-4">
+                                    <ArrowDropDownIcon
+                                      className="tw-absolute tw-top-1/2 tw-left-2 tw-transform tw--translate-y-1/2"
+                                      sx={{ color: "black" }}
+                                    />
+                                    <CustomMUITelInput
+                                      className="tw-pl-10"
+                                      value={
+                                        item.indicative &&
+                                        item.indicative.includes("+")
+                                          ? item.indicative
+                                          : "+" + item.indicative
+                                      }
+                                      onChange={(value: string, name: string) =>
+                                        handleChangeItem(
+                                          "phones",
+                                          index,
+                                          name,
+                                          value
+                                        )
+                                      }
+                                      name="indicative"
+                                      theme={modeTheme}
+                                      id={`indicative-${index}`}
+                                      variant="standard"
+                                      size="medium"
+                                      label="Indicativo"
+                                      InputProps={{
+                                        readOnly: true,
+                                      }}
+                                    />
+                                  </div>
                                   <CustomTextField
                                     data={[item.text, item.checked]}
                                     onChange={(
@@ -589,7 +590,6 @@ const EmployeesFormModal = ({
                                     }}
                                   />
                                 </div>
-
                                 <CustomTextField
                                   data={item.ext}
                                   onChange={(value: string, name: string) =>
