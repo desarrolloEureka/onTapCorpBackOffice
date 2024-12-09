@@ -725,15 +725,16 @@ export const getAllEmployees = async () => {
   }
 };
 
-//todas las empresas
+// Función para obtener todas las empresas
 export const getAllCompanies = async () => {
   try {
-    const q = query(collection(db, "companies"));
+    const companiesRef = collection(db, "companies");
+    const querySnapshot = await getDocs(companiesRef);
 
-    const querySnapshot = await getDocs(q);
-
+    // Mapeamos los documentos obtenidos y asignamos 'uid' en lugar de 'id'
     const companies = querySnapshot.docs.map((doc) => ({
-      ...doc.data(),
+      uid: doc.id, // Usamos 'uid' en lugar de 'id'
+      ...doc.data(), // Incluye los datos del documento
     }));
     return companies;
   } catch (error) {

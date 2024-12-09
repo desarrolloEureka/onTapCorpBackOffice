@@ -419,6 +419,7 @@ const HeaderContent = ({
                     <IoDocumentOutline size={20} className="tw-mb-1 tw-mr-1" />
                     Jornada Laboral
                   </NavDropdown.Item>
+                  
                   <NavDropdown.Item
                     //estadisticas
                     //href="#statisticalReports"
@@ -426,6 +427,15 @@ const HeaderContent = ({
                   >
                     <IoDocumentOutline size={20} className="tw-mb-1 tw-mr-1" />
                     Estadística
+                  </NavDropdown.Item>
+                  
+                  <NavDropdown.Item
+                    //visitas de empleado
+                    //href="#statisticalReports"
+                    eventKey="employeesMostVisits"
+                  >
+                    <IoDocumentOutline size={20} className="tw-mb-1 tw-mr-1" />
+                    Visitas
                   </NavDropdown.Item>
                 </NavDropdown>
               )}

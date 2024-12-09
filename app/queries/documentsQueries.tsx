@@ -326,10 +326,16 @@ export const getAllEmployeesQuery = async () => {
   return documents;
 };
 
+// Query para obtener todas las empresas
 export const getAllCompaniesQuery = async () => {
-  const documents = await getAllCompanies();
-  //console.log("DATA", documents);
-  return documents;
+  try {
+    const documents = await getAllCompanies();
+    // Aquí puedes procesar o manipular los datos si es necesario
+    return documents;
+  } catch (error) {
+    console.error("Error in getAllCompaniesQuery", error);
+    return [];
+  }
 };
 
 export const listenToEmployeesByCompanyIdQuery = (
@@ -379,6 +385,7 @@ export const listenToWorkAreaByCompanyIdQuery = (
       ...doc.data(),
     }));
     setData(updatedData); // Actualiza el estado con los datos obtenidos
+    //console.log("updatedData", updatedData)
   });
 
   return unsubscribe; // Devuelve la función de limpieza

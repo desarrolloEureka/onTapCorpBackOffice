@@ -214,17 +214,16 @@ const EmployeesFormModal = ({
                             height: "162px",
                             border: "11px solid #396593",
                             borderRadius: "50%",
-                            backgroundColor: selectedImage
-                              ? "transparent"
-                              : "#396593",
+                            backgroundColor: selectedImage ? "transparent" : "#396593",
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
                             color: "white",
                             fontSize: "16px",
                             textAlign: "center",
+                            position: "relative", 
                           }}
-                        >
+                          >
                           {selectedImage ? (
                             <img
                               style={{
@@ -240,8 +239,23 @@ const EmployeesFormModal = ({
                           ) : (
                             <span>Agregar foto</span>
                           )}
+                          
+                          {/* Información del tamaño de la foto */}
+                          <div
+                            className="tw-text-sm tw-text-gray-500"
+                            style={{
+                              position: "absolute",
+                              bottom: "-20px",  
+                              left: "100%",    
+                              marginLeft: "10px", 
+                              textAlign: "left",  
+                            }}
+                          >
+                            Tamaño recomendado: 200x200px
+                          </div>
                         </div>
-                      </div>
+                     </div>
+
                       <div
                         className="tw-flex tw-w-full tw-flex-col tw-justify-center tw-items-center"
                         style={{ position: "absolute" }}
@@ -560,35 +574,34 @@ const EmployeesFormModal = ({
                                     />
                                   </div>
                                   <CustomTextField
-                                    data={[item.text, item.checked]}
-                                    onChange={(
-                                      value: string,
-                                      name: string,
-                                      checked: boolean
-                                    ) =>
-                                      handleChangeItem(
-                                        "phones",
-                                        index,
-                                        name,
-                                        value,
-                                        checked
-                                      )
+                                  data={[item.text, item.checked]}
+                                  onChange={(value: string, name: string, checked: boolean) => {
+                                    const numericValue = value.replace(/\D/g, '');
+
+                                    if (numericValue.length <= 10) {
+                                      handleChangeItem("phones", index, name, numericValue, checked);
                                     }
-                                    name="text"
-                                    type="text"
-                                    switch="true"
-                                    theme={modeTheme}
-                                    id={`phone-${index}`}
-                                    fullWidth
-                                    label="Teléfono"
-                                    InputProps={{
-                                      startAdornment: (
-                                        <InputAdornment position="start">
-                                          <LocalPhoneOutlinedIcon />
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                  />
+                                  }}
+                                  name="text"
+                                  type="text"
+                                  switch="true"
+                                  theme={modeTheme}
+                                  id={`phone-${index}`}
+                                  fullWidth
+                                  label="Teléfono"
+                                  InputProps={{
+                                    startAdornment: (
+                                      <InputAdornment position="start">
+                                        <LocalPhoneOutlinedIcon />
+                                      </InputAdornment>
+                                    ),
+                                  }}
+                                  inputProps={{
+                                    maxLength: 10, 
+                                    pattern: '[0-9]*', 
+                                  }}
+                                />
+
                                 </div>
                                 <CustomTextField
                                   data={item.ext}

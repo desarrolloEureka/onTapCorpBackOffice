@@ -22,9 +22,12 @@ export const handleSendWelcomeEmail = async (data: any) => {
                 userName: `${data.name} ${data.lastName}`,
                 userEmail: data.email,
                 password: data.id,
+                rolId: data.rolId,
                 //Cambiar la URL de login a producción
                 /* loginUrl: "https://one-tap-corp-dev.vercel.app/components/signIn/",
                  LINK DE LOGUEO DE BIENVENIDA DESARROLLO VERCEL*/
+                loginUrlApple: "https://apps.apple.com/co/app/one-tap-corp/id6737350479",
+                loginUrlAndroid: "https://apps.apple.com/co/app/one-tap-corp/id6737350479",
                 loginUrl: "https://one-tap-corp.vercel.app/components/signIn/",
                 contactEmail: "info@onetap.com.co",
             }),
