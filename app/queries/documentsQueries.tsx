@@ -205,7 +205,6 @@ export const listenToIconsQuery = (ref: string, setData: (data: any[]) => void, 
     const updatedData = snapshot.docs
       .map((doc) => ({ id: doc.id, ...doc.data() }))
       .filter((icon: any) => {
-        console.log('icon ', icon);
         if (icon.type === "company" && icon.idCompany === idCompany) {
           return true;
         }
