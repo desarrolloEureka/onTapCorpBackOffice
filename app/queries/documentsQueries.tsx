@@ -205,12 +205,14 @@ export const listenToIconsQuery = (ref: string, setData: (data: any[]) => void, 
     const updatedData = snapshot.docs
       .map((doc) => ({ id: doc.id, ...doc.data() }))
       .filter((icon: any) => {
-        if (icon.type === "company" && icon.createdBy === idCompany) {
+        console.log('icon ', icon);
+        if (icon.type === "company" && icon.idCompany === idCompany) {
           return true;
         }
         return icon.type === "global"; // Los íconos globales siempre deben incluirse
       });
 
+    console.log('updatedData ', updatedData);
     setData(updatedData);
   });
 
