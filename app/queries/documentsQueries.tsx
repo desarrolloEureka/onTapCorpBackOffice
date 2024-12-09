@@ -210,8 +210,6 @@ export const listenToIconsQuery = (ref: string, setData: (data: any[]) => void, 
         }
         return icon.type === "global"; // Los íconos globales siempre deben incluirse
       });
-
-    console.log('updatedData ', updatedData);
     setData(updatedData);
   });
 
@@ -385,7 +383,6 @@ export const listenToWorkAreaByCompanyIdQuery = (
       ...doc.data(),
     }));
     setData(updatedData); // Actualiza el estado con los datos obtenidos
-    //console.log("updatedData", updatedData)
   });
 
   return unsubscribe; // Devuelve la función de limpieza
