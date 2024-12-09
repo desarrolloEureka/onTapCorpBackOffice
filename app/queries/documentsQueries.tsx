@@ -26,6 +26,7 @@ import {
   saveMeeting,
   saveNotification,
   sendNotificationsToUsers,
+  sendNotification,
   saveOneDocumentFb,
   saveRoute,
   saveSocialNetworkImage,
@@ -40,6 +41,7 @@ import {
   getMeetingByCompanyId,
   getAllEmployees,
   getLogosBySuperAdmin,
+  getAllCompanies,
 } from "@/firebase/Documents";
 import {
   uploadFile,
@@ -324,6 +326,12 @@ export const getAllEmployeesQuery = async () => {
   return documents;
 };
 
+export const getAllCompaniesQuery = async () => {
+  const documents = await getAllCompanies();
+  //console.log("DATA", documents);
+  return documents;
+};
+
 export const listenToEmployeesByCompanyIdQuery = (
   ref: string,
   setData: (data: any[]) => void,
@@ -481,6 +489,11 @@ export const saveNotificationQuery = async (dataSave: any) => {
 
 export const sendNotificationsToUsersQuery = async (tokens: string[], title: string, body: string, image: string) => {
   const result = await sendNotificationsToUsers(tokens, title, body, image);
+  return result;
+};
+
+export const sendNotificationQuery = async (token: string, title: string, body: string, image: string) => {
+  const result = await sendNotification(token, title, body, image);
   return result;
 };
 

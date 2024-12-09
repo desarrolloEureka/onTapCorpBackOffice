@@ -1,11 +1,10 @@
 var cron = require('node-cron');
-import useAuth from '@/firebase/auth';
-import { getEmployeesByCompanyIdQuery, sendNotificationsToUsersQuery } from '@/queries/documentsQueries';
+import { getAllEmployeesQuery, getAllCompaniesQuery, sendNotificationQuery } from '@/queries/documentsQueries';
 
 const useSendBirthdayNotifications = async () => {
-    const { companyData } = useAuth();
     try {
-        const employees = await getEmployeesByCompanyIdQuery(companyData?.uid);
+        const employees = await getAllEmployeesQuery();
+        const companies = await getAllCompaniesQuery();
         const today = new Date();
         const todayString = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
 
@@ -20,15 +19,36 @@ const useSendBirthdayNotifications = async () => {
             return;
         }
 
-        const tokens = birthdayEmployees.map(employee => employee.tokens).filter(token => token !== undefined);
-        const title = "¡Felicidades!";
-        const body = `${companyData?.businessName[0]} te desea un feliz cumpleaños.`;
-        await sendNotificationsToUsersQuery(tokens, title, body, companyData?.icon[0]);
-        console.log("Notificaciones de cumpleaños enviadas exitosamente.");
+        const updatedBirthdayEmployees = birthdayEmployees.map(employee => {
+            const company:any = companies.find(company => company.uid === employee.idCompany);
+            return {
+                ...employee,
+                companyName: company?.businessName[0] || '', 
+                companyImage: company?.icon[0] || '', 
+            };
+        });
+
+        const notificationPromises = updatedBirthdayEmployees.map(async (employee: any) => {
+            if (!employee?.tokens) {
+                console.log(`Empleado ${employee.id} no tiene tokens disponibles para notificación.`);
+                return { success: false, message: "No token available", employeeId: employee.id };
+            }
+
+            const body = `${employee?.companyName} te desea un feliz cumpleaños.`;
+            const result = await sendNotificationQuery(employee.tokens, "¡Felicidades!", body, employee?.companyImage);
+
+            return { success: result.success, message: result.message, employeeId: employee.id };
+        });
+
+        // Esperar a que todas las notificaciones se envíen
+        const results = await Promise.all(notificationPromises);
+
+        console.log("Resultados de las notificaciones:", results);
     } catch (error) {
         console.error("Error al enviar notificaciones de cumpleaños:", error);
     }
 };
+
 // Función para programar el envío de notificaciones de cumpleaños
 const scheduleBirthdayNotifications = () => {
     console.log("Verificando tarea programada ...");
