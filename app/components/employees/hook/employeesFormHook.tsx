@@ -576,6 +576,7 @@ const EmployeesFormHook = ({
             const documentRefUser: any = getDocumentReference("users");
 
             if (userData?.companyId) {
+                //console.log("data", email, password, documentRefUser, accessTokenUser)
                 await addUser({
                     email: email || "",
                     password: password,

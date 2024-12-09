@@ -103,8 +103,9 @@ const CampusHook = ({
         setData((prevData) => {
             const maxItems = 3;
             let newData = { ...prevData };
-
+    
             if (type === "phone") {
+                // Solo agregar un nuevo teléfono si no hemos llegado al límite de 3
                 if ((prevData.phones || []).length < maxItems) {
                     const updatedPhones: CampusDataPhone[] = [
                         ...(prevData.phones || []),
@@ -113,11 +114,22 @@ const CampusHook = ({
                     newData = { ...newData, phones: updatedPhones };
                 }
             }
-
+    
+            // Validación para asegurarse de que los números de teléfono no excedan los 10 dígitos
+            if (newData.phones) {
+                newData.phones = newData.phones.map((phone) => {
+                    if (phone.text.length > 10) {
+                        phone.text = phone.text.slice(0, 10); // Limitar a 10 dígitos
+                    }
+                    return phone;
+                });
+            }
+    
             return newData;
+            
         });
     };
-
+    
     const handleDeleteItem = (indexItem: number) => {
         setData((prevData) => ({
             ...prevData,

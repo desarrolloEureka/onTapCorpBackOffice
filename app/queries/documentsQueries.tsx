@@ -39,6 +39,7 @@ import {
   updateZone,
   getMeetingByCompanyId,
   getAllEmployees,
+  getAllCompanies
 } from "@/firebase/Documents";
 import {
   uploadFile,
@@ -273,6 +274,19 @@ export const getAllEmployeesQuery = async () => {
   return documents;
 };
 
+// Query para obtener todas las empresas
+export const getAllCompaniesQuery = async () => {
+  try {
+    const documents = await getAllCompanies();
+    // Aquí puedes procesar o manipular los datos si es necesario
+    return documents;
+  } catch (error) {
+    console.error("Error in getAllCompaniesQuery", error);
+    return [];
+  }
+};
+
+
 export const listenToEmployeesByCompanyIdQuery = (
   ref: string,
   setData: (data: any[]) => void,
@@ -320,6 +334,7 @@ export const listenToWorkAreaByCompanyIdQuery = (
       ...doc.data(),
     }));
     setData(updatedData); // Actualiza el estado con los datos obtenidos
+    //console.log("updatedData", updatedData)
   });
 
   return unsubscribe; // Devuelve la función de limpieza

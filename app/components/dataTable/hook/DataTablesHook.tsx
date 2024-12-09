@@ -20,6 +20,7 @@ import {
   listenToWorkAreaByCompanyIdQuery,
   listenToEmployeesByCompanyIdQuery,
   getAllEmployeesQuery,
+  getAllCompaniesQuery
 } from "@/queries/documentsQueries";
 import { DataMainFormObject } from "@/types/mainForm";
 import { setDataTable } from "@/types/tables";
@@ -319,6 +320,8 @@ const DataTablesHook = (reference: string) => {
       }
     });
 
+    
+
     // Procesar los startDay sin un endDay correspondiente al final
     for (const employeeId in tempStartDays) {
       if (tempStartDays[employeeId]) {
@@ -389,6 +392,47 @@ const DataTablesHook = (reference: string) => {
     );
   };
 
+  const prepareEmployeesData = async () => {
+    try {
+      // Obtener los empleados y las empresas
+      const employees = await getAllEmployeesQuery();
+      const companies = await getAllCompaniesQuery();
+  
+      const companiesMap: { [key: string]: { uid: string; businessName?: string[] } } = companies.reduce((map, company) => {
+
+        if (company.uid) {
+          map[company.uid] = company;
+        } else {
+          console.warn(`Empresa sin 'uid' encontrada:`, company);
+        }
+        return map;
+      }, {} as { [key: string]: { uid: string; businessName?: string[] } });
+  
+      const enrichedEmployees = employees.map((employee) => {
+
+        const company = companiesMap[employee.idCompany];  
+  
+        // Log de los datos combinados por cada empleado
+        //console.log(`Empleado: ${employee.firstName} ${employee.lastName}, Empresa: ${company?.businessName?.[0] || "Sin empresa"}`);
+  
+        return {
+          ...employee,
+          companyName: company?.businessName?.[0] || "Sin empresa", 
+          companyDetails: company || null, 
+        };
+      });
+  
+      //console.log("Combinacion de empleados y empresas:", enrichedEmployees);
+  
+      return enrichedEmployees;
+  
+    } catch (error) {
+      console.error("Error combinando los datos de empleados y empresas", error);
+      return [];
+    }
+  };
+  
+
   const getAllDocuments = useCallback(async () => {
     let documents: any = [];
     if (selectReport === "metadatos") {
@@ -417,12 +461,13 @@ const DataTablesHook = (reference: string) => {
                 ? await getNotificationsByCompanyIdQuery(userData?.companyId)
                 : []
             )
-          : reference === "workAreas" && workAreas.length > 0
+          : reference === "workAreas"
+
           ? formatDataByDate(workAreas)
-          : reference === "employees" && employeesData.length > 0
+          : reference === "employees"
           ? formatEmployeesData(employeesData)
           : reference === "superadminEmployees"
-          ? formatEmployeesData(await getAllEmployeesQuery())
+          ? formatEmployeesData(await prepareEmployeesData())
           : reference === "statisticalReports"
           ? formatEmployeesData(
               userData && userData?.companyId
@@ -555,6 +600,7 @@ const DataTablesHook = (reference: string) => {
       } else if (reference === "employees") {
         columnNamesToDisplay = {
           uid: "Acciones",
+          createdDate: "Fecha creación",
           firstName: "Nombre",
           lastName: "Apellido",
           documentType: "Tipo de Documento",
@@ -576,6 +622,7 @@ const DataTablesHook = (reference: string) => {
           position: "Cargo",
           phone: "Teléfono",
           email: "Correo Empleado",
+          companyName: "Nombre de la Empresa"
         };
       } else if (reference === "statisticalReports") {
         columnNamesToDisplay = {
@@ -915,32 +962,42 @@ const DataTablesHook = (reference: string) => {
     const end = new Date(`${endDate}T23:59:59Z`).getTime();
 
     return data.filter((item: any) => {
-      const itemTimestamp = new Date(item.timestamp).getTime();
+      let itemTimestamp = new Date().getTime();
+      if (item?.timestamp) {
+        itemTimestamp = new Date(item.timestamp).getTime();
+      } else if (item?.createdDate) {
+        itemTimestamp = new Date(item.createdDate).getTime();
+      }
+      
       return itemTimestamp >= start && itemTimestamp <= end;
     });
   };
 
-  // Función para filtrar por búsqueda
-  const filterBySearch = (data: any[], value: string, reference: string) => {
-    if (!value) {
-      return data; // Si no hay valor de búsqueda, devuelve los datos originales
-    }
-    return data.filter((item: any) => {
-      return _.some(item, (prop, key) => {
-        if (reference === "departments") {
-          return (
-            key === "departamento" &&
-            prop.toString().toLowerCase().includes(value)
-          );
-        } else if (Array.isArray(prop)) {
-          return prop.some((subProp) =>
-            subProp.toString().toLowerCase().includes(value)
-          );
-        }
-        return prop.toString().toLowerCase().includes(value);
+    // Función para filtrar por búsqueda
+    const filterBySearch = (data: any[], value: string, reference: string) => {
+      if (!value) {
+        return data; 
+      }
+      return data.filter((item: any) => {
+        return _.some(item, (prop, key) => {
+          if (reference === "departments") {
+            return (
+              key === "departamento" &&
+              prop?.toString().toLowerCase().includes(value)
+            );
+          } else if (Array.isArray(prop)) {
+            return prop.some((subProp) =>
+              subProp?.toString().toLowerCase().includes(value)
+            );
+          }
+          if (prop == null) {
+            return false; // Si prop es null o undefined, no coincide
+          }
+          return prop.toString().toLowerCase().includes(value);
+        });
       });
-    });
-  };
+    };
+
 
   // Función combinada
   const handleSearchAndFilter = async (e: any) => {
@@ -1040,11 +1097,14 @@ const DataTablesHook = (reference: string) => {
   ]);
 
   useEffect(() => {
+    setWorkAreas([])
     const fetchData = listenToWorkAreaByCompanyIdQuery(
       "workAreas",
       setWorkAreas,
       userData?.companyId
+      
     );
+    //console.log("data", userData?.companyId)
     return () => fetchData();
   }, [userData?.companyId]);
 

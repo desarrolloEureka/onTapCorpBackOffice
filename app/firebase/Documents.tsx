@@ -675,6 +675,26 @@ export const getAllEmployees = async () => {
   }
 };
 
+// Función para obtener todas las empresas
+export const getAllCompanies = async () => {
+  try {
+    const companiesRef = collection(db, "companies");
+    const querySnapshot = await getDocs(companiesRef);
+
+    // Mapeamos los documentos obtenidos y asignamos 'uid' en lugar de 'id'
+    const companies = querySnapshot.docs.map((doc) => ({
+      uid: doc.id, // Usamos 'uid' en lugar de 'id'
+      ...doc.data(), // Incluye los datos del documento
+    }));
+
+    return companies;
+  } catch (error) {
+    console.error("Error fetching companies", error);
+    return [];
+  }
+};
+
+
 export const saveEmployee = async (dataSave: any) => {
   try {
     const docRef = doc(db, "users", dataSave.uid);

@@ -19,6 +19,7 @@ import Image from "next/image";
 import LinkIcon from "@mui/icons-material/Link";
 import React from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import InfoOutlined from "@mui/icons-material/InfoOutlined";
 
 type CompanyProps = {
   theme: string;
@@ -284,7 +285,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                 InputProps={{
                                   startAdornment: (
                                     <InputAdornment position="start">
-                                      <AttachFileOutlinedIcon />
+                                      <InfoOutlined />
                                     </InputAdornment>
                                   ),
                                 }}
@@ -359,30 +360,37 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                 />
                               </div>
                               <CustomTextField
-                                required
-                                checked={allChecked}
-                                data={[item[1], item[2]]}
-                                onChange={(
-                                  value: string,
-                                  name: string,
-                                  checked: boolean
-                                ) => handleChange(value, name, checked)}
-                                name={item[0]}
-                                type="text"
-                                switch="true"
-                                theme={theme}
-                                id={item[0]}
-                                fullWidth
-                                label="Teléfono"
-                                maxLength={10}
-                                InputProps={{
-                                  startAdornment: (
-                                    <InputAdornment position="start">
-                                      <LocalPhoneOutlinedIcon />
-                                    </InputAdornment>
-                                  ),
-                                }}
-                              />
+                              required
+                              checked={allChecked}
+                              data={[item[1], item[2]]}
+                              onChange={(value: string, name: string, checked: boolean) => {
+  
+                                const numericValue = value.replace(/\D/g, '');
+
+                                if (numericValue.length <= 10) {
+                                  handleChange(value, name, checked);
+                                }
+                              }}
+                              name={item[0]}
+                              type="text"
+                              switch="true"
+                              theme={theme}
+                              id={item[0]}
+                              fullWidth
+                              label="Teléfono"
+                              InputProps={{
+                                startAdornment: (
+                                  <InputAdornment position="start">
+                                    <LocalPhoneOutlinedIcon />
+                                  </InputAdornment>
+                                ),
+                              }}
+                              inputProps={{
+                                maxLength: 10,
+                                pattern: '[0-9]*', 
+                              }}
+                            />
+
                             </div>
                             <CustomTextField
                               data={item[4]}
@@ -508,7 +516,6 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                   ),
                                 }}
                               />
-
                               <CustomTextField
                                 required
                                 data={item[4]}
@@ -544,56 +551,6 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                 index={index}
                                 label="Dato"
                               />
-
-                              {/* <div className="tw-flex tw-flex-col tw-justify-center tw-items-center tw-px-3 tw-mt-4 tw-w-full">
-                                                                    <Button
-                                                                        onClick={() =>
-                                                                            handleOpenModalIcons(
-                                                                                item,
-                                                                                index,
-                                                                            )
-                                                                        }
-                                                                        variant="text"
-                                                                    >
-                                                                        <Avatar
-                                                                            sx={{
-                                                                                backgroundColor:
-                                                                                    "transparent",
-                                                                                width: 40,
-                                                                                height: 40,
-                                                                            }}
-                                                                        >
-                                                                            {datafilter &&
-                                                                            datafilter?.imageUrl ? (
-                                                                                <Image
-                                                                                    src={
-                                                                                        datafilter.imageUrl
-                                                                                    }
-                                                                                    // alt={
-                                                                                    // 		datafilter.name
-                                                                                    // }
-                                                                                    alt="avatar"
-                                                                                    width={
-                                                                                        40
-                                                                                    }
-                                                                                    height={
-                                                                                        40
-                                                                                    }
-                                                                                />
-                                                                            ) : (
-                                                                                <LinkIcon
-                                                                                    style={{
-                                                                                        fontSize: 34,
-                                                                                    }}
-                                                                                    className="tw-text-gray-400"
-                                                                                />
-                                                                            )}
-                                                                        </Avatar>
-                                                                    </Button>
-                                                                    <Typography className="tw-font-bold tw-text-black">
-                                                                        URL
-                                                                    </Typography>
-                                                                </div> */}
                             </div>
                           );
                         })}

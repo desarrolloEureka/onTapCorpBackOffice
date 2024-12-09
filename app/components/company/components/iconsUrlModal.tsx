@@ -13,7 +13,7 @@ const IconsUrlModal = ({
     val,
     modeTheme
 }: ModalIcons) => {
-    return dataLogos && (
+    return (
         <Modal
             centered
             show={show}
@@ -47,32 +47,37 @@ const IconsUrlModal = ({
                 style={{ borderTop: "2px solid #396593", marginTop: 6 }}
             >
                 <div className='tw-w-full tw-h-full tw-flex tw-justify-center tw-items-center tw-p-3'>
-                    <div className='tw-grid tw-grid-cols-5 tw-gap-x-0.5 tw-w-full tw-overflow-y-scroll tw-max-h-[550px]'>
-                        {dataLogos && dataLogos.map((logo: any, index: any) => (
-                            <div key={index} className='tw-h-[90px] tw-w-[70px] tw-flex tw-justify-center tw-items-center'>
-                                <div className='tw-h-[90%] tw-w-[50px] tw-flex tw-flex-col tw-justify-center tw-items-center'>
-                                    <Typography className='tw-text-center truncate' style={{ fontSize: 14, color: modeTheme === 'light' ? 'black' : 'white' }}>
-                                        {logo.imageName.length > 8 ? logo.imageName.substring(0, 10) : logo.imageName}
-                                    </Typography>
-                                    <Button
-                                        onClick={() => handleDataNetworks(logo.imageName, itemKey)}
-                                        className={`${val && val?.[6] === logo.imageName ? 'tw-bg-[#396593]' : 'tw-bg-[#b8bcc0]'} tw-p-2 tw-min-w-min`}
-                                        style={{
-                                            border: "none"
-                                        }}
-                                    >
-                                        <div className='tw-flex tw-flex-col tw-items-center tw-w-[38px] tw-h-[38px]'>
-                                            <Image src={logo.imageUrl} alt={logo.imageName} width={39} height={39} />
-                                        </div>
-                                    </Button>
+                    {dataLogos && dataLogos.length > 0 ? (
+                        <div className='tw-grid tw-grid-cols-5 tw-gap-x-0.5 tw-w-full tw-overflow-y-scroll tw-max-h-[550px]'>
+                            {dataLogos.map((logo: any, index: any) => (
+                                <div key={index} className='tw-h-[90px] tw-w-[70px] tw-flex tw-justify-center tw-items-center'>
+                                    <div className='tw-h-[90%] tw-w-[50px] tw-flex tw-flex-col tw-justify-center tw-items-center'>
+                                        <Typography className='tw-text-center truncate' style={{ fontSize: 14, color: modeTheme === 'light' ? 'black' : 'white' }}>
+                                            {logo.imageName.length > 8 ? logo.imageName.substring(0, 10) : logo.imageName}
+                                        </Typography>
+                                        <Button
+                                            onClick={() => handleDataNetworks(logo.imageName, itemKey)}
+                                            className={`${val && val?.[6] === logo.imageName ? 'tw-bg-[#396593]' : 'tw-bg-[#b8bcc0]'} tw-p-2 tw-min-w-min`}
+                                            style={{
+                                                border: "none"
+                                            }}
+                                        >
+                                            <div className='tw-flex tw-flex-col tw-items-center tw-w-[38px] tw-h-[38px]'>
+                                                <Image src={logo.imageUrl} alt={logo.imageName} width={39} height={39} />
+                                            </div>
+                                        </Button>
+                                    </div>
                                 </div>
-                            </div>
-
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <Typography className="tw-text-center tw-text-gray-500" style={{ fontSize: 16 }}>
+                            No hay logos de redes sociales disponibles. Por favor, cree algunos primero.
+                        </Typography>
+                    )}
                 </div>
             </Modal.Body>
-        </Modal >
+        </Modal>
     );
 };
 

@@ -823,64 +823,46 @@ const MainFormModal = ({
                                                                 className="mb-3"
                                                             >
                                                                 <TextField
-                                                                    value={
-                                                                        data &&
-                                                                        data.phone
+                                                                value={data && data.phone}
+                                                                onChange={(e) => {
+                                                                    // Elimina cualquier carácter no numérico
+                                                                    const numericValue = e.target.value.replace(/\D/g, '');
+                                                                    
+                                                                    // Limita la longitud a 10 caracteres
+                                                                    if (numericValue.length <= 10) {
+                                                                    handleChange(numericValue, e.target.name);
                                                                     }
-                                                                    onChange={(e) =>
-                                                                        handleChange(
-                                                                            e.target
-                                                                                .value,
-                                                                            e.target
-                                                                                .name,
-                                                                        )
-                                                                    }
-                                                                    name="phone"
-                                                                    id="phone"
-                                                                    type="text"
-                                                                    variant="standard"
-                                                                    color="primary"
-                                                                    fullWidth
-                                                                    className={`tw-my-4`}
-                                                                    label="Teléfono/Cel"
-                                                                    InputProps={{
-                                                                        startAdornment:
-                                                                            (
-                                                                                <InputAdornment
-                                                                                    className="tw-text-[#64a5e2]"
-                                                                                    position="start"
-                                                                                >
-                                                                                    <FaPhone
-                                                                                        size={
-                                                                                            18
-                                                                                        }
-                                                                                    />
-                                                                                </InputAdornment>
-                                                                            ),
-                                                                    }}
-                                                                    InputLabelProps={{
-                                                                        style: {
-                                                                            fontSize:
-                                                                                "20px",
-                                                                            fontWeight:
-                                                                                "bold",
-                                                                            color:
-                                                                                modeTheme ===
-                                                                                "light"
-                                                                                    ? "#396593"
-                                                                                    : "#8bb8e7",
-                                                                        },
-                                                                    }}
-                                                                    inputProps={{
-                                                                        maxLength: 550,
-                                                                        minLength: 2,
-                                                                        pattern:
-                                                                            "^(\\+?\\d{1,4})?\\s?\\d{10,15}$",
-                                                                        title: "Por favor, ingrese un número de teléfono válido",
-                                                                        readOnly:
-                                                                            !isEdit,
-                                                                    }}
+                                                                }}
+                                                                name="phone"
+                                                                id="phone"
+                                                                type="text"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                fullWidth
+                                                                className={`tw-my-4`}
+                                                                label="Teléfono/Cel"
+                                                                InputProps={{
+                                                                    startAdornment: (
+                                                                    <InputAdornment className="tw-text-[#64a5e2]" position="start">
+                                                                        <FaPhone size={18} />
+                                                                    </InputAdornment>
+                                                                    ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                    fontSize: "20px",
+                                                                    fontWeight: "bold",
+                                                                    color: modeTheme === "light" ? "#396593" : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                                inputProps={{
+                                                                    maxLength: 10, 
+                                                                    pattern: "[0-9]*", 
+                                                                    title: "Por favor, ingrese un número de teléfono válido",
+                                                                    readOnly: !isEdit,
+                                                                }}
                                                                 />
+
                                                             </Col>
                                                             <Col
                                                                 md={6}
