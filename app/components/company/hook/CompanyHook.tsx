@@ -5,7 +5,8 @@ import {
     getAllDocumentsQuery,
     saveDataDocumentsQueryById,
     saveIconFile,
-    listenToDocumentsQuery
+    listenToDocumentsQuery,
+    listenToIconsQuery
 } from "@/queries/documentsQueries";
 import { getCoordinates } from "@/queries/GeoMapsQueries";
 import { MyStateType } from "@/types/company";
@@ -32,7 +33,8 @@ const CompanyHook = () => {
     const [itemUrlSelected, setItemUrlSelected] = useState([]);
 
     useEffect(() => {
-        const fetchDocuments = listenToDocumentsQuery("logos", setDataLogos, companyData?.uid);
+        //const fetchDocuments = listenToDocumentsQuery("logos", setDataLogos, companyData?.uid);
+        const fetchDocuments = listenToIconsQuery("logos", setDataLogos, companyData?.uid);
         return () => fetchDocuments();
     }, [companyData?.uid]);
 

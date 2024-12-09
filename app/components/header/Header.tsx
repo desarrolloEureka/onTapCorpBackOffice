@@ -575,6 +575,27 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
           />
         </Tab.Pane>
 
+        {/* Vista del Logos SuperAdministrador */}
+        <Tab.Pane
+          className="tab-pane text-muted"
+          id="logos"
+          role="tabpanel"
+          eventKey="logosSuperAdmin"
+        >
+          <BannerMenu
+            seoTitle="Logos"
+            title="Logos"
+            item="Dashboard"
+            activeItem="Registro de Logos"
+          />
+          <DataTableComponent
+            componentTitle="Tabla del Listado de Logos."
+            componentDescription="En esta tabla se encuentran listados todos los usuarios para su administración."
+            tableTitle="Logos"
+            reference="logosSuperAdmin"
+          />
+        </Tab.Pane>
+
         {/* Vista de Plantillas */}
         <Tab.Pane
           className="tab-pane text-muted"

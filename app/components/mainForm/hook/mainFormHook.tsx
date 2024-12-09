@@ -17,7 +17,8 @@ import {
     saveIconFile,
     listenToDocumentsQuery,
     saveDataDocumentsQueryById,
-    listenToEmployeesByCompanyIdQuery
+    listenToEmployeesByCompanyIdQuery,
+    listenToIconsQuery
 } from "@/queries/documentsQueries";
 import { getCoordinates } from "@/queries/GeoMapsQueries";
 import { ErrorDataForm } from "@/types/documents";
@@ -75,7 +76,8 @@ const MainFormHook = ({
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
     useEffect(() => {
-        const fetchDocuments = listenToDocumentsQuery("logos", setDataLogos, companyData?.uid);
+        //const fetchDocuments = listenToDocumentsQuery("logos", setDataLogos, companyData?.uid);
+        const fetchDocuments = listenToIconsQuery("logos", setDataLogos, companyData?.uid);
         return () => fetchDocuments();
     }, [companyData?.uid]);
 

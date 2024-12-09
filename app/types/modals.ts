@@ -15,6 +15,7 @@ export interface ModalParamsMainForm {
     editData: any;
     data?: any;
     handleDeleteItem?: any
+    isSuperAdmin?: boolean
 }
 
 export interface ModalIcons {
