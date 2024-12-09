@@ -21,6 +21,7 @@ import {
   listenToEmployeesByCompanyIdQuery,
   getAllEmployeesQuery,
   getAllCompaniesQuery
+  getLogosBySuperAdminQuery,
 } from "@/queries/documentsQueries";
 import { DataMainFormObject } from "@/types/mainForm";
 import { setDataTable } from "@/types/tables";
@@ -36,6 +37,7 @@ import { useCallback, useEffect, useState } from "react";
 import { FaTrashCan } from "react-icons/fa6";
 import { MdModeEdit } from "react-icons/md";
 import Swal from "sweetalert2";
+import { LocalVariable } from "@/types/global";
 require("dotenv").config();
 
 const CustomTitle = ({ row }: any) => (
@@ -96,6 +98,10 @@ const DataTablesHook = (reference: string) => {
   const [createdValid, setCreatedValid] = useState(false);
   const [createdGPSValid, setCreatedGPSValid] = useState(false);
   const [statisticsDetail, setStatisticsDetail] = useState<any>();
+  const [showAlert, setShowAlert] = useState(false);
+  const [isShowQR, setIsShowQR] = useState(false);
+  const theme = localStorage.getItem("@theme");
+  const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
   const formatearFecha = (fechaISO: string): string => {
     if (fechaISO != "-") {
@@ -130,9 +136,8 @@ const DataTablesHook = (reference: string) => {
         (horaDuracionISO % (1000 * 60 * 60)) / (1000 * 60)
       );
 
-      return `${hours} hora${hours !== 1 ? "s" : ""} y ${minutes} minuto${
-        minutes !== 1 ? "s" : ""
-      }`;
+      return `${hours} hora${hours !== 1 ? "s" : ""} y ${minutes} minuto${minutes !== 1 ? "s" : ""
+        }`;
     } else {
       return "-";
     }
@@ -201,6 +206,7 @@ const DataTablesHook = (reference: string) => {
         ...document,
         phone: document?.phones[0]?.text,
         email: document?.emails[0]?.text,
+        actions: { uid: document?.uid, preview: document?.preview }
       });
     });
     return result;
@@ -534,7 +540,6 @@ const DataTablesHook = (reference: string) => {
             )
           : await getAllDocumentsQuery(reference);
     }
-
     //console.log("datos = ", documents);
     const labelToDisplay = ["professionals", "patients", "functionary"];
     //reference === "employees" && console.log('documents ', documents);
@@ -599,8 +604,8 @@ const DataTablesHook = (reference: string) => {
         };
       } else if (reference === "employees") {
         columnNamesToDisplay = {
-          uid: "Acciones",
           createdDate: "Fecha creación",
+          actions: "Acciones",
           firstName: "Nombre",
           lastName: "Apellido",
           documentType: "Tipo de Documento",
@@ -613,7 +618,7 @@ const DataTablesHook = (reference: string) => {
         };
       } else if (reference === "superadminEmployees") {
         columnNamesToDisplay = {
-          uid: "Acciones",
+          preview: "Acciones",
           createdDate: "Fecha creación",
           firstName: "Nombre",
           lastName: "Apellido",
@@ -645,7 +650,7 @@ const DataTablesHook = (reference: string) => {
           zoneName: "Zona correspondiente",
           estimatedTime: "Tiempo estimado",
         };
-      } else if (reference === "logos") {
+      } else if (reference === "logos" || reference === "logosSuperAdmin") {
         columnNamesToDisplay = {
           uid: "Acciones",
           // createdDate: "Fecha de creación",
@@ -772,24 +777,50 @@ const DataTablesHook = (reference: string) => {
               <CustomTitleTwo row={row} />
             ) : val === "color" ? (
               <CustomColor row={row} />
-            ) : val === "uid" ? (
+            ) : val === "preview" ? (
               <div>
-                {reference === "superadminEmployees" ? (
+                {reference === "superadminEmployees" && (
                   <>
-                    <IconButton onClick={() => onShowQr()}>
+                    <IconButton onClick={() => onMainFormModalQR(row)}>
                       <QrCodeIcon
                         font-size={20}
                         className="icon-actions-table"
                       />
                     </IconButton>
-                    <IconButton onClick={() => {}}>
+                    <IconButton onClick={() => handleCopy(row[val])}>
                       <InsertLinkIcon
                         font-size={20}
                         className="icon-actions-table"
                       />
                     </IconButton>
                   </>
-                ) : reference === "statisticalReports" ? (
+                )}
+              </div>
+            ) : val === "actions" ? (
+              <div>
+                {reference === "employees" ? (
+                  <>
+                    <IconButton onClick={() => onMainFormModalEdit(row)}>
+                      <MdModeEdit size={20} className="icon-actions-table" />
+                    </IconButton>
+                    <IconButton onClick={() => onMainFormModalQR(row)}>
+                      <QrCodeIcon
+                        font-size={20}
+                        className="icon-actions-table"
+                      />
+                    </IconButton>
+                    <IconButton onClick={() => handleCopy(row.preview)}>
+                      <InsertLinkIcon
+                        font-size={20}
+                        className="icon-actions-table"
+                      />
+                    </IconButton>
+                  </>
+                ) : null}
+              </div>
+            ) : val === "uid" ? (
+              <div>
+                {reference === "statisticalReports" ? (
                   <>
                     <IconButton
                       onClick={() => {
@@ -874,45 +905,45 @@ const DataTablesHook = (reference: string) => {
             val === "ext" || val === "idType"
               ? "80px"
               : val === "isActive" || val === "isGPSActive"
-              ? "120px"
-              : val === "content"
-              ? "50%"
-              : val === "issue"
-              ? "20%"
-              : val === "hour" || val === "issue"
-              ? "15%"
-              : reference === "companies" || reference === "employees"
-              ? val === "uid"
-                ? "auto"
-                : "250px"
-              : reference === "workAreas"
-              ? val === "timestamp"
-                ? "15%"
-                : "auto"
-              : reference === "meetingStatus"
-              ? val === "uid"
-                ? "10%"
-                : "auto"
-              : reference === "meetings"
-              ? val === "date" || val === "meetingStart" || val === "meetingEnd"
-                ? "8%"
-                : "200px"
-              : "auto",
+                ? "120px"
+                : val === "content"
+                  ? "50%"
+                  : val === "issue"
+                    ? "20%"
+                    : val === "hour" || val === "issue"
+                      ? "15%"
+                      : reference === "companies" || reference === "employees"
+                        ? val === "uid"
+                          ? "auto"
+                          : "250px"
+                        : reference === "workAreas"
+                          ? val === "timestamp"
+                            ? "15%"
+                            : "auto"
+                          : reference === "meetingStatus"
+                            ? val === "uid"
+                              ? "10%"
+                              : "auto"
+                            : reference === "meetings"
+                              ? val === "date" || val === "meetingStart" || val === "meetingEnd"
+                                ? "8%"
+                                : "200px"
+                              : "auto",
           omit: !omittedColumns.includes(val),
           style:
             val === "uid" && reference === "meetingStatus"
               ? {
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                }
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+              }
               : val === "uid"
-              ? {
+                ? {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }
-              : {},
+                : {},
         };
 
         cols.push(columnsData);
@@ -923,9 +954,12 @@ const DataTablesHook = (reference: string) => {
         data: documents,
       };
 
-      // console.log("cols", cols);
-      //console.log("currentData", currentData);
-      // console.log("documents", documents);
+      if (reference === "workAreas") {
+        console.log("cols", cols);
+        console.log("currentData", currentData);
+        console.log("documents", documents);
+      }
+
 
       setColumns(cols);
       setDataTable(currentData); //obtain dataTable
@@ -939,7 +973,7 @@ const DataTablesHook = (reference: string) => {
       setDataTable(currentData); //obtain dataTable
       setGetDocuments(currentData.data); //obtain data
     }
-  }, [reference, userData, workAreas, employeesData, selectReport, metadata]);
+  }, [reference, userData, employeesData, selectReport, metadata]);
 
   const clearSearch = () => {
     setSearchTerm("");
@@ -1030,7 +1064,22 @@ const DataTablesHook = (reference: string) => {
   const onMainFormModalEdit = (row: any) => {
     setHandleShowMainFormEdit(true);
     setEditData(row);
-    // console.log(row);
+    setIsShowQR(false);
+  };
+
+  const onMainFormModalQR = (row: any) => {
+    setHandleShowMainForm(true);
+    setEditData(row);
+    setIsShowQR(true);
+  };
+
+  const handleCopy = (row: any) => {
+    navigator.clipboard
+      .writeText(row)
+      .then(() => {
+        setShowAlert(true);
+        setTimeout(() => setShowAlert(false), 2000);
+      })
   };
 
   const filterDataMetrics = (row: any) => {
@@ -1144,6 +1193,7 @@ const DataTablesHook = (reference: string) => {
   // console.log(!isEmptyDataRef);
 
   return {
+    modeTheme: themeParsed?.dataThemeMode,
     columns,
     data: getDocuments,
     handleShowCsv,
@@ -1181,6 +1231,8 @@ const DataTablesHook = (reference: string) => {
     userData,
     statisticsDetail,
     setStatisticsDetail,
+    showAlert,
+    isShowQR
   };
 };
 

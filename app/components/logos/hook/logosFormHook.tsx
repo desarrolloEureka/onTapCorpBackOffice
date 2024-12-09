@@ -15,6 +15,7 @@ const LogosFormHook = ({
     handleShowMainFormEdit,
     setHandleShowMainFormEdit,
     editData,
+    isSuperAdmin
 }: ModalParamsMainForm) => {
     const { userData } = useAuth();
     const [show, setShow] = useState(false);
@@ -102,18 +103,20 @@ const LogosFormHook = ({
         setIsLoading(true);
 
         try {
-            // const now = new Date();
-            // const date = now.toISOString().split("T")[0]; // Formato YYYY-MM-DD
-            // const hour = now.toTimeString().split(" ")[0]; // Formato HH:MM:SS
 
-            if (userData?.companyId && selectedImage) {
+            if (!isSuperAdmin && !userData?.companyId) {
+                console.log("No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.");
+                return;
+            }
+
+            if (selectedImage) {
                 const formData = {
                     logoName,
                     imageName: logoName,
-                    // createdDate: date,
-                    // createdTime: hour,
                     timestamp: currentDate,
-                    idCompany: userData?.companyId,
+                    createdBy: userData?.uid,
+                    type: isSuperAdmin ? "global" : "company",
+                    ...(isSuperAdmin ? {} : { idCompany: userData?.companyId || null })
                 };
 
                 const result = await SaveSocialNetwork(formData, selectedImage);
@@ -124,9 +127,7 @@ const LogosFormHook = ({
                     console.error("Failed to save logo:", result.message);
                 }
             } else {
-                console.log(
-                    "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
-                );
+                console.log("Por favor, selecciona una imagen para el logo.");
                 return;
             }
         } catch (error) {
@@ -147,17 +148,21 @@ const LogosFormHook = ({
         setIsLoading(true);
 
         try {
-            // const now = new Date();
-            // const date = now.toISOString().split("T")[0]; // Formato YYYY-MM-DD
-            // const hour = now.toTimeString().split(" ")[0]; // Formato HH:MM:SS
 
-            if (userData?.companyId && selectedImage) {
+            if (!isSuperAdmin && !userData?.companyId) {
+                console.log("No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.");
+                return;
+            }
+
+            console.log('userData?.uid ', userData?.uid);
+
+            if (selectedImage) {
                 const formData = {
                     logoName,
-                    // createdDate: date,
-                    // createdTime: hour,
                     timestamp: currentDate,
-                    idCompany: userData?.companyId,
+                    createdBy: userData?.uid,
+                    type: isSuperAdmin ? "global" : "company",
+                    ...(isSuperAdmin ? {} : { idCompany: userData?.companyId || null })
                 };
 
                 const result = await UpdateSocialNetwork(
@@ -173,9 +178,7 @@ const LogosFormHook = ({
                     console.error("Failed to update logo:", result.message);
                 }
             } else {
-                console.log(
-                    "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
-                );
+                console.log("Por favor, selecciona una imagen para el logo.");
                 return;
             }
         } catch (error) {
@@ -193,10 +196,10 @@ const LogosFormHook = ({
     useEffect(() => {
         handleShowMainFormEdit &&
             (setShow(true),
-            setIdRow(editData?.uid),
-            setLogoName(editData?.logoName || ""),
-            setLogoNameOld(editData?.imageName || ""),
-            setSelectedImage(editData?.imageUrl || ""));
+                setIdRow(editData?.uid),
+                setLogoName(editData?.logoName || ""),
+                setLogoNameOld(editData?.imageName || ""),
+                setSelectedImage(editData?.imageUrl || ""));
     }, [editData, handleShowMainFormEdit]);
 
     return {

@@ -17,6 +17,7 @@ import DataTablesHook from "./hook/DataTablesHook";
 import CategoriesModal from "../categories/CategoriesModal";
 import NewsModal from "../news/NewsModal";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Alert from "react-bootstrap/Alert";
 import {
   Table,
   TableBody,
@@ -25,8 +26,11 @@ import {
   TableHead,
   TableRow,
   Paper,
+  PaletteMode,
 } from "@mui/material";
 import { Key } from "react";
+import ModalQR from "./components/ModalQR";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 const DataTableComponent = ({
   componentTitle,
@@ -70,7 +74,16 @@ const DataTableComponent = ({
     setSelectReport,
     statisticsDetail,
     setStatisticsDetail,
+    showAlert,
+    modeTheme,
+    isShowQR
   } = DataTablesHook(reference);
+
+  const theme = createTheme({
+    palette: {
+      mode: modeTheme as PaletteMode,
+    },
+  });
 
   return (
     dataTable && (
@@ -190,7 +203,7 @@ const DataTableComponent = ({
             title={tableTitle}
             reference={reference}
           />
-        ) : handleShowMainFormEdit && reference === "employees" ? (
+        ) : handleShowMainFormEdit && !isShowQR && reference === "employees" ? (
           <EmployeesFormModal
             handleShowMainForm={handleShowMainForm}
             setHandleShowMainForm={setHandleShowMainForm}
@@ -200,7 +213,13 @@ const DataTableComponent = ({
             title={tableTitle}
             reference={reference}
           />
-        ) : createdValid && reference === "employees" ? (
+        ) : isShowQR && reference === "employees" ? (
+          <ModalQR
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            data={editData}
+          />
+        ) : createdValid && !isShowQR && reference === "employees" ? (
           <EmployeesFormModal
             handleShowMainForm={handleShowMainForm}
             setHandleShowMainForm={setHandleShowMainForm}
@@ -210,7 +229,7 @@ const DataTableComponent = ({
             title={tableTitle}
             reference={reference}
           />
-        ) : !createdValid && reference === "employees" ? (
+        ) : !createdValid && !isShowQR && reference === "employees" ? (
           <AlertModal
             handleShowMainForm={handleShowMainForm}
             setHandleShowMainForm={setHandleShowMainForm}
@@ -230,7 +249,7 @@ const DataTableComponent = ({
             title={tableTitle}
             reference={reference}
           />
-        ) : reference === "logos" ? (
+        ) : reference === "logos" || reference === "logosSuperAdmin" ? (
           <LogosFormModal
             handleShowMainForm={handleShowMainForm}
             setHandleShowMainForm={setHandleShowMainForm}
@@ -239,6 +258,7 @@ const DataTableComponent = ({
             editData={editData}
             title={tableTitle}
             reference={reference}
+            isSuperAdmin={reference === "logosSuperAdmin" ? true : false}
           />
         ) : reference === "meetingStatus" ? (
           <MeetingStatusesModal
@@ -270,6 +290,12 @@ const DataTableComponent = ({
             title={tableTitle}
             reference={reference}
           />
+        ) : reference === "superadminEmployees" ? (
+          <ModalQR
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            data={editData}
+          />
         ) : reference === "circular" ||
           reference === "events" ||
           reference === "policy" ||
@@ -294,6 +320,20 @@ const DataTableComponent = ({
             title={tableTitle}
             reference={reference}
           />
+        )}
+
+        {showAlert && (
+          <Alert
+            //variant="primary"
+            variant={theme.palette.mode === "light" ? "primary" : "info"}
+            dismissible
+            className="tw-mt-2 tw-ml-3"
+            style={{
+              maxWidth: "215px",
+            }}
+          >
+            Texto copiado al portapapeles
+          </Alert>
         )}
       </Row>
     )
