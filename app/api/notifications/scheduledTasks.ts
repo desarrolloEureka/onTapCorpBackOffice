@@ -20,7 +20,7 @@ const useSendBirthdayNotifications = async () => {
         }
 
         const updatedBirthdayEmployees = birthdayEmployees.map(employee => {
-            const company = companies.find(company => company.uid === employee.idCompany);
+            const company:any = companies.find(company => company.uid === employee.idCompany);
             return {
                 ...employee,
                 companyName: company?.businessName[0] || '', 

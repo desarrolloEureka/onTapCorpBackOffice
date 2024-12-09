@@ -247,35 +247,37 @@ const CampusModal = ({
                           </div>
 
                           <CustomTextField
-                            data={[item.text, item.checked]}
-                            onChange={(
-                              value: string,
-                              name: string,
-                              checked: boolean
-                            ) =>
-                              handleChangeItem(
-                                "phones",
-                                index,
-                                name,
-                                value,
-                                checked
-                              )
+                          data={[item.text, item.checked]}
+                          onChange={(value: string, name: string, checked: boolean) => {
+                            // Elimina cualquier carácter no numérico
+                            const numericValue = value.replace(/\D/g, '');
+
+                            // Limita la longitud a 10 caracteres
+                            if (numericValue.length <= 10) {
+                              handleChangeItem("phones", index, name, numericValue, checked);
                             }
-                            name="text"
-                            type="text"
-                            switch="true"
-                            theme={modeTheme}
-                            id={`phone-${index}`}
-                            fullWidth
-                            label="Teléfono"
-                            InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  <LocalPhoneOutlinedIcon />
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
+                          }}
+                          name="text"
+                          type="text"
+                          switch="true"
+                          theme={modeTheme}
+                          id={`phone-${index}`}
+                          fullWidth
+                          label="Teléfono"
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <LocalPhoneOutlinedIcon />
+                              </InputAdornment>
+                            ),
+                            maxLength: 10, 
+                          }}
+                          inputProps={{
+                            maxLength: 10, 
+                            pattern: '[0-9]*', 
+                          }}
+                        />
+
                         </div>
 
                         <CustomTextField

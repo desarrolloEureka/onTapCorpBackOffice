@@ -20,6 +20,8 @@ import {
   listenToWorkAreaByCompanyIdQuery,
   listenToEmployeesByCompanyIdQuery,
   getAllEmployeesQuery,
+  getAllCompaniesQuery,
+  getLogosBySuperAdminQuery,
 } from "@/queries/documentsQueries";
 import { DataMainFormObject } from "@/types/mainForm";
 import { setDataTable } from "@/types/tables";
@@ -35,6 +37,7 @@ import { useCallback, useEffect, useState } from "react";
 import { FaTrashCan } from "react-icons/fa6";
 import { MdModeEdit } from "react-icons/md";
 import Swal from "sweetalert2";
+import { LocalVariable } from "@/types/global";
 require("dotenv").config();
 
 const CustomTitle = ({ row }: any) => (
@@ -95,6 +98,10 @@ const DataTablesHook = (reference: string) => {
   const [createdValid, setCreatedValid] = useState(false);
   const [createdGPSValid, setCreatedGPSValid] = useState(false);
   const [statisticsDetail, setStatisticsDetail] = useState<any>();
+  const [showAlert, setShowAlert] = useState(false);
+  const [isShowQR, setIsShowQR] = useState(false);
+  const theme = localStorage.getItem("@theme");
+  const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
   const formatearFecha = (fechaISO: string): string => {
     if (fechaISO != "-") {
@@ -129,9 +136,8 @@ const DataTablesHook = (reference: string) => {
         (horaDuracionISO % (1000 * 60 * 60)) / (1000 * 60)
       );
 
-      return `${hours} hora${hours !== 1 ? "s" : ""} y ${minutes} minuto${
-        minutes !== 1 ? "s" : ""
-      }`;
+      return `${hours} hora${hours !== 1 ? "s" : ""} y ${minutes} minuto${minutes !== 1 ? "s" : ""
+        }`;
     } else {
       return "-";
     }
@@ -200,6 +206,7 @@ const DataTablesHook = (reference: string) => {
         ...document,
         phone: document?.phones[0]?.text,
         email: document?.emails[0]?.text,
+        actions: { uid: document?.uid, preview: document?.preview }
       });
     });
     return result;
@@ -319,6 +326,8 @@ const DataTablesHook = (reference: string) => {
       }
     });
 
+
+
     // Procesar los startDay sin un endDay correspondiente al final
     for (const employeeId in tempStartDays) {
       if (tempStartDays[employeeId]) {
@@ -389,6 +398,47 @@ const DataTablesHook = (reference: string) => {
     );
   };
 
+  const prepareEmployeesData = async () => {
+    try {
+      // Obtener los empleados y las empresas
+      const employees = await getAllEmployeesQuery();
+      const companies = await getAllCompaniesQuery();
+
+      const companiesMap: { [key: string]: { uid: string; businessName?: string[] } } = companies.reduce((map, company) => {
+
+        if (company.uid) {
+          map[company.uid] = company;
+        } else {
+          console.warn(`Empresa sin 'uid' encontrada:`, company);
+        }
+        return map;
+      }, {} as { [key: string]: { uid: string; businessName?: string[] } });
+
+      const enrichedEmployees = employees.map((employee) => {
+
+        const company = companiesMap[employee.idCompany];
+
+        // Log de los datos combinados por cada empleado
+        //console.log(`Empleado: ${employee.firstName} ${employee.lastName}, Empresa: ${company?.businessName?.[0] || "Sin empresa"}`);
+
+        return {
+          ...employee,
+          companyName: company?.businessName?.[0] || "Sin empresa",
+          companyDetails: company || null,
+        };
+      });
+
+      //console.log("Combinacion de empleados y empresas:", enrichedEmployees);
+
+      return enrichedEmployees;
+
+    } catch (error) {
+      console.error("Error combinando los datos de empleados y empresas", error);
+      return [];
+    }
+  };
+
+
   const getAllDocuments = useCallback(async () => {
     let documents: any = [];
     if (selectReport === "metadatos") {
@@ -400,96 +450,102 @@ const DataTablesHook = (reference: string) => {
         reference === "country"
           ? countriesTable
           : reference === "departments"
-          ? colombianCitiesData
-          : reference === "cities"
-          ? transformCitiesData(colombianCitiesData)
-          : reference === "documentTypes"
-          ? idTypesTable
-          : reference === "zones"
-          ? formatZoneData(
-              userData && userData?.companyId
-                ? await getZonesByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : reference === "notifications"
-          ? formatDataByDate(
-              userData && userData?.companyId
-                ? await getNotificationsByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : reference === "workAreas" && workAreas.length > 0
-          ? formatDataByDate(workAreas)
-          : reference === "employees" && employeesData.length > 0
-          ? formatEmployeesData(employeesData)
-          : reference === "superadminEmployees"
-          ? formatEmployeesData(await getAllEmployeesQuery())
-          : reference === "statisticalReports"
-          ? formatEmployeesData(
-              userData && userData?.companyId
-                ? await getEmployeesByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : reference === "meetingStatus"
-          ? formatDataByDate(
-              userData && userData?.companyId
-                ? await getMeetingStatusByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : reference === "fixedPoints"
-          ? formatFixedPointsData(
-              userData && userData?.companyId
-                ? await getDocsByCompanyIdQuery(userData?.companyId, reference)
-                : []
-            )
-          : reference === "routes"
-          ? formatReportDataRoutes(
-              userData && userData?.companyId
-                ? await getRoutesByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : reference === "campus"
-          ? formatDataByDate(
-              userData && userData?.companyId
-                ? await getHeadquartersByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : reference === "circular" ||
-            reference === "events" ||
-            reference === "policy" ||
-            reference === "forms" ||
-            reference === "news" ||
-            reference === "logos"
-          ? formatDataByDate(
-              userData && userData?.companyId
-                ? await getDocsByCompanyIdQuery(userData?.companyId, reference)
-                : []
-            )
-          : reference === "workingday"
-          ? formatReportData(
-              userData && userData?.companyId
-                ? await getLocationsByCompanyIdAndWorkingdayQuery(
-                    userData?.companyId
+            ? colombianCitiesData
+            : reference === "cities"
+              ? transformCitiesData(colombianCitiesData)
+              : reference === "documentTypes"
+                ? idTypesTable
+                : reference === "zones"
+                  ? formatZoneData(
+                    userData && userData?.companyId
+                      ? await getZonesByCompanyIdQuery(userData?.companyId)
+                      : []
                   )
-                : [],
-              userData && userData?.companyId
-                ? await getEmployeesByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : reference === "meetings"
-          ? formatReportDataMeetings(
-              userData && userData?.companyId
-                ? await getMeetingsByCompanyIdQuery(userData?.companyId)
-                : [],
-              userData && userData?.companyId
-                ? await getEmployeesByCompanyIdQuery(userData?.companyId)
-                : [],
-              userData && userData?.companyId
-                ? await getMeetingStatusByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : await getAllDocumentsQuery(reference);
-    }
+                  : reference === "notifications"
+                    ? formatDataByDate(
+                      userData && userData?.companyId
+                        ? await getNotificationsByCompanyIdQuery(userData?.companyId)
+                        : []
+                    )
+                    : reference === "workAreas"
 
+                      ? formatDataByDate(workAreas)
+                      : reference === "employees"
+                        ? formatEmployeesData(employeesData)
+                        : reference === "superadminEmployees"
+                          ? formatEmployeesData(await prepareEmployeesData())
+                          : reference === "statisticalReports"
+                            ? formatEmployeesData(
+                              userData && userData?.companyId
+                                ? await getEmployeesByCompanyIdQuery(userData?.companyId)
+                                : []
+                            )
+                            : reference === "meetingStatus"
+                              ? formatDataByDate(
+                                userData && userData?.companyId
+                                  ? await getMeetingStatusByCompanyIdQuery(userData?.companyId)
+                                  : []
+                              )
+                              : reference === "fixedPoints"
+                                ? formatFixedPointsData(
+                                  userData && userData?.companyId
+                                    ? await getDocsByCompanyIdQuery(userData?.companyId, reference)
+                                    : []
+                                )
+                                : reference === "routes"
+                                  ? formatReportDataRoutes(
+                                    userData && userData?.companyId
+                                      ? await getRoutesByCompanyIdQuery(userData?.companyId)
+                                      : []
+                                  )
+                                  : reference === "campus"
+                                    ? formatDataByDate(
+                                      userData && userData?.companyId
+                                        ? await getHeadquartersByCompanyIdQuery(userData?.companyId)
+                                        : []
+                                    )
+                                    : reference === "circular" ||
+                                      reference === "events" ||
+                                      reference === "policy" ||
+                                      reference === "forms" ||
+                                      reference === "news" ||
+                                      reference === "logos"
+                                      ? formatDataByDate(
+                                        userData && userData?.companyId
+                                          ? await getDocsByCompanyIdQuery(userData?.companyId, reference)
+                                          : []
+                                      )
+                                      : reference === "logosSuperAdmin" ?
+                                        formatDataByDate(
+                                          userData
+                                            ? await getLogosBySuperAdminQuery(userData?.uid, "logos")
+                                            : []
+                                        )
+                                        : reference === "workingday"
+                                          ? formatReportData(
+                                            userData && userData?.companyId
+                                              ? await getLocationsByCompanyIdAndWorkingdayQuery(
+                                                userData?.companyId
+                                              )
+                                              : [],
+                                            userData && userData?.companyId
+                                              ? await getEmployeesByCompanyIdQuery(userData?.companyId)
+                                              : []
+                                          )
+                                          : reference === "meetings"
+                                            ? formatReportDataMeetings(
+                                              userData && userData?.companyId
+                                                ? await getMeetingsByCompanyIdQuery(userData?.companyId)
+                                                : [],
+                                              userData && userData?.companyId
+                                                ? await getEmployeesByCompanyIdQuery(userData?.companyId)
+                                                : [],
+                                              userData && userData?.companyId
+                                                ? await getMeetingStatusByCompanyIdQuery(userData?.companyId)
+                                                : []
+                                            )
+                                            : await getAllDocumentsQuery(reference);
+    }
     //console.log("datos = ", documents);
     const labelToDisplay = ["professionals", "patients", "functionary"];
     //reference === "employees" && console.log('documents ', documents);
@@ -554,7 +610,8 @@ const DataTablesHook = (reference: string) => {
         };
       } else if (reference === "employees") {
         columnNamesToDisplay = {
-          uid: "Acciones",
+          createdDate: "Fecha creación",
+          actions: "Acciones",
           firstName: "Nombre",
           lastName: "Apellido",
           documentType: "Tipo de Documento",
@@ -567,7 +624,7 @@ const DataTablesHook = (reference: string) => {
         };
       } else if (reference === "superadminEmployees") {
         columnNamesToDisplay = {
-          uid: "Acciones",
+          preview: "Acciones",
           createdDate: "Fecha creación",
           firstName: "Nombre",
           lastName: "Apellido",
@@ -576,6 +633,7 @@ const DataTablesHook = (reference: string) => {
           position: "Cargo",
           phone: "Teléfono",
           email: "Correo Empleado",
+          companyName: "Nombre de la Empresa"
         };
       } else if (reference === "statisticalReports") {
         columnNamesToDisplay = {
@@ -598,7 +656,7 @@ const DataTablesHook = (reference: string) => {
           zoneName: "Zona correspondiente",
           estimatedTime: "Tiempo estimado",
         };
-      } else if (reference === "logos") {
+      } else if (reference === "logos" || reference === "logosSuperAdmin") {
         columnNamesToDisplay = {
           uid: "Acciones",
           // createdDate: "Fecha de creación",
@@ -725,24 +783,50 @@ const DataTablesHook = (reference: string) => {
               <CustomTitleTwo row={row} />
             ) : val === "color" ? (
               <CustomColor row={row} />
-            ) : val === "uid" ? (
+            ) : val === "preview" ? (
               <div>
-                {reference === "superadminEmployees" ? (
+                {reference === "superadminEmployees" && (
                   <>
-                    <IconButton onClick={() => onShowQr()}>
+                    <IconButton onClick={() => onMainFormModalQR(row)}>
                       <QrCodeIcon
                         font-size={20}
                         className="icon-actions-table"
                       />
                     </IconButton>
-                    <IconButton onClick={() => {}}>
+                    <IconButton onClick={() => handleCopy(row[val])}>
                       <InsertLinkIcon
                         font-size={20}
                         className="icon-actions-table"
                       />
                     </IconButton>
                   </>
-                ) : reference === "statisticalReports" ? (
+                )}
+              </div>
+            ) : val === "actions" ? (
+              <div>
+                {reference === "employees" ? (
+                  <>
+                    <IconButton onClick={() => onMainFormModalEdit(row)}>
+                      <MdModeEdit size={20} className="icon-actions-table" />
+                    </IconButton>
+                    <IconButton onClick={() => onMainFormModalQR(row)}>
+                      <QrCodeIcon
+                        font-size={20}
+                        className="icon-actions-table"
+                      />
+                    </IconButton>
+                    <IconButton onClick={() => handleCopy(row.preview)}>
+                      <InsertLinkIcon
+                        font-size={20}
+                        className="icon-actions-table"
+                      />
+                    </IconButton>
+                  </>
+                ) : null}
+              </div>
+            ) : val === "uid" ? (
+              <div>
+                {reference === "statisticalReports" ? (
                   <>
                     <IconButton
                       onClick={() => {
@@ -827,45 +911,45 @@ const DataTablesHook = (reference: string) => {
             val === "ext" || val === "idType"
               ? "80px"
               : val === "isActive" || val === "isGPSActive"
-              ? "120px"
-              : val === "content"
-              ? "50%"
-              : val === "issue"
-              ? "20%"
-              : val === "hour" || val === "issue"
-              ? "15%"
-              : reference === "companies" || reference === "employees"
-              ? val === "uid"
-                ? "auto"
-                : "250px"
-              : reference === "workAreas"
-              ? val === "timestamp"
-                ? "15%"
-                : "auto"
-              : reference === "meetingStatus"
-              ? val === "uid"
-                ? "10%"
-                : "auto"
-              : reference === "meetings"
-              ? val === "date" || val === "meetingStart" || val === "meetingEnd"
-                ? "8%"
-                : "200px"
-              : "auto",
+                ? "120px"
+                : val === "content"
+                  ? "50%"
+                  : val === "issue"
+                    ? "20%"
+                    : val === "hour" || val === "issue"
+                      ? "15%"
+                      : reference === "companies" || reference === "employees"
+                        ? val === "uid"
+                          ? "auto"
+                          : "250px"
+                        : reference === "workAreas"
+                          ? val === "timestamp"
+                            ? "15%"
+                            : "auto"
+                          : reference === "meetingStatus"
+                            ? val === "uid"
+                              ? "10%"
+                              : "auto"
+                            : reference === "meetings"
+                              ? val === "date" || val === "meetingStart" || val === "meetingEnd"
+                                ? "8%"
+                                : "200px"
+                              : "auto",
           omit: !omittedColumns.includes(val),
           style:
             val === "uid" && reference === "meetingStatus"
               ? {
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                }
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+              }
               : val === "uid"
-              ? {
+                ? {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }
-              : {},
+                : {},
         };
 
         cols.push(columnsData);
@@ -876,9 +960,12 @@ const DataTablesHook = (reference: string) => {
         data: documents,
       };
 
-      // console.log("cols", cols);
-      //console.log("currentData", currentData);
-      // console.log("documents", documents);
+      if (reference === "workAreas") {
+        console.log("cols", cols);
+        console.log("currentData", currentData);
+        console.log("documents", documents);
+      }
+
 
       setColumns(cols);
       setDataTable(currentData); //obtain dataTable
@@ -892,7 +979,7 @@ const DataTablesHook = (reference: string) => {
       setDataTable(currentData); //obtain dataTable
       setGetDocuments(currentData.data); //obtain data
     }
-  }, [reference, userData, workAreas, employeesData, selectReport, metadata]);
+  }, [reference, userData, employeesData, selectReport, metadata]);
 
   const clearSearch = () => {
     setSearchTerm("");
@@ -915,7 +1002,13 @@ const DataTablesHook = (reference: string) => {
     const end = new Date(`${endDate}T23:59:59Z`).getTime();
 
     return data.filter((item: any) => {
-      const itemTimestamp = new Date(item.timestamp).getTime();
+      let itemTimestamp = new Date().getTime();
+      if (item?.timestamp) {
+        itemTimestamp = new Date(item.timestamp).getTime();
+      } else if (item?.createdDate) {
+        itemTimestamp = new Date(item.createdDate).getTime();
+      }
+
       return itemTimestamp >= start && itemTimestamp <= end;
     });
   };
@@ -923,24 +1016,28 @@ const DataTablesHook = (reference: string) => {
   // Función para filtrar por búsqueda
   const filterBySearch = (data: any[], value: string, reference: string) => {
     if (!value) {
-      return data; // Si no hay valor de búsqueda, devuelve los datos originales
+      return data;
     }
     return data.filter((item: any) => {
       return _.some(item, (prop, key) => {
         if (reference === "departments") {
           return (
             key === "departamento" &&
-            prop.toString().toLowerCase().includes(value)
+            prop?.toString().toLowerCase().includes(value)
           );
         } else if (Array.isArray(prop)) {
           return prop.some((subProp) =>
-            subProp.toString().toLowerCase().includes(value)
+            subProp?.toString().toLowerCase().includes(value)
           );
+        }
+        if (prop == null) {
+          return false; // Si prop es null o undefined, no coincide
         }
         return prop.toString().toLowerCase().includes(value);
       });
     });
   };
+
 
   // Función combinada
   const handleSearchAndFilter = async (e: any) => {
@@ -973,7 +1070,22 @@ const DataTablesHook = (reference: string) => {
   const onMainFormModalEdit = (row: any) => {
     setHandleShowMainFormEdit(true);
     setEditData(row);
-    // console.log(row);
+    setIsShowQR(false);
+  };
+
+  const onMainFormModalQR = (row: any) => {
+    setHandleShowMainForm(true);
+    setEditData(row);
+    setIsShowQR(true);
+  };
+
+  const handleCopy = (row: any) => {
+    navigator.clipboard
+      .writeText(row)
+      .then(() => {
+        setShowAlert(true);
+        setTimeout(() => setShowAlert(false), 2000);
+      })
   };
 
   const filterDataMetrics = (row: any) => {
@@ -1040,11 +1152,14 @@ const DataTablesHook = (reference: string) => {
   ]);
 
   useEffect(() => {
+    setWorkAreas([])
     const fetchData = listenToWorkAreaByCompanyIdQuery(
       "workAreas",
       setWorkAreas,
       userData?.companyId
+
     );
+    //console.log("data", userData?.companyId)
     return () => fetchData();
   }, [userData?.companyId]);
 
@@ -1084,6 +1199,7 @@ const DataTablesHook = (reference: string) => {
   // console.log(!isEmptyDataRef);
 
   return {
+    modeTheme: themeParsed?.dataThemeMode,
     columns,
     data: getDocuments,
     handleShowCsv,
@@ -1121,6 +1237,8 @@ const DataTablesHook = (reference: string) => {
     userData,
     statisticsDetail,
     setStatisticsDetail,
+    showAlert,
+    isShowQR
   };
 };
 

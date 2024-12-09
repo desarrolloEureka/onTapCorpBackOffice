@@ -58,6 +58,7 @@ const ZonesFormModal = ({
 
     return (
         <Modal
+        
             size={reference === "companies" ? "xl" : "lg"}
             centered
             show={show}
@@ -66,6 +67,7 @@ const ZonesFormModal = ({
             aria-modal="true"
             contentClassName={reference !== "companies" ? "modal-admin" : ""}
             backdrop="static"
+            
         >
             <Form onReset={handleReset} onSubmit={handleSendForm}>
                 <ThemeProvider theme={theme}>
@@ -91,15 +93,20 @@ const ZonesFormModal = ({
                     </Modal.Title>
 
                     <Modal.Body className="tw-px-8">
-                        <div className="tw-flex tw-w-full tw-flex-col tw-space-y-4">
-                            <div className="tw-flex tw-w-full tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-admin-body">
-                                <div className="tw-flex tw-flex-col tw-px-3 tw-w-full">
+                    <div className="tw-flex tw-w-full tw-flex-col tw-space-y-4">
+                        <div className="tw-flex tw-w-full tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-admin-body">
+                            
+                            {/* Contenedor con scroll */}
+                            <div className="tw-overflow-y-auto tw-max-h-96 tw-px-3 tw-w-full"
+                                style={{
+                                    scrollbarWidth: "thin",  // Para Firefox
+                                    scrollbarColor: "#9c9c9c #f1f1f1" // Color negro para el thumb y gris para el track
+                                }}>
+                                <div className="tw-flex tw-flex-col tw-w-full">
                                     <div className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full">
                                         <TextField
                                             value={zoneName}
-                                            onChange={(e) =>
-                                                setZoneName(e.target.value)
-                                            }
+                                            onChange={(e) => setZoneName(e.target.value)}
                                             type="text"
                                             id="zoneName"
                                             fullWidth
@@ -119,10 +126,7 @@ const ZonesFormModal = ({
                                                 style: {
                                                     fontSize: "20px",
                                                     fontWeight: "bold",
-                                                    color:
-                                                        modeTheme === "light"
-                                                            ? "#396593"
-                                                            : "#8bb8e7",
+                                                    color: modeTheme === "light" ? "#396593" : "#8bb8e7",
                                                 },
                                             }}
                                         />
@@ -130,9 +134,7 @@ const ZonesFormModal = ({
                                     <div className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full">
                                         <TextField
                                             value={zoneManager}
-                                            onChange={(e) =>
-                                                setZoneManager(e.target.value)
-                                            }
+                                            onChange={(e) => setZoneManager(e.target.value)}
                                             type="text"
                                             id="zoneManager"
                                             fullWidth
@@ -152,19 +154,14 @@ const ZonesFormModal = ({
                                                 style: {
                                                     fontSize: "20px",
                                                     fontWeight: "bold",
-                                                    color:
-                                                        modeTheme === "light"
-                                                            ? "#396593"
-                                                            : "#8bb8e7",
+                                                    color: modeTheme === "light" ? "#396593" : "#8bb8e7",
                                                 },
                                             }}
                                         />
                                     </div>
+                                    
                                     {addresses.map((address, index) => (
-                                        <div
-                                            key={index}
-                                            className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full"
-                                        >
+                                        <div key={index} className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full">
                                             <CustomTextField
                                                 data={address}
                                                 onChange={(newValue: string, name: string, checked: boolean) =>
@@ -177,29 +174,21 @@ const ZonesFormModal = ({
                                                 variant="standard"
                                                 color="primary"
                                                 theme={modeTheme}
-                                                deleted={index < 3 ? "" : "true" }
-                                                onClick={() => {handleDeleteAddress(index)}}
-                                                helperText={
-                                                    index ===
-                                                    addresses.length - 1
-                                                        ? addressesError
-                                                        : ""
-                                                }
-                                                error={
-                                                    index ===
-                                                        addresses.length - 1 &&
-                                                    !!addressesError
-                                                }
+                                                deleted={index < 3 ? "" : "true"}
+                                                onClick={() => { handleDeleteAddress(index) }}
+                                                helperText={index === addresses.length - 1 ? addressesError : ""}
+                                                error={index === addresses.length - 1 && !!addressesError}
                                                 InputProps={{
                                                     startAdornment: (
                                                         <InputAdornment position="start">
                                                             <ExploreOutlinedIcon />
                                                         </InputAdornment>
                                                     ),
-                                                }}                                               
+                                                }}
                                             />
                                         </div>
                                     ))}
+
                                     <div className="tw-flex tw-flex-row tw-px-3 tw-mt-7 tw-mb-4 tw-w-full">
                                         {addresses?.length < 4 && (
                                             <div className="tw-flex tw-flex-row tw-w-38 tw-rounded-3xl tw-bg-[#396593]">
@@ -216,7 +205,9 @@ const ZonesFormModal = ({
                                 </div>
                             </div>
                         </div>
-                    </Modal.Body>
+                    </div>
+                </Modal.Body>
+
                 </ThemeProvider>
 
                 <Modal.Footer className="tw-flex tw-flex-row tw-justify-between">

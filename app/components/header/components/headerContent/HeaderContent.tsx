@@ -65,7 +65,7 @@ const HeaderContent = ({
                   aria-label="Hide Sidebar"
                   className="side menu-toggle header-link animated-arrow hor-toggle horizontal-nav toggle"
                   data-bs-toggle="sidebar"
-                  // onClick={() => headerToggleButton()}
+                // onClick={() => headerToggleButton()}
                 >
                   <span></span>
                 </a>
@@ -94,177 +94,177 @@ const HeaderContent = ({
               {(userRole === "superadmin" ||
                 userRole === "operativo" ||
                 userRole === "administrativo") && (
-                <NavDropdown
-                  title={
-                    <>
-                      <FaMapLocationDot size={20} className="tw-mb-1 tw-mr-1" />
-                      Locaciones
-                    </>
-                  }
-                  id="nav-dropdown"
-                  className="nav-item dropdown text-white"
-                >
-                  {userRole === "operativo" || userRole === "administrativo" ? (
-                    <>
-                      <NavDropdown.Item href="#campus" eventKey="campus">
-                        <FaMapMarkerAlt size={18} className="tw-mb-1 tw-mr-1" />
-                        Sedes
-                      </NavDropdown.Item>
-                      <NavDropdown.Item href="#zones" eventKey="zones">
-                        <FaMapMarkerAlt size={18} className="tw-mb-1 tw-mr-1" />
-                        Zonas
-                      </NavDropdown.Item>
+                  <NavDropdown
+                    title={
+                      <>
+                        <FaMapLocationDot size={20} className="tw-mb-1 tw-mr-1" />
+                        Locaciones
+                      </>
+                    }
+                    id="nav-dropdown"
+                    className="nav-item dropdown text-white"
+                  >
+                    {userRole === "operativo" || userRole === "administrativo" ? (
+                      <>
+                        <NavDropdown.Item href="#campus" eventKey="campus">
+                          <FaMapMarkerAlt size={18} className="tw-mb-1 tw-mr-1" />
+                          Sedes
+                        </NavDropdown.Item>
+                        <NavDropdown.Item href="#zones" eventKey="zones">
+                          <FaMapMarkerAlt size={18} className="tw-mb-1 tw-mr-1" />
+                          Zonas
+                        </NavDropdown.Item>
 
-                      <NavDropdown.Item href="#routes" eventKey="routes">
-                        <FaMapMarkerAlt size={18} className="tw-mb-1 tw-mr-1" />
-                        Rutas
-                      </NavDropdown.Item>
+                        <NavDropdown.Item href="#routes" eventKey="routes">
+                          <FaMapMarkerAlt size={18} className="tw-mb-1 tw-mr-1" />
+                          Rutas
+                        </NavDropdown.Item>
 
-                      <NavDropdown.Item
-                        href="#fixedPoints"
-                        eventKey="fixedPoints"
-                      >
-                        <FaMapMarkerAlt size={18} className="tw-mb-1 tw-mr-1" />
-                        Puntos Fijos
-                      </NavDropdown.Item>
-                    </>
-                  ) : (
-                    <>
-                      <NavDropdown.Item eventKey="countries">
-                        <FaMapMarkerAlt size={18} className="tw-mb-1 tw-mr-1" />
-                        País
-                      </NavDropdown.Item>
-                      <NavDropdown.Item eventKey="departments">
-                        <FaMapMarkerAlt size={18} className="tw-mb-1 tw-mr-1" />
-                        Departamentos
-                      </NavDropdown.Item>
-                      <NavDropdown.Item eventKey="cities">
-                        <FaMapMarkerAlt size={18} className="tw-mb-1 tw-mr-1" />
-                        Ciudades
-                      </NavDropdown.Item>
-                    </>
-                  )}
-                </NavDropdown>
-              )}
+                        <NavDropdown.Item
+                          href="#fixedPoints"
+                          eventKey="fixedPoints"
+                        >
+                          <FaMapMarkerAlt size={18} className="tw-mb-1 tw-mr-1" />
+                          Puntos Fijos
+                        </NavDropdown.Item>
+                      </>
+                    ) : (
+                      <>
+                        <NavDropdown.Item eventKey="countries">
+                          <FaMapMarkerAlt size={18} className="tw-mb-1 tw-mr-1" />
+                          País
+                        </NavDropdown.Item>
+                        <NavDropdown.Item eventKey="departments">
+                          <FaMapMarkerAlt size={18} className="tw-mb-1 tw-mr-1" />
+                          Departamentos
+                        </NavDropdown.Item>
+                        <NavDropdown.Item eventKey="cities">
+                          <FaMapMarkerAlt size={18} className="tw-mb-1 tw-mr-1" />
+                          Ciudades
+                        </NavDropdown.Item>
+                      </>
+                    )}
+                  </NavDropdown>
+                )}
 
               {/* Perfil */}
               {(userRole === "superadmin" ||
                 userRole === "operativo" ||
                 userRole === "administrativo") && (
-                <NavDropdown
-                  title={
-                    <>
-                      <MdOutlinePersonPin
-                        size={22}
-                        className="tw-mb-1 tw-mr-1"
-                      />
-                      Perfil
-                    </>
-                  }
-                  id="nav-dropdown"
-                  className="nav-item dropdown"
-                >
-                  {userRole === "operativo" || userRole === "administrativo" ? (
-                    <>
-                      <NavDropdown.Item href="#company" eventKey="company">
-                        <IoMdBusiness size={18} className="tw-mb-1 tw-mr-1" />
-                        Empresa
-                      </NavDropdown.Item>
+                  <NavDropdown
+                    title={
+                      <>
+                        <MdOutlinePersonPin
+                          size={22}
+                          className="tw-mb-1 tw-mr-1"
+                        />
+                        Perfil
+                      </>
+                    }
+                    id="nav-dropdown"
+                    className="nav-item dropdown"
+                  >
+                    {userRole === "operativo" || userRole === "administrativo" ? (
+                      <>
+                        <NavDropdown.Item href="#company" eventKey="company">
+                          <IoMdBusiness size={18} className="tw-mb-1 tw-mr-1" />
+                          Empresa
+                        </NavDropdown.Item>
+                        <NavDropdown.Item
+                          className="tw-flex tw-items-center tw-justify-center"
+                          href="#meetingStatus"
+                          eventKey="workAreas"
+                        >
+                          <TbCategory size={18} className="tw-mb-1 tw-mr-1" />
+                          <span className="tw-text-wrap">Áreas de Trabajo</span>
+                        </NavDropdown.Item>
+                        <NavDropdown.Item
+                          href="#functionary"
+                          eventKey="employees"
+                        >
+                          <IoPerson size={22} className="tw-mb-1 tw-mr-1" />
+                          Empleados
+                        </NavDropdown.Item>
+                      </>
+                    ) : (
+                      <>
+                        <NavDropdown.Item href="#companies" eventKey="companies">
+                          <IoMdBusiness size={18} className="tw-mb-1 tw-mr-1" />
+                          Empresas
+                        </NavDropdown.Item>
+                      </>
+                    )}
+
+                    {/* Nueva opción exclusiva para superadmin */}
+                    {userRole === "superadmin" && (
                       <NavDropdown.Item
-                        className="tw-flex tw-items-center tw-justify-center"
-                        href="#meetingStatus"
-                        eventKey="workAreas"
-                      >
-                        <TbCategory size={18} className="tw-mb-1 tw-mr-1" />
-                        <span className="tw-text-wrap">Áreas de Trabajo</span>
-                      </NavDropdown.Item>
-                      <NavDropdown.Item
-                        href="#functionary"
-                        eventKey="employees"
+                        href="#superadminEmployees"
+                        eventKey="superadminEmployees"
                       >
                         <IoPerson size={22} className="tw-mb-1 tw-mr-1" />
                         Empleados
                       </NavDropdown.Item>
-                    </>
-                  ) : (
-                    <>
-                      <NavDropdown.Item href="#companies" eventKey="companies">
-                        <IoMdBusiness size={18} className="tw-mb-1 tw-mr-1" />
-                        Empresas
-                      </NavDropdown.Item>
-                    </>
-                  )}
-
-                  {/* Nueva opción exclusiva para superadmin */}
-                  {userRole === "superadmin" && (
-                    <NavDropdown.Item
-                      href="#superadminEmployees"
-                      eventKey="superadminEmployees"
-                    >
-                      <IoPerson size={22} className="tw-mb-1 tw-mr-1" />
-                      Empleados
-                    </NavDropdown.Item>
-                  )}
-                </NavDropdown>
-              )}
+                    )}
+                  </NavDropdown>
+                )}
 
               {/*  Configuraciones */}
               {(userRole === "superadmin" ||
                 userRole === "operativo" ||
                 userRole === "administrativo") && (
-                <NavDropdown
-                  title={
-                    <>
-                      <VscSettings size={20} className="tw-mb-1 tw-mr-1" />
-                      {userRole === "superadmin"
-                        ? "Configuraciones"
-                        : "Notificaciones"}
-                    </>
-                  }
-                  id="nav-dropdown"
-                  className="nav-item dropdown"
-                >
-                  {userRole !== "superadmin" ? (
-                    <>
-                      <NavDropdown.Item href="#roles" eventKey="notifications">
-                        <IoMdNotifications
-                          size={20}
-                          className="tw-mb-1 tw-mr-1"
-                        />
-                        Notificaciones
-                      </NavDropdown.Item>
-                      <NavDropdown.Item
-                        className="tw-flex tw-items-center tw-justify-center"
-                        href="#meetingStatus"
-                        eventKey="meetingStatus"
-                      >
-                        <MdOutlineChecklist
-                          size={20}
-                          className="tw-mb-1 tw-mr-1"
-                        />
-                        <span className="tw-text-wrap">Estados Reunión</span>
-                      </NavDropdown.Item>
-                    </>
-                  ) : (
-                    <>
-                      <NavDropdown.Item href="#company" eventKey="roles">
-                        <BsPersonCircle size={20} className="tw-mb-1 tw-mr-1" />
-                        Roles
-                      </NavDropdown.Item>
-                      <NavDropdown.Item
-                        href="#company"
-                        eventKey="documentTypes"
-                      >
-                        <FaRegAddressCard
-                          size={20}
-                          className="tw-mb-1 tw-mr-1"
-                        />
-                        Tipos Documento
-                      </NavDropdown.Item>
-                    </>
-                  )}
-                </NavDropdown>
-              )}
+                  <NavDropdown
+                    title={
+                      <>
+                        <VscSettings size={20} className="tw-mb-1 tw-mr-1" />
+                        {userRole === "superadmin"
+                          ? "Configuraciones"
+                          : "Notificaciones"}
+                      </>
+                    }
+                    id="nav-dropdown"
+                    className="nav-item dropdown"
+                  >
+                    {userRole !== "superadmin" ? (
+                      <>
+                        <NavDropdown.Item href="#roles" eventKey="notifications">
+                          <IoMdNotifications
+                            size={20}
+                            className="tw-mb-1 tw-mr-1"
+                          />
+                          Notificaciones
+                        </NavDropdown.Item>
+                        <NavDropdown.Item
+                          className="tw-flex tw-items-center tw-justify-center"
+                          href="#meetingStatus"
+                          eventKey="meetingStatus"
+                        >
+                          <MdOutlineChecklist
+                            size={20}
+                            className="tw-mb-1 tw-mr-1"
+                          />
+                          <span className="tw-text-wrap">Estados Reunión</span>
+                        </NavDropdown.Item>
+                      </>
+                    ) : (
+                      <>
+                        <NavDropdown.Item href="#company" eventKey="roles">
+                          <BsPersonCircle size={20} className="tw-mb-1 tw-mr-1" />
+                          Roles
+                        </NavDropdown.Item>
+                        <NavDropdown.Item
+                          href="#company"
+                          eventKey="documentTypes"
+                        >
+                          <FaRegAddressCard
+                            size={20}
+                            className="tw-mb-1 tw-mr-1"
+                          />
+                          Tipos Documento
+                        </NavDropdown.Item>
+                      </>
+                    )}
+                  </NavDropdown>
+                )}
 
               {/*  Comunicaciones */}
               {(userRole === "operativo" || userRole === "administrativo") && (
@@ -354,7 +354,7 @@ const HeaderContent = ({
               )}
 
               {/*  Plantillas  */}
-              {(userRole === "operativo" || userRole === "administrativo") && (
+              {(userRole === "superadmin" || userRole === "operativo" || userRole === "administrativo") && (
                 <NavDropdown
                   title={
                     <>
@@ -365,23 +365,29 @@ const HeaderContent = ({
                   id="nav-dropdown"
                   className="nav-item dropdown"
                 >
-                  <NavDropdown.Item
-                    //href="#functionary"
-                    eventKey="logos"
-                  >
-                    <FaRegAddressCard size={20} className="tw-mb-1 tw-mr-1" />
-                    Logos
-                  </NavDropdown.Item>
 
-                  <NavDropdown.Item
-                    //href="#functionary"
-                    eventKey="plantillas"
-                  >
-                    <FaRegAddressCard size={20} className="tw-mb-1 tw-mr-1" />
-                    Plantillas
-                  </NavDropdown.Item>
+                  {(userRole === "operativo" || userRole === "administrativo") ? (
+                    <>
+                      <NavDropdown.Item eventKey="logos">
+                        <FaRegAddressCard size={20} className="tw-mb-1 tw-mr-1" />
+                        Logos
+                      </NavDropdown.Item>
+
+                      <NavDropdown.Item eventKey="plantillas">
+                        <FaRegAddressCard size={20} className="tw-mb-1 tw-mr-1" />
+                        Plantillas
+                      </NavDropdown.Item>
+                    </>
+                  ) : (
+                    <NavDropdown.Item eventKey="logosSuperAdmin">
+                      <FaRegAddressCard size={20} className="tw-mb-1 tw-mr-1" />
+                      Logos
+                    </NavDropdown.Item>
+                  )}
+
                 </NavDropdown>
               )}
+
 
               {/*  Reportes */}
               {(userRole === "operativo" || userRole === "administrativo") && (
@@ -413,6 +419,7 @@ const HeaderContent = ({
                     <IoDocumentOutline size={20} className="tw-mb-1 tw-mr-1" />
                     Jornada Laboral
                   </NavDropdown.Item>
+                  
                   <NavDropdown.Item
                     //estadisticas
                     //href="#statisticalReports"
@@ -420,6 +427,15 @@ const HeaderContent = ({
                   >
                     <IoDocumentOutline size={20} className="tw-mb-1 tw-mr-1" />
                     Estadística
+                  </NavDropdown.Item>
+                  
+                  <NavDropdown.Item
+                    //visitas de empleado
+                    //href="#statisticalReports"
+                    eventKey="employeesMostVisits"
+                  >
+                    <IoDocumentOutline size={20} className="tw-mb-1 tw-mr-1" />
+                    Visitas
                   </NavDropdown.Item>
                 </NavDropdown>
               )}

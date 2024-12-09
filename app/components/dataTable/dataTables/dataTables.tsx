@@ -14,6 +14,7 @@ import "react-data-table-component-extensions/dist/index.css";
 import { TfiClose, TfiExport } from "react-icons/tfi";
 import { VscAdd } from "react-icons/vsc";
 import { FiFilter } from "react-icons/fi";
+import employeesMostVisits from "@/components/employeesMostVisits/employeesMostVisits";
 // import Swal from "sweetalert2";
 import moment from "moment";
 import { unstable_createMuiStrictModeTheme } from "@mui/material";
@@ -139,6 +140,7 @@ function convertArrayOfObjectsToCSV(
     result += keys.map((key: string) => headers[key]).join(columnDelimiter);
   } else if (reference == "employees") {
     keys = [
+      "createdDate",
       "firstName",
       "lastName",
       "documentType",
@@ -149,6 +151,7 @@ function convertArrayOfObjectsToCSV(
       "isGPSActive",
     ];
     const headers: Record<string, string> = {
+      createdDate: "Fecha creación",
       firstName: "Nombres",
       lastName: "Apellidos",
       documentType: "Tipo de Documento",
@@ -169,6 +172,7 @@ function convertArrayOfObjectsToCSV(
       "position",
       "phone",
       "email",
+      "companyName"
     ];
     const headers: Record<string, string> = {
       createdDate: "Fecha creación",
@@ -409,6 +413,7 @@ export const ExportCSV = ({
           {[
             "workingday",
             "meetings",
+            "employees",
             "superadminEmployees",
             "statisticalReports",
           ].includes(reference) && (

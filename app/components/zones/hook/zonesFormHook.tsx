@@ -73,7 +73,7 @@ const ZonesFormHook = ({
 
         // Validación del campo 'addresses'
         if (addresses.length < 3) {
-            setAddressesError("Debe agregar al tres direcciones");
+            setAddressesError("Debe agregar al menos tres direcciones");
             valid = false;
         } else {
             // Validar cada dirección

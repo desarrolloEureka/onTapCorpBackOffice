@@ -8,6 +8,7 @@ import GoogleMapsPage from "../maps/GoogleMapsPage";
 import Profile from "../profile/page";
 import TempladeContent from "../views/home/HomeContent";
 import HeaderContent from "./components/headerContent/HeaderContent";
+import EmployeesMostVisits from "@/components/employeesMostVisits/employeesMostVisits";
 
 const Header = ({ hamburger }: { hamburger?: boolean }) => {
   const [theme, setTheme] = useState<string>("light");
@@ -575,6 +576,27 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
           />
         </Tab.Pane>
 
+        {/* Vista del Logos SuperAdministrador */}
+        <Tab.Pane
+          className="tab-pane text-muted"
+          id="logos"
+          role="tabpanel"
+          eventKey="logosSuperAdmin"
+        >
+          <BannerMenu
+            seoTitle="Logos"
+            title="Logos"
+            item="Dashboard"
+            activeItem="Registro de Logos"
+          />
+          <DataTableComponent
+            componentTitle="Tabla del Listado de Logos."
+            componentDescription="En esta tabla se encuentran listados todos los usuarios para su administración."
+            tableTitle="Logos"
+            reference="logosSuperAdmin"
+          />
+        </Tab.Pane>
+
         {/* Vista de Plantillas */}
         <Tab.Pane
           className="tab-pane text-muted"
@@ -692,6 +714,23 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
             componentDescription="Este reporte muestra información detallada y analítica sobre la estadistica de consumo cada vez que un usuario comparta su tarjeta y sea visualizada."
             tableTitle="Estadisticas"
             reference="statisticalReportsDetails"
+          />
+        </Tab.Pane>
+
+        {/* Reporte  metricas empleados con mas visitas en su plantilla*/}
+        <Tab.Pane
+          className="tab-pane text-muted"
+          id="employeesMostVisits"
+          role="tabpanel"
+          eventKey="employeesMostVisits"
+        >
+          <BannerMenu
+            seoTitle="Reporte de visitas de empleado"
+            title="Reporte de visitas de empleado"
+            item="Dashboard"
+            activeItem="Visitas"
+          />
+          <EmployeesMostVisits
           />
         </Tab.Pane>
       </Tab.Content>

@@ -21,6 +21,7 @@ const LogosFormModal = ({
     editData,
     title,
     reference,
+    isSuperAdmin
 }: ModalParamsMainForm) => {
     const {
         modeTheme,
@@ -46,6 +47,7 @@ const LogosFormModal = ({
         editData,
         title,
         reference,
+        isSuperAdmin
     });
 
     const theme = createTheme({
