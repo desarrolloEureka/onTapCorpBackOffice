@@ -80,9 +80,9 @@ const IconsUrlModal = ({
                         >
                             Íconos de la Compañía
                         </Typography>
-                        <div className="tw-grid tw-grid-cols-5 tw-gap-x-0.5 tw-overflow-y-scroll tw-max-h-[250px]">
-                            {companyLogos && companyLogos.length > 0 ? (
-                                companyLogos.map((logo: any, index: any) => (
+                        {companyLogos && companyLogos.length > 0 ?
+                            <div className="tw-grid tw-grid-cols-5 tw-gap-x-0.5 tw-overflow-y-scroll tw-max-h-[250px]">
+                                {companyLogos.map((logo: any, index: any) => (
                                     <IconCard
                                         key={index}
                                         logo={logo}
@@ -91,13 +91,15 @@ const IconsUrlModal = ({
                                         handleDataNetworks={handleDataNetworks}
                                         itemKey={itemKey}
                                     />
-                                ))
-                            ) : (
+                                ))}
+                            </div>
+                            :
+                            <div className="tw-grid tw-max-h-[250px] tw-py-2">
                                 <Typography className="tw-text-center tw-text-gray-500" style={{ fontSize: 16 }}>
                                     No hay logos de redes sociales disponibles. Por favor, cree algunos primero.
                                 </Typography>
-                            )}
-                        </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </Modal.Body>
