@@ -189,6 +189,31 @@ export const sendNotificationsToUsers = async (tokens: string[], title: string, 
     }
 };
 
+export const sendNotification = async (token: string, title: string, body: string, image: string) => {
+  try {
+    if (!token) {
+        return { success: false, message: "No token provided" };
+    }
+
+    const response = await fetch("/api/notifications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, title, body, image }),
+    });
+    
+    const data = await response.json();
+
+    if (response.ok) {
+      return { success: true, message: "Notification sent successfully", data };
+    } else {
+        return { success: false, message: "Failed to send notification", data };
+    }
+  } catch (error) {
+    console.error("Error al enviar la notificación:", error);
+      return { success: false, message: "Error sending notification", error };
+  }
+};
+
 export const saveZone = async (dataSave: any) => {
   try {
     const documentId = uuidv4();
@@ -686,14 +711,12 @@ export const getAllCompanies = async () => {
       uid: doc.id, // Usamos 'uid' en lugar de 'id'
       ...doc.data(), // Incluye los datos del documento
     }));
-
     return companies;
   } catch (error) {
     console.error("Error fetching companies", error);
     return [];
   }
 };
-
 
 export const saveEmployee = async (dataSave: any) => {
   try {
