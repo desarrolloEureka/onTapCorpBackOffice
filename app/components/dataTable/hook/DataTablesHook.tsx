@@ -610,8 +610,8 @@ const DataTablesHook = (reference: string) => {
         };
       } else if (reference === "employees") {
         columnNamesToDisplay = {
-          createdDate: "Fecha creación",
           actions: "Acciones",
+          createdDate: "Fecha creación",
           firstName: "Nombre",
           lastName: "Apellido",
           documentType: "Tipo de Documento",
