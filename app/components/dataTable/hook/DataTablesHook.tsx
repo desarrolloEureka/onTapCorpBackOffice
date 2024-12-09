@@ -20,7 +20,7 @@ import {
   listenToWorkAreaByCompanyIdQuery,
   listenToEmployeesByCompanyIdQuery,
   getAllEmployeesQuery,
-  getAllCompaniesQuery
+  getAllCompaniesQuery,
   getLogosBySuperAdminQuery,
 } from "@/queries/documentsQueries";
 import { DataMainFormObject } from "@/types/mainForm";
@@ -326,7 +326,7 @@ const DataTablesHook = (reference: string) => {
       }
     });
 
-    
+
 
     // Procesar los startDay sin un endDay correspondiente al final
     for (const employeeId in tempStartDays) {
@@ -403,7 +403,7 @@ const DataTablesHook = (reference: string) => {
       // Obtener los empleados y las empresas
       const employees = await getAllEmployeesQuery();
       const companies = await getAllCompaniesQuery();
-  
+
       const companiesMap: { [key: string]: { uid: string; businessName?: string[] } } = companies.reduce((map, company) => {
 
         if (company.uid) {
@@ -413,31 +413,31 @@ const DataTablesHook = (reference: string) => {
         }
         return map;
       }, {} as { [key: string]: { uid: string; businessName?: string[] } });
-  
+
       const enrichedEmployees = employees.map((employee) => {
 
-        const company = companiesMap[employee.idCompany];  
-  
+        const company = companiesMap[employee.idCompany];
+
         // Log de los datos combinados por cada empleado
         //console.log(`Empleado: ${employee.firstName} ${employee.lastName}, Empresa: ${company?.businessName?.[0] || "Sin empresa"}`);
-  
+
         return {
           ...employee,
-          companyName: company?.businessName?.[0] || "Sin empresa", 
-          companyDetails: company || null, 
+          companyName: company?.businessName?.[0] || "Sin empresa",
+          companyDetails: company || null,
         };
       });
-  
+
       //console.log("Combinacion de empleados y empresas:", enrichedEmployees);
-  
+
       return enrichedEmployees;
-  
+
     } catch (error) {
       console.error("Error combinando los datos de empleados y empresas", error);
       return [];
     }
   };
-  
+
 
   const getAllDocuments = useCallback(async () => {
     let documents: any = [];
@@ -450,95 +450,101 @@ const DataTablesHook = (reference: string) => {
         reference === "country"
           ? countriesTable
           : reference === "departments"
-          ? colombianCitiesData
-          : reference === "cities"
-          ? transformCitiesData(colombianCitiesData)
-          : reference === "documentTypes"
-          ? idTypesTable
-          : reference === "zones"
-          ? formatZoneData(
-              userData && userData?.companyId
-                ? await getZonesByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : reference === "notifications"
-          ? formatDataByDate(
-              userData && userData?.companyId
-                ? await getNotificationsByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : reference === "workAreas"
-
-          ? formatDataByDate(workAreas)
-          : reference === "employees"
-          ? formatEmployeesData(employeesData)
-          : reference === "superadminEmployees"
-          ? formatEmployeesData(await prepareEmployeesData())
-          : reference === "statisticalReports"
-          ? formatEmployeesData(
-              userData && userData?.companyId
-                ? await getEmployeesByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : reference === "meetingStatus"
-          ? formatDataByDate(
-              userData && userData?.companyId
-                ? await getMeetingStatusByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : reference === "fixedPoints"
-          ? formatFixedPointsData(
-              userData && userData?.companyId
-                ? await getDocsByCompanyIdQuery(userData?.companyId, reference)
-                : []
-            )
-          : reference === "routes"
-          ? formatReportDataRoutes(
-              userData && userData?.companyId
-                ? await getRoutesByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : reference === "campus"
-          ? formatDataByDate(
-              userData && userData?.companyId
-                ? await getHeadquartersByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : reference === "circular" ||
-            reference === "events" ||
-            reference === "policy" ||
-            reference === "forms" ||
-            reference === "news" ||
-            reference === "logos"
-          ? formatDataByDate(
-              userData && userData?.companyId
-                ? await getDocsByCompanyIdQuery(userData?.companyId, reference)
-                : []
-            )
-          : reference === "workingday"
-          ? formatReportData(
-              userData && userData?.companyId
-                ? await getLocationsByCompanyIdAndWorkingdayQuery(
-                    userData?.companyId
+            ? colombianCitiesData
+            : reference === "cities"
+              ? transformCitiesData(colombianCitiesData)
+              : reference === "documentTypes"
+                ? idTypesTable
+                : reference === "zones"
+                  ? formatZoneData(
+                    userData && userData?.companyId
+                      ? await getZonesByCompanyIdQuery(userData?.companyId)
+                      : []
                   )
-                : [],
-              userData && userData?.companyId
-                ? await getEmployeesByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : reference === "meetings"
-          ? formatReportDataMeetings(
-              userData && userData?.companyId
-                ? await getMeetingsByCompanyIdQuery(userData?.companyId)
-                : [],
-              userData && userData?.companyId
-                ? await getEmployeesByCompanyIdQuery(userData?.companyId)
-                : [],
-              userData && userData?.companyId
-                ? await getMeetingStatusByCompanyIdQuery(userData?.companyId)
-                : []
-            )
-          : await getAllDocumentsQuery(reference);
+                  : reference === "notifications"
+                    ? formatDataByDate(
+                      userData && userData?.companyId
+                        ? await getNotificationsByCompanyIdQuery(userData?.companyId)
+                        : []
+                    )
+                    : reference === "workAreas"
+
+                      ? formatDataByDate(workAreas)
+                      : reference === "employees"
+                        ? formatEmployeesData(employeesData)
+                        : reference === "superadminEmployees"
+                          ? formatEmployeesData(await prepareEmployeesData())
+                          : reference === "statisticalReports"
+                            ? formatEmployeesData(
+                              userData && userData?.companyId
+                                ? await getEmployeesByCompanyIdQuery(userData?.companyId)
+                                : []
+                            )
+                            : reference === "meetingStatus"
+                              ? formatDataByDate(
+                                userData && userData?.companyId
+                                  ? await getMeetingStatusByCompanyIdQuery(userData?.companyId)
+                                  : []
+                              )
+                              : reference === "fixedPoints"
+                                ? formatFixedPointsData(
+                                  userData && userData?.companyId
+                                    ? await getDocsByCompanyIdQuery(userData?.companyId, reference)
+                                    : []
+                                )
+                                : reference === "routes"
+                                  ? formatReportDataRoutes(
+                                    userData && userData?.companyId
+                                      ? await getRoutesByCompanyIdQuery(userData?.companyId)
+                                      : []
+                                  )
+                                  : reference === "campus"
+                                    ? formatDataByDate(
+                                      userData && userData?.companyId
+                                        ? await getHeadquartersByCompanyIdQuery(userData?.companyId)
+                                        : []
+                                    )
+                                    : reference === "circular" ||
+                                      reference === "events" ||
+                                      reference === "policy" ||
+                                      reference === "forms" ||
+                                      reference === "news" ||
+                                      reference === "logos"
+                                      ? formatDataByDate(
+                                        userData && userData?.companyId
+                                          ? await getDocsByCompanyIdQuery(userData?.companyId, reference)
+                                          : []
+                                      )
+                                      : reference === "logosSuperAdmin" ?
+                                        formatDataByDate(
+                                          userData
+                                            ? await getLogosBySuperAdminQuery(userData?.uid, "logos")
+                                            : []
+                                        )
+                                        : reference === "workingday"
+                                          ? formatReportData(
+                                            userData && userData?.companyId
+                                              ? await getLocationsByCompanyIdAndWorkingdayQuery(
+                                                userData?.companyId
+                                              )
+                                              : [],
+                                            userData && userData?.companyId
+                                              ? await getEmployeesByCompanyIdQuery(userData?.companyId)
+                                              : []
+                                          )
+                                          : reference === "meetings"
+                                            ? formatReportDataMeetings(
+                                              userData && userData?.companyId
+                                                ? await getMeetingsByCompanyIdQuery(userData?.companyId)
+                                                : [],
+                                              userData && userData?.companyId
+                                                ? await getEmployeesByCompanyIdQuery(userData?.companyId)
+                                                : [],
+                                              userData && userData?.companyId
+                                                ? await getMeetingStatusByCompanyIdQuery(userData?.companyId)
+                                                : []
+                                            )
+                                            : await getAllDocumentsQuery(reference);
     }
     //console.log("datos = ", documents);
     const labelToDisplay = ["professionals", "patients", "functionary"];
@@ -1002,35 +1008,35 @@ const DataTablesHook = (reference: string) => {
       } else if (item?.createdDate) {
         itemTimestamp = new Date(item.createdDate).getTime();
       }
-      
+
       return itemTimestamp >= start && itemTimestamp <= end;
     });
   };
 
-    // Función para filtrar por búsqueda
-    const filterBySearch = (data: any[], value: string, reference: string) => {
-      if (!value) {
-        return data; 
-      }
-      return data.filter((item: any) => {
-        return _.some(item, (prop, key) => {
-          if (reference === "departments") {
-            return (
-              key === "departamento" &&
-              prop?.toString().toLowerCase().includes(value)
-            );
-          } else if (Array.isArray(prop)) {
-            return prop.some((subProp) =>
-              subProp?.toString().toLowerCase().includes(value)
-            );
-          }
-          if (prop == null) {
-            return false; // Si prop es null o undefined, no coincide
-          }
-          return prop.toString().toLowerCase().includes(value);
-        });
+  // Función para filtrar por búsqueda
+  const filterBySearch = (data: any[], value: string, reference: string) => {
+    if (!value) {
+      return data;
+    }
+    return data.filter((item: any) => {
+      return _.some(item, (prop, key) => {
+        if (reference === "departments") {
+          return (
+            key === "departamento" &&
+            prop?.toString().toLowerCase().includes(value)
+          );
+        } else if (Array.isArray(prop)) {
+          return prop.some((subProp) =>
+            subProp?.toString().toLowerCase().includes(value)
+          );
+        }
+        if (prop == null) {
+          return false; // Si prop es null o undefined, no coincide
+        }
+        return prop.toString().toLowerCase().includes(value);
       });
-    };
+    });
+  };
 
 
   // Función combinada
@@ -1151,7 +1157,7 @@ const DataTablesHook = (reference: string) => {
       "workAreas",
       setWorkAreas,
       userData?.companyId
-      
+
     );
     //console.log("data", userData?.companyId)
     return () => fetchData();

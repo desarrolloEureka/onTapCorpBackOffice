@@ -15,7 +15,7 @@ const IconsUrlModal = ({
 }: ModalIcons) => {
     const globalLogos = dataLogos?.filter((logo: any) => logo.type === "global");
     const companyLogos = dataLogos?.filter((logo: any) => logo.type === "company");
-    
+
     return dataLogos && (
         <Modal
             centered
@@ -81,25 +81,24 @@ const IconsUrlModal = ({
                             Íconos de la Compañía
                         </Typography>
                         <div className="tw-grid tw-grid-cols-5 tw-gap-x-0.5 tw-overflow-y-scroll tw-max-h-[250px]">
-                          {companyLogos && companyLogos.length > 0 ? (
-                            {companyLogos?.map((logo: any, index: any) => (
-                                <IconCard
-                                    key={index}
-                                    logo={logo}
-                                    modeTheme={modeTheme}
-                                    val={val}
-                                    handleDataNetworks={handleDataNetworks}
-                                    itemKey={itemKey}
-                                />
-                            ))}
+                            {companyLogos && companyLogos.length > 0 ? (
+                                companyLogos.map((logo: any, index: any) => (
+                                    <IconCard
+                                        key={index}
+                                        logo={logo}
+                                        modeTheme={modeTheme}
+                                        val={val}
+                                        handleDataNetworks={handleDataNetworks}
+                                        itemKey={itemKey}
+                                    />
+                                ))
+                            ) : (
+                                <Typography className="tw-text-center tw-text-gray-500" style={{ fontSize: 16 }}>
+                                    No hay logos de redes sociales disponibles. Por favor, cree algunos primero.
+                                </Typography>
+                            )}
                         </div>
-                          ) : (
-                        <Typography className="tw-text-center tw-text-gray-500" style={{ fontSize: 16 }}>
-                            No hay logos de redes sociales disponibles. Por favor, cree algunos primero.
-                        </Typography>
-                    )}
                     </div>
-                    
                 </div>
             </Modal.Body>
         </Modal>
