@@ -960,13 +960,6 @@ const DataTablesHook = (reference: string) => {
         data: documents,
       };
 
-      if (reference === "workAreas") {
-        console.log("cols", cols);
-        console.log("currentData", currentData);
-        console.log("documents", documents);
-      }
-
-
       setColumns(cols);
       setDataTable(currentData); //obtain dataTable
       documents && setGetDocuments(currentData.data); //obtain data

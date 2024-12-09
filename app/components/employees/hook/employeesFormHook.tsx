@@ -691,7 +691,6 @@ const EmployeesFormHook = ({
                         showConfirmButton: false,
                         timer: 2500,
                     });
-                    console.log("Empleado actualizado con éxito");
                 } else {
                     Swal.fire({
                         icon: "error",

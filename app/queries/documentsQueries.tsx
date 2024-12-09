@@ -239,7 +239,6 @@ export const getLogosBySuperAdminQuery = async (
   fieldPathInDB?: string,
   valueToFound?: string
 ) => {
-  console.log('idAdmin ', idAdmin);
   const documents = await getLogosBySuperAdmin(
     idAdmin,
     reference,
