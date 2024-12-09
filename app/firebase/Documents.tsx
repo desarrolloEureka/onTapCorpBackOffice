@@ -163,30 +163,30 @@ export const saveNotification = async (dataSave: any) => {
 };
 
 export const sendNotificationsToUsers = async (tokens: string[], title: string, body: string, image: string) => {
-    try {
-        if (tokens?.length === 0) {
-            return { success: false, message: "No tokens provided" };
-        }
-        const responses = await Promise.all(
-            tokens.map(async token => {
-                try {
-                    const response = await fetch("/api/notifications", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ token, title, body, image }),
-                    });
-                    const data = await response.json();
-                    return { token, success: response.ok, ...data };
-                } catch (error) {
-                    return { token, success: false, error: error };
-                }
-            })
-        );
-        return { success: true, message: "Notification sent successfully" };
-    } catch (error) {
-        console.error("Error al enviar la notificación:", error);
-        return { success: false, message: "Error sent notification", error };
+  try {
+    if (tokens?.length === 0) {
+      return { success: false, message: "No tokens provided" };
     }
+    const responses = await Promise.all(
+      tokens.map(async token => {
+        try {
+          const response = await fetch("/api/notifications", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token, title, body, image }),
+          });
+          const data = await response.json();
+          return { token, success: response.ok, ...data };
+        } catch (error) {
+          return { token, success: false, error: error };
+        }
+      })
+    );
+    return { success: true, message: "Notification sent successfully" };
+  } catch (error) {
+    console.error("Error al enviar la notificación:", error);
+    return { success: false, message: "Error sent notification", error };
+  }
 };
 
 export const saveZone = async (dataSave: any) => {
@@ -280,18 +280,43 @@ export const getDocsByCompanyId = async (
   fieldPathInDB?: string,
   valueToFound?: string
 ) => {
-    try {
-        const q =
-            fieldPathInDB && valueToFound
-                ? query(
-                    collection(db, reference),
-                    where("idCompany", "==", companyId),
-                    where(fieldPathInDB, "==", valueToFound),
-                )
-                : query(
-                    collection(db, reference),
-                    where("idCompany", "==", companyId),
-                );
+  try {
+    const q =
+      fieldPathInDB && valueToFound
+        ? query(
+          collection(db, reference),
+          where("idCompany", "==", companyId),
+          where(fieldPathInDB, "==", valueToFound),
+        )
+        : query(
+          collection(db, reference),
+          where("idCompany", "==", companyId),
+        );
+
+    const querySnapshot = await getDocs(q);
+
+    const docs: { [key: string]: any } = querySnapshot.docs.map((doc) => ({
+      ...doc.data(),
+    }));
+    return docs;
+  } catch (error) {
+    console.error("Error fetching Docs:", error);
+    return [];
+  }
+};
+
+export const getLogosBySuperAdmin = async (
+  idAdmin: any,
+  reference: string,
+  fieldPathInDB?: string,
+  valueToFound?: string
+) => {
+  try {
+    const q = query(
+      collection(db, reference),
+      where("type", "==", "global"),
+      where("createdBy", "==", idAdmin)
+    );
 
     const querySnapshot = await getDocs(q);
 
@@ -312,18 +337,18 @@ export const getDocsByCompanyIdInRealTime = (
   fieldPathInDB?: string,
   valueToFound?: string
 ): Unsubscribe => {
-    try {
-        const q =
-            fieldPathInDB && valueToFound
-                ? query(
-                    collection(db, reference),
-                    where("idCompany", "==", companyId),
-                    where(fieldPathInDB, "==", valueToFound),
-                )
-                : query(
-                    collection(db, reference),
-                    where("idCompany", "==", companyId),
-                );
+  try {
+    const q =
+      fieldPathInDB && valueToFound
+        ? query(
+          collection(db, reference),
+          where("idCompany", "==", companyId),
+          where(fieldPathInDB, "==", valueToFound),
+        )
+        : query(
+          collection(db, reference),
+          where("idCompany", "==", companyId),
+        );
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       if (!querySnapshot.empty) {
@@ -332,12 +357,12 @@ export const getDocsByCompanyIdInRealTime = (
       }
     });
 
-        return unsubscribe; // Retornar la variable inicializada
-    } catch (error) {
-        console.error("Error fetching Docs:", error);
-        const unsubscribe = () => { };
-        return unsubscribe; // Retornar array vacío en caso de error
-    }
+    return unsubscribe; // Retornar la variable inicializada
+  } catch (error) {
+    console.error("Error fetching Docs:", error);
+    const unsubscribe = () => { };
+    return unsubscribe; // Retornar array vacío en caso de error
+  }
 };
 
 export const getLocationsByCompanyIdInRealTime = (
@@ -347,18 +372,18 @@ export const getLocationsByCompanyIdInRealTime = (
   fieldPathInDB?: string,
   valueToFound?: string
 ): Unsubscribe => {
-    try {
-        const q =
-            fieldPathInDB && valueToFound
-                ? query(
-                    collection(db, reference),
-                    where("companyId", "==", companyId),
-                    where(fieldPathInDB, "==", valueToFound),
-                )
-                : query(
-                    collection(db, reference),
-                    where("companyId", "==", companyId),
-                );
+  try {
+    const q =
+      fieldPathInDB && valueToFound
+        ? query(
+          collection(db, reference),
+          where("companyId", "==", companyId),
+          where(fieldPathInDB, "==", valueToFound),
+        )
+        : query(
+          collection(db, reference),
+          where("companyId", "==", companyId),
+        );
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       if (!querySnapshot.empty) {
@@ -367,12 +392,12 @@ export const getLocationsByCompanyIdInRealTime = (
       }
     });
 
-        return unsubscribe; // Retornar la variable inicializada
-    } catch (error) {
-        console.error("Error fetching Docs:", error);
-        const unsubscribe = () => { };
-        return unsubscribe; // Retornar array vacío en caso de error
-    }
+    return unsubscribe; // Retornar la variable inicializada
+  } catch (error) {
+    console.error("Error fetching Docs:", error);
+    const unsubscribe = () => { };
+    return unsubscribe; // Retornar array vacío en caso de error
+  }
 };
 
 export const getDocsByCompanyRolId = async (
@@ -403,18 +428,18 @@ export const getLocationsByCompanyId = async (
   fieldPathInDB?: string,
   valueToFound?: string
 ) => {
-    try {
-        const q =
-            fieldPathInDB && valueToFound
-                ? query(
-                    collection(db, "locations"),
-                    where("companyId", "==", companyId),
-                    where(fieldPathInDB, "==", valueToFound),
-                )
-                : query(
-                    collection(db, "locations"),
-                    where("companyId", "==", companyId),
-                );
+  try {
+    const q =
+      fieldPathInDB && valueToFound
+        ? query(
+          collection(db, "locations"),
+          where("companyId", "==", companyId),
+          where(fieldPathInDB, "==", valueToFound),
+        )
+        : query(
+          collection(db, "locations"),
+          where("companyId", "==", companyId),
+        );
 
     const querySnapshot = await getDocs(q);
 
@@ -535,19 +560,19 @@ export const getMeetingStatusByCompanyId = async (companyId: any) => {
 };
 
 export const getMeetingByCompanyId = async (companyId: any) => {
-    try {
-        const q = query(
-            collection(db, "meetings")
-        );
-        const querySnapshot = await getDocs(q);
-        const meetingStatus = querySnapshot.docs.map((doc) => ({
-            ...doc.data(),
-        }));
-        return meetingStatus;
-    } catch (error) {
-        console.error("Error fetching Meeting Status:", error);
-        return [];
-    }
+  try {
+    const q = query(
+      collection(db, "meetings")
+    );
+    const querySnapshot = await getDocs(q);
+    const meetingStatus = querySnapshot.docs.map((doc) => ({
+      ...doc.data(),
+    }));
+    return meetingStatus;
+  } catch (error) {
+    console.error("Error fetching Meeting Status:", error);
+    return [];
+  }
 }
 
 export const getRoutesByCompanyId = async (companyId: any) => {
@@ -624,24 +649,24 @@ export const getLocationsByCompanyIdAndWorkingday = async (companyId: any) => {
     const querySnapshot1 = await getDocs(q1);
     const querySnapshot2 = await getDocs(q2);
 
-        const Locations = [
-            ...querySnapshot1.docs.map((doc) => ({ ...doc.data() })),
-            ...querySnapshot2.docs.map((doc) => ({ ...doc.data() })),
-        ]
-        return Locations;
-    } catch (error) {
-        console.error("Error fetching routes", error);
-        return [];
-    }
+    const Locations = [
+      ...querySnapshot1.docs.map((doc) => ({ ...doc.data() })),
+      ...querySnapshot2.docs.map((doc) => ({ ...doc.data() })),
+    ]
+    return Locations;
+  } catch (error) {
+    console.error("Error fetching routes", error);
+    return [];
+  }
 };
 
 export const getEmployeesByCompanyId = async (companyId: any) => {
-    try {
-        const q = query(
-            collection(db, "users"),
-            where("idCompany", "==", companyId),
-            where("rolId", "==", "uysG1ULyEDklfbGDFate"),  //  ID DEL ROL DE EMPLEADO
-        );
+  try {
+    const q = query(
+      collection(db, "users"),
+      where("idCompany", "==", companyId),
+      where("rolId", "==", "uysG1ULyEDklfbGDFate"),  //  ID DEL ROL DE EMPLEADO
+    );
 
     const querySnapshot = await getDocs(q);
 

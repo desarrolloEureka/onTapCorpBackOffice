@@ -39,6 +39,7 @@ import {
   updateZone,
   getMeetingByCompanyId,
   getAllEmployees,
+  getLogosBySuperAdmin,
 } from "@/firebase/Documents";
 import {
   uploadFile,
@@ -156,7 +157,7 @@ export const listenToDocumentsQuery = (
   if (!uid) {
     // Si uid no es válido, no se establece el listener
     setData([]); // O puedes manejarlo de otra manera
-    return () => {}; // Retorna una función de limpieza vacía
+    return () => { }; // Retorna una función de limpieza vacía
   }
   // Crea una consulta que filtre por idCompany
   const q = query(collectionRef, where("idCompany", "==", uid));
@@ -181,6 +182,40 @@ export const listenToDocumentsQuery = (
   return unsubscribe; // Devuelve la función de limpieza
 };
 
+export const listenToIconsQuery = (ref: string, setData: (data: any[]) => void, idCompany: string | null) => {
+  if (!idCompany) {
+    // Si no hay un ID de empresa válido, limpia los datos y no establece el listener
+    setData([]);
+    return () => { };
+  }
+
+  // Referencia a la colección
+  const collectionRef = collection(db, ref);
+
+  // Consulta los íconos globales o específicos de la empresa
+  const q = query(
+    collectionRef,
+    where("type", "in", ["global", "company"]),
+  );
+
+  // Si hay un idCompany, agrega una segunda consulta para los íconos de la empresa
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const updatedData = snapshot.docs
+      .map((doc) => ({ id: doc.id, ...doc.data() }))
+      .filter((icon: any) => {
+        if (icon.type === "company" && icon.createdBy === idCompany) {
+          return true;
+        }
+        return icon.type === "global"; // Los íconos globales siempre deben incluirse
+      });
+
+    setData(updatedData);
+  });
+
+  return unsubscribe;
+};
+
+
 export const getDocsByCompanyIdQuery = async (
   idCompany: string,
   reference: string,
@@ -189,6 +224,22 @@ export const getDocsByCompanyIdQuery = async (
 ) => {
   const documents = await getDocsByCompanyId(
     idCompany,
+    reference,
+    fieldPathInDB,
+    valueToFound
+  );
+  return documents;
+};
+
+export const getLogosBySuperAdminQuery = async (
+  idAdmin: string,
+  reference: string,
+  fieldPathInDB?: string,
+  valueToFound?: string
+) => {
+  console.log('idAdmin ', idAdmin);
+  const documents = await getLogosBySuperAdmin(
+    idAdmin,
     reference,
     fieldPathInDB,
     valueToFound
@@ -282,7 +333,7 @@ export const listenToEmployeesByCompanyIdQuery = (
   if (!uid) {
     // Si uid no es válido, no se establece el listener
     setData([]); // O puedes manejarlo de otra manera
-    return () => {}; // Retorna una función de limpieza vacía
+    return () => { }; // Retorna una función de limpieza vacía
   }
   // Crea una consulta que filtre por idCompany
   const q = query(
@@ -311,7 +362,7 @@ export const listenToWorkAreaByCompanyIdQuery = (
   if (!uid) {
     // Si uid no es válido, no se establece el listener
     setData([]); // O puedes manejarlo de otra manera
-    return () => {}; // Retorna una función de limpieza vacía
+    return () => { }; // Retorna una función de limpieza vacía
   }
   // Crea una consulta que filtre por idCompany
   const q = query(collectionRef, where("companyId", "==", uid));
@@ -429,8 +480,8 @@ export const saveNotificationQuery = async (dataSave: any) => {
 };
 
 export const sendNotificationsToUsersQuery = async (tokens: string[], title: string, body: string, image: string) => {
-    const result = await sendNotificationsToUsers(tokens, title, body, image);
-    return result;
+  const result = await sendNotificationsToUsers(tokens, title, body, image);
+  return result;
 };
 
 export const saveZoneQuery = async (dataSave: any) => {
