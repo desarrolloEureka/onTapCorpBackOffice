@@ -341,7 +341,7 @@ const CompanyHook = () => {
 
                 newItemUrl[currentIndex] =
                     item === "urlName"
-                        ? ["", false]
+                        ? ["", true]
                         : item === "urlLink"
                         ? " "
                         : item === "iconName"
@@ -508,7 +508,7 @@ const CompanyHook = () => {
         if (companyData) {
             setData({
                 ...companyData,
-                urlName: companyData.urlName || ["", false],
+                urlName: companyData.urlName || ["", true],
                 urlLink: companyData.urlLink || " ",
                 iconName: companyData.iconName || " "
             });

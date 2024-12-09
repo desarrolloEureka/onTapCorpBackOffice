@@ -1,23 +1,9 @@
 import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
 import { config as configDotenv } from "dotenv";
 
 // Add the Firebase products that you want to use
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-
-/* const firebaseConfig = {
-    apiKey: "AIzaSyBsybfHvoAj3Bvtzu_WwFq3fj9bWOYVziM",
-    authDomain: "onetapcorp-d0146.firebaseapp.com",
-    projectId: "onetapcorp-d0146",
-    storageBucket: "onetapcorp-d0146.appspot.com",
-    messagingSenderId: "828170350312",
-    appId: "1:828170350312:web:e023c1b6a14e680233235d",
-    measurementId: "G-ES4RD6WMNW"
-}; */
-
-//prueba
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -36,4 +22,3 @@ const db = firebaseApp.firestore();
 const auth = firebase.auth();
 
 export { db, auth, firebaseConfig };
-

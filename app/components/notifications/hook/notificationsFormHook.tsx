@@ -1,6 +1,6 @@
 "use client";
 import useAuth from "@/firebase/auth";
-import { saveNotificationQuery } from "@/queries/documentsQueries";
+import { saveNotificationQuery, getEmployeesByCompanyIdQuery, sendNotificationsToUsersQuery } from "@/queries/documentsQueries";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
 import moment from "moment";
@@ -17,7 +17,7 @@ const NotificationsFormHook = ({
     const [isEdit, setIsEdit] = useState(false);
     const [issue, setIssue] = useState("");
     const [content, setContent] = useState("");
-    const { userData } = useAuth();
+    const { userData, companyData } = useAuth();
 
     // Errores
     const [issueError, setIssueError] = useState("");
@@ -72,13 +72,11 @@ const NotificationsFormHook = ({
                     content,
                     timestamp: currentDate,
                 };
-
-                const notificationResult = await saveNotificationQuery(
-                    formData,
-                );
-
+                const notificationResult = await saveNotificationQuery(formData);
                 if (notificationResult.success) {
-                    console.log("Notification saved successfully");
+                    const employees = await getEmployeesByCompanyIdQuery(userData?.companyId)
+                    const tokens = employees.map(employee => employee?.tokens).filter(token => token !== undefined);
+                    await sendNotificationsToUsersQuery(tokens, issue, content, companyData?.icon[0])
                 } else {
                     console.error(
                         "Failed to save notification:",
