@@ -25,11 +25,13 @@ const isValidUrl = (url: string) => {
 };
 
 const CustomButton = ({
+  companyID,
   name,
   link,
   nameLabel,
   styles,
 }: {
+  companyID: string;
   name: string;
   nameLabel?: string;
   link: string;
@@ -49,11 +51,13 @@ const CustomButton = ({
 
   useEffect(() => {
     const fetchAllSocialNetworks = async () => {
-      const data2 = await GetAllSocialNetworks();
-      setData(data2);
+      if(companyID){
+        const data2 = await GetAllSocialNetworks(companyID);
+        setData(data2);
+      }
     };
     fetchAllSocialNetworks();
-  }, []);
+  }, [companyID]);
 
   // Limpia el enlace y asegura que tenga el formato correcto
   const linkAux = link.trim();
@@ -83,7 +87,7 @@ const CustomButton = ({
         rel="noopener noreferrer"
         onClick={handleClick}
       >
-        <div className="tw-flex tw-items-center tw-justify-center tw-flex-col tw-mx-2">
+        <div className="tw-flex tw-items-center tw-justify-center tw-flex-col tw-mx-2" style={{ minWidth: '50px' }}>
           <Image
             className="tw-shadow-[0_0px_05px_05px_rgba(0,0,0,0.1)] tw-rounded-full"
             src={icon.imageUrl}

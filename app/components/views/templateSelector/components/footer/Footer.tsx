@@ -25,7 +25,7 @@ const CustomHorizontalContainer = styled(Container)`
   }
 `;
 
-const Footer = ({socialNetworks}: {socialNetworks: any}) => {
+const Footer = ({socialNetworks, userData}: {socialNetworks: any, userData: any}) => {
   const { finalArray } = FooterHook({ socialNetworks });
   const reversedArray = [...finalArray].reverse();
   const shouldCenterItems = reversedArray.length < 4;
@@ -43,6 +43,7 @@ const Footer = ({socialNetworks}: {socialNetworks: any}) => {
                 nameLabel={val.name}
                 link={val.url}
                 styles={'tw-mx-2.5'}
+                companyID={userData?.idCompany}
               />
             ))}
           </Box>
