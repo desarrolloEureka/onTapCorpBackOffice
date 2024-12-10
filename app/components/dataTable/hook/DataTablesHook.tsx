@@ -610,8 +610,8 @@ const DataTablesHook = (reference: string) => {
         };
       } else if (reference === "employees") {
         columnNamesToDisplay = {
-          createdDate: "Fecha creación",
           actions: "Acciones",
+          createdDate: "Fecha creación",
           firstName: "Nombre",
           lastName: "Apellido",
           documentType: "Tipo de Documento",
@@ -959,13 +959,6 @@ const DataTablesHook = (reference: string) => {
         columns: cols,
         data: documents,
       };
-
-      if (reference === "workAreas") {
-        console.log("cols", cols);
-        console.log("currentData", currentData);
-        console.log("documents", documents);
-      }
-
 
       setColumns(cols);
       setDataTable(currentData); //obtain dataTable

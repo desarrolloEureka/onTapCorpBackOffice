@@ -205,12 +205,11 @@ export const listenToIconsQuery = (ref: string, setData: (data: any[]) => void, 
     const updatedData = snapshot.docs
       .map((doc) => ({ id: doc.id, ...doc.data() }))
       .filter((icon: any) => {
-        if (icon.type === "company" && icon.createdBy === idCompany) {
+        if (icon.type === "company" && icon.idCompany === idCompany) {
           return true;
         }
         return icon.type === "global"; // Los íconos globales siempre deben incluirse
       });
-
     setData(updatedData);
   });
 
@@ -239,7 +238,6 @@ export const getLogosBySuperAdminQuery = async (
   fieldPathInDB?: string,
   valueToFound?: string
 ) => {
-  console.log('idAdmin ', idAdmin);
   const documents = await getLogosBySuperAdmin(
     idAdmin,
     reference,
@@ -385,7 +383,6 @@ export const listenToWorkAreaByCompanyIdQuery = (
       ...doc.data(),
     }));
     setData(updatedData); // Actualiza el estado con los datos obtenidos
-    //console.log("updatedData", updatedData)
   });
 
   return unsubscribe; // Devuelve la función de limpieza
