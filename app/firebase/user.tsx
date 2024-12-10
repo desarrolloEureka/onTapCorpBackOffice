@@ -263,13 +263,17 @@ export const GetTemplate = async ({
     return null;
 };
 
-export const GetAllSocialNetworks = async () => {
+export const GetAllSocialNetworks = async (companyID: string) => {
     const backgroundImages: any[] = [];
     const querySnapshot = await getDocs(collection(db, "logos"));
     if (!querySnapshot.empty) {
         querySnapshot.forEach((doc: any) => {
             const dataResult = doc.data();
-            backgroundImages.push({ ...dataResult, id: doc.id });
+            if ( dataResult?.type === "global") {
+                backgroundImages.push({ ...dataResult, id: doc.uid });
+            } else if (dataResult?.idCompany === companyID) {
+                backgroundImages.push({ ...dataResult, id: doc.uid });
+            }
         });
     }
     return backgroundImages;

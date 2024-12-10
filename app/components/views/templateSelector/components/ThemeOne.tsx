@@ -137,6 +137,7 @@ const ThemeOne = ({
           photo={userData.ImageProfile}
           photoCompany={companyData.icon[1] ? companyData.icon[0] : ""}
           socialNetworks={areaDataUrls?.urls}
+          userData={userData}
         />
         <TemplateContainer
           userData={userData}
@@ -146,7 +147,7 @@ const ThemeOne = ({
           areaDataUrls={areaDataUrls?.urls}
           color="#030124"
         />
-        <Footer socialNetworks={companyDataUrls.urls} />{" "}
+        <Footer socialNetworks={companyDataUrls.urls} userData={userData}/>{" "}
         <div
           className={`tw-flex tw-z-30 'tw-h-[8%]' } tw-items-center tw-justify-center`}
         >
