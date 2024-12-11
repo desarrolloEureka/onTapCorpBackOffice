@@ -4,10 +4,12 @@ import CustomLogo from '../logoCompany/CustomLogo'
 import VerticalColButtons from '../floatingButtons/verticalColButtons/VerticalColButons';
 
 const Hero = ({
+  userData,
   socialNetworks,
   photo,
   photoCompany,
 }: {
+  userData: any;
   socialNetworks: any[];
   photo: string;
   photoCompany: string;
@@ -30,7 +32,7 @@ const Hero = ({
           </div>
           <div style={{ display: 'flex', height: '100%', width: '50%', justifyContent: 'center', alignItems: 'center' }}>
             <div style={{ display: 'flex', height: '75%', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-              <VerticalColButtons socialNetworks={socialNetworks} />
+              <VerticalColButtons socialNetworks={socialNetworks} userData={userData}/>
             </div>
           </div>
         </div>

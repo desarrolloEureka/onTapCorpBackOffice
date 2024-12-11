@@ -25,7 +25,7 @@ const CustomHorizontalContainer = styled(Container)`
   }
 `;
 
-const Footer = ({socialNetworks}: {socialNetworks: any}) => {
+const Footer = ({socialNetworks, userData}: {socialNetworks: any, userData: any}) => {
   const { finalArray } = FooterHook({ socialNetworks });
   const reversedArray = [...finalArray].reverse();
   const shouldCenterItems = reversedArray.length < 4;
@@ -38,13 +38,13 @@ const Footer = ({socialNetworks}: {socialNetworks: any}) => {
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }} style={{ transform: 'rotateX(180deg)' }}>
             {reversedArray.length > 0 && reversedArray.map((val, i) => (
               <CustomButton
-              key={i}
-              name={val.icon}
-              nameLabel={val.name}
-              link={val.url}
-              styles="tw-mx-2.5"
-            />
-          
+                key={i}
+                name={val.icon}
+                nameLabel={val.name}
+                link={val.url}
+                styles={'tw-mx-2.5'}
+                companyID={userData?.idCompany}
+              />
             ))}
           </Box>
         </CustomHorizontalContainer>

@@ -30,7 +30,7 @@ const getSocialNetworksOrderedByObject = (urls: any[], columns: number) => {
   return { finalArray: finalArray.reverse(), data: data2.reverse() };
 };
 
-const VerticalColButtons = ({ socialNetworks }: { socialNetworks: any[] }) => {
+const VerticalColButtons = ({ socialNetworks, userData }: { socialNetworks: any[], userData: any }) => {
   const { data } = getSocialNetworksOrderedByObject(socialNetworks, 2);
   const reversedArray = data.slice().reverse();
 
@@ -60,6 +60,7 @@ const VerticalColButtons = ({ socialNetworks }: { socialNetworks: any[] }) => {
                     nameLabel={value.name}
                     key={key}
                     styles={`tw-flex tw-flex-col`}
+                    companyID={userData?.idCompany}
                   />
                 </Box>
               );
