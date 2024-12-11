@@ -4,21 +4,18 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Typography } from "@mui/material";
+import { countClicksSocialNetworkQuery } from "@/queries/documentsQueries";
 
-//const regex = /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,}(\/[a-zA-Z0-9\-._~:?#\[\]@!$&'()*+,;=]*)?(\?[;&a-zA-Z0-9%_.~+=-]*)?(#[a-zA-Z0-9-_]*)?$/i;
 const regex = /^(https?:\/\/)?(([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,})(\/[^\s]*)?$/i;
 
-// Función para validar si la URL es válida
-const isValidUrl = (url: string) => {
-  // Primero valida con regex
+const isValidUrl = (url: string): boolean => {
   if (!regex.test(url)) {
     return false;
   }
 
   try {
-    // Luego valida con el constructor URL
     const urlObj = new URL(url);
-    return urlObj.protocol === "http:" || urlObj.protocol === "https:";
+    return ["http:", "https:"].includes(urlObj.protocol);
   } catch (error) {
     return false;
   }
@@ -29,82 +26,84 @@ const CustomButton = ({
   link,
   nameLabel,
   styles,
+  uid,
 }: {
   name: string;
   nameLabel?: string;
   link: string;
   styles?: string;
+  uid: string;
 }) => {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<any[]>([]);
   const isSmallScreen = useMediaQuery("(max-height:780px)");
-  let icon = data?.find((val: any) => val.logoName === name);
-  if (!icon) {
-    try {
-      new URL(name); // Verifica si 'name' es una URL válida
-      icon = {
-        imageUrl: name,
-      };
-    } catch {}
-  }
+  const [icon, setIcon] = useState<any>(null);
 
   useEffect(() => {
     const fetchAllSocialNetworks = async () => {
-      const data2 = await GetAllSocialNetworks();
-      setData(data2);
+      try {
+        const networks = await GetAllSocialNetworks();
+        setData(networks);
+        const foundIcon = networks.find((val: any) => val.logoName === name);
+        setIcon(foundIcon || { imageUrl: name });
+      } catch (error) {
+        console.error("Error fetching social networks:", error);
+      }
     };
     fetchAllSocialNetworks();
-  }, []);
+  }, [name]);
 
-  // Limpia el enlace y asegura que tenga el formato correcto
   const linkAux = link.trim();
-  // Asegúrate de que la URL comience con "http://" o "https://"
-  const fullUrl = /^https?:\/\//i.test(linkAux)
-    ? linkAux
-    : `https://${linkAux}`;
+  const fullUrl = /^https?:\/\//i.test(linkAux) ? linkAux : `https://${linkAux}`;
 
-  // Verifica si la URL es válida
-  const finalUrl = isValidUrl(fullUrl) ? fullUrl : "";
-
-  // Maneja el clic en el enlace y muestra un mensaje de error si la URL es inválida
-  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleClick = async (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isValidUrl(fullUrl)) {
       event.preventDefault();
-      alert("La URL proporcionada no es válida."); // Muestra un mensaje de error al usuario
+      alert("La URL proporcionada no es válida.");
+      return;
+    }
+
+    try {
+      const response = await countClicksSocialNetworkQuery(uid, name);
+      if (response.success) {
+        console.log("Clic registrado correctamente");
+      } else {
+        console.error("Error al registrar el clic:", response.message);
+      }
+    } catch (error) {
+      console.error("Error durante el registro del clic:", error);
     }
   };
 
+  if (!icon?.imageUrl) return null; 
+
   return (
-    icon?.imageUrl && (
-      <Link
-        className={`tw-rounded-full tw-mt-1 tw-drop-shadow-xl ${styles}`}
-        style={{ textDecoration: "none" }}
-        href={finalUrl || "#"}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={handleClick}
-      >
-        <div className="tw-flex tw-items-center tw-justify-center tw-flex-col tw-mx-2">
-          <Image
-            className="tw-shadow-[0_0px_05px_05px_rgba(0,0,0,0.1)] tw-rounded-full"
-            src={icon.imageUrl}
-            alt={name}
-            width={isSmallScreen ? 45 : 54}
-            height={isSmallScreen ? 45 : 54}
-          />
-          <Typography
-            style={{ width: "100%", textDecoration: "none" }}
-            className="tw-text-white tw-z-10 tw-text-xs tw-flex tw-items-center tw-justify-center tw-capitalize tw-pt-1"
-            color={"white"}
-          >
-            {nameLabel
-              && nameLabel.length > 9
-                ? nameLabel.substring(0, 6) + "..."
-                : nameLabel
-              }
-          </Typography>
-        </div>
-      </Link>
-    )
+    <Link
+      className={`tw-rounded-full tw-mt-1 tw-drop-shadow-xl ${styles}`}
+      style={{ textDecoration: "none" }}
+      href={fullUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={handleClick}
+    >
+      <div className="tw-flex tw-items-center tw-justify-center tw-flex-col tw-mx-2">
+        <Image
+          className="tw-shadow-[0_0px_05px_05px_rgba(0,0,0,0.1)] tw-rounded-full"
+          src={icon.imageUrl}
+          alt={name}
+          width={isSmallScreen ? 45 : 54}
+          height={isSmallScreen ? 45 : 54}
+        />
+        <Typography
+          style={{ width: "100%", textDecoration: "none" }}
+          className="tw-text-white tw-z-10 tw-text-xs tw-flex tw-items-center tw-justify-center tw-capitalize tw-pt-1"
+          color={"white"}
+        >
+          {nameLabel && nameLabel.length > 9
+            ? nameLabel.substring(0, 6) + "..."
+            : nameLabel}
+        </Typography>
+      </div>
+    </Link>
   );
 };
 

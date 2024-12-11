@@ -8,7 +8,7 @@ interface EmployeeData {
   cedula: string;
   totalVistas: number;
   porcentaje: number;
-  createdDate: string; // Asegúrate de que este campo está en el mapeo
+  createdDate: string;
 }
 
 const useEmployeesMostVisitsHook = () => {
@@ -17,11 +17,9 @@ const useEmployeesMostVisitsHook = () => {
   const [sortedData, setSortedData] = useState<EmployeeData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [startDate, setStartDate] = useState<string>(""); // Fecha de inicio
-  const [endDate, setEndDate] = useState<string>(""); // Fecha de fin
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>(""); 
   const { userData } = useAuth();
-
-  
 
   useEffect(() => {
     if (!userData?.companyId) return;
@@ -83,6 +81,15 @@ const useEmployeesMostVisitsHook = () => {
     setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
   };
 
+  const clearFilters = () => {
+    setStartDate("");
+    setEndDate("");
+    setFilteredData(employeesData); // Restablecer a los datos originales
+  };
+
+  
+
+
   return {
     employeesData: sortedData,
     loading,
@@ -92,6 +99,7 @@ const useEmployeesMostVisitsHook = () => {
     setStartDate,
     endDate,
     setEndDate,
+    clearFilters
   };
 };
 

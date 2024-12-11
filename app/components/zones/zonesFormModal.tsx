@@ -99,8 +99,8 @@ const ZonesFormModal = ({
                             {/* Contenedor con scroll */}
                             <div className="tw-overflow-y-auto tw-max-h-96 tw-px-3 tw-w-full"
                                 style={{
-                                    scrollbarWidth: "thin",  // Para Firefox
-                                    scrollbarColor: "#9c9c9c #f1f1f1" // Color negro para el thumb y gris para el track
+                                    scrollbarWidth: "thin", 
+                                    scrollbarColor: "#9c9c9c #f1f1f1" 
                                 }}>
                                 <div className="tw-flex tw-flex-col tw-w-full">
                                     <div className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full">

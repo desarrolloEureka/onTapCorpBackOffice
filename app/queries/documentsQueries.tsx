@@ -42,6 +42,7 @@ import {
   getAllEmployees,
   getLogosBySuperAdmin,
   getAllCompanies,
+  countClicksSocialNetwork,
 } from "@/firebase/Documents";
 import {
   uploadFile,
@@ -598,3 +599,9 @@ export const DeleteSocialNetwork = async (imageName: string, docId: any) => {
   const res = await deleteSocialNetwork(imageName, docId);
   return res;
 };
+
+export const countClicksSocialNetworkQuery = async (uid: string, socialNetworkName: string) => {
+  const documents = await countClicksSocialNetwork(uid, socialNetworkName);
+  return documents;
+};
+

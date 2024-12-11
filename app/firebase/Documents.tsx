@@ -978,15 +978,12 @@ export const updateSocialNetwork = async (
 export const deleteSocialNetwork = async (imageName: string, docId: string) => {
   const storage = getStorage();
 
-  // Crear referencia de la imagen en Firebase Storage
   const imageRef = ref(storage, `social_networks/${imageName}`);
 
   try {
-    // Eliminar la imagen de Firebase Storage
     await deleteObject(imageRef);
 
-    // Eliminar el documento en Firestore que contiene la referencia a la imagen
-    const docRef = doc(db, "logos", docId); // Ajusta 'logos' si es necesario
+    const docRef = doc(db, "logos", docId); 
     await deleteDoc(docRef);
 
     return { success: true, message: "Red social eliminada con éxito" };
@@ -999,3 +996,89 @@ export const deleteSocialNetwork = async (imageName: string, docId: string) => {
     };
   }
 };
+
+export const countClicksSocialNetwork = async (
+  uid: string,
+  urlName: string
+) => {
+  try {
+    console.log("UID recibido:", uid);
+
+    const workAreaRef = doc(db, "workAreas", uid);
+    const workAreaSnap = await getDoc(workAreaRef);
+
+    if (!workAreaSnap.exists()) {
+      return { success: false, message: "Work Area not found" };
+    }
+
+    const workAreaData = workAreaSnap.data();
+
+    // Filtrar campos relacionados con `urlName`
+    const urlFields = Object.keys(workAreaData).filter((key) =>
+      key.startsWith("urlName")
+    );
+
+    let updatedField = null;
+
+    for (const field of urlFields) {
+      const fieldData = workAreaData[field];
+
+      if (!Array.isArray(fieldData) || fieldData.length !== 3) {
+        continue; // Ignorar campos mal formados
+      }
+
+      const [name, isActive, users] = fieldData;
+
+      if (name === urlName && isActive) {
+        updatedField = field;
+
+        const userIndex = users.findIndex(
+          (user: { uid: string }) => user.uid === uid
+        );
+
+        if (userIndex === -1) {
+          users.push({
+            uid,
+            views: [[new Date().toISOString(), 1]],
+          });
+        } else {
+          // Usuario encontrado, actualizar vistas
+          const user = users[userIndex];
+
+          if (!Array.isArray(user.views)) {
+            user.views = [[new Date().toISOString(), 1]]; // Inicializar con 1 clic
+          } else {
+            const lastEntry = user.views[user.views.length - 1];
+            const newCount = lastEntry ? lastEntry[1] + 1 : 1; // Incrementar el contador
+            user.views.push([new Date().toISOString(), newCount]); // Agregar el nuevo timestamp y contador
+          }
+
+          users[userIndex] = user;
+        }
+
+        workAreaData[field] = [name, isActive, users];
+        break;
+      }
+    }
+
+    if (!updatedField) {
+      return { success: false, message: "Social network not found or inactive" };
+    }
+
+    // Actualizar el documento en Firestore
+    await updateDoc(workAreaRef, { [updatedField]: workAreaData[updatedField] });
+
+    return { success: true, message: "Social network click saved successfully" };
+  } catch (error) {
+    console.error("Error saving social network click:", error);
+    return {
+      success: false,
+      message: "Error saving social network click",
+      //error: error.message || error,
+    };
+  }
+};
+
+
+
+
