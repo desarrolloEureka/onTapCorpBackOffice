@@ -47,6 +47,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
     itemUrlKey,
     itemUrlSelected,
     dataLogos,
+    handleChangeUrls
   } = CompanyHook();
 
   return (
@@ -360,36 +361,36 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                 />
                               </div>
                               <CustomTextField
-                              required
-                              checked={allChecked}
-                              data={[item[1], item[2]]}
-                              onChange={(value: string, name: string, checked: boolean) => {
-  
-                                const numericValue = value.replace(/\D/g, '');
+                                required
+                                checked={allChecked}
+                                data={[item[1], item[2]]}
+                                onChange={(value: string, name: string, checked: boolean) => {
 
-                                if (numericValue.length <= 10) {
-                                  handleChange(value, name, checked);
-                                }
-                              }}
-                              name={item[0]}
-                              type="text"
-                              switch="true"
-                              theme={theme}
-                              id={item[0]}
-                              fullWidth
-                              label="Teléfono"
-                              InputProps={{
-                                startAdornment: (
-                                  <InputAdornment position="start">
-                                    <LocalPhoneOutlinedIcon />
-                                  </InputAdornment>
-                                ),
-                              }}
-                              inputProps={{
-                                maxLength: 10,
-                                pattern: '[0-9]*', 
-                              }}
-                            />
+                                  const numericValue = value.replace(/\D/g, '');
+
+                                  if (numericValue.length <= 10) {
+                                    handleChange(value, name, checked);
+                                  }
+                                }}
+                                name={item[0]}
+                                type="text"
+                                switch="true"
+                                theme={theme}
+                                id={item[0]}
+                                fullWidth
+                                label="Teléfono"
+                                InputProps={{
+                                  startAdornment: (
+                                    <InputAdornment position="start">
+                                      <LocalPhoneOutlinedIcon />
+                                    </InputAdornment>
+                                  ),
+                                }}
+                                inputProps={{
+                                  maxLength: 10,
+                                  pattern: '[0-9]*',
+                                }}
+                              />
 
                             </div>
                             <CustomTextField
@@ -486,8 +487,9 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                         </div>
                         {objToArrayItems?.urlName?.map((item, index) => {
                           const datafilter = dataLogos?.find(
-                            (val: any) => val.logoName === item[6]
+                            (val: any) => val.logoName === item[7]
                           );
+
                           return (
                             <div
                               key={index}
@@ -500,7 +502,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                   value: string,
                                   name: string,
                                   checked: boolean
-                                ) => handleChange(value, name, checked)}
+                                ) => handleChangeUrls(value, name, checked)}
                                 name={item[0]}
                                 type="text"
                                 switch="true"
@@ -516,21 +518,22 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                   ),
                                 }}
                               />
+
                               <CustomTextField
                                 required
-                                data={item[4]}
+                                data={item[5]}
                                 onChange={(value: string, name: string) =>
-                                  handleChange(value, name)
+                                  handleChangeUrls(value, name)
                                 }
                                 onClick={() => {
                                   handleDeleteItem(item);
                                 }}
-                                name={item[3]}
+                                name={item[4]}
                                 type="url"
                                 helperText={errors.urlLink}
                                 error={!!errors.urlLink}
                                 theme={theme}
-                                id={item[3]}
+                                id={item[4]}
                                 fullWidth
                                 InputProps={{
                                   startAdornment: (
@@ -551,6 +554,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                 index={index}
                                 label="Dato"
                               />
+
                             </div>
                           );
                         })}
