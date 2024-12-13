@@ -617,19 +617,6 @@ const CompanyHook = () => {
         data && setObjToArrayItems(createNewArray());
     }, [createNewArray, data]);
 
-    /* const prevDataRef = useRef(null);
-
-    useEffect(() => {
-        // Ref para almacenar el estado previo de `data`.
-        if (prevDataRef.current !== null) {
-            //console.log('Estado previo de data:', prevDataRef.current);
-            //console.log('Nuevo estado de data:', data);
-        }
-        // Actualizamos el ref con el valor actual de `data`.
-        prevDataRef.current = data;
-        data && setObjToArrayItems(createNewArray());
-    }, [createNewArray, data]); */
-
     useEffect(() => {
         if (companyData) {
             setData({
@@ -686,29 +673,3 @@ const CompanyHook = () => {
 };
 
 export default CompanyHook;
-
-
-/* 
-
-Areas
-Urls =[
-{nameUrl: 'Facebook', urlLink: 'www.facebook.com', iconName: 'Facebook', isActive: true, users: [{uid:'User123',isActiveArea:true, views: [date]}]},
-{nameUrl: 'Facebook', urlLink: 'www.facebook.com', iconName: 'Facebook', isActive: true, users: [{uid:'User123',isActiveArea:true, views: [date]}]},
-{nameUrl: 'Facebook', urlLink: 'www.facebook.com', iconName: 'Facebook', isActive: true, users: [{uid:'User123',isActiveArea:true, views: [date]}]},
-{nameUrl: 'Facebook', urlLink: 'www.facebook.com', iconName: 'Facebook', isActive: true, users: [{uid:'User123',isActiveArea:true, views: [date]}]},
-
-]
-
-
-Empresas
-
-Urls =[
-{nameUrl: 'Facebook', urlLink: 'www.facebook.com', iconName: 'Facebook', isActive: true, users: [{uid:'User123', views: [date]}]},
-{nameUrl: 'instagram', urlLink: 'www.facebook.com', iconName: 'Facebook', isActive: true, users: [{uid:'User123', views: [date]}]},
-{nameUrl: 'gooogle', urlLink: 'www.facebook.com', iconName: 'Facebook', isActive: true, users: [{uid:'User123', views: [date]}]},
-]
-
-WebSite: {urlLink: 'www.facebook.com', isActive: true, users: [{uid:'User123', views: [date]} }
-
-
-*/
