@@ -52,8 +52,8 @@ const useSendBirthdayNotifications = async () => {
 // Función para programar el envío de notificaciones de cumpleaños
 const scheduleBirthdayNotifications = () => {
     console.log("Verificando tarea programada ...");
-    // Ejecutar la tarea todos los días a las 8 AM
-    cron.schedule('* 8 * * *', async () => {
+    // Ejecutar la tarea todos los días a las 13 PM UTC  ->  8 AM en Colombia (UTC-5)
+    cron.schedule('0 13 * * *', async () => {
         console.log("Verificando empleados con cumpleaños hoy...");
         await useSendBirthdayNotifications();
     });
