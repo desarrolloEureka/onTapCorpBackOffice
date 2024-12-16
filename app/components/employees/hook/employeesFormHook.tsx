@@ -9,6 +9,8 @@ import {
     saveEmployeeQuery,
     getWorkAreaByUidQuery,
     editAreaQuery,
+    getCompaniesByUidQuery,
+    editCompanyQuery,
 } from "@/queries/documentsQueries";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
@@ -428,6 +430,11 @@ const EmployeesFormHook = ({
             });
         }
 
+        //validacion de numero telefono solo sea de 10 digitos
+        if (!data.phones || data.phones.length === 0 || data.phones[0].text.trim().replace(/\D/g, '').length !== 10) {
+            newErrors.phones = "El numero de telefono no puede ser inferior a 10 caracteres";
+        }
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -596,6 +603,7 @@ const EmployeesFormHook = ({
 
                 if (employeeQueryResult.success) {
                     await addUserUrls(selectedArea, documentRefUser.id)
+                    await addUrlsCompany(userData?.companyId, documentRefUser.id)
                     Swal.fire({
                         icon: "success",
                         title: "Usuario creado",
@@ -603,7 +611,7 @@ const EmployeesFormHook = ({
                         showConfirmButton: false,
                         timer: 2500,
                     });
-                    console.log("Usuario guardado con éxito");
+                    //console.log("Usuario guardado con éxito");
                 } else {
                     Swal.fire({
                         icon: "error",
@@ -617,9 +625,9 @@ const EmployeesFormHook = ({
                     );
                 }
             } else {
-                console.log(
-                    "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
-                );
+                // console.log(
+                //     "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
+                // );
                 return;
             }
         } catch (error) {
@@ -704,9 +712,9 @@ const EmployeesFormHook = ({
                     );
                 }
             } else {
-                console.log(
-                    "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
-                );
+                // console.log(
+                //     "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
+                // );
                 return;
             }
         } catch (error) {
@@ -859,6 +867,38 @@ const EmployeesFormHook = ({
             }
         }
         await editAreaQuery(urlsDataArea, selectAreaUid);
+    }
+
+    const addUrlsCompany = async (selectCompanieUid: string, userUid: string) => {
+        const dataCompany = await getCompaniesByUidQuery(selectCompanieUid)
+
+        // Filtrar solo las propiedades que comienzan con "urlName"
+        //console.log("DATA", userUid, selectCompanieUid);
+        //console.log("compañia", dataCompany)
+        const urlsCompanyData = Object.fromEntries(
+            Object.entries(dataCompany[0]).filter(([key, value]) => key.startsWith("urlName"))
+        );
+        //console.log("url",urlsCompanyData)
+
+        // Recorrer cada urlName, urlName2, ..., urlNameN
+        for (const [key, value] of Object.entries(urlsCompanyData)) {
+            if (Array.isArray(value) && typeof value[2] === 'object') {
+                const userObjects = value[2];
+
+                // Verificar si el usuario ya existe en la propiedad
+                if (!userObjects[userUid]) {
+                    // Si no existe, agregar el usuario con las propiedades deseadas
+                    userObjects[userUid] = {
+                        isActive: true,
+                        uid: userUid,
+                        views: []
+                    };
+                }
+            } else {
+                console.log("entro")
+            }
+        }
+        await editCompanyQuery(urlsCompanyData, selectCompanieUid);
     }
 
     useEffect(() => {

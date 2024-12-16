@@ -42,7 +42,8 @@ import {
   getAllEmployees,
   getLogosBySuperAdmin,
   getAllCompanies,
-  countClicksSocialNetwork,
+  getCompaniesByUid,
+  updateCompany,
 } from "@/firebase/Documents";
 import {
   uploadFile,
@@ -547,10 +548,21 @@ export const editAreaQuery = async (dataSave: any, docId: string) => {
   return result;
 };
 
+export const editCompanyQuery = async (dataSave: any, docId: string) => {
+  const result = await updateCompany(dataSave, docId);
+  return result;
+};
+
 export const getWorkAreaByUidQuery = async (uidArea: string) => {
   const documents = await getWorkAreaByUid(uidArea);
   return documents;
 };
+
+export const getCompaniesByUidQuery = async (uid: string) => {
+  const companies = await getCompaniesByUid(uid);
+  return companies;
+};
+
 
 export const saveRouteQuery = async (dataSave: any) => {
   try {
@@ -598,10 +610,5 @@ export const UpdateSocialNetwork = async (
 export const DeleteSocialNetwork = async (imageName: string, docId: any) => {
   const res = await deleteSocialNetwork(imageName, docId);
   return res;
-};
-
-export const countClicksSocialNetworkQuery = async (uid: string, socialNetworkName: string) => {
-  const documents = await countClicksSocialNetwork(uid, socialNetworkName);
-  return documents;
 };
 

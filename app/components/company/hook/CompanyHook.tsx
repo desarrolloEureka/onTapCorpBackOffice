@@ -6,7 +6,8 @@ import {
     saveDataDocumentsQueryById,
     saveIconFile,
     listenToDocumentsQuery,
-    listenToIconsQuery
+    listenToIconsQuery,
+    listenToEmployeesByCompanyIdQuery
 } from "@/queries/documentsQueries";
 import { getCoordinates } from "@/queries/GeoMapsQueries";
 import { MyStateType } from "@/types/company";
@@ -19,6 +20,7 @@ const CompanyHook = () => {
     const [data, setData] = useState<any>();
     const [allChecked, setAllChecked] = useState<string>("none");
     const [files, setFiles] = useState<any>();
+    const [employees, setEmployees] = useState<any>();
     const [fileName, setFileName] = useState<any>();
     const [objToArrayItems, setObjToArrayItems] = useState<MyStateType>({});
 
@@ -338,6 +340,105 @@ const CompanyHook = () => {
                 ? objToArrayItems[type ?? "urlName"].length
                 : 0;
 
+                listNewItem.forEach((item) => {
+                    const currentIndex = `${item}${itemIndex + 1}`;
+                    newItemUrl[currentIndex] =
+                        item === "urlName"
+                            ? [
+                                "",
+                                true,
+                                // Construimos el objeto con los uid de employees
+                                employees?.reduce((acc: any, employee: any) => {
+                                    acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
+                                    return acc;
+                                }, {})
+                            ]
+                            : item === "urlLink"
+                                ? " "
+                                : item === "iconName"
+                                    ? " "
+                                    : " ";
+                });
+
+
+            setData({ ...data, ...newItemUrl });
+        }
+    };
+
+    const handleCompany = (type: string) => {
+        if (type === "phone") {
+            const listItemToChange: string[] | string = [
+                "phone",
+                "indicative",
+                "ext",
+            ];
+            const newItemPhone: { [key: string]: any[] | string } = {};
+
+            const itemIndex =
+                objToArrayItems[type ?? "phone"].length > 0
+                    ? objToArrayItems[type ?? "phone"].length
+                    : 0;
+
+            listItemToChange.forEach((item) => {
+                const currentIndex = `${item}${itemIndex + 1}`;
+
+                newItemPhone[currentIndex] =
+                    item === "phone"
+                        ? ["", false]
+                        : item === "indicative"
+                        ? "57"
+                        : item === "ext"
+                        ? " "
+                        : " ";
+            });
+            setData({ ...data, ...newItemPhone });
+        }
+
+        if (type === "address") {
+            const newItem: string[] | string = type ?? "address";
+            const newItemAddress: { [key: string]: any[] | string } = {};
+
+            const itemIndex = objToArrayItems[type ?? "address"].length
+                ? objToArrayItems[type ?? "address"].length
+                : 0;
+
+            newItemAddress[
+                itemIndex === 0 ? newItem : `${newItem}${itemIndex + 1}`
+            ] = ["", false];
+
+            setData({ ...data, ...newItemAddress });
+        }
+
+        if (type === "additionalDataName") {
+            const listNewItem: string[] = [
+                "additionalDataName",
+                "additionalData",
+            ];
+            const newItemDato: { [key: string]: any[] | string } = {};
+            const itemIndex = objToArrayItems[type ?? "additionalDataName"]
+                .length
+                ? objToArrayItems[type ?? "additionalDataName"].length
+                : 0;
+
+            listNewItem.forEach((item) => {
+                item === "additionalDataName"
+                    ? (newItemDato[
+                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                      ] = ["", false])
+                    : (newItemDato[
+                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                      ] = "");
+            });
+            setData({ ...data, ...newItemDato });
+        }
+
+        if (type === "urlName") {
+            const listNewItem: string[] = ["urlName", "urlLink", "iconName"];
+            const newItemUrl: { [key: string]: any[] | string } = {};
+            const itemIndex = objToArrayItems[type ?? "urlName"].length
+                ? objToArrayItems[type ?? "urlName"].length
+                : 0;
+            console.log("itemIndex", itemIndex)
             listNewItem.forEach((item) => {
                 const currentIndex = `${item}${itemIndex + 1}`;
 
@@ -350,6 +451,8 @@ const CompanyHook = () => {
                         ? " "
                         : " ";
             });
+
+            console.log("employees", employees)
 
             setData({ ...data, ...newItemUrl });
         }
@@ -517,6 +620,11 @@ const CompanyHook = () => {
         }
     }, [companyData]);
 
+    useEffect(() => {
+        const fetchData = listenToEmployeesByCompanyIdQuery("users", setEmployees, companyData?.uid);
+        return () => fetchData();
+    }, [companyData?.uid]);
+
     return {
         errors,
         data,
@@ -541,6 +649,7 @@ const CompanyHook = () => {
         setItemUrlKey,
         itemUrlSelected,
         setItemUrlSelected,
+        handleCompany,
     };
 };
 

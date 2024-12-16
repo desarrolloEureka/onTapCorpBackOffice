@@ -55,12 +55,13 @@ const VerticalColButtons = ({ socialNetworks, userData }: { socialNetworks: any[
                   key={i}
                 >
                   <CustomButton
-                    name={value.icon}
-                    link={value.url}
-                    nameLabel={value.name}
+                    name={value?.icon}
+                    link={value?.url}
+                    nameLabel={value?.name}
                     key={key}
                     styles={`tw-flex tw-flex-col`}
-                    companyID={userData?.idCompany}
+                    userData={userData}
+                    urlName={value?.urlName}
                   />
                 </Box>
               );

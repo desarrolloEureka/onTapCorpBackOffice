@@ -166,6 +166,7 @@ const DataTableComponent = ({
                   endDate={endDate}
                   setEndDate={setEndDate}
                   clearSearch={clearSearch}
+                  
                 />
               </div>
             </Card.Body>

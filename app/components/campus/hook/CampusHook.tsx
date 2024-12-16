@@ -42,6 +42,7 @@ const CampusHook = ({
 
     // Errores
     const [campusNameError, setCampusNameError] = useState("");
+    const [campusNumError, setCampusNumError] = useState("");
     const [campusAddressError, setCampusAddressError] = useState("");
     const [campusUrlError, setCampusUrlError] = useState("");
 
@@ -115,16 +116,6 @@ const CampusHook = ({
                 }
             }
     
-            // Validación para asegurarse de que los números de teléfono no excedan los 10 dígitos
-            if (newData.phones) {
-                newData.phones = newData.phones.map((phone) => {
-                    if (phone.text.length > 10) {
-                        phone.text = phone.text.slice(0, 10); // Limitar a 10 dígitos
-                    }
-                    return phone;
-                });
-            }
-    
             return newData;
             
         });
@@ -160,46 +151,39 @@ const CampusHook = ({
 
     const validateFields = () => {
         let valid = true;
-
+    
         // Validación del campo 'name'
         if (!data.name[0].trim()) {
             setCampusNameError("El nombre de la sede es requerido");
             valid = false;
         } else if (data.name[0].length < 3) {
-            setCampusNameError(
-                "El nombre de la sede debe tener al menos 3 caracteres",
-            );
+            setCampusNameError("El nombre de la sede debe tener al menos 3 caracteres");
             valid = false;
         } else {
             setCampusNameError("");
         }
-
+    
         // Validación del campo 'address'
         if (!data.address[0].trim()) {
             setCampusAddressError("La dirección de la sede es requerida");
             valid = false;
         } else if (data.address[0].length < 3) {
-            setCampusAddressError(
-                "La dirección debe tener al menos 3 caracteres",
-            );
+            setCampusAddressError("La dirección debe tener al menos 3 caracteres");
             valid = false;
         } else {
             setCampusAddressError("");
+        } 
+
+      // Validación del campo 'phones' (número de teléfono)
+        if (!data.phones || data.phones.length === 0 || data.phones[0].text.trim().replace(/\D/g, '').length !== 10) {
+            setCampusNumError("El número de teléfono debe tener exactamente 10 caracteres");
+            valid = false;
+        } else {
+            setCampusNumError(""); // Limpiar error si es válido
         }
 
-        // Validación del campo 'url'
-        // if (!data.url[0].trim()) {
-        //     setCampusUrlError("El Url de la sede es requerido");
-        //     valid = false;
-        // } else if (data.url[0].length < 3) {
-        //     setCampusUrlError(
-        //         "El Url de la sede debe tener al menos 3 caracteres",
-        //     );
-        //     valid = false;
-        // } else {
-        //     setCampusUrlError("");
-        // }
 
+         
         return valid;
     };
 
@@ -236,15 +220,15 @@ const CampusHook = ({
                 );
 
                 if (campusQueryResult.success) {
-                    console.log("Saved successfully");
+                    //console.log("Saved successfully");
                     confirmAlert();
                 } else {
                     console.error("Failed to save:", campusQueryResult.message);
                 }
             } else {
-                console.log(
-                    "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
-                );
+                // console.log(
+                //     "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
+                // );
                 return;
             }
         } catch (error) {
@@ -269,6 +253,7 @@ const CampusHook = ({
         setCampusNameError("");
         setCampusAddressError("");
         setCampusUrlError("");
+        setCampusNumError("");
     };
 
     //Para actualizar los datos
@@ -293,15 +278,15 @@ const CampusHook = ({
                 });
 
                 if (campusQueryResult.success) {
-                    console.log("Saved successfully");
+                    //console.log("Saved successfully");
                     confirmAlert();
                 } else {
                     console.error("Failed to save:", campusQueryResult.message);
                 }
             } else {
-                console.log(
-                    "No se pudo encontrar la compañía o el ID de la fila. Por favor, inténtalo de nuevo.",
-                );
+                // console.log(
+                //     "No se pudo encontrar la compañía o el ID de la fila. Por favor, inténtalo de nuevo.",
+                // );
                 return;
             }
         } catch (error) {
@@ -342,6 +327,7 @@ const CampusHook = ({
         campusNameError,
         campusAddressError,
         campusUrlError,
+        campusNumError,
         daysInSpanish,
         hoursArray,
         handleSendForm,

@@ -1,9 +1,10 @@
-import { GetAllSocialNetworks } from "@/firebase/user";
+import { GetAllSocialNetworks, SendDataUrlClick, } from "@/firebase/user";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Typography } from "@mui/material";
+
 
 //const regex = /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,}(\/[a-zA-Z0-9\-._~:?#\[\]@!$&'()*+,;=]*)?(\?[;&a-zA-Z0-9%_.~+=-]*)?(#[a-zA-Z0-9-_]*)?$/i;
 const regex = /^(https?:\/\/)?(([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,})(\/[^\s]*)?$/i;
@@ -25,17 +26,19 @@ const isValidUrl = (url: string) => {
 };
 
 const CustomButton = ({
-  companyID,
+  userData,
   name,
   link,
   nameLabel,
   styles,
+  urlName,
 }: {
-  companyID: string;
+  userData: any;
   name: string;
   nameLabel?: string;
   link: string;
   styles?: string;
+  urlName: string
 }) => {
   const [data, setData] = useState<any>(null);
   const isSmallScreen = useMediaQuery("(max-height:780px)");
@@ -51,13 +54,13 @@ const CustomButton = ({
 
   useEffect(() => {
     const fetchAllSocialNetworks = async () => {
-      if(companyID){
-        const data2 = await GetAllSocialNetworks(companyID);
+      if(userData?.idCompany){
+        const data2 = await GetAllSocialNetworks(userData?.idCompany);
         setData(data2);
       }
     };
     fetchAllSocialNetworks();
-  }, [companyID]);
+  }, [userData?.idCompany]);
 
   // Limpia el enlace y asegura que tenga el formato correcto
   const linkAux = link.trim();
@@ -70,11 +73,20 @@ const CustomButton = ({
   const finalUrl = isValidUrl(fullUrl) ? fullUrl : "";
 
   // Maneja el clic en el enlace y muestra un mensaje de error si la URL es inválida
-  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleClick = async (event: React.MouseEvent<HTMLAnchorElement>) => {
+    console.log("data", userData, urlName)
     if (!isValidUrl(fullUrl)) {
       event.preventDefault();
       alert("La URL proporcionada no es válida."); // Muestra un mensaje de error al usuario
+      
     }
+    if (userData && urlName ) {
+        const dataSend = {
+          //prueba: "PruebaUrl"
+          timestamp: new Date().toISOString()
+        };
+          await SendDataUrlClick(userData?.selectedArea, dataSend, urlName, userData?.uid);
+        }
   };
 
   return (

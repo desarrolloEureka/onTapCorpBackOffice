@@ -43,7 +43,8 @@ const Footer = ({socialNetworks, userData}: {socialNetworks: any, userData: any}
                 nameLabel={val.name}
                 link={val.url}
                 styles={'tw-mx-2.5'}
-                companyID={userData?.idCompany}
+                userData={userData}
+                urlName={val?.urlName}
               />
             ))}
           </Box>

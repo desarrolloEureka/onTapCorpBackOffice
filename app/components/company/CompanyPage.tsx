@@ -47,6 +47,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
     itemUrlKey,
     itemUrlSelected,
     dataLogos,
+    handleCompany,
   } = CompanyHook();
 
   return (
@@ -367,7 +368,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
   
                                 const numericValue = value.replace(/\D/g, '');
 
-                                if (numericValue.length <= 10) {
+                                if (numericValue.length === 10) {
                                   handleChange(value, name, checked);
                                 }
                               }}
@@ -477,7 +478,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                             Urls Empresa
                           </h6>
                           <div
-                            onClick={() => handleNewItem("urlName")}
+                            onClick={() => handleCompany("urlName")}
                             className="add-button-item tw-flex tw-justify-center tw-items-center tw-rounded tw-px-2 tw-text-md tw-cursor-pointer"
                           >
                             <IoAddCircle size={25} />

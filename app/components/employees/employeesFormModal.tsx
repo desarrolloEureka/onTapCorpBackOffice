@@ -589,6 +589,8 @@ const EmployeesFormModal = ({
                                   id={`phone-${index}`}
                                   fullWidth
                                   label="Teléfono"
+                                  helperText={errors.phones}
+                                  error={!!errors.phones}
                                   InputProps={{
                                     startAdornment: (
                                       <InputAdornment position="start">

@@ -5,6 +5,8 @@ interface WelcomeEmailProps {
     loginUrlApple?: string;
     loginUrlAndroid?: string;
     contactEmail?: string;
+    rolId?: string,
+    loginUrl?: string;
 }
 
 export const plantillaBienvenida = ({
@@ -14,21 +16,14 @@ export const plantillaBienvenida = ({
     loginUrlApple,
     loginUrlAndroid,
     contactEmail,
+    rolId,
+    loginUrl
 }: WelcomeEmailProps): string => {
     const appLinks = `
-        <a href="${loginUrlApple}" 
-           style="margin-top: 1.5rem; display: inline-block; text-decoration: none;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/67/App_Store_%28iOS%29.svg" 
-                 alt="Descargar en App Store" 
-                 style="width: 50px; height: 50px; border-radius: 0.5rem;" />
-        </a>
-        <a href="${loginUrlAndroid}" 
-           style="margin-top: 1.5rem; display: inline-block; text-decoration: none;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Play_Arrow_logo.svg"
-                 alt="Descargar en Play Store" 
-                 style="width: 50px; height: 50px; border-radius: 0.5rem;" />
-        </a>
-    `;
+        <a href="${loginUrlApple}" style="margin-top: 1.5rem; display: inline-block; background-color: #2563eb; color: #ffffff; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none;">App Store</a>
+
+        <a href="${loginUrlAndroid}" style="margin-top: 1.5rem; display: inline-block; background-color: #2563eb; color: #ffffff; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none;">Play Store</a>
+        `;
 
     const plantilla = `<!DOCTYPE html>
 <html lang="es">
@@ -40,7 +35,7 @@ export const plantillaBienvenida = ({
     <body style="background-color: #e2e8f0;">
         <div style="max-width: 32rem; margin: 2.5rem auto; background-color: #ffffff; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);">
             <div style="background-color: #2563eb; color: #ffffff; text-align: center; padding: 1rem; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
-                <h1 style="font-size: 1.5rem; font-weight: bold;">Bienvenidos a OneTap Corporativo</h1>
+                <h1  style="color: #ffffff; font-size: 1.5rem; font-weight: bold;">Bienvenidos a OneTap Corporativo</h1>
             </div>
             <div style="padding: 1.5rem;">
                 <p style="color: #4a5568; font-size: 1.125rem;">Hola <span style="font-weight: bold;">${userName}</span>,</p>

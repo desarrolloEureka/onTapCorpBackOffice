@@ -92,10 +92,12 @@ const ThemeOne = ({
                     icon: iconName,
                     checked: isActive,
                     isActiveSwitch: userInfo.isActive, // Agregar isActive del usuario
+                    urlName: nameKey
                   });
                 }
               });
             }
+          
           } else {
             const [nameOrIcon, checked] = areaData[nameKey];
             const iconName = areaData[iconNameKey];
@@ -121,7 +123,6 @@ const ThemeOne = ({
     icon: companyData?.icon[0],
     checked: companyData?.webSite[1],
   });
-
   return userData && companyData && headquarterData && areaData ? (
     <div className="tw-flex tw-flex-col tw-relative tw-justify-center tw-items-center tw-h-screen">
       <div

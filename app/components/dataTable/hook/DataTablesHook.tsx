@@ -38,6 +38,7 @@ import { FaTrashCan } from "react-icons/fa6";
 import { MdModeEdit } from "react-icons/md";
 import Swal from "sweetalert2";
 import { LocalVariable } from "@/types/global";
+import { ref } from "firebase/storage";
 require("dotenv").config();
 
 const CustomTitle = ({ row }: any) => (
@@ -100,6 +101,11 @@ const DataTablesHook = (reference: string) => {
   const [statisticsDetail, setStatisticsDetail] = useState<any>();
   const [showAlert, setShowAlert] = useState(false);
   const [isShowQR, setIsShowQR] = useState(false);
+  const [branches, setBranches] = useState([]); // Lista de sedes (branches)
+  const [filteredEmployees, setFilteredEmployees] = useState([]); // Empleados filtrados
+  const [selectedBranch, setSelectedBranch] = useState(""); // Sede seleccionada
+  const [employees, setEmployees] = useState([]); // Lista completa de empleados
+
   const theme = localStorage.getItem("@theme");
   const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
@@ -438,6 +444,47 @@ const DataTablesHook = (reference: string) => {
     }
   };
 
+  const prepareEmployeesWithHeadquartersData = async () => {
+    try {
+      // Obtener los empleados y las sedes
+      const employees = await getAllEmployeesQuery();
+      const headquarters = await getHeadquartersByCompanyIdQuery(userData?.companyId);
+  
+      // Crear un mapa de nombres de sedes por 'idCompany'
+      const headquartersMap: { [key: string]: string[] } = headquarters.reduce((map, hq) => {
+        if (hq.idCompany && hq.name?.[0]) { // Verificar si 'idCompany' y el nombre existen
+          if (!map[hq.idCompany]) {
+            map[hq.idCompany] = [];
+          }
+          map[hq.idCompany].push(hq.name[0]); // Almacenar solo el nombre en la posición 0
+        } else {
+          console.warn(`Sede sin 'idCompany' o 'name' válida encontrada:`, hq);
+        }
+        return map;
+      }, {} as { [key: string]: string[] });
+  
+      // Combinar empleados con los nombres de las sedes correspondientes
+      const enrichedEmployees = employees.map((employee) => {
+        const employeeHeadquartersNames = headquartersMap[employee.idCompany] || [];
+  
+        return {
+          ...employee,
+          headquartersNames: employeeHeadquartersNames, // Array de nombres de sedes
+        };
+      });
+  
+      console.log("Combinación de empleados y nombres de sedes:", enrichedEmployees);
+  
+      return enrichedEmployees;
+  
+    } catch (error) {
+      console.error("Error combinando los datos de empleados y nombres de sedes", error);
+      return [];
+    }
+  };
+  
+  
+
 
   const getAllDocuments = useCallback(async () => {
     let documents: any = [];
@@ -548,7 +595,7 @@ const DataTablesHook = (reference: string) => {
     }
     //console.log("datos = ", documents);
     const labelToDisplay = ["professionals", "patients", "functionary"];
-    //reference === "employees" && console.log('documents ', documents);
+    reference === "employees" && console.log('documents ', documents);
 
     if (documents?.length > 0) {
       const cols: any[] = [];
@@ -937,7 +984,7 @@ const DataTablesHook = (reference: string) => {
                               : "auto",
           omit: !omittedColumns.includes(val),
           style:
-            val === "uid" && reference === "meetingStatus"
+            val === "uid" && reference === "meetingStatus" 
               ? {
                 display: "flex",
                 alignItems: "center",
@@ -1191,6 +1238,46 @@ const DataTablesHook = (reference: string) => {
 
   // console.log(!isEmptyDataRef);
 
+  useEffect(() => {
+    // Llamar a prepareEmployeesWithHeadquartersData al montar el componente
+    const fetchData = async () => {
+      try {
+        const enrichedEmployees = await prepareEmployeesWithHeadquartersData();
+
+        // Actualizar la lista completa de empleados
+        setEmployees(enrichedEmployees);
+
+        // Obtener sedes únicas de la lista enriquecida
+        const uniqueBranches = [
+          ...new Set(
+            enrichedEmployees.flatMap((employee) => employee.headquartersNames)
+          ),
+        ];
+        setBranches(uniqueBranches); // Actualizar sedes disponibles
+        setFilteredEmployees(enrichedEmployees); // Mostrar todos los empleados inicialmente
+      } catch (error) {
+        console.error("Error al cargar datos:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Actualizar empleados filtrados cuando cambie la sede seleccionada
+  useEffect(() => {
+    if (selectedBranch === "") {
+      setFilteredEmployees(employees); // Mostrar todos los empleados si no hay filtro
+    } else {
+      setFilteredEmployees(
+        employees.filter((employee) =>
+          employee.headquartersNames.includes(selectedBranch)
+        )
+      );
+    }
+  }, [selectedBranch, employees]);
+
+  
+
   return {
     modeTheme: themeParsed?.dataThemeMode,
     columns,
@@ -1231,7 +1318,8 @@ const DataTablesHook = (reference: string) => {
     statisticsDetail,
     setStatisticsDetail,
     showAlert,
-    isShowQR
+    isShowQR,
+    prepareEmployeesWithHeadquartersData
   };
 };
 

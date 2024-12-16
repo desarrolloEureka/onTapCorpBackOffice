@@ -24,6 +24,9 @@ const DataTableExtensions: any = dynamic(
   { ssr: false }
 );
 
+
+
+
 createTheme("solarized", "dark");
 
 const customStyles = {
@@ -329,6 +332,31 @@ const EndDayInput = ({
   </Form.Group>
 );
 
+//componente para el filtro de empleados por campus
+const BranchFilter = ({
+  branches,
+  setSelectedBranch,
+}: {
+  branches: string[];
+  setSelectedBranch: (branch: string) => void;
+}) => (
+  <Form.Group controlId="branchFilter">
+    <Form.Label style={{ fontSize: "15px" }}>Filtrar por Sede</Form.Label>
+    <Form.Control
+      as="select"
+      onChange={(e) => setSelectedBranch(e.target.value)}
+      defaultValue=""
+    >
+      <option value="">Selecciona una Sede</option>
+      {branches.map((branch) => (
+        <option key={branch} value={branch}>
+          {branch}
+        </option>
+      ))}
+    </Form.Control>
+  </Form.Group>
+);
+
 const Filter = ({
   handleSearchAndFilter,
 }: {
@@ -364,6 +392,8 @@ const refToShowButtonCsv = [
   "functionary",
   "diagnostician",
 ];
+
+
 
 export const ExportCSV = ({
   onUploadDataModalCsv,

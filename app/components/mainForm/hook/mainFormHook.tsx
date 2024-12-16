@@ -578,6 +578,40 @@ const MainFormHook = ({
         setData({ ...data, ...newItemUrl });
     }
 
+    const handleNewCompany = (type: string) => {
+        console.log("aaa")
+        const listNewItem: string[] = ["urlName", "urlLink", "iconName"];
+        const newItemUrl: { [key: string]: any[] | string } = {};
+        const itemIndex = objToArrayItems[type ?? "urlName"].length
+            ? objToArrayItems[type ?? "urlName"].length
+            : 0;
+
+        console.log("objToArrayItems",objToArrayItems)
+
+        listNewItem.forEach((item) => {
+            const currentIndex = `${item}${itemIndex + 1}`;
+
+            newItemUrl[currentIndex] =
+                item === "urlName"
+                    ? [
+                        "",
+                        true,
+                        // Construimos el objeto con los uid de employees
+                        employees?.reduce((acc: any, employee: any) => {
+                            acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
+                            return acc;
+                        }, {})
+                    ]
+                    : item === "urlLink"
+                        ? " "
+                        : item === "iconName"
+                            ? " "
+                            : " ";
+        });
+        setData({ ...data, ...newItemUrl });
+    }
+
+
     const handleDeleteItem = (item: any) => {
         if (item[0].includes("url")) {
             const dataFiltered = _.omit(_.cloneDeep(data), [
@@ -647,6 +681,8 @@ const MainFormHook = ({
         });
         return newObject;
     }, [data]);
+
+    
 
     const clearSelectFields = () => {
         setData(dataMainFormObject);
@@ -785,7 +821,8 @@ const MainFormHook = ({
         handleDataNetworks,
         handleNewItem,
         objToArrayItems,
-        handleDeleteItem
+        handleDeleteItem,
+        handleNewCompany
     };
 };
 
