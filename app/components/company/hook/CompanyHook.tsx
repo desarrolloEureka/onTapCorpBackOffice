@@ -12,7 +12,7 @@ import {
 import { getCoordinates } from "@/queries/GeoMapsQueries";
 import { MyStateType } from "@/types/company";
 import _ from "lodash";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 
 const CompanyHook = () => {
@@ -20,9 +20,9 @@ const CompanyHook = () => {
     const [data, setData] = useState<any>();
     const [allChecked, setAllChecked] = useState<string>("none");
     const [files, setFiles] = useState<any>();
-    const [employees, setEmployees] = useState<any>();
     const [fileName, setFileName] = useState<any>();
     const [objToArrayItems, setObjToArrayItems] = useState<MyStateType>({});
+    const [employees, setEmployees] = useState<any>([]);
 
     // Errores
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -33,6 +33,9 @@ const CompanyHook = () => {
     const [itemUrlKey, setItemUrlKey] = useState(0);
     const [dataLogos, setDataLogos] = useState<any>(null);
     const [itemUrlSelected, setItemUrlSelected] = useState([]);
+
+    let newIndex = 0;
+
 
     useEffect(() => {
         //const fetchDocuments = listenToDocumentsQuery("logos", setDataLogos, companyData?.uid);
@@ -72,10 +75,6 @@ const CompanyHook = () => {
                 icon: "error",
                 title: "Error",
                 text: `Ocurrió un error: ${error}`,
-                // background: "#404040",
-                // color: "#e9a225",
-                // confirmButtonColor: "#1f2937",
-                // confirmButtonText: "Regresar",
             }).then((err) => {
                 //console.log(err, error);
                 setFileName(null);
@@ -108,6 +107,8 @@ const CompanyHook = () => {
         const formattedAddress: string = `${data.city}, ${getStateName(
             data.state,
         )},${data.country}`;
+
+        //console.log('data :::: ', data)
 
         const coords = await getCoordinates(formattedAddress);
 
@@ -182,51 +183,108 @@ const CompanyHook = () => {
     };
 
     const handleChange = (value: string, name: string, isChecked?: boolean) => {
-        if (isChecked === undefined) {
+        if (typeof isChecked === "undefined") {
             // Manejo del cambio para el campo webSite
             if (name === "webSite" || name.startsWith('urlLink')) {
                 // Si el valor está vacío, simplemente actualizar a vacío
                 if (value === "") {
-                    setData({ ...data, [name]: "" });
+                    setData((prevData: any) => ({ ...prevData, [name]: "" }));
                 } else {
                     // Verificación de la URL solo si hay un valor completo
                     if (!(value.startsWith('https://') || value.startsWith('http://') || value.startsWith('h'))) {
                         // Si no comienza con http o https, agregar https://
-                        setData({ ...data, [name]: "https://" + value });
+                        setData((prevData: any) => ({ ...prevData, [name]: "https://" + value, }));
                     } else {
                         // Si es válido, simplemente actualizar
-                        setData({ ...data, [name]: value });
+                        setData((prevData: any) => ({
+                            ...prevData,
+                            [name]: value,
+                        }));
                     }
                 }
             } else {
                 // Manejo de otros campos
-                setData({ ...data, [name]: (value || "-") ?? "-" });
+                setData((prevData: any) => ({ ...prevData, [name]: (value || "-") ?? "-" }));
+
             }
         } else {
             // Manejo del cambio para el campo webSite
             if (name === "webSite" || name.startsWith('urlLink')) {
                 // Si el valor está vacío, simplemente actualizar a vacío
                 if (value === "") {
-                    setData({ ...data, [name]: ["", !isChecked] });
+                    setData((prevData: any) => ({ ...prevData, [name]: ["", !isChecked] }));
+
                 } else {
                     // Verificación de la URL solo si hay un valor completo
-                    if (!(value.startsWith('https://') || value.startsWith('http://') || value.startsWith('h'))) {
+                    if (!(value.toString().startsWith('https://') || value.toString().startsWith('http://') || value.toString().startsWith('h')) && value != '') {
                         // Si no comienza con http o https, agregar https://
-                        setData({ ...data, [name]: [("https://" + value || "") ?? "", !isChecked] });
+                        setData((prevData: any) => ({
+                            ...prevData,
+                            [name]: "https://" + value,
+                        }));
                     } else {
                         // Si es válido, simplemente actualizar
-                        setData({ ...data, [name]: [(value || "") ?? "", !isChecked] });
+                        setData((prevData: any) => ({
+                            ...prevData,
+                            [name]: value,
+                        }));
                     }
                 }
             } else {
                 // Manejo de otros campos
-                setData({ ...data, [name]: [(value || "") ?? "", !isChecked] });
+                setData((prevData: any) => ({ ...prevData, [name]: [(value || "") ?? "", !isChecked] }));
             }
         }
+
+    };
+
+    const handleChangeUrls = (
+        value: string | boolean,
+        name: string,
+        isChecked?: boolean,
+    ) => {
+        // Si `isChecked` está definido, actualiza como un array con el valor y su opuesto.
+        if (typeof isChecked !== "undefined") {
+            setData((prevData: any) => ({
+                ...prevData,
+                [name]: [
+                    value,                // Primer valor: nuevo `value`
+                    !isChecked,           // Segundo valor: opuesto de `isChecked`
+                    prevData[name][2],    // Tercer valor: mantiene el objeto original en la posición 2
+                    ...prevData[name].slice(3), // Resto de elementos (si existen)
+                ],
+            }));
+            return;
+        }
+
+        if (name.startsWith('urlLink') || name === "webSite") {
+            // Verificación de la URL solo si hay un valor completo
+            if (!(value.toString().startsWith('https://') || value.toString().startsWith('http://') || value.toString().startsWith('h')) && value != '') {
+                // Si no comienza con http o https, agregar https://
+                setData((prevData: any) => ({
+                    ...prevData,
+                    [name]: "https://" + value,
+                }));
+                return;
+            } else {
+                // Si es válido, simplemente actualizar
+                setData((prevData: any) => ({
+                    ...prevData,
+                    [name]: value,
+                }));
+                return;
+            }
+        }
+
+        // Por defecto, actualiza el valor normalmente.
+        setData((prevData: any) => ({
+            ...prevData,
+            [name]: value,
+        }));
     };
 
     const handleAllChecked = (e: ChangeEvent<HTMLInputElement>) => {
-        setAllChecked(e.target.checked ? "all" : "none" );
+        setAllChecked(e.target.checked ? "all" : "none");
         const dataChecked = _.forEach(_.cloneDeep(data), (value, key) => {
             if (_.isArray(value) && value.length > 1) {
                 value[1] = e.target.checked;
@@ -239,14 +297,63 @@ const CompanyHook = () => {
         setData({ ...data, [name]: value });
     };
 
+    const reorganizeKeys = (data: any) => {
+        const relatedKeys = ["urlName", "urlLink", "iconName"];
+        const groupedData: Record<number, Record<string, any>> = {};
+        const otherData = { ...data };
+
+        // Agrupar datos relacionados por índice y eliminarlos de la copia
+        Object.keys(data).forEach((key) => {
+            relatedKeys.forEach((prefix) => {
+                if (key.startsWith(prefix)) {
+                    const index = parseInt(key.replace(prefix, "")) || 1; // Claves sin número son índice 1
+                    if (!groupedData[index]) groupedData[index] = {};
+                    groupedData[index][prefix] = data[key];
+                    delete otherData[key]; // Elimina las clave relacionadas de la copia
+                }
+            });
+        });
+
+        //console.log('groupedData: ', groupedData); //{urlLink: 'https://www.facebook.com', urlName: Array(3), iconName: 'Facebook'}
+
+        // Obtener los índices numéricos de las claves y los ordenamos
+        const sortedIndices = Object.keys(groupedData)
+            .map(Number)
+            .sort((a, b) => a - b);
+
+        //console.log('sortedIndices 1 : ', sortedIndices); //[1, 3, 4]
+
+        const reorganizedData: any = {};
+
+        // Reorganizamos las claves eliminando los huecos en los índices
+        sortedIndices.forEach((_, newIndex) => {
+            const oldIndex = sortedIndices[newIndex];
+            const oldValues = groupedData[oldIndex];
+            // Reasignamos las claves con el nuevo índice
+            relatedKeys.forEach((prefix) => {
+                const newKey = newIndex === 0 ? prefix : `${prefix}${newIndex + 1}`;
+                if (oldValues[prefix]) {
+                    reorganizedData[newKey] = oldValues[prefix];
+                }
+            });
+        });
+
+        //console.log('reorganizedData : ', reorganizedData);
+
+        const finalData = { ...otherData, ...reorganizedData };
+        return finalData;
+    };
+
     const handleDeleteItem = (item: any) => {
         if (item[0].includes("url")) {
             const dataFiltered = _.omit(_.cloneDeep(data), [
                 item[0],
-                item[3],
-                item[5],
+                item[4],
+                item[6],
             ]);
-            setData(dataFiltered);
+            const dataFinal = reorganizeKeys(dataFiltered);
+            //console.log('dataFinal ', dataFinal)
+            setData(dataFinal);
         }
         if (item[0].includes("additionalDataName")) {
             const dataFiltered = _.omit(_.cloneDeep(data), [item[0], item[3]]);
@@ -287,10 +394,10 @@ const CompanyHook = () => {
                     item === "phone"
                         ? ["", false]
                         : item === "indicative"
-                        ? "57"
-                        : item === "ext"
-                        ? " "
-                        : " ";
+                            ? "57"
+                            : item === "ext"
+                                ? " "
+                                : " ";
             });
             setData({ ...data, ...newItemPhone });
         }
@@ -324,15 +431,14 @@ const CompanyHook = () => {
             listNewItem.forEach((item) => {
                 item === "additionalDataName"
                     ? (newItemDato[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = ["", false])
+                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                    ] = ["", false])
                     : (newItemDato[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = "");
+                        itemIndex === 0 ? item : `${item}${itemIndex + 1}`
+                    ] = "");
             });
             setData({ ...data, ...newItemDato });
         }
-
         if (type === "urlName") {
             const listNewItem: string[] = ["urlName", "urlLink", "iconName"];
             const newItemUrl: { [key: string]: any[] | string } = {};
@@ -365,104 +471,9 @@ const CompanyHook = () => {
         }
     };
 
-    const handleCompany = (type: string) => {
-        if (type === "phone") {
-            const listItemToChange: string[] | string = [
-                "phone",
-                "indicative",
-                "ext",
-            ];
-            const newItemPhone: { [key: string]: any[] | string } = {};
-
-            const itemIndex =
-                objToArrayItems[type ?? "phone"].length > 0
-                    ? objToArrayItems[type ?? "phone"].length
-                    : 0;
-
-            listItemToChange.forEach((item) => {
-                const currentIndex = `${item}${itemIndex + 1}`;
-
-                newItemPhone[currentIndex] =
-                    item === "phone"
-                        ? ["", false]
-                        : item === "indicative"
-                        ? "57"
-                        : item === "ext"
-                        ? " "
-                        : " ";
-            });
-            setData({ ...data, ...newItemPhone });
-        }
-
-        if (type === "address") {
-            const newItem: string[] | string = type ?? "address";
-            const newItemAddress: { [key: string]: any[] | string } = {};
-
-            const itemIndex = objToArrayItems[type ?? "address"].length
-                ? objToArrayItems[type ?? "address"].length
-                : 0;
-
-            newItemAddress[
-                itemIndex === 0 ? newItem : `${newItem}${itemIndex + 1}`
-            ] = ["", false];
-
-            setData({ ...data, ...newItemAddress });
-        }
-
-        if (type === "additionalDataName") {
-            const listNewItem: string[] = [
-                "additionalDataName",
-                "additionalData",
-            ];
-            const newItemDato: { [key: string]: any[] | string } = {};
-            const itemIndex = objToArrayItems[type ?? "additionalDataName"]
-                .length
-                ? objToArrayItems[type ?? "additionalDataName"].length
-                : 0;
-
-            listNewItem.forEach((item) => {
-                item === "additionalDataName"
-                    ? (newItemDato[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = ["", false])
-                    : (newItemDato[
-                          itemIndex === 0 ? item : `${item}${itemIndex + 1}`
-                      ] = "");
-            });
-            setData({ ...data, ...newItemDato });
-        }
-
-        if (type === "urlName") {
-            const listNewItem: string[] = ["urlName", "urlLink", "iconName"];
-            const newItemUrl: { [key: string]: any[] | string } = {};
-            const itemIndex = objToArrayItems[type ?? "urlName"].length
-                ? objToArrayItems[type ?? "urlName"].length
-                : 0;
-            console.log("itemIndex", itemIndex)
-            listNewItem.forEach((item) => {
-                const currentIndex = `${item}${itemIndex + 1}`;
-
-                newItemUrl[currentIndex] =
-                    item === "urlName"
-                        ? ["", true]
-                        : item === "urlLink"
-                        ? " "
-                        : item === "iconName"
-                        ? " "
-                        : " ";
-            });
-
-            console.log("employees", employees)
-
-            setData({ ...data, ...newItemUrl });
-        }
-    };
-
     const handleDataNetworks = (text: any, index: any) => {
-        setData({
-            ...data,
-            ["iconName" + "" + (index === 0 ? "" : index + 1)]: text,
-        });
+        setData({ ...data, ["iconName" + "" + (index === 0 ? "" : index + 1)]: text, });
+
         setItemUrlSelected({
             ...objToArrayItems.urlName[index],
             iconName: text,
@@ -613,6 +624,17 @@ const CompanyHook = () => {
         if (companyData) {
             setData({
                 ...companyData,
+                urlName: companyData.urlName || ["", true, {}],
+                urlLink: companyData.urlLink || " ",
+                iconName: companyData.iconName || " "
+            });
+        }
+    }, [companyData]);
+
+    useEffect(() => {
+        if (companyData) {
+            setData({
+                ...companyData,
                 urlName: companyData.urlName || ["", true],
                 urlLink: companyData.urlLink || " ",
                 iconName: companyData.iconName || " "
@@ -649,7 +671,7 @@ const CompanyHook = () => {
         setItemUrlKey,
         itemUrlSelected,
         setItemUrlSelected,
-        handleCompany,
+        handleChangeUrls
     };
 };
 

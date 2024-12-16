@@ -47,7 +47,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
     itemUrlKey,
     itemUrlSelected,
     dataLogos,
-    handleCompany,
+    handleChangeUrls
   } = CompanyHook();
 
   return (
@@ -361,11 +361,11 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                 />
                               </div>
                               <CustomTextField
-                              required
-                              checked={allChecked}
-                              data={[item[1], item[2]]}
-                              onChange={(value: string, name: string, checked: boolean) => {
-  
+                                required
+                                checked={allChecked}
+                                data={[item[1], item[2]]}
+                                onChange={(value: string, name: string, checked: boolean) => {
+                                  
                                 const numericValue = value.replace(/\D/g, '');
 
                                 if (numericValue.length === 10) {
@@ -478,7 +478,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                             Urls Empresa
                           </h6>
                           <div
-                            onClick={() => handleCompany("urlName")}
+                            onClick={() => handleNewItem("urlName")}
                             className="add-button-item tw-flex tw-justify-center tw-items-center tw-rounded tw-px-2 tw-text-md tw-cursor-pointer"
                           >
                             <IoAddCircle size={25} />
@@ -487,8 +487,9 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                         </div>
                         {objToArrayItems?.urlName?.map((item, index) => {
                           const datafilter = dataLogos?.find(
-                            (val: any) => val.logoName === item[6]
+                            (val: any) => val.logoName === item[7]
                           );
+
                           return (
                             <div
                               key={index}
@@ -501,7 +502,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                   value: string,
                                   name: string,
                                   checked: boolean
-                                ) => handleChange(value, name, checked)}
+                                ) => handleChangeUrls(value, name, checked)}
                                 name={item[0]}
                                 type="text"
                                 switch="true"
@@ -517,21 +518,22 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                   ),
                                 }}
                               />
+
                               <CustomTextField
                                 required
-                                data={item[4]}
+                                data={item[5]}
                                 onChange={(value: string, name: string) =>
-                                  handleChange(value, name)
+                                  handleChangeUrls(value, name)
                                 }
                                 onClick={() => {
                                   handleDeleteItem(item);
                                 }}
-                                name={item[3]}
+                                name={item[4]}
                                 type="url"
                                 helperText={errors.urlLink}
                                 error={!!errors.urlLink}
                                 theme={theme}
-                                id={item[3]}
+                                id={item[4]}
                                 fullWidth
                                 InputProps={{
                                   startAdornment: (
@@ -552,6 +554,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                 index={index}
                                 label="Dato"
                               />
+
                             </div>
                           );
                         })}
