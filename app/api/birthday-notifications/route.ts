@@ -6,14 +6,12 @@ export async function GET(request: NextRequest) {
   try {
     const employees = await getAllEmployeesQuery();
     const companies = await getAllCompaniesQuery();
-    const today = new Date();
-    const todayString = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-
-
+    const today = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    const [_, todayMonth, todayDay] = today.split('-').map(Number);
     // Filtrar empleados que cumplen años hoy
     const birthdayEmployees = employees.filter(employee => {
-      const birthDate = new Date(employee?.dateOfBirth[0]);
-      return birthDate.toISOString().split('T')[0] === todayString;
+      const [_, birthMonth, birthDay] = employee?.dateOfBirth[0].split('-').map(Number);
+      return birthMonth === todayMonth && birthDay === todayDay;
     });
 
     if (birthdayEmployees.length === 0) {
