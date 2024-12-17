@@ -1,11 +1,8 @@
 import { messaging } from "firebase-admin";
 import { NextRequest, NextResponse } from "next/server";
 import initFirebase from "shared/firebase/admin";
-import scheduleBirthdayNotifications from "./scheduledTasks";
 
 initFirebase();
-scheduleBirthdayNotifications();
-
 interface BodyInterface {
   token: String;
   title: String;
