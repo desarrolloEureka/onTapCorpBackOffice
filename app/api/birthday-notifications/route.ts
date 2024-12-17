@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
     const results = await Promise.all(notificationPromises);
     console.log('Resultados de las notificaciones:', results);
 
-    return NextResponse.json({ message: 'Notificaciones de cumpleaños enviadas' });
+    return NextResponse.json({ message: employees });
   } catch (error) {
     console.error('Error al enviar notificaciones de cumpleaños:', error);
     return NextResponse.json({ error: 'Error al enviar notificaciones de cumpleaños' }, { status: 500 });
