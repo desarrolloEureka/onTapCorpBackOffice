@@ -578,6 +578,87 @@ const MainFormHook = ({
         setData({ ...data, ...newItemUrl });
     }
 
+    const handleNewCompany = (type: string) => {
+        console.log("aaa")
+        const listNewItem: string[] = ["urlName", "urlLink", "iconName"];
+        const newItemUrl: { [key: string]: any[] | string } = {};
+        const itemIndex = objToArrayItems[type ?? "urlName"].length
+            ? objToArrayItems[type ?? "urlName"].length
+            : 0;
+
+        console.log("objToArrayItems",objToArrayItems)
+
+        listNewItem.forEach((item) => {
+            const currentIndex = `${item}${itemIndex + 1}`;
+
+            newItemUrl[currentIndex] =
+                item === "urlName"
+                    ? [
+                        "",
+                        true,
+                        // Construimos el objeto con los uid de employees
+                        employees?.reduce((acc: any, employee: any) => {
+                            acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
+                            return acc;
+                        }, {})
+                    ]
+                    : item === "urlLink"
+                        ? " "
+                        : item === "iconName"
+                            ? " "
+                            : " ";
+        });
+        setData({ ...data, ...newItemUrl });
+    }
+
+    const reorganizeKeys = (data: any) => {
+        const relatedKeys = ["urlName", "urlLink", "iconName"];
+        const groupedData: Record<number, Record<string, any>> = {};
+        const otherData = { ...data };
+
+        // Agrupar datos relacionados por índice y eliminarlos de la copia
+        Object.keys(data).forEach((key) => {
+            relatedKeys.forEach((prefix) => {
+                if (key.startsWith(prefix)) {
+                    const index = parseInt(key.replace(prefix, "")) || 1; // Claves sin número son índice 1
+                    if (!groupedData[index]) groupedData[index] = {};
+                    groupedData[index][prefix] = data[key];
+                    delete otherData[key]; // Elimina las clave relacionadas de la copia
+                }
+            });
+        });
+
+        //console.log('groupedData: ', groupedData); //{urlLink: 'https://www.facebook.com', urlName: Array(3), iconName: 'Facebook'}
+
+        // Obtener los índices numéricos de las claves y los ordenamos
+        const sortedIndices = Object.keys(groupedData)
+            .map(Number)
+            .sort((a, b) => a - b);
+
+        //console.log('sortedIndices 1 : ', sortedIndices); //[1, 3, 4]
+
+        const reorganizedData: any = {};
+
+        // Reorganizamos las claves eliminando los huecos en los índices
+        sortedIndices.forEach((_, newIndex) => {
+            const oldIndex = sortedIndices[newIndex];
+            const oldValues = groupedData[oldIndex];
+            // Reasignamos las claves con el nuevo índice
+            relatedKeys.forEach((prefix) => {
+                const newKey = newIndex === 0 ? prefix : `${prefix}${newIndex + 1}`;
+                if (oldValues[prefix]) {
+                    reorganizedData[newKey] = oldValues[prefix];
+                }
+            });
+        });
+
+        //console.log('reorganizedData : ', reorganizedData);
+
+        const finalData = { ...otherData, ...reorganizedData };
+        return finalData;
+    };
+
+
     const handleDeleteItem = (item: any) => {
         if (item[0].includes("url")) {
             const dataFiltered = _.omit(_.cloneDeep(data), [
@@ -585,7 +666,9 @@ const MainFormHook = ({
                 item[4],
                 item[6],
             ]);
-            setData(dataFiltered);
+            const dataFinal = reorganizeKeys(dataFiltered);
+            //console.log('dataFinal ', dataFinal)
+            setData(dataFinal);
         }
     };
 
@@ -647,6 +730,8 @@ const MainFormHook = ({
         });
         return newObject;
     }, [data]);
+
+    
 
     const clearSelectFields = () => {
         setData(dataMainFormObject);
@@ -785,7 +870,8 @@ const MainFormHook = ({
         handleDataNetworks,
         handleNewItem,
         objToArrayItems,
-        handleDeleteItem
+        handleDeleteItem,
+        handleNewCompany
     };
 };
 

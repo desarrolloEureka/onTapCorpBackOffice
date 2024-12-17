@@ -41,7 +41,7 @@ const useSendBirthdayNotifications = async () => {
         // Esperar a que todas las notificaciones se envíen
         const results = await Promise.all(notificationPromises);
 
-        console.log("Resultados de las notificaciones:", results);
+        //console.log("Resultados de las notificaciones:", results);
     } catch (error) {
         console.error("Error al enviar notificaciones de cumpleaños:", error);
     }

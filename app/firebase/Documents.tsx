@@ -564,6 +564,24 @@ export const getWorkAreaByUid = async (uid: any) => {
   }
 };
 
+// Función para obtener las empresas por uid
+export const getCompaniesByUid = async (uid: string) => {
+  try {
+    const companiesRef = collection(db, "companies");
+    const q = query(companiesRef, where("uid", "==", uid));
+    const querySnapshot = await getDocs(q);
+    const companies = querySnapshot.docs.map((doc) => ({
+      ...doc.data(),
+    }));
+
+    return companies;
+  } catch (error) {
+    console.error("Error fetching companies by UID", error);
+    return [];
+  }
+};
+
+
 export const getMeetingStatusByCompanyId = async (companyId: any) => {
   try {
     const q = query(
@@ -730,10 +748,9 @@ export const getAllCompanies = async () => {
     const companiesRef = collection(db, "companies");
     const querySnapshot = await getDocs(companiesRef);
 
-    // Mapeamos los documentos obtenidos y asignamos 'uid' en lugar de 'id'
     const companies = querySnapshot.docs.map((doc) => ({
-      uid: doc.id, // Usamos 'uid' en lugar de 'id'
-      ...doc.data(), // Incluye los datos del documento
+      uid: doc.id, 
+      ...doc.data(), 
     }));
     return companies;
   } catch (error) {
@@ -796,6 +813,18 @@ export const updateArea = async (dataSave: any, id: string) => {
     return { success: true, message: "Employee updated successfully" };
   } catch (error) {
     console.error("Error updating employee:", error);
+    return { success: false, message: "Error updating route", error };
+  }
+};
+
+export const updateCompany = async (dataSave: any, id: string) => {
+  try {
+    const zoneRef = doc(db, "companies", id);
+    await updateDoc(zoneRef, dataSave);
+
+    return { success: true, message: "Company updated successfully" };
+  } catch (error) {
+    console.error("Error updating Company:", error);
     return { success: false, message: "Error updating route", error };
   }
 };
@@ -977,15 +1006,12 @@ export const updateSocialNetwork = async (
 export const deleteSocialNetwork = async (imageName: string, docId: string) => {
   const storage = getStorage();
 
-  // Crear referencia de la imagen en Firebase Storage
   const imageRef = ref(storage, `social_networks/${imageName}`);
 
   try {
-    // Eliminar la imagen de Firebase Storage
     await deleteObject(imageRef);
 
-    // Eliminar el documento en Firestore que contiene la referencia a la imagen
-    const docRef = doc(db, "logos", docId); // Ajusta 'logos' si es necesario
+    const docRef = doc(db, "logos", docId); 
     await deleteDoc(docRef);
 
     return { success: true, message: "Red social eliminada con éxito" };
@@ -998,3 +1024,7 @@ export const deleteSocialNetwork = async (imageName: string, docId: string) => {
     };
   }
 };
+
+
+
+

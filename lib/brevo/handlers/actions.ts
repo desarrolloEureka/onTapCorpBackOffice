@@ -27,7 +27,7 @@ export const handleSendWelcomeEmail = async (data: any) => {
                 /* loginUrl: "https://one-tap-corp-dev.vercel.app/components/signIn/",
                  LINK DE LOGUEO DE BIENVENIDA DESARROLLO VERCEL*/
                 loginUrlApple: "https://apps.apple.com/co/app/one-tap-corp/id6737350479",
-                loginUrlAndroid: "https://apps.apple.com/co/app/one-tap-corp/id6737350479",
+                loginUrlAndroid: "https://play.google.com/store/apps/details?id=onetapcorp.appspot.com&pcampaignid=web_share",
                 loginUrl: "https://one-tap-corp.vercel.app/components/signIn/",
                 contactEmail: "info@onetap.com.co",
             }),

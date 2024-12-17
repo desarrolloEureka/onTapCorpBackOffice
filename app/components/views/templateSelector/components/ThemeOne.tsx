@@ -7,6 +7,7 @@ import TemplateContainer from "./container/Container";
 import Footer from "./footer/Footer";
 import ModalCookies from "@/components/customModalAlert/ModalCookies";
 import Link from "next/link";
+import { CoPresentOutlined } from "@mui/icons-material";
 
 const ThemeOne = ({
   params: {
@@ -92,10 +93,12 @@ const ThemeOne = ({
                     icon: iconName,
                     checked: isActive,
                     isActiveSwitch: userInfo.isActive, // Agregar isActive del usuario
+                    urlName: nameKey
                   });
                 }
               });
             }
+          
           } else {
             const [nameOrIcon, checked] = areaData[nameKey];
             const iconName = areaData[iconNameKey];
@@ -104,25 +107,25 @@ const ThemeOne = ({
               name: nameOrIcon, // Puedes ajustar esto si necesitas diferenciar entre nombre e ícono
               icon: iconName, // Asumiendo que nameOrIcon puede ser un ícono o nombre
               checked,
+              urlName: nameKey
             });
           }
         }
-      }
+      } 
     });
-
     return areaDataUrls;
   };
 
   const areaDataUrls = transformData(areaData, userData?.uid);
   const companyDataUrls = transformData(companyData, null);
   companyDataUrls.urls.push({
-    url: companyData?.webSite[0],
+    url: companyData?.webSite[0] || "",
     name: companyData?.tradename[1] ? companyData?.tradename[0] : "",
     icon: companyData?.icon[0],
     checked: companyData?.webSite[1],
+    urlName: "webSite"
   });
-
-  return userData && companyData && headquarterData && areaData ? (
+  return userData && companyData && headquarterData && areaData  ? (
     <div className="tw-flex tw-flex-col tw-relative tw-justify-center tw-items-center tw-h-screen">
       <div
         className={`tw-shadow-md tw-rounded-2xl tw-bg-slate-500`}
