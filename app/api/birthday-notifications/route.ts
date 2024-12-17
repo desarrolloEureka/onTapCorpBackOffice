@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       const birthDate = new Date(employee?.dateOfBirth[0]);
       return birthDate.toISOString().split('T')[0] === todayString;
     });
-    await sendNotificationQuery("eVBvCCx9QdOZpy9Cgs11Rd:APA91bFumIdPVZNXSqJT3RZO1cPU3k2AWmmjEyvNmEPFVe4ph_7eweFg4ESn4qThJu77-fSCQ8gheT0HwHXymn30VDO8nT6FB3dwy-Lra1LKQuYWUROxwJY", "¡Felicidades!", `te desea un feliz cumpleaños.`, '');
+    await sendNotificationQuery("eVBvCCx9QdOZpy9Cgs11Rd:APA91bFumIdPVZNXSqJT3RZO1cPU3k2AWmmjEyvNmEPFVe4ph_7eweFg4ESn4qThJu77-fSCQ8gheT0HwHXymn30VDO8nT6FB3dwy-Lra1LKQuYWUROxwJY", "¡Felicidades!", `te desea un feliz cumpleaños.`, 'https://firebasestorage.googleapis.com/v0/b/ontapcorp-backoffice.appspot.com/o/companiesIcons%2FJgeYO991AXcVCa6V5POi%2FMesa%20de%20trabajo%201?alt=media&token=695522be-5105-4bba-92b7-b915e4891b83');
     
     if (birthdayEmployees.length === 0) {
       return NextResponse.json({ message: 'No hay empleados con cumpleaños hoy' });
