@@ -194,8 +194,7 @@ export const sendNotification = async (token: string, title: string, body: strin
     if (!token) {
         return { success: false, message: "No token provided" };
     }
-
-    const response = await fetch("/api/notifications", {
+    const response = await fetch("https://one-tap-corp.vercel.app/api/notifications/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, title, body, image }),
@@ -209,7 +208,7 @@ export const sendNotification = async (token: string, title: string, body: strin
         return { success: false, message: "Failed to send notification", data };
     }
   } catch (error) {
-    console.error("Error al enviar la notificación:", error);
+    console.error("Error al enviar la notificación2:", error);
       return { success: false, message: "Error sending notification", error };
   }
 };
