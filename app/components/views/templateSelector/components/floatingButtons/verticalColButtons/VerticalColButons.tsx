@@ -55,6 +55,8 @@ const VerticalColButtons = ({ socialNetworks, userData }: { socialNetworks: any[
                   key={i}
                 >
                   <CustomButton
+                    documentId={userData?.selectedArea}
+                    collectionRef="workAreas"
                     name={value?.icon}
                     link={value?.url}
                     nameLabel={value?.name}

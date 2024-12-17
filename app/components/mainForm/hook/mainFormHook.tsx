@@ -611,6 +611,53 @@ const MainFormHook = ({
         setData({ ...data, ...newItemUrl });
     }
 
+    const reorganizeKeys = (data: any) => {
+        const relatedKeys = ["urlName", "urlLink", "iconName"];
+        const groupedData: Record<number, Record<string, any>> = {};
+        const otherData = { ...data };
+
+        // Agrupar datos relacionados por índice y eliminarlos de la copia
+        Object.keys(data).forEach((key) => {
+            relatedKeys.forEach((prefix) => {
+                if (key.startsWith(prefix)) {
+                    const index = parseInt(key.replace(prefix, "")) || 1; // Claves sin número son índice 1
+                    if (!groupedData[index]) groupedData[index] = {};
+                    groupedData[index][prefix] = data[key];
+                    delete otherData[key]; // Elimina las clave relacionadas de la copia
+                }
+            });
+        });
+
+        //console.log('groupedData: ', groupedData); //{urlLink: 'https://www.facebook.com', urlName: Array(3), iconName: 'Facebook'}
+
+        // Obtener los índices numéricos de las claves y los ordenamos
+        const sortedIndices = Object.keys(groupedData)
+            .map(Number)
+            .sort((a, b) => a - b);
+
+        //console.log('sortedIndices 1 : ', sortedIndices); //[1, 3, 4]
+
+        const reorganizedData: any = {};
+
+        // Reorganizamos las claves eliminando los huecos en los índices
+        sortedIndices.forEach((_, newIndex) => {
+            const oldIndex = sortedIndices[newIndex];
+            const oldValues = groupedData[oldIndex];
+            // Reasignamos las claves con el nuevo índice
+            relatedKeys.forEach((prefix) => {
+                const newKey = newIndex === 0 ? prefix : `${prefix}${newIndex + 1}`;
+                if (oldValues[prefix]) {
+                    reorganizedData[newKey] = oldValues[prefix];
+                }
+            });
+        });
+
+        //console.log('reorganizedData : ', reorganizedData);
+
+        const finalData = { ...otherData, ...reorganizedData };
+        return finalData;
+    };
+
 
     const handleDeleteItem = (item: any) => {
         if (item[0].includes("url")) {
@@ -619,7 +666,9 @@ const MainFormHook = ({
                 item[4],
                 item[6],
             ]);
-            setData(dataFiltered);
+            const dataFinal = reorganizeKeys(dataFiltered);
+            //console.log('dataFinal ', dataFinal)
+            setData(dataFinal);
         }
     };
 

@@ -149,9 +149,9 @@ const CompanyHook = () => {
             newErrors.id = "El NIT es obligatorio";
         }
 
-        if (data.webSite[0] && !/^https:\/\/.+\..+$/.test(data.webSite[0])) {
-            newErrors.webSite = "Ej: https://example.com";
-        }
+        // if (data.webSite[0] && !/^https:\/\/.+\..+$/.test(data.webSite[0])) {
+        //     newErrors.webSite = "Ej: https://example.com";
+        // }
 
         // Validación para URLs dinámicas que comienzan con 'urlLink'
         for (const key in data) {
@@ -220,13 +220,23 @@ const CompanyHook = () => {
                         // Si no comienza con http o https, agregar https://
                         setData((prevData: any) => ({
                             ...prevData,
-                            [name]: "https://" + value,
+                            [name]: [
+                                "https://" + value,                // Primer valor: nuevo `value`
+                                !isChecked,           // Segundo valor: opuesto de `isChecked`
+                                prevData[name][2],    // Tercer valor: mantiene el objeto original en la posición 2
+                                ...prevData[name].slice(3), // Resto de elementos (si existen)
+                            ],
                         }));
                     } else {
                         // Si es válido, simplemente actualizar
                         setData((prevData: any) => ({
                             ...prevData,
-                            [name]: value,
+                            [name]: [
+                                value,                // Primer valor: nuevo `value`
+                                !isChecked,           // Segundo valor: opuesto de `isChecked`
+                                prevData[name][2],    // Tercer valor: mantiene el objeto original en la posición 2
+                                ...prevData[name].slice(3), // Resto de elementos (si existen)
+                            ],
                         }));
                     }
                 }
@@ -631,22 +641,46 @@ const CompanyHook = () => {
         }
     }, [companyData]);
 
-    useEffect(() => {
-        if (companyData) {
-            setData({
-                ...companyData,
-                urlName: companyData.urlName || ["", true],
-                urlLink: companyData.urlLink || " ",
-                iconName: companyData.iconName || " "
-            });
-        }
-    }, [companyData]);
 
     useEffect(() => {
         const fetchData = listenToEmployeesByCompanyIdQuery("users", setEmployees, companyData?.uid);
         return () => fetchData();
     }, [companyData?.uid]);
 
+    useEffect(() => {
+        if (employees.length > 0) {
+            // Si employees tiene datos y urlName aún no se ha inicializado
+            setData((prevData: any) => ({
+                ...prevData,
+                urlName: [
+                    "",
+                    true,
+                    employees.reduce((acc: any, employee: any) => {
+                        acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
+                        return acc;
+                    }, {}),
+                ],
+            }));
+        }
+    }, [employees]);
+
+    useEffect(() => {
+        if (employees.length > 0) {
+            // Si employees tiene datos y urlName aún no se ha inicializado
+            setData((prevData: any) => ({
+                ...prevData,
+                webSite: [
+                    "",
+                    true,
+                    employees.reduce((acc: any, employee: any) => {
+                        acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
+                        return acc;
+                    }, {}),
+                ],
+            }));
+        }
+    }, [employees]);
+    
     return {
         errors,
         data,

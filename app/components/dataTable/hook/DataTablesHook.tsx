@@ -101,11 +101,6 @@ const DataTablesHook = (reference: string) => {
   const [statisticsDetail, setStatisticsDetail] = useState<any>();
   const [showAlert, setShowAlert] = useState(false);
   const [isShowQR, setIsShowQR] = useState(false);
-  const [branches, setBranches] = useState([]); // Lista de sedes (branches)
-  const [filteredEmployees, setFilteredEmployees] = useState([]); // Empleados filtrados
-  const [selectedBranch, setSelectedBranch] = useState(""); // Sede seleccionada
-  const [employees, setEmployees] = useState([]); // Lista completa de empleados
-
   const theme = localStorage.getItem("@theme");
   const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
@@ -444,41 +439,41 @@ const DataTablesHook = (reference: string) => {
     }
   };
 
-  const prepareEmployeesWithHeadquartersData = async () => {
+  const prepareEmployeesWithCampus = async () => {
     try {
-      // Obtener los empleados y las sedes
+      // Obtener datos
       const employees = await getAllEmployeesQuery();
       const headquarters = await getHeadquartersByCompanyIdQuery(userData?.companyId);
   
-      // Crear un mapa de nombres de sedes por 'idCompany'
-      const headquartersMap: { [key: string]: string[] } = headquarters.reduce((map, hq) => {
-        if (hq.idCompany && hq.name?.[0]) { // Verificar si 'idCompany' y el nombre existen
-          if (!map[hq.idCompany]) {
-            map[hq.idCompany] = [];
+      if (!employees || !headquarters) {
+        console.error("Error: Empleados o sedes no disponibles.");
+        return [];
+      }
+  
+      // Crear mapa de sedes por idCompany
+      const headquartersMap = headquarters.reduce((map, hq) => {
+        if (hq.idCompany) {
+          if (!map.has(hq.idCompany)) {
+            map.set(hq.idCompany, []);
           }
-          map[hq.idCompany].push(hq.name[0]); // Almacenar solo el nombre en la posición 0
+          map.get(hq.idCompany)?.push(hq);
         } else {
-          console.warn(`Sede sin 'idCompany' o 'name' válida encontrada:`, hq);
+          console.warn("Sede sin 'idCompany' encontrada:", hq);
         }
         return map;
-      }, {} as { [key: string]: string[] });
+      }, new Map());
   
-      // Combinar empleados con los nombres de las sedes correspondientes
-      const enrichedEmployees = employees.map((employee) => {
-        const employeeHeadquartersNames = headquartersMap[employee.idCompany] || [];
+      // Combinar empleados con las sedes correspondientes
+      const enrichedEmployees = employees.map((employee) => ({
+        ...employee,
+        headquarters: headquartersMap.get(employee.idCompany) || [],
+      }));
   
-        return {
-          ...employee,
-          headquartersNames: employeeHeadquartersNames, // Array de nombres de sedes
-        };
-      });
-  
-      console.log("Combinación de empleados y nombres de sedes:", enrichedEmployees);
+      console.log("Combinación de empleados y sedes:", enrichedEmployees);
   
       return enrichedEmployees;
-  
     } catch (error) {
-      console.error("Error combinando los datos de empleados y nombres de sedes", error);
+      console.error("Error combinando los datos de empleados y sedes", error);
       return [];
     }
   };
@@ -595,7 +590,7 @@ const DataTablesHook = (reference: string) => {
     }
     //console.log("datos = ", documents);
     const labelToDisplay = ["professionals", "patients", "functionary"];
-    reference === "employees" && console.log('documents ', documents);
+    //reference === "employees" && console.log('documents ', documents);
 
     if (documents?.length > 0) {
       const cols: any[] = [];
@@ -998,9 +993,10 @@ const DataTablesHook = (reference: string) => {
                 }
                 : {},
         };
-
+        
         cols.push(columnsData);
       });
+      
 
       const currentData = {
         columns: cols,
@@ -1019,7 +1015,7 @@ const DataTablesHook = (reference: string) => {
       setDataTable(currentData); //obtain dataTable
       setGetDocuments(currentData.data); //obtain data
     }
-  }, [reference, userData, employeesData, selectReport, metadata]);
+  }, [reference, userData, employeesData, selectReport, metadata, workAreas]);
 
   const clearSearch = () => {
     setSearchTerm("");
@@ -1192,7 +1188,6 @@ const DataTablesHook = (reference: string) => {
   ]);
 
   useEffect(() => {
-    setWorkAreas([])
     const fetchData = listenToWorkAreaByCompanyIdQuery(
       "workAreas",
       setWorkAreas,
@@ -1238,46 +1233,6 @@ const DataTablesHook = (reference: string) => {
 
   // console.log(!isEmptyDataRef);
 
-  useEffect(() => {
-    // Llamar a prepareEmployeesWithHeadquartersData al montar el componente
-    const fetchData = async () => {
-      try {
-        const enrichedEmployees = await prepareEmployeesWithHeadquartersData();
-
-        // Actualizar la lista completa de empleados
-        setEmployees(enrichedEmployees);
-
-        // Obtener sedes únicas de la lista enriquecida
-        const uniqueBranches = [
-          ...new Set(
-            enrichedEmployees.flatMap((employee) => employee.headquartersNames)
-          ),
-        ];
-        setBranches(uniqueBranches); // Actualizar sedes disponibles
-        setFilteredEmployees(enrichedEmployees); // Mostrar todos los empleados inicialmente
-      } catch (error) {
-        console.error("Error al cargar datos:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Actualizar empleados filtrados cuando cambie la sede seleccionada
-  useEffect(() => {
-    if (selectedBranch === "") {
-      setFilteredEmployees(employees); // Mostrar todos los empleados si no hay filtro
-    } else {
-      setFilteredEmployees(
-        employees.filter((employee) =>
-          employee.headquartersNames.includes(selectedBranch)
-        )
-      );
-    }
-  }, [selectedBranch, employees]);
-
-  
-
   return {
     modeTheme: themeParsed?.dataThemeMode,
     columns,
@@ -1318,8 +1273,7 @@ const DataTablesHook = (reference: string) => {
     statisticsDetail,
     setStatisticsDetail,
     showAlert,
-    isShowQR,
-    prepareEmployeesWithHeadquartersData
+    isShowQR
   };
 };
 

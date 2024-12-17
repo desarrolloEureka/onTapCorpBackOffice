@@ -32,6 +32,8 @@ const CustomButton = ({
   nameLabel,
   styles,
   urlName,
+  collectionRef,
+  documentId
 }: {
   userData: any;
   name: string;
@@ -39,6 +41,8 @@ const CustomButton = ({
   link: string;
   styles?: string;
   urlName: string
+  collectionRef: string
+  documentId: string
 }) => {
   const [data, setData] = useState<any>(null);
   const isSmallScreen = useMediaQuery("(max-height:780px)");
@@ -80,12 +84,12 @@ const CustomButton = ({
       alert("La URL proporcionada no es válida."); // Muestra un mensaje de error al usuario
       
     }
-    if (userData && urlName ) {
+    if (userData && urlName) {
         const dataSend = {
           //prueba: "PruebaUrl"
           timestamp: new Date().toISOString()
         };
-          await SendDataUrlClick(userData?.selectedArea, dataSend, urlName, userData?.uid);
+          await SendDataUrlClick(documentId, dataSend, urlName, userData?.uid, collectionRef);
         }
   };
 

@@ -215,9 +215,9 @@ export const SendDataMetrics = async (userId: string, data: any) => {
     return res;
 };
 
-export const SendDataUrlClick = async (workAreaId: string, data: any, urlName: string, uid:string) => {
-
-    const urlDocRef = doc(db, "workAreas", workAreaId);
+export const SendDataUrlClick = async (documentId: string, data: any, urlName: string, uid:string, collectionRef: string) => {
+    console.log("dataCompany",documentId, data, urlName,  uid, collectionRef)
+    const urlDocRef = doc(db, collectionRef, documentId);
     const docSnap = await getDoc(urlDocRef);
     if (!docSnap.exists()) {
         return null;
@@ -229,6 +229,7 @@ export const SendDataUrlClick = async (workAreaId: string, data: any, urlName: s
         [urlName]: updatedArray,
     });
     console.log("updateArray",updatedArray[2][uid]?.views)
+    
     return null;
 };
 

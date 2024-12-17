@@ -334,20 +334,22 @@ const EndDayInput = ({
 
 //componente para el filtro de empleados por campus
 const BranchFilter = ({
-  branches,
+  branches = [],
   setSelectedBranch,
 }: {
   branches: string[];
   setSelectedBranch: (branch: string) => void;
 }) => (
   <Form.Group controlId="branchFilter">
-    <Form.Label style={{ fontSize: "15px" }}>Filtrar por Sede</Form.Label>
+    <Form.Label className="filter-label">Filtrar por Sede</Form.Label>
     <Form.Control
       as="select"
       onChange={(e) => setSelectedBranch(e.target.value)}
       defaultValue=""
     >
-      <option value="">Selecciona una Sede</option>
+      <option value="">
+        {branches.length > 0 ? "Selecciona una Sede" : "No hay sedes disponibles"}
+      </option>
       {branches.map((branch) => (
         <option key={branch} value={branch}>
           {branch}
@@ -356,6 +358,7 @@ const BranchFilter = ({
     </Form.Control>
   </Form.Group>
 );
+
 
 const Filter = ({
   handleSearchAndFilter,
@@ -392,8 +395,6 @@ const refToShowButtonCsv = [
   "functionary",
   "diagnostician",
 ];
-
-
 
 export const ExportCSV = ({
   onUploadDataModalCsv,
