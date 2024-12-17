@@ -8,14 +8,15 @@ export async function GET(request: NextRequest) {
     const companies = await getAllCompaniesQuery();
     const today = new Date();
     const todayString = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-    return NextResponse.json({ employees: employees, companies: companies});
+
 
     // Filtrar empleados que cumplen años hoy
     const birthdayEmployees = employees.filter(employee => {
       const birthDate = new Date(employee?.dateOfBirth[0]);
       return birthDate.toISOString().split('T')[0] === todayString;
     });
-
+    await sendNotificationQuery("eVBvCCx9QdOZpy9Cgs11Rd:APA91bFumIdPVZNXSqJT3RZO1cPU3k2AWmmjEyvNmEPFVe4ph_7eweFg4ESn4qThJu77-fSCQ8gheT0HwHXymn30VDO8nT6FB3dwy-Lra1LKQuYWUROxwJY", "¡Felicidades!", `te desea un feliz cumpleaños.`, '');
+    
     if (birthdayEmployees.length === 0) {
       return NextResponse.json({ message: 'No hay empleados con cumpleaños hoy' });
     }
@@ -35,9 +36,9 @@ export async function GET(request: NextRequest) {
       }
 
       const body = `${employee?.companyName} te desea un feliz cumpleaños.`;
-      // const result = await sendNotificationQuery(employee.tokens, "¡Felicidades!", body, employee?.companyImage);
+      const result = await sendNotificationQuery(employee.tokens, "¡Felicidades!", body, employee?.companyImage);
 
-      return { success: true, message: "true", employeeId: employee.id };
+      return { success: result.success, message: result.message, employeeId: employee.id };
     });
 
     const results = await Promise.all(notificationPromises);
