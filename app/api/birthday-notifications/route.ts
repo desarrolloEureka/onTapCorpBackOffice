@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const [_, todayMonth, todayDay] = today.split('-').map(Number);
     // Filtrar empleados que cumplen años hoy
     const birthdayEmployees = employees.filter(employee => {
-      const [_, birthMonth, birthDay] = employee?.dateOfBirth[0]).split('-').map(Number);
+      const [_, birthMonth, birthDay] = employee?.dateOfBirth[0].split('-').map(Number);
       return birthMonth === todayMonth && birthDay === todayDay;
     });
 
