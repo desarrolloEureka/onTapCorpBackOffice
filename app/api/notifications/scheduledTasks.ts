@@ -15,7 +15,7 @@ const useSendBirthdayNotifications = async () => {
         });
 
         if (birthdayEmployees.length === 0) {
-            console.log("No hay empleados que cumplen años hoy.");
+            //console.log("No hay empleados que cumplen años hoy.");
             return;
         }
 
@@ -30,7 +30,7 @@ const useSendBirthdayNotifications = async () => {
 
         const notificationPromises = updatedBirthdayEmployees.map(async (employee: any) => {
             if (!employee?.tokens) {
-                console.log(`Empleado ${employee.id} no tiene tokens disponibles para notificación.`);
+                //console.log(`Empleado ${employee.id} no tiene tokens disponibles para notificación.`);
                 return { success: false, message: "No token available", employeeId: employee.id };
             }
 
@@ -43,7 +43,7 @@ const useSendBirthdayNotifications = async () => {
         // Esperar a que todas las notificaciones se envíen
         const results = await Promise.all(notificationPromises);
 
-        console.log("Resultados de las notificaciones:", results);
+        //console.log("Resultados de las notificaciones:", results);
     } catch (error) {
         console.error("Error al enviar notificaciones de cumpleaños:", error);
     }

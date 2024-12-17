@@ -99,8 +99,8 @@ const ZonesFormModal = ({
                             {/* Contenedor con scroll */}
                             <div className="tw-overflow-y-auto tw-max-h-96 tw-px-3 tw-w-full"
                                 style={{
-                                    scrollbarWidth: "thin",  // Para Firefox
-                                    scrollbarColor: "#9c9c9c #f1f1f1" // Color negro para el thumb y gris para el track
+                                    scrollbarWidth: "thin", 
+                                    scrollbarColor: "#9c9c9c #f1f1f1" 
                                 }}>
                                 <div className="tw-flex tw-flex-col tw-w-full">
                                     <div className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full">
@@ -159,7 +159,19 @@ const ZonesFormModal = ({
                                             }}
                                         />
                                     </div>
-                                    
+                                    <div className="tw-flex tw-flex-row tw-px-3 tw-mt-7 tw-mb-4 tw-w-full">
+                                    {addresses?.length < 4 && (
+                                        <div className="tw-flex tw-flex-row tw-w-38 tw-rounded-3xl tw-bg-[#396593] tw-ml-auto">
+                                            <Button
+                                                variant="outlined"
+                                                onClick={handleAddAddress}
+                                                className="tw-text-white"
+                                            >
+                                                Añadir Dirección
+                                            </Button>
+                                        </div>
+                                    )}
+                                </div>
                                     {addresses.map((address, index) => (
                                         <div key={index} className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full">
                                             <CustomTextField
@@ -189,19 +201,7 @@ const ZonesFormModal = ({
                                         </div>
                                     ))}
 
-                                    <div className="tw-flex tw-flex-row tw-px-3 tw-mt-7 tw-mb-4 tw-w-full">
-                                        {addresses?.length < 4 && (
-                                            <div className="tw-flex tw-flex-row tw-w-38 tw-rounded-3xl tw-bg-[#396593]">
-                                                <Button
-                                                    variant="outlined"
-                                                    onClick={handleAddAddress}
-                                                    className="tw-text-white"
-                                                >
-                                                    Añadir Dirección
-                                                </Button>
-                                            </div>
-                                        )}
-                                    </div>
+
                                 </div>
                             </div>
                         </div>

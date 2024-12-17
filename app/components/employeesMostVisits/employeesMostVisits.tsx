@@ -12,14 +12,38 @@ const EmployeesMostVisits = () => {
     setStartDate,
     endDate,
     setEndDate,
+    clearFilters
   } = useEmployeesMostVisitsHook();
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 30;
 
-  // Filtro de busqueda por empleado
+  // Filtro de búsqueda por empleado
   const filteredEmployees = employeesData.filter((employee) =>
     employee.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Calcular el índice de inicio y fin de la página actual
+  const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentEmployees = filteredEmployees.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
+  // Funciones de cambio de página
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <Row className="row-sm">
@@ -68,20 +92,20 @@ const EmployeesMostVisits = () => {
                 />
               </Form.Group>
 
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={toggleSortOrder}
-              >
+              <Button variant="primary" size="sm" onClick={toggleSortOrder}>
                 Ordenar: {sortOrder === "asc" ? "Menor a Mayor" : "Mayor a Menor"}
+              </Button>
+
+              <Button variant="primary" size="sm" onClick={clearFilters}>
+                Borrar
               </Button>
             </div>
           </Card.Header>
-          <Card.Body>
+          <Card.Body style={{ maxHeight: "600px", overflowY: "auto", scrollbarWidth: "thin", scrollbarColor: "#9c9c9c #f1f1f1" }}  className="custom-scrollbar">
             {loading ? (
               <p>Cargando datos...</p>
-            ) : filteredEmployees.length > 0 ? (
-              filteredEmployees.map((employee, index) => (
+            ) : currentEmployees.length > 0 ? (
+              currentEmployees.map((employee, index) => (
                 <div key={index} className="mb-3">
                   <h5 className="mb-2 d-block">
                     <span className="fs-14">{employee.nombre}</span>
@@ -104,6 +128,27 @@ const EmployeesMostVisits = () => {
               <p>No hay datos disponibles para mostrar.</p>
             )}
           </Card.Body>
+          <Card.Footer className="d-flex justify-content-between">
+            <Button
+              variant="primary"
+              size="sm"
+              disabled={currentPage === 1}
+              onClick={handlePreviousPage}
+            >
+              Anterior
+            </Button>
+            <span className="text-muted fs-12">
+              Página {currentPage} de {totalPages}
+            </span>
+            <Button
+              variant="primary"
+              size="sm"
+              disabled={currentPage === totalPages}
+              onClick={handleNextPage}
+            >
+              Siguiente
+            </Button>
+          </Card.Footer>
         </Card>
       </Col>
     </Row>

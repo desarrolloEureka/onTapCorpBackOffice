@@ -15,6 +15,7 @@ import CustomMUITelInput from "../company/components/CustomMUITelInput";
 import CustomTextField from "../company/components/CustomTextField";
 import MeetingStatusesHook from "./hook/CampusHook";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import React from "react";
 
 const CampusModal = ({
   handleShowMainForm,
@@ -34,6 +35,7 @@ const CampusModal = ({
     isEdit,
     phones,
     campusNameError,
+    campusNumError,
     campusAddressError,
     campusUrlError,
     daysInSpanish,
@@ -56,6 +58,7 @@ const CampusModal = ({
     title,
     reference,
   });
+  const [error, setError] = React.useState("");
 
   const CustomSelect = styled(Select)({
     backgroundColor: "#396593",
@@ -264,6 +267,8 @@ const CampusModal = ({
                           id={`phone-${index}`}
                           fullWidth
                           label="Teléfono"
+                          helperText={campusNumError}
+                          error={!!campusNumError}
                           InputProps={{
                             startAdornment: (
                               <InputAdornment position="start">

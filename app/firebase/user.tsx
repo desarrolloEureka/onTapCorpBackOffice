@@ -215,6 +215,24 @@ export const SendDataMetrics = async (userId: string, data: any) => {
     return res;
 };
 
+export const SendDataUrlClick = async (documentId: string, data: any, urlName: string, uid:string, collectionRef: string) => {
+    console.log("dataCompany",documentId, data, urlName,  uid, collectionRef)
+    const urlDocRef = doc(db, collectionRef, documentId);
+    const docSnap = await getDoc(urlDocRef);
+    if (!docSnap.exists()) {
+        return null;
+    }
+    const existingArray = docSnap.data()[urlName] || [];
+    const updatedArray = [...existingArray];
+    updatedArray[2][uid].views = [...updatedArray[2][uid]?.views, data];
+    const res = await updateDoc(urlDocRef, {
+        [urlName]: updatedArray,
+    });
+    console.log("updateArray",updatedArray[2][uid]?.views)
+    
+    return null;
+};
+
 export const getAllTemplates = async () => {
     const templatesData: any[] = [];
     const querySnapshot = await getDocs(collection(db, "templates"));

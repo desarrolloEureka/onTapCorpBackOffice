@@ -365,32 +365,32 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                 checked={allChecked}
                                 data={[item[1], item[2]]}
                                 onChange={(value: string, name: string, checked: boolean) => {
+                                  
+                                const numericValue = value.replace(/\D/g, '');
 
-                                  const numericValue = value.replace(/\D/g, '');
-
-                                  if (numericValue.length <= 10) {
-                                    handleChange(value, name, checked);
-                                  }
-                                }}
-                                name={item[0]}
-                                type="text"
-                                switch="true"
-                                theme={theme}
-                                id={item[0]}
-                                fullWidth
-                                label="Teléfono"
-                                InputProps={{
-                                  startAdornment: (
-                                    <InputAdornment position="start">
-                                      <LocalPhoneOutlinedIcon />
-                                    </InputAdornment>
-                                  ),
-                                }}
-                                inputProps={{
-                                  maxLength: 10,
-                                  pattern: '[0-9]*',
-                                }}
-                              />
+                                if (numericValue.length === 10) {
+                                  handleChange(value, name, checked);
+                                }
+                              }}
+                              name={item[0]}
+                              type="text"
+                              switch="true"
+                              theme={theme}
+                              id={item[0]}
+                              fullWidth
+                              label="Teléfono"
+                              InputProps={{
+                                startAdornment: (
+                                  <InputAdornment position="start">
+                                    <LocalPhoneOutlinedIcon />
+                                  </InputAdornment>
+                                ),
+                              }}
+                              inputProps={{
+                                maxLength: 10,
+                                pattern: '[0-9]*', 
+                              }}
+                            />
 
                             </div>
                             <CustomTextField

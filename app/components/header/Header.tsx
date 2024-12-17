@@ -733,6 +733,22 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
           <EmployeesMostVisits
           />
         </Tab.Pane>
+
+        {/* Reporte  metricas urls con mas clicks*/}
+        <Tab.Pane
+          className="tab-pane text-muted"
+          id="clicksUrl"
+          role="tabpanel"
+          eventKey="clicksUrl"
+        >
+          <BannerMenu
+            seoTitle="Reporte clicks de las url's"
+            title="Reporte clicks de las url's"
+            item="Dashboard"
+            activeItem="Clicks"
+          />
+
+        </Tab.Pane>
       </Tab.Content>
     </Tab.Container>
   );

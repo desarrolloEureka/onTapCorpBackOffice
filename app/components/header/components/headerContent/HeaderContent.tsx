@@ -437,6 +437,15 @@ const HeaderContent = ({
                     <IoDocumentOutline size={20} className="tw-mb-1 tw-mr-1" />
                     Visitas
                   </NavDropdown.Item>
+
+                  <NavDropdown.Item
+                    //clicks de urls
+                    //href="#statisticalReports"
+                    eventKey="clicksUrl"
+                  >
+                    <IoDocumentOutline size={20} className="tw-mb-1 tw-mr-1" />
+                    Clicks
+                  </NavDropdown.Item>
                 </NavDropdown>
               )}
             </Nav>

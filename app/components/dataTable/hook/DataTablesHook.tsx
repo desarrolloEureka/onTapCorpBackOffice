@@ -38,6 +38,7 @@ import { FaTrashCan } from "react-icons/fa6";
 import { MdModeEdit } from "react-icons/md";
 import Swal from "sweetalert2";
 import { LocalVariable } from "@/types/global";
+import { ref } from "firebase/storage";
 require("dotenv").config();
 
 const CustomTitle = ({ row }: any) => (
@@ -437,6 +438,47 @@ const DataTablesHook = (reference: string) => {
       return [];
     }
   };
+
+  const prepareEmployeesWithCampus = async () => {
+    try {
+      // Obtener datos
+      const employees = await getAllEmployeesQuery();
+      const headquarters = await getHeadquartersByCompanyIdQuery(userData?.companyId);
+  
+      if (!employees || !headquarters) {
+        console.error("Error: Empleados o sedes no disponibles.");
+        return [];
+      }
+  
+      // Crear mapa de sedes por idCompany
+      const headquartersMap = headquarters.reduce((map, hq) => {
+        if (hq.idCompany) {
+          if (!map.has(hq.idCompany)) {
+            map.set(hq.idCompany, []);
+          }
+          map.get(hq.idCompany)?.push(hq);
+        } else {
+          console.warn("Sede sin 'idCompany' encontrada:", hq);
+        }
+        return map;
+      }, new Map());
+  
+      // Combinar empleados con las sedes correspondientes
+      const enrichedEmployees = employees.map((employee) => ({
+        ...employee,
+        headquarters: headquartersMap.get(employee.idCompany) || [],
+      }));
+  
+      console.log("Combinación de empleados y sedes:", enrichedEmployees);
+  
+      return enrichedEmployees;
+    } catch (error) {
+      console.error("Error combinando los datos de empleados y sedes", error);
+      return [];
+    }
+  };
+  
+  
 
 
   const getAllDocuments = useCallback(async () => {
@@ -937,7 +979,7 @@ const DataTablesHook = (reference: string) => {
                               : "auto",
           omit: !omittedColumns.includes(val),
           style:
-            val === "uid" && reference === "meetingStatus"
+            val === "uid" && reference === "meetingStatus" 
               ? {
                 display: "flex",
                 alignItems: "center",
@@ -951,9 +993,10 @@ const DataTablesHook = (reference: string) => {
                 }
                 : {},
         };
-
+        
         cols.push(columnsData);
       });
+      
 
       const currentData = {
         columns: cols,
@@ -972,7 +1015,7 @@ const DataTablesHook = (reference: string) => {
       setDataTable(currentData); //obtain dataTable
       setGetDocuments(currentData.data); //obtain data
     }
-  }, [reference, userData, employeesData, selectReport, metadata]);
+  }, [reference, userData, employeesData, selectReport, metadata, workAreas]);
 
   const clearSearch = () => {
     setSearchTerm("");
@@ -1145,7 +1188,6 @@ const DataTablesHook = (reference: string) => {
   ]);
 
   useEffect(() => {
-    setWorkAreas([])
     const fetchData = listenToWorkAreaByCompanyIdQuery(
       "workAreas",
       setWorkAreas,
