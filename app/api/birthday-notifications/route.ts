@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
     const companies = await getAllCompaniesQuery();
     const today = new Date();
     const todayString = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    return NextResponse.json({ employees: employees, companies: companies});
 
     // Filtrar empleados que cumplen años hoy
     const birthdayEmployees = employees.filter(employee => {
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
     const results = await Promise.all(notificationPromises);
     console.log('Resultados de las notificaciones:', results);
 
-    return NextResponse.json({ message: employees });
+    return NextResponse.json({ message: `Notificaciones de cumpleaños enviadas` });
   } catch (error) {
     console.error('Error al enviar notificaciones de cumpleaños:', error);
     return NextResponse.json({ error: 'Error al enviar notificaciones de cumpleaños' }, { status: 500 });
