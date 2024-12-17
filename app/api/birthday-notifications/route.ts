@@ -15,8 +15,9 @@ export async function GET(request: NextRequest) {
       const birthDate = new Date(employee?.dateOfBirth[0]);
       return birthDate.toISOString().split('T')[0] === todayString;
     });
-    await sendNotificationQuery("eVBvCCx9QdOZpy9Cgs11Rd:APA91bFumIdPVZNXSqJT3RZO1cPU3k2AWmmjEyvNmEPFVe4ph_7eweFg4ESn4qThJu77-fSCQ8gheT0HwHXymn30VDO8nT6FB3dwy-Lra1LKQuYWUROxwJY", "¡Felicidadesxxxxxxxxxxxxxxxxxx!", "te desea un feliz cumpleaños.", "https://firebasestorage.googleapis.com/v0/b/onetapcorp-d0146.appspot.com/o/companiesIcons%2FtwQzX8pj0K18vqxDhj2Z%2FBlanco?alt=media&token=7efd4de8-adf6-4350-ad67-f598c78689e0");
-    
+
+    return NextResponse.json({ employees: employees, companies: companies });
+
     if (birthdayEmployees.length === 0) {
       return NextResponse.json({ message: 'No hay empleados con cumpleaños hoy' });
     }
