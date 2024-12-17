@@ -469,7 +469,7 @@ const DataTablesHook = (reference: string) => {
         headquarters: headquartersMap.get(employee.idCompany) || [],
       }));
   
-      console.log("Combinación de empleados y sedes:", enrichedEmployees);
+      //console.log("Combinación de empleados y sedes:", enrichedEmployees);
   
       return enrichedEmployees;
     } catch (error) {

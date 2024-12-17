@@ -30,7 +30,7 @@ const Footer = ({socialNetworks, userData}: {socialNetworks: any, userData: any}
   const reversedArray = [...finalArray].reverse();
   const shouldCenterItems = reversedArray.length < 4;
   const isSmallScreen = useMediaQuery('(max-height:780px)');
-  console.log("reversedArray",reversedArray)
+  //console.log("reversedArray",reversedArray)
   return (
     <div className={`tw-flex tw-h-[15%] tw-w-[100%] tw-overflow-scroll tw-relative no-scrollbar tw-items-center tw-justify-center ${isSmallScreen ? '-tw-mt-5' : 'tw-mt-0'}`}>
       <div style={{ display: 'flex', height: '70%', width: '94%' }}>

@@ -78,7 +78,7 @@ const CustomButton = ({
 
   // Maneja el clic en el enlace y muestra un mensaje de error si la URL es inválida
   const handleClick = async (event: React.MouseEvent<HTMLAnchorElement>) => {
-    console.log("data", userData, urlName)
+    //console.log("data", userData, urlName)
     if (!isValidUrl(fullUrl)) {
       event.preventDefault();
       alert("La URL proporcionada no es válida."); // Muestra un mensaje de error al usuario
