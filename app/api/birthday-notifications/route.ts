@@ -16,8 +16,6 @@ export async function GET(request: NextRequest) {
       return birthDate.toISOString().split('T')[0] === todayString;
     });
 
-    return NextResponse.json({ employees: employees, companies: companies });
-
     if (birthdayEmployees.length === 0) {
       return NextResponse.json({ message: 'No hay empleados con cumpleaños hoy' });
     }
@@ -43,7 +41,6 @@ export async function GET(request: NextRequest) {
     });
 
     const results = await Promise.all(notificationPromises);
-    console.log('Resultados de las notificaciones:', results);
 
     return NextResponse.json({ message: `Notificaciones de cumpleaños enviadas` });
   } catch (error) {
