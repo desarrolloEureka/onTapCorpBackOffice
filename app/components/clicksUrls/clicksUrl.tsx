@@ -11,10 +11,6 @@ const UrlClicksByEmployee = () => {
   const [selectedEmployee, setSelectedEmployee] = useState<string | null>(null); // Estado para el empleado seleccionado
   const itemsPerPage = 30;
 
-  if (error) {
-    return <p>Error: {error.message}</p>;
-  }
-
   // Filtrar datos por término de búsqueda solo si searchTerm no está vacío
   const filteredData = searchTerm
     ? clicksData.filter((data) =>
@@ -28,8 +24,12 @@ const UrlClicksByEmployee = () => {
     : filteredData.sort((a: any, b: any)=> b?.clickCount-a?.clickCount);
 
   useEffect(() => {
-    employees && setSelectedEmployee(employees[0]?.uid)
+    if(employees.length > 0) {
+      setSelectedEmployee(employees[0]?.uid || null)
+    }
     },[employees])
+
+
   // Paginación
   const totalPages = Math.ceil(filteredByEmployee.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -101,7 +101,10 @@ const UrlClicksByEmployee = () => {
           >
             {loading ? (
               <p>Cargando datos...</p>
-            ) : currentData.length > 0 ? (
+            ) :
+             error ?
+              <p>Error: {error.message}</p> : 
+             currentData.length > 0 ? (
               currentData.map((data) => (
                 <div key={`${data.urlLink}-${data.employeeId}`} className="mb-3">
                   <h5 className="mb-2 d-block">

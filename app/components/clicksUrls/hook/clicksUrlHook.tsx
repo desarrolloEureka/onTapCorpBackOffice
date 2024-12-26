@@ -12,7 +12,7 @@ interface UrlClickData {
   employeeId: string;
 }
 
-const useClicksUrl = (companyId: string) => {
+const useClicksUrl = ({companyId}: {companyId: string}) => {
   const [clicksDataWorkAreas, setClicksDataWorkAreas] = useState<UrlClickData[]>([]);
   const [clicksDataCompanies, setClicksDataCompanies] = useState<UrlClickData[]>([]);
   const [clicksDataWebsite, setClicksDataWebsite] = useState<UrlClickData[]>([]);
