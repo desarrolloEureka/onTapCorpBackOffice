@@ -27,12 +27,6 @@ const UrlClicksByEmployee = () => {
         .sort((a: any, b: any) => b?.clickCount - a?.clickCount)
     : filteredData.sort((a: any, b: any) => b?.clickCount - a?.clickCount);
 
-  useEffect(() => {
-    if (employees.length > 0) {
-      setSelectedEmployee(employees[0]?.uid || "");
-    }
-  }, [employees]);
-
   // Paginación
   const totalPages = Math.ceil(filteredByEmployee.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -54,6 +48,13 @@ const UrlClicksByEmployee = () => {
     clicksData.length > 0
       ? Math.max(...clicksData.map((data) => data.clickCount), 100)
       : 100;
+
+      
+  useEffect(() => {
+    if (employees.length > 0) {
+      setSelectedEmployee(employees[0]?.uid || "");
+    }
+  }, [employees]);
 
   return (
     <Row className="row-sm">
@@ -108,9 +109,10 @@ const UrlClicksByEmployee = () => {
           >
             {loading ? (
               <p>Cargando datos...</p>
-            ) : error ? (
-              <p>Error: {error?.message}</p>
-            ) : currentData.length > 0 ? (
+            ) : // : error ? (
+            //   <p>Error: {error?.message}</p>
+            // )
+            currentData.length > 0 ? (
               currentData.map((data) => (
                 <div
                   key={`${data.urlLink}-${data.employeeId}`}
