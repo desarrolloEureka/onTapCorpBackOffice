@@ -5,10 +5,12 @@ import useAuth from "@/firebase/auth";
 
 const UrlClicksByEmployee = () => {
   const { userData } = useAuth();
-  const { clicksData, loading, error, employees } = useClicksUrl(userData?.companyId);
+  const { clicksData, loading, error, employees } = useClicksUrl(
+    userData?.companyId
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedEmployee, setSelectedEmployee] = useState<string | null>(null); // Estado para el empleado seleccionado
+  const [selectedEmployee, setSelectedEmployee] = useState<string>(""); // Estado para el empleado seleccionado
   const itemsPerPage = 30;
 
   // Filtrar datos por término de búsqueda solo si searchTerm no está vacío
@@ -20,20 +22,24 @@ const UrlClicksByEmployee = () => {
 
   // Filtrar los datos según el empleado seleccionado
   const filteredByEmployee = selectedEmployee
-    ? filteredData.filter((data) => data.employeeId === selectedEmployee).sort((a: any, b: any)=> b?.clickCount-a?.clickCount) 
-    : filteredData.sort((a: any, b: any)=> b?.clickCount-a?.clickCount);
+    ? filteredData
+        .filter((data) => data.employeeId === selectedEmployee)
+        .sort((a: any, b: any) => b?.clickCount - a?.clickCount)
+    : filteredData.sort((a: any, b: any) => b?.clickCount - a?.clickCount);
 
   useEffect(() => {
-    if(employees.length > 0) {
-      setSelectedEmployee(employees[0]?.uid || null)
+    if (employees.length > 0) {
+      setSelectedEmployee(employees[0]?.uid || "");
     }
-    },[employees])
-
+  }, [employees]);
 
   // Paginación
   const totalPages = Math.ceil(filteredByEmployee.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentData = filteredByEmployee.slice(startIndex, startIndex + itemsPerPage);
+  const currentData = filteredByEmployee.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage((prevPage) => prevPage + 1);
@@ -55,7 +61,9 @@ const UrlClicksByEmployee = () => {
         <Card className="custom-card">
           <Card.Header className="border-bottom-0 pb-4">
             <div>
-              <h5 className="main-content-label mb-2">Contadores de Clics por Empleado</h5>
+              <h5 className="main-content-label mb-2">
+                Contadores de Clics por Empleado
+              </h5>
               <p className="text-muted fs-12 mb-0">
                 Visualiza y filtra los clics realizados en URLs por empleados.
               </p>
@@ -67,27 +75,26 @@ const UrlClicksByEmployee = () => {
                   type="text"
                   placeholder="Buscar por nombre de URL"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => setSearchTerm(e?.target?.value)}
                   className="form-control-sm"
                 />
               </Form.Group>
 
               {/* Dropdown para seleccionar empleado */}
               <Form.Group controlId="selectEmployee">
-  <Form.Control
-    as="select"
-    onChange={(e) => setSelectedEmployee(e.target.value || null)} // Actualizar estado
-    className="form-control-sm"
-  >
-    
-    {employees.map((employee) => (
-      <option key={employee.uid} value={employee.uid}>
-        {employee.fullName} {/* Mostrar el nombre completo del empleado */}
-      </option>
-    ))}
-  </Form.Control>
-</Form.Group>
-
+                <Form.Control
+                  as="select"
+                  onChange={(e) => setSelectedEmployee(e?.target?.value)} // Actualizar estado
+                  className="form-control-sm"
+                >
+                  {employees.map((employee) => (
+                    <option key={employee.uid} value={employee?.uid}>
+                      {employee?.fullName}{" "}
+                      {/* Mostrar el nombre completo del empleado */}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
             </div>
           </Card.Header>
           <Card.Body
@@ -101,15 +108,19 @@ const UrlClicksByEmployee = () => {
           >
             {loading ? (
               <p>Cargando datos...</p>
-            ) :
-             error ?
-              <p>Error: {error.message}</p> : 
-             currentData.length > 0 ? (
+            ) : error ? (
+              <p>Error: {error?.message}</p>
+            ) : currentData.length > 0 ? (
               currentData.map((data) => (
-                <div key={`${data.urlLink}-${data.employeeId}`} className="mb-3">
+                <div
+                  key={`${data.urlLink}-${data.employeeId}`}
+                  className="mb-3"
+                >
                   <h5 className="mb-2 d-block">
                     <span className="fs-14">{data.urlName}</span>
-                    <span className="float-end fs-14">{data.clickCount} clics</span>
+                    <span className="float-end fs-14">
+                      {data.clickCount} clics
+                    </span>
                   </h5>
                   <ProgressBar
                     variant="warning"
