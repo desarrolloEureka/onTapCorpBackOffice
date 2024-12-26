@@ -87,6 +87,15 @@ const DataTablesHook = (reference: string) => {
   const [editData, setEditData] = useState<any>();
   const [searchTerm, setSearchTerm] = useState("");
   const [handleShowQr, setHandleShowQr] = useState(false);
+  const [selectedArea, setSelectedArea] = useState<string>("");
+  const [selectedSede, setSelectedSede] = useState<string>("");
+  const [selectedZona, setSelectedZona] = useState<string>("");
+  const [selectedRuta, setSelectedRuta] = useState<string>("");
+
+  const [AreaData, setAreaData] = useState<any>();
+  const [SedeData, setSedeData] = useState<any>();
+  const [ZonaData, setZonaData] = useState<any>();
+  const [RutaData, setRutaData] = useState<any>();
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -960,7 +969,7 @@ const DataTablesHook = (reference: string) => {
                     ? "20%"
                     : val === "hour" || val === "issue"
                       ? "15%"
-                      : reference === "companies" || reference === "employees"
+                      : reference === "companies" || reference === "employees" || reference === "superadminEmployees"
                         ? val === "uid"
                           ? "auto"
                           : "250px"
@@ -1020,6 +1029,11 @@ const DataTablesHook = (reference: string) => {
   const clearSearch = () => {
     setSearchTerm("");
     setStartDate("");
+    setSelectedArea("");
+    setSelectedRuta("");
+    setSelectedZona("");
+
+    setSelectedSede("");
     setEndDate("");
 
     const currentData = {
@@ -1074,6 +1088,41 @@ const DataTablesHook = (reference: string) => {
     });
   };
 
+    // Función para filtrar por área
+  const filteredByArea = (data: any[], selectedArea: string) => {
+
+    if (!selectedArea) {
+      return data; // Si no se selecciona un área, devuelve los datos originales
+    }
+    return data.filter((item: any) => item?.selectedArea === selectedArea);
+  };
+
+  // Función para filtrar por sede
+  const filteredBySede = (data: any[], selectedSede: string) => {
+    if (!selectedSede) {
+      return data; // Si no se selecciona un área, devuelve los datos originales
+    }
+    return data.filter((item: any) => item?.selectedHeadquarter === selectedSede);
+  };
+
+  // Función para filtrar por ruta
+  const filteredByRuta = (data: any[], selectedRuta: string) => {
+    if (!selectedRuta) {
+      return data; // Si no se selecciona un área, devuelve los datos originales
+    }
+    return data.filter((item: any) => Object.values(item).includes(selectedRuta));
+  };
+
+  // Función para filtrar por zona
+  const filteredByZona = (data: any[], selectedZona: string) => {
+    if (!selectedZona) {
+      return data; // Si no se selecciona un área, devuelve los datos originales
+    }
+    
+    const rutasPorZona = RutaData && RutaData.filter((item: any) => item?.zone === selectedZona);
+    const uidsRutas = rutasPorZona.map((ruta: any) => ruta?.uid);
+    return data.filter((item: any) => Object.values(item).some(value => uidsRutas.includes(value)));   
+  };
 
   // Función combinada
   const handleSearchAndFilter = async (e: any) => {
@@ -1086,12 +1135,29 @@ const DataTablesHook = (reference: string) => {
       value,
       reference
     );
+    //console.log("getDocuments", getDocuments)
     // Filtrar por fecha
     const filteredByDate = filterByDate(filteredBySearch, startDate, endDate);
+
+    //filtrar por area
+    const filterByArea = filteredByArea(filteredByDate, selectedArea);
+
+    //filtrar por sede
+    const filterBySede = filteredBySede(filterByArea, selectedSede);
+
+    //filtrar por ruta
+    const filterByRuta = filteredByRuta(filterBySede, selectedRuta);
+
+    //filtrar por zona
+    const filterByZona = filteredByZona(filterByRuta, selectedZona);
+
+
+
     const currentData = {
       columns,
-      data: filteredByDate,
+      data: filterByZona,
     };
+    
     setDataTable(currentData);
   };
 
@@ -1231,6 +1297,29 @@ const DataTablesHook = (reference: string) => {
     canOpenMainForm();
   }, [employeesData, companyData]);
 
+  useEffect(() => {
+    const fetchData = async () => {      
+    if(userData?.companyId){
+    const fetchDataAreas = await getWorkAreasByCompanyIdQuery(
+          userData?.companyId
+        );
+    const fetchDataSedes = await getHeadquartersByCompanyIdQuery(
+          userData?.companyId
+        );
+    const fetchDataRutas = await getRoutesByCompanyIdQuery(
+          userData?.companyId
+        );
+    const fetchDataZonas = await getZonesByCompanyIdQuery(
+          userData?.companyId
+        );
+    setRutaData(fetchDataRutas.sort((a: any, b: any) => a?.routeName.localeCompare(b?.routeName)))
+    setAreaData(fetchDataAreas.sort((a: any, b: any) => a?.areaName.localeCompare(b?.areaName)))
+    setSedeData(fetchDataSedes.sort((a: any, b: any) => a?.name[0].localeCompare(b?.name[0])))
+    setZonaData(fetchDataZonas.sort((a: any, b: any) => a?.zoneName.localeCompare(b?.zoneName)))
+    }
+    }
+    fetchData()
+    }, [userData?.companyId]);
   // console.log(!isEmptyDataRef);
 
   return {
@@ -1260,6 +1349,18 @@ const DataTablesHook = (reference: string) => {
     handleDeleteItem,
     startDate,
     setStartDate,
+    setSelectedArea,
+    selectedSede, 
+    setSelectedSede,
+    selectedArea,
+    selectedZona, 
+    setSelectedZona,
+    selectedRuta, 
+    setSelectedRuta,
+    AreaData, 
+    SedeData, 
+    RutaData, 
+    ZonaData, 
     endDate,
     setEndDate,
     createdValid,
@@ -1273,7 +1374,7 @@ const DataTablesHook = (reference: string) => {
     statisticsDetail,
     setStatisticsDetail,
     showAlert,
-    isShowQR
+    isShowQR,
   };
 };
 

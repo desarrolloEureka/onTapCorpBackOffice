@@ -51,9 +51,9 @@ const EmployeesMostVisits = () => {
         <Card className="custom-card">
           <Card.Header className="border-bottom-0 pb-4">
             <div>
-              <h5 className="main-content-label mb-2">Empleados con más visitas</h5>
+              <h5 className="main-content-label mb-2">Empleados con más vistas</h5>
               <p className="text-muted fs-12 mb-0">
-                Visualiza las visitas de los empleados más destacados.
+                Visualiza las vistas de los empleados más destacados.
               </p>
             </div>
 

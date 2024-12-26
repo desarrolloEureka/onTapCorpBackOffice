@@ -27,6 +27,7 @@ export interface Coords {
 export type ScheduleRoutes = { [key: string]: string };
 
 export interface RoutesCoords {
+    length: number;
     uid: string;
     geolocations: Coords[];
     zoneName: string;
@@ -44,6 +45,8 @@ export interface CampusCoords {
 }
 
 export interface FixedPointsCoords {
+    uid: string;
+    distance: number;
     lat: number;
     lng: number;
     color: string;

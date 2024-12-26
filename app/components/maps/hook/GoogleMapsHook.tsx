@@ -7,6 +7,7 @@ import {
     getDocsByCompanyIdQuery,
     getEmployeesByCompanyIdQuery,
     getWorkAreasByCompanyIdQuery,
+    getZonesByCompanyIdQuery,
 } from "@/queries/documentsQueries";
 import {
     CampusCoords,
@@ -16,6 +17,7 @@ import {
 } from "@/types/googleMaps";
 import { FormValuesData } from "@/types/user";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
+import _ from "lodash";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 import { db } from "shared/firebase/firebase";
@@ -64,6 +66,25 @@ export const GoogleMapsHook = () => {
 
     const [day, setDay] = useState("");
 
+      const [selectedEmpleado, setSelectedEmpleado] = useState<string>("");
+      const [selectedEmpleadoByserch, setSelectedEmpleadoByserch] = useState<string>("");
+      const [selectedSede, setSelectedSede] = useState<string>("");
+      const [selectedZona, setSelectedZona] = useState<string>("");
+      const [selectedRuta, setSelectedRuta] = useState<string>("");
+      const [selectedPuntoFijo, setSelectedPuntoFijo] = useState<string>("");
+
+      const [EmpleadoData, setEmpleadoData] = useState<any>();
+      const [SedeData, setSedeData] = useState<any>();
+      const [ZonaData, setZonaData] = useState<any>();
+      const [RutaData, setRutaData] = useState<any>();
+      const [PuntoFijoData, setPuntoFijoData] = useState<any>();
+
+      const [zoneCoordinatesData, setZoneCoordinatesData] = useState<Coords[][]>();
+      const [officeLocationsData, setOfficeLocationsData] = useState<any>();
+      const [routeCoordinatesData, setRouteCoordinatesData] = useState<RoutesCoords[]>();
+      const [fixedPointsData, setFixedPointsData] = useState<FixedPointsCoords[]>([]);
+      const [employeeLocationsData, setEmployeeLocationsData] = useState<any>();
+
     // Define las opciones para el mapa
     const mapContainerStyle = {
         width: "100%",
@@ -101,7 +122,6 @@ export const GoogleMapsHook = () => {
 
     const getEmployees = useCallback(async () => {
         if (!companyData) return;
-
         try {
             // Ejecutar todas las queries en paralelo para mejorar rendimiento
             const [employees, workAreas, routes, campus] = await Promise.all([
@@ -223,8 +243,8 @@ export const GoogleMapsHook = () => {
                                   return dataWithGeolocation;
                               })
                             : [];
-
-                    setEmployeeLocations(dataUpdated);
+                            setEmployeeLocations(dataUpdated)
+                            setEmployeeLocationsData(dataUpdated);
                 },
             );
 
@@ -258,7 +278,9 @@ export const GoogleMapsHook = () => {
                             };
                         },
                     );
-                    routesFound && setRouteCoordinates(routesLocations);
+                    
+                    routesFound && (setRouteCoordinates(routesLocations),
+                        setRouteCoordinatesData(routesLocations));
                 },
             );
 
@@ -292,7 +314,9 @@ export const GoogleMapsHook = () => {
                             };
                         },
                     );
-                    campusFound && setOfficeLocations(campusLocations);
+                    
+                    campusFound && (setOfficeLocations(campusLocations),
+                        setOfficeLocationsData(campusLocations));
                 },
             );
 
@@ -308,21 +332,22 @@ export const GoogleMapsHook = () => {
                 (zonesFound: any) => {
                     const zonesLocations: Coords[][] = zonesFound.map(
                         (zone: any) => {
-                            const { geolocations } = zone;
+                            const { geolocations, uid } = zone;
                             const zoneLocations = geolocations.map(
                                 (point: any) => {
                                     return point.coords;
                                 },
                             );
-                            return zoneLocations;
+                            return [uid, ...zoneLocations];
                         },
                     );
                     zonesFound &&
-                        (setZoneCoordinates(zonesLocations),
+                        (setZoneCoordinatesData(zonesLocations),
+                        setZoneCoordinates(zonesLocations),
                         setDataZones(zonesFound));
                 },
             );
-
+ 
             return () => unsubscribe();
         }
     }, [companyData]);
@@ -338,10 +363,11 @@ export const GoogleMapsHook = () => {
                 if (!querySnapshot.empty) {
                     const fixedPointsCoordsFound: FixedPointsCoords[] =
                         querySnapshot.docs.map((doc) => {
-                            const { directions, color, name } = doc.data();
-                            return { ...directions[0], color, name };
+                            const { directions, color, name, uid } = doc.data();
+                            return { ...directions[0], color, name, uid };
                         });
-                    setFixedPoints(fixedPointsCoordsFound);
+                        setFixedPoints(fixedPointsCoordsFound)
+                        setFixedPointsData(fixedPointsCoordsFound);
                 }
             });
             return () => unsubscribe();
@@ -362,10 +388,6 @@ export const GoogleMapsHook = () => {
             getFixedPoints();
         };
     }, [getCampus, getEmployees, getFixedPoints, getRoutes, getZones]);
-
-    // useEffect(() => {
-
-    // }, [companyData]);
 
     useEffect(() => {
         if (companyData) {
@@ -388,6 +410,161 @@ export const GoogleMapsHook = () => {
         // Establece la ruta correspondiente al día actual
         setDay(routes[today]);
     }, []);
+
+      useEffect(() => {
+        const fetchData = async () => {      
+        if(companyData?.uid){
+        const fetchDataEmployees = await getEmployeesByCompanyIdQuery(companyData?.uid);
+        const fetchDataSedes = await getDocsByCompanyIdQuery(companyData.uid, "campus")
+        const fetchDataRutas = await getDocsByCompanyIdQuery(companyData.uid, "routes")
+        const fetchDataZonas = await getZonesByCompanyIdQuery(companyData.uid);
+        const fetchDataPuntosFijos = await getDocsByCompanyIdQuery(companyData.uid, "fixedPoints")
+        setEmpleadoData(fetchDataEmployees.sort((a: any, b: any) => a?.firstName[0].localeCompare(b?.firstName[0])))
+        setRutaData(fetchDataRutas.sort((a: any, b: any) => a?.routeName.localeCompare(b?.routeName)))
+        setPuntoFijoData(fetchDataPuntosFijos.sort((a: any, b: any) => a?.name.localeCompare(b?.name)))
+        setSedeData(fetchDataSedes.sort((a: any, b: any) => a?.name[0].localeCompare(b?.name[0])))
+        setZonaData(fetchDataZonas.sort((a: any, b: any) => a?.zoneName.localeCompare(b?.zoneName)))
+        }
+        }
+        fetchData()
+        }, [companyData?.uid]);
+            useEffect(() => {
+            renderZones()
+            }, [selectedZona]);
+
+            useEffect(() => {
+                renderRoutes()
+            }, [selectedRuta]);
+
+            useEffect(() => {
+                renderFixedPoints()
+            }, [selectedPuntoFijo]);
+
+            useEffect(() => {
+                renderCampuses()
+            }, [selectedSede]);
+
+            useEffect(() => {
+                const filteredEmployees = filterEmployeesBySearch(employeeLocationsData, selectedEmpleadoByserch);
+                const filteredSelect = renderEmployees(filteredEmployees);
+                setEmployeeLocations(filteredSelect);
+            }, [selectedEmpleado, employeeLocationsData, selectedEmpleadoByserch]);
+            
+
+        // Filtrar empleados por nombre, apellido o cédula
+        const filterEmployeesBySearch = (data: any[], searchValue: string) => {
+            if (!searchValue) {
+                return data; 
+            }
+
+            return data.filter((item: any) => {
+                const searchLower = searchValue.toLowerCase();
+
+                const fullName = `${item.firstName || ""} ${item.lastName || ""}`.toLowerCase();
+
+                return (
+                    fullName.includes(searchLower) || // Nombre completo
+                    item.documentNumber?.toString().toLowerCase().includes(searchLower) // Documento
+                );
+            });
+        };
+
+    const renderZones = ( ) => {
+        
+        console.log("coordinatesZones", selectedZona)
+        if (selectedZona === "") {
+            setZoneCoordinates(zoneCoordinatesData)
+
+          } else {
+            const filteredZones = zoneCoordinatesData && zoneCoordinatesData.filter((item: any) => {
+                return item[0] === selectedZona;
+            });
+              setZoneCoordinates(filteredZones)
+          }
+    };
+    
+    
+    const renderRoutes = () => {
+        if (selectedRuta === "") {
+            setRouteCoordinates(routeCoordinatesData);
+            return;
+        }
+    
+        const filteredRoutes = routeCoordinatesData?.filter((item: any) => {
+            return Object.values(item).includes(selectedRuta);
+        });
+    
+        setRouteCoordinates(filteredRoutes);
+    };
+    
+    const renderCampuses = () => {
+        if (selectedSede === "") {
+            setOfficeLocations(officeLocationsData);
+            return;
+        }
+    
+        const filteredCampuses = officeLocationsData?.filter((item: any) => {
+            return item.uid === selectedSede;
+        });
+        setOfficeLocations(filteredCampuses);
+    };
+    
+    const renderEmployees = (data:any[]) => {
+        if (selectedEmpleado === "") {
+            return data;
+        }
+    
+        const filteredEmployees = data?.filter((item: any) => {
+            return item.uid === selectedEmpleado;
+        });
+    
+        return filteredEmployees;
+    };
+    
+    const renderFixedPoints = () => {
+        if (selectedPuntoFijo === "") {
+            setFixedPoints(fixedPointsData);
+            return;
+        }
+    
+        const filteredFixedPoints = fixedPointsData?.filter((item: FixedPointsCoords) => {
+            return item.uid === selectedPuntoFijo;
+        });
+        
+        setFixedPoints(filteredFixedPoints);
+    }
+
+    const renderSearchEmployees = () => {
+        if (!employeeLocationsData || !selectedEmpleadoByserch) {
+            // Si no hay búsqueda, restaura todos los datos originales
+            setEmployeeLocations(employeeLocationsData);
+            setZoneCoordinates(zoneCoordinatesData);
+            setRouteCoordinates(routeCoordinatesData);
+            setOfficeLocations(officeLocationsData);
+            setFixedPoints(fixedPointsData);
+            return;
+        }
+    
+        // Filtrar empleados por nombre, apellido, cédula
+        const filteredEmployees = filterEmployeesBySearch(employeeLocationsData, selectedEmpleadoByserch);
+        setEmployeeLocations(filteredEmployees);
+    
+        const filteredEmployeeUIDs = filteredEmployees.map((employee) => employee.uid);
+    
+        const filteredZones = zoneCoordinatesData?.filter((zone: any) => filteredEmployeeUIDs.includes(zone[0]));
+        setZoneCoordinates(filteredZones);
+    
+        const filteredRoutes = routeCoordinatesData?.filter((route: any) => filteredEmployeeUIDs.includes(route.uid));
+        setRouteCoordinates(filteredRoutes);
+    
+        const filteredCampuses = officeLocationsData?.filter((campus: any) => filteredEmployeeUIDs.includes(campus.uid));
+        setOfficeLocations(filteredCampuses);
+    
+        const filteredFixedPoints = fixedPointsData?.filter((point: any) => filteredEmployeeUIDs.includes(point.uid));
+        setFixedPoints(filteredFixedPoints);
+    };
+    
+    
 
     return {
         mapContainerStyle,
@@ -419,5 +596,19 @@ export const GoogleMapsHook = () => {
         setDataEmployee,
         handleChangeDay,
         day,
+        setSelectedPuntoFijo,
+        setSelectedRuta,
+        setSelectedZona,
+        setSelectedSede,
+        setSelectedEmpleado,
+        setSelectedEmpleadoByserch,
+        EmpleadoData,
+        SedeData,
+        ZonaData,
+        RutaData,
+        PuntoFijoData,
+        selectedEmpleado,
+        renderSearchEmployees,
+        selectedEmpleadoByserch
     };
 };

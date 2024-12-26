@@ -243,3 +243,16 @@ export interface showPasswordParams {
     show: boolean;
     setShow: (e: boolean) => void;
 }
+
+export type DataEmployees = {
+    firstName: string[];
+    lastName: string[];
+    documentNumber: string[];
+    phone: string; // Sigue siendo string si no es un arreglo
+};
+
+// Definición del tipo ErrorData
+export type ErrorData = {
+    success: boolean;
+    code: string;
+};

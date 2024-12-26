@@ -21,6 +21,18 @@ export interface UploadDataModalProps {
   setEndDate: (value: any) => void;
   clearSearch: () => void;
   isEmptyDataRef: boolean;
+  setSelectedArea: (e: any) => void;
+  selectedArea: string;
+  selectedSede:string;
+  setSelectedSede: (e: any) => void;
+  selectedZona: string; 
+  setSelectedZona: (e: any) => void;
+  selectedRuta: string 
+  setSelectedRuta: (e: any) => void;
+  AreaData: any, 
+  SedeData: any, 
+  RutaData: any, 
+  ZonaData: any, 
 }
 export interface UploadDataButtonModalProps {
   onUploadDataModalPdf?: () => void;
