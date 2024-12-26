@@ -10,7 +10,7 @@ const UrlClicksByEmployee = () => {
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedEmployee, setSelectedEmployee] = useState<string>(""); // Estado para el empleado seleccionado
+  const [selectedEmployee, setSelectedEmployee] = useState(""); // Estado para el empleado seleccionado
   const itemsPerPage = 30;
 
   // Filtrar datos por término de búsqueda solo si searchTerm no está vacío
@@ -49,7 +49,6 @@ const UrlClicksByEmployee = () => {
       ? Math.max(...clicksData.map((data) => data.clickCount), 100)
       : 100;
 
-      
   useEffect(() => {
     if (employees.length > 0) {
       setSelectedEmployee(employees[0]?.uid || "");
@@ -109,10 +108,9 @@ const UrlClicksByEmployee = () => {
           >
             {loading ? (
               <p>Cargando datos...</p>
-            ) : // : error ? (
-            //   <p>Error: {error?.message}</p>
-            // )
-            currentData.length > 0 ? (
+            ) : error ? (
+              <p>Error: {error?.message}</p>
+            ) : currentData.length > 0 ? (
               currentData.map((data) => (
                 <div
                   key={`${data.urlLink}-${data.employeeId}`}
