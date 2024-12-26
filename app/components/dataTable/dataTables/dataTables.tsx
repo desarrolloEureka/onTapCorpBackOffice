@@ -11,7 +11,7 @@ import { MouseEvent, useMemo } from "react";
 import { Button, Form } from "react-bootstrap";
 import DataTable, { createTheme } from "react-data-table-component";
 import "react-data-table-component-extensions/dist/index.css";
-import { TfiClose, TfiExport } from "react-icons/tfi";
+import { TfiClose, TfiExport, TfiImport } from "react-icons/tfi";
 import { VscAdd } from "react-icons/vsc";
 import { FiFilter } from "react-icons/fi";
 import employeesMostVisits from "@/components/employeesMostVisits/employeesMostVisits";
@@ -23,9 +23,6 @@ const DataTableExtensions: any = dynamic(
   () => import("react-data-table-component-extensions"),
   { ssr: false }
 );
-
-
-
 
 createTheme("solarized", "dark");
 
@@ -274,10 +271,61 @@ const Export = ({ onExport }: ExportProps) => (
   </Button>
 );
 
+//componente para el filtro de empleados por Area por Sede por Zona por Ruta
+const BranchFilter = ({
+  names,
+  titulo,
+  branches = [],
+  setSelectedBranch,
+}: {
+  names: string
+  titulo: string;
+  branches: any[];
+  setSelectedBranch: (branch: string) => void;
+}) => {
+  //console.log("branches", branches);
+   return ( 
+
+  <Form.Group controlId="branchFilter">
+    <Form.Label style={{ fontSize: "15px" }} className="filter-label">Filtrar por {titulo}</Form.Label>
+    <Form.Control
+    style={{
+      width: "170px"
+    }}
+
+      as="select"
+      onChange={(e) => setSelectedBranch(e.target.value)}
+      defaultValue=""
+    >
+      <option value="">
+        {branches.length > 0
+          ? `Selecciona una ${titulo}`
+          : `No hay ${titulo?.toLocaleLowerCase()}s disponibles`}
+      </option>
+      {branches.map((branch) => {
+        const displayValue =
+          names === "name"
+            ? branch?.[names]?.[0]
+            : branch?.[names];
+
+        return (
+          <option
+            key={branch?.uid || branch}
+            value={branch?.uid}
+          >
+            {displayValue}
+          </option>
+        );
+      })}
+    </Form.Control>
+
+  </Form.Group>
+)}
+
 const UploadDataCsvModal = ({
   onUploadDataModalCsv,
 }: UploadDataButtonModalProps) => (
-  <Button onClick={onUploadDataModalCsv}>Subir Csv</Button>
+  <Button onClick={onUploadDataModalCsv}><TfiImport size={18} className="" /></Button>
 );
 
 const MainFormModal = ({ onMainFormModal }: UploadDataButtonModalProps) => (
@@ -332,33 +380,6 @@ const EndDayInput = ({
   </Form.Group>
 );
 
-//componente para el filtro de empleados por campus
-const BranchFilter = ({
-  branches = [],
-  setSelectedBranch,
-}: {
-  branches: string[];
-  setSelectedBranch: (branch: string) => void;
-}) => (
-  <Form.Group controlId="branchFilter">
-    <Form.Label className="filter-label">Filtrar por Sede</Form.Label>
-    <Form.Control
-      as="select"
-      onChange={(e) => setSelectedBranch(e.target.value)}
-      defaultValue=""
-    >
-      <option value="">
-        {branches.length > 0 ? "Selecciona una Sede" : "No hay sedes disponibles"}
-      </option>
-      {branches.map((branch) => (
-        <option key={branch} value={branch}>
-          {branch}
-        </option>
-      ))}
-    </Form.Control>
-  </Form.Group>
-);
-
 
 const Filter = ({
   handleSearchAndFilter,
@@ -390,10 +411,7 @@ const NoDataCard = ({ emptyRef, reference }: NoDataCardProps) => (
 );
 
 const refToShowButtonCsv = [
-  "professionals",
-  "patients",
-  "functionary",
-  "diagnostician",
+  "employees",
 ];
 
 export const ExportCSV = ({
@@ -414,7 +432,19 @@ export const ExportCSV = ({
   startDate,
   setStartDate,
   endDate,
+  setSelectedArea,
+  selectedArea,
+  selectedSede, 
+  setSelectedSede,
   setEndDate,
+  selectedZona, 
+  setSelectedZona,
+  selectedRuta, 
+  setSelectedRuta,
+  AreaData, 
+  SedeData, 
+  RutaData, 
+  ZonaData, 
 }: UploadDataModalProps) => {
   const actionsMemo = useMemo(() => {
     return (
@@ -431,7 +461,8 @@ export const ExportCSV = ({
             aria-label="search"
             onChange={handleSearchAndFilter}
           />
-          {(searchTerm || endDate) && (
+          
+          {(searchTerm || endDate || selectedArea || selectedSede || selectedZona || selectedRuta) && (
             <Button
               className="tw-absolute tw-right-0 tw-bottom-0 text-gray-500 hover:text-gray-700"
               onClick={clearSearch}
@@ -449,6 +480,30 @@ export const ExportCSV = ({
             "statisticalReports",
           ].includes(reference) && (
             <>
+              <BranchFilter
+                names={"areaName"}
+                titulo={"Area"}
+                setSelectedBranch={setSelectedArea}
+                branches={AreaData}
+              />
+              <BranchFilter
+                names={"name"}             
+                titulo={"Sede"}
+                setSelectedBranch={setSelectedSede}
+                branches={SedeData}
+              />
+              <BranchFilter
+                names={"zoneName"}
+                titulo={"Zona"}
+                setSelectedBranch={setSelectedZona}
+                branches={ZonaData}
+              />
+              <BranchFilter
+                names={"routeName"}
+                titulo={"Ruta"}
+                setSelectedBranch={setSelectedRuta}
+                branches={RutaData}
+              />
               <StartDayInput
                 startDate={startDate}
                 setStartDate={setStartDate}

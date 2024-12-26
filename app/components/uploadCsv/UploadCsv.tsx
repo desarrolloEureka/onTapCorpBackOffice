@@ -92,7 +92,7 @@ export default function CSVReader({
                     </div>
                   </>
                 ) : (
-                  'Drop CSV file here or click to upload'
+                  'Haz click para subir tu archivo Csv'
                 )}
               </div>
               {errorDataUpload?.map((value) => {

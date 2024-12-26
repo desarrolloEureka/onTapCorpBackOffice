@@ -574,7 +574,6 @@ export const getCompaniesByUid = async (uid: string) => {
     const companies = querySnapshot.docs.map((doc) => ({
       ...doc.data(),
     }));
-
     return companies;
   } catch (error) {
     console.error("Error fetching companies by UID", error);
