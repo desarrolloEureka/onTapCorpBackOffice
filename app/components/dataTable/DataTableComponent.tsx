@@ -76,7 +76,19 @@ const DataTableComponent = ({
     setStatisticsDetail,
     showAlert,
     modeTheme,
-    isShowQR
+    isShowQR,
+    setSelectedArea,
+    selectedArea,
+    selectedSede, 
+    setSelectedSede,
+    selectedZona, 
+    setSelectedZona,
+    selectedRuta, 
+    setSelectedRuta,
+    AreaData, 
+    SedeData, 
+    RutaData, 
+    ZonaData, 
   } = DataTablesHook(reference);
 
   const theme = createTheme({
@@ -166,7 +178,18 @@ const DataTableComponent = ({
                   endDate={endDate}
                   setEndDate={setEndDate}
                   clearSearch={clearSearch}
-                  
+                  setSelectedArea={setSelectedArea}
+                  selectedArea={selectedArea}
+                  selectedSede={selectedSede}
+                  setSelectedSede={setSelectedSede}
+                  selectedZona={selectedZona} 
+                  setSelectedZona={setSelectedZona}
+                  selectedRuta={selectedRuta} 
+                  setSelectedRuta={setSelectedRuta}
+                  AreaData={AreaData} 
+                  SedeData={SedeData} 
+                  RutaData={RutaData} 
+                  ZonaData={ZonaData} 
                 />
               </div>
             </Card.Body>

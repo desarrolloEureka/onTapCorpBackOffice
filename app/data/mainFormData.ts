@@ -11,6 +11,7 @@ import {
     DataProfessionalObject,
     DataSpecialtyObject,
     DataWorkAreasObject,
+    DataEmployees
 } from "@/types/mainForm";
 
 export const dataMainFormObject = {
@@ -250,3 +251,11 @@ export const dataDiagnosticianObject = {
     isActive: false,
     isDeleted: false,
 } as DataDiagnosticianObject;
+
+
+export const dataEmployees = {
+    firstName: [""], // Arreglo inicializado con un elemento vacío
+    lastName: [""],
+    documentNumber: [""],
+    phone: "", // Este sigue siendo string
+} as DataEmployees;

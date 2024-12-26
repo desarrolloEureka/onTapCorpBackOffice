@@ -631,7 +631,7 @@ const GoogleMapComponent2 = ({
                             {zoneCoordinates?.map(
                                 (zone: any, index: number) => (
                                     <Polygon
-                                        paths={zone}
+                                        paths={zone?.slice(1)}
                                         key={index}
                                         fillColor="#FB9232"
                                         fillOpacity={0.5}

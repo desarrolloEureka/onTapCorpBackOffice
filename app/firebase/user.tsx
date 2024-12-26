@@ -216,7 +216,7 @@ export const SendDataMetrics = async (userId: string, data: any) => {
 };
 
 export const SendDataUrlClick = async (documentId: string, data: any, urlName: string, uid:string, collectionRef: string) => {
-    console.log("dataCompany",documentId, data, urlName,  uid, collectionRef)
+    //console.log("dataCompany",documentId, data, urlName,  uid, collectionRef)
     const urlDocRef = doc(db, collectionRef, documentId);
     const docSnap = await getDoc(urlDocRef);
     if (!docSnap.exists()) {

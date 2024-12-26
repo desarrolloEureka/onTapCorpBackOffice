@@ -1,8 +1,6 @@
 "use client";
 import {
-    dataFunctionaryObject,
-    dataPatientObject,
-    dataProfessionalObject
+    dataEmployees
 } from "@/data/mainFormData";
 import {
     getDocumentReference,
@@ -51,76 +49,15 @@ const UploadDocumentHook = ({
         let newData = {};
 
         results.data.forEach((val: string, key: number) => {
-            if (reference === "functionary") {
-                const currentDataObject = { ...dataFunctionaryObject };
-
-                currentDataObject.uid = documentRef.id;
-                currentDataObject.idType = val[1];
-                currentDataObject.id = val[2];
-                currentDataObject.name = val[3];
-                currentDataObject.lastName = val[4];
-                currentDataObject.phone = val[5];
-                currentDataObject.email = val[6];
-                currentDataObject.password = val[7];
-                currentDataObject.confirmPassword = val[8];
-                // currentDataObject.rol = val[0];
-                currentDataObject.area = val[9];
-                // currentDataObject.isActive = val[11];
-                // currentDataObject.urlPhoto = urlName;
-
+            if (reference === "employees") {
+                const currentDataObject = { ...dataEmployees };
+                currentDataObject.firstName = Array.isArray(val[1]) ? val[1][0] : val[1];
+                currentDataObject.lastName = Array.isArray(val[2]) ? val[2][0] : val[2];
+                currentDataObject.documentNumber = Array.isArray(val[3]) ? val[3][0] : val[3];
+                currentDataObject.phone = val[4]; 
+                //currentDataObject.ImageProfile = "";
                 newData = { ...currentDataObject };
-            }
 
-            if (reference === "patients") {
-                const currentDataObject = { ...dataPatientObject };
-
-                currentDataObject.uid = documentRef.id;
-                currentDataObject.idType = val[0];
-                currentDataObject.id = val[1];
-                currentDataObject.name = val[2];
-                currentDataObject.lastName = val[3];
-                currentDataObject.birthDate = val[4];
-                currentDataObject.age = val[5];
-                currentDataObject.phone = val[6];
-                currentDataObject.phone2 = val[7];
-                currentDataObject.address = val[8];
-                currentDataObject.country = val[9];
-                currentDataObject.state = val[10];
-                currentDataObject.city = val[11];
-                currentDataObject.email = val[12];
-                currentDataObject.password = val[13];
-                currentDataObject.confirmPassword = val[14];
-                currentDataObject.isActive = val[15] === "true" ? true : false;
-                currentDataObject.rol = val[16];
-
-                newData = { ...currentDataObject };
-            }
-
-            if (reference === "professionals") {
-                const currentDataObject = { ...dataProfessionalObject };
-
-                currentDataObject.uid = documentRef.id;
-                currentDataObject.idType = val[0];
-                currentDataObject.id = val[1];
-                currentDataObject.name = val[2];
-                currentDataObject.lastName = val[3];
-                currentDataObject.phone = val[4];
-                currentDataObject.phone2 = val[5];
-                currentDataObject.address = val[6];
-                currentDataObject.country = val[7];
-                currentDataObject.state = val[8];
-                currentDataObject.city = val[9];
-                currentDataObject.email = val[10];
-                currentDataObject.password = val[11];
-                currentDataObject.confirmPassword = val[12];
-                // currentDataObject.cardNumber = val[13];
-                // currentDataObject.medicalRecord = val[14];
-                currentDataObject.specialty = val[15];
-                currentDataObject.contract = val[16];
-                currentDataObject.isActive = val[17] === "true" ? true : false;
-                currentDataObject.rol = val[18];
-
-                newData = { ...currentDataObject };
             }
         });
 

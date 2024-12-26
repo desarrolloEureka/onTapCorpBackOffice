@@ -9,6 +9,8 @@ import Profile from "../profile/page";
 import TempladeContent from "../views/home/HomeContent";
 import HeaderContent from "./components/headerContent/HeaderContent";
 import EmployeesMostVisits from "@/components/employeesMostVisits/employeesMostVisits";
+import UrlClicksByEmployee from "@/components/clicksUrls/clicksUrl";
+
 
 const Header = ({ hamburger }: { hamburger?: boolean }) => {
   const [theme, setTheme] = useState<string>("light");
@@ -747,6 +749,7 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
             item="Dashboard"
             activeItem="Clicks"
           />
+          <UrlClicksByEmployee />
 
         </Tab.Pane>
       </Tab.Content>
