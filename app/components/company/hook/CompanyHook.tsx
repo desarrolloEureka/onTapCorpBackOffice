@@ -138,7 +138,6 @@ const CompanyHook = () => {
 
     const validateFields = () => {    
         const newErrors: { [key: string]: string } = {};
-        console.log("data.phone:", data.phone); 
         if (!data.tradename[0]?.trim()) {
             newErrors.tradename = "El nombre es obligatorio";
         }
@@ -150,7 +149,6 @@ const CompanyHook = () => {
         }
 
         const phoneValue = Array.isArray(data.phone) && data.phone[0]?.toString().trim() || "";
-        console.log("phoneValue (validación):", phoneValue); // Depuración
 
         // Validación del teléfono
         if (!/^\d{10}$/.test(phoneValue)) {
@@ -171,7 +169,6 @@ const CompanyHook = () => {
 
     const handleSendForm = async (e: any) => {
         e.preventDefault();
-        console.log("handleSendForm ejecutado"); 
         // Validar los campos antes de continuar
         if (!validateFields()) return;
         confirmSaveAlert();
@@ -186,6 +183,8 @@ const CompanyHook = () => {
             setFileName(null);
         }
     };
+
+    
 
     const handleChange = (value: string, name: string, isChecked?: boolean) => {
         
