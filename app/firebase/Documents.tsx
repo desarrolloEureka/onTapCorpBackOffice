@@ -760,6 +760,7 @@ export const getAllCompanies = async () => {
 
 export const saveEmployee = async (dataSave: any) => {
   try {
+    
     const docRef = doc(db, "users", dataSave.uid);
     const dataWithId = {
       ...dataSave,
@@ -779,7 +780,7 @@ export const saveEmployee = async (dataSave: any) => {
         },
       ],
     };
-
+    console.log("dataWithId", dataWithId, docRef)
     // Guarda el documento en Firestore
     await setDoc(docRef, dataWithId);
 

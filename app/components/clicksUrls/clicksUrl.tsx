@@ -8,32 +8,59 @@ const UrlClicksByEmployee = () => {
   const { clicksData, loading, error, employees } = useClicksUrl(
     userData?.companyId
   );
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); // Para búsqueda por nombre de URL
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedEmployee, setSelectedEmployee] = useState(""); // Estado para el empleado seleccionado
+  const [selectedEmployee, setSelectedEmployee] = useState(""); // Para el empleado seleccionado
+  const [searchCedula, setSearchCedula] = useState(""); // Para búsqueda por cédula
+  const [searchEmail, setSearchEmail] = useState(""); // Para búsqueda por correo electrónico
   const itemsPerPage = 30;
 
-  // Filtrar datos por término de búsqueda solo si searchTerm no está vacío
-  const filteredData = searchTerm
-    ? clicksData.filter((data) =>
-        data.urlName.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : clicksData;
+  useEffect(() => {
+    if (employees.length > 0) {
+      setSelectedEmployee(employees[0].uid); // Selecciona al primer empleado por defecto
+    }
+  }, [employees]);
 
-  // Filtrar los datos según el empleado seleccionado
-  const filteredByEmployee = selectedEmployee
-    ? filteredData
-        .filter((data) => data.employeeId === selectedEmployee)
-        .sort((a: any, b: any) => b?.clickCount - a?.clickCount)
-    : filteredData.sort((a: any, b: any) => b?.clickCount - a?.clickCount);
+  // Filtrar los datos según el término de búsqueda y el empleado seleccionado
+  const filteredData = clicksData.filter((data) => {
+    const matchesSearchTerm =
+      searchTerm ? data.urlName.toLowerCase().includes(searchTerm.toLowerCase()) : true;
+
+    const matchesEmployee =
+      selectedEmployee && selectedEmployee !== "all"
+        ? data.employeeId === selectedEmployee
+        : true;
+
+    const matchesCedula =
+      searchCedula
+        ? employees.find(
+            (employee) => employee.documentNumber.includes(searchCedula) && employee.uid === data.employeeId
+          )
+        : true;
+
+        const matchesEmail =
+        searchEmail
+          ? employees.find(
+              (employee) =>
+                typeof employee.email === "string" && // Verifica que el email sea una cadena
+                employee.email.includes(searchEmail) &&
+                employee.uid === data.employeeId
+            )
+          : true;
+      
+
+    return matchesSearchTerm && matchesEmployee && matchesCedula && matchesEmail;
+  });
+
+  // Ordenar los datos filtrados por clics descendente
+  const sortedData = filteredData.sort(
+    (a, b) => b?.clickCount - a?.clickCount
+  );
 
   // Paginación
-  const totalPages = Math.ceil(filteredByEmployee.length / itemsPerPage);
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentData = filteredByEmployee.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  const currentData = sortedData.slice(startIndex, startIndex + itemsPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage((prevPage) => prevPage + 1);
@@ -43,17 +70,11 @@ const UrlClicksByEmployee = () => {
     if (currentPage > 1) setCurrentPage((prevPage) => prevPage - 1);
   };
 
-  // Calcular el máximo de clics solo cuando hay datos disponibles
+  // Calcular el máximo de clics
   const maxClicks =
     clicksData.length > 0
       ? Math.max(...clicksData.map((data) => data.clickCount), 100)
       : 100;
-
-  useEffect(() => {
-    if (employees.length > 0) {
-      setSelectedEmployee(employees[0]?.uid || "");
-    }
-  }, [employees]);
 
   return (
     <Row className="row-sm">
@@ -69,13 +90,13 @@ const UrlClicksByEmployee = () => {
               </p>
             </div>
             <div className="d-flex ms-auto gap-2 align-items-center">
-              {/* Formulario para búsqueda por nombre de URL */}
+              {/* Formulario para búsqueda general */}
               <Form.Group controlId="search">
                 <Form.Control
                   type="text"
                   placeholder="Buscar por nombre de URL"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e?.target?.value)}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="form-control-sm"
                 />
               </Form.Group>
@@ -84,16 +105,39 @@ const UrlClicksByEmployee = () => {
               <Form.Group controlId="selectEmployee">
                 <Form.Control
                   as="select"
-                  onChange={(e) => setSelectedEmployee(e?.target?.value)} // Actualizar estado
+                  value={selectedEmployee}
+                  onChange={(e) => setSelectedEmployee(e.target.value)}
                   className="form-control-sm"
                 >
+                  <option value="all">...</option>
                   {employees.map((employee) => (
-                    <option key={employee.uid} value={employee?.uid}>
-                      {employee?.fullName}{" "}
-                      {/* Mostrar el nombre completo del empleado */}
+                    <option key={employee.uid} value={employee.uid}>
+                      {employee.fullName}
                     </option>
                   ))}
                 </Form.Control>
+              </Form.Group>
+
+              {/* Formulario para búsqueda por Cédula */}
+              <Form.Group controlId="searchCedula">
+                <Form.Control
+                  type="text"
+                  placeholder="Buscar por cédula"
+                  value={searchCedula}
+                  onChange={(e) => setSearchCedula(e.target.value)}
+                  className="form-control-sm"
+                />
+              </Form.Group>
+
+              {/* Formulario para búsqueda por correo electrónico */}
+              <Form.Group controlId="searchEmail">
+                <Form.Control
+                  type="email"
+                  placeholder="Buscar por correo electrónico"
+                  value={searchEmail}
+                  onChange={(e) => setSearchEmail(e.target.value)}
+                  className="form-control-sm"
+                />
               </Form.Group>
             </div>
           </Card.Header>
@@ -109,7 +153,7 @@ const UrlClicksByEmployee = () => {
             {loading ? (
               <p>Cargando datos...</p>
             ) : error ? (
-              <p>Error: {error?.message}</p>
+              <p>Error: {error.message}</p>
             ) : currentData.length > 0 ? (
               currentData.map((data) => (
                 <div
@@ -124,7 +168,7 @@ const UrlClicksByEmployee = () => {
                   </h5>
                   <ProgressBar
                     variant="warning"
-                    now={(data.clickCount / maxClicks) * 100} // Normalización según el máximo
+                    now={(data.clickCount / maxClicks) * 100}
                     label={`${data.clickCount}`}
                     className="progress-bar-striped progress-bar-animated"
                   />

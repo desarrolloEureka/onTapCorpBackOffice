@@ -44,7 +44,7 @@ export const dataMainFormObject = {
     ext: "",
     webSite: "",
     sector: "",
-    geolocation: { lat: 4.709870567688981, lng: -74.07280277961777 }, //4.709870567688981, -74.07280277961777 Bogotá
+    geolocation: { lat: 4709870567688981, lng: -7407280277961777 }, //4709870567688981, -7407280277961777 Bogotá
     address: "",
     country: "",
     state: "",
@@ -226,7 +226,7 @@ export const dataCompanyObject = {
     webSite: "",
     sector: "",
     address: "",
-    geolocation: { lat: 4.709870567688981, lng: -74.07280277961777 }, //4.709870567688981, -74.07280277961777 Bogotá
+    geolocation: { lat: 4709870567688981, lng: -7407280277961777 }, //4709870567688981, -7407280277961777 Bogotá
     country: "",
     state: "",
     city: "",
@@ -254,8 +254,35 @@ export const dataDiagnosticianObject = {
 
 
 export const dataEmployees = {
-    firstName: [""], // Arreglo inicializado con un elemento vacío
+    idCompany: "",
+    uid: "",
+    rolId: "",
+    preview: "",
+    switch_activateCard: true,
+    templateData: [{id: "", checked: true}],
+    firstName: [""],
     lastName: [""],
+    documentType: [""],
     documentNumber: [""],
-    phone: "", // Este sigue siendo string
+    isActive: false,
+    email: "",
+    phone: "", 
+    views: 0,
+    ImageProfile: "",
+    fridayRoute: "",
+    isGPSActive: false,
+    mondayRoute: "",
+    routeApplicable: "",
+    saturdayRoute: "",
+                selectedArea: "",
+                selectedHeadquarter: "",
+                sundayRoute : "",
+                thursdayRoute : "",
+                tuesdayRoute : "",
+                wednesdayRoute : "",
+                dateOfBirth : ["", false],
+                position : ["", false],
+                phones : [],
+                emails : [],
+                additional : [],
 } as DataEmployees;

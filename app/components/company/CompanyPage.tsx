@@ -361,16 +361,12 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                 />
                               </div>
                               <CustomTextField
-                                required
-                                checked={allChecked}
-                                data={[item[1], item[2]]}
-                                onChange={(value: string, name: string, checked: boolean) => {
-                                  
-                                const numericValue = value.replace(/\D/g, '');
-
-                                if (numericValue.length === 10) {
-                                  handleChange(value, name, checked);
-                                }
+                              required
+                              checked={allChecked}
+                              data={[item[1], item[2]]}
+                              onChange={(value: string, name: string, checked: boolean) => {
+                                const numericValue = value.replace(/\D/g, ''); // Filtrar solo números
+                                handleChange(numericValue, name, checked);
                               }}
                               name={item[0]}
                               type="text"
@@ -390,8 +386,9 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                 maxLength: 10,
                                 pattern: '[0-9]*', 
                               }}
+                              error={!!errors.phone} 
+                              helperText={errors.phone || ''} 
                             />
-
                             </div>
                             <CustomTextField
                               data={item[4]}
