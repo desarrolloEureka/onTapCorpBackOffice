@@ -780,7 +780,8 @@ export const saveEmployee = async (dataSave: any) => {
         },
       ],
     };
-    console.log("dataWithId", dataWithId, docRef)
+
+    
     // Guarda el documento en Firestore
     await setDoc(docRef, dataWithId);
 
