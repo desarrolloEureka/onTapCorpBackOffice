@@ -19,6 +19,9 @@ const useClicksUrl = (companyId: string) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [employees, setEmployees] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState(""); // Para la búsqueda general
+  const [selectedFilter, setSelectedFilter] = useState(""); // Para el filtro de selección
+  const [filteredClicksData, setFilteredClicksData] = useState<UrlClickData[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,11 +37,14 @@ const useClicksUrl = (companyId: string) => {
 
         // Obtener los empleados
         const allEmployees = await getEmployeesByCompanyIdQuery(companyId);
+        //console.log("allEmployees", allEmployees)
         const employeesName: any[] = [];
         allEmployees.forEach((employee: any) => {
           employeesName.push({
             ...employee,
             fullName: `${employee.firstName[0]} ${employee.lastName[0]}`,
+            email: employee.emails[0]?.text || "", // Correo electrónico
+            documentNumber: employee.documentNumber[0], // Cédula
           });
         });
         setEmployees(
@@ -97,13 +103,12 @@ const useClicksUrl = (companyId: string) => {
         });
         setClicksDataCompanies(companyClicks);
 
-
         // Procesar webSite
         const webSiteClicks: UrlClickData[] = [];
         companies.forEach((website: any) => {
-          const webSite = website.webSite || []; 
-          const urlLink = webSite[0]; 
-          const employeesData = webSite[2] || {}; 
+          const webSite = website.webSite || [];
+          const urlLink = webSite[0];
+          const employeesData = webSite[2] || {};
 
           for (let userKey in employeesData) {
             const { views } = employeesData[userKey];
@@ -111,9 +116,9 @@ const useClicksUrl = (companyId: string) => {
 
             webSiteClicks.push({
               urlLink,
-              urlName: urlLink, 
+              urlName: urlLink,
               clickCount,
-              employeeId: userKey, 
+              employeeId: userKey,
             });
           }
         });
@@ -129,11 +134,34 @@ const useClicksUrl = (companyId: string) => {
     fetchData();
   }, [companyId]);
 
-  return { 
-    clicksData: [...clicksDataWorkAreas, ...clicksDataCompanies, ...clicksDataWebsite], 
-    loading, 
-    error, 
-    employees 
+  // Filtrar los datos según el término de búsqueda y el filtro seleccionado
+  useEffect(() => {
+    const allClicksData = [
+      ...clicksDataWorkAreas, 
+      ...clicksDataCompanies, 
+      ...clicksDataWebsite,
+    ];
+
+    const filteredData = allClicksData.filter((data) => {
+      const matchesSearchTerm =
+        searchTerm === "" ||
+        data.urlName.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilter =
+        selectedFilter === "" || data.employeeId === selectedFilter;
+
+      return matchesSearchTerm && matchesFilter;
+    });
+
+    setFilteredClicksData(filteredData);
+  }, [searchTerm, selectedFilter, clicksDataWorkAreas, clicksDataCompanies, clicksDataWebsite]);
+
+  return {
+    clicksData: filteredClicksData, // Los datos filtrados
+    loading,
+    error,
+    employees,
+    setSearchTerm, // Para actualizar el término de búsqueda
+    setSelectedFilter, // Para actualizar el filtro de selección
   };
 };
 

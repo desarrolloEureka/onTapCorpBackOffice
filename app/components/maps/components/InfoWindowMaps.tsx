@@ -36,6 +36,7 @@ const CustomInfoWindow = ({
                         <span className="tw-text-base tw-pb-2">
                             {data.address}
                         </span>
+                        
                     </div>
                 )}
 

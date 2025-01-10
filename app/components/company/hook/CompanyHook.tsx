@@ -36,7 +36,6 @@ const CompanyHook = () => {
 
     let newIndex = 0;
 
-
     useEffect(() => {
         //const fetchDocuments = listenToDocumentsQuery("logos", setDataLogos, companyData?.uid);
         const fetchDocuments = listenToIconsQuery("logos", setDataLogos, companyData?.uid);
@@ -137,8 +136,9 @@ const CompanyHook = () => {
         });
     };
 
-    const validateFields = () => {
+    const validateFields = () => {    
         const newErrors: { [key: string]: string } = {};
+        console.log("data.phone:", data.phone); 
         if (!data.tradename[0]?.trim()) {
             newErrors.tradename = "El nombre es obligatorio";
         }
@@ -149,9 +149,13 @@ const CompanyHook = () => {
             newErrors.id = "El NIT es obligatorio";
         }
 
-        // if (data.webSite[0] && !/^https:\/\/.+\..+$/.test(data.webSite[0])) {
-        //     newErrors.webSite = "Ej: https://example.com";
-        // }
+        const phoneValue = Array.isArray(data.phone) && data.phone[0]?.toString().trim() || "";
+        console.log("phoneValue (validación):", phoneValue); // Depuración
+
+        // Validación del teléfono
+        if (!/^\d{10}$/.test(phoneValue)) {
+            newErrors.phone = "El número de teléfono debe tener exactamente 10 dígitos";
+        }
 
         // Validación para URLs dinámicas que comienzan con 'urlLink'
         for (const key in data) {
@@ -167,6 +171,7 @@ const CompanyHook = () => {
 
     const handleSendForm = async (e: any) => {
         e.preventDefault();
+        console.log("handleSendForm ejecutado"); 
         // Validar los campos antes de continuar
         if (!validateFields()) return;
         confirmSaveAlert();
@@ -183,6 +188,7 @@ const CompanyHook = () => {
     };
 
     const handleChange = (value: string, name: string, isChecked?: boolean) => {
+        
         if (typeof isChecked === "undefined") {
             // Manejo del cambio para el campo webSite
             if (name === "webSite" || name.startsWith('urlLink')) {
