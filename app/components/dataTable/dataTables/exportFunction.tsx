@@ -191,22 +191,26 @@ export default function convertArrayOfObjectsToCSV(
     };
     result += keys.map((key: string) => headers[key]).join(columnDelimiter);
   } else if (reference == "zones") {
+    const maxAddresses = Math.max(...array.map((doc:any) => (doc?.addresses || []).length));
+    // Añadir las claves solo del nombre de la zona y el jefe
     keys = [
       "zoneName",
-      "zoneManager",
-      "AddressOne",
-      "AddressTwo",
-      "AddressThree",
-      "AddressFour",
+      "zoneManager"
     ];
+    // Añadir encabezados solo del nombre de la zona y el jefe
     const headers: Record<string, string> = {
       zoneName: "Nombre",
       zoneManager: "Nombre Sede",
-      AddressOne: "Direccion 1",
-      AddressTwo: "Direccion 2",
-      AddressThree: "Direccion 3",
-      AddressFour: "Direccion 4",
     };
+
+    // Añadir las claves con las direcciones dinámicamente
+    for (let i = 1; i <= maxAddresses; i++) {
+      keys.push(`Address${i}`);
+    }
+    // Añadir encabezados de direcciones dinámicamente
+    for (let i = 1; i <= maxAddresses; i++) {
+      headers[`Address${i}`] = `Direccion ${i}`;
+    }
     result += keys.map((key: string) => headers[key]).join(columnDelimiter);
   } else if (reference == "routes") {
     keys = [

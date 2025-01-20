@@ -113,6 +113,8 @@ const DataTablesHook = (reference: string) => {
   const theme = localStorage.getItem("@theme");
   const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
+  let maxAddresses = 0;
+
   const formatearFecha = (fechaISO: string): string => {
     if (fechaISO != "-") {
       return moment(fechaISO).format("DD/MM/YYYY HH:mm:ss");
@@ -176,20 +178,25 @@ const DataTablesHook = (reference: string) => {
   };
 
   const formatZoneData = (documents: any[]) => {
-    return documents.map((doc) => {
+    maxAddresses = Math.max(...documents.map(doc => (doc?.addresses || []).length));
+    const formatedAddress = documents.map((doc) => {
       // Extraer direcciones del array 'addresses'
       const addresses = doc.addresses || [];
+      const filledAddresses = [...addresses, ...Array(maxAddresses - addresses.length).fill("")];
+      const addressFields: { [key: string]: string } = {};
+      for (let i = 0; i < maxAddresses; i++) {
+        addressFields[`Address${i + 1}`] = filledAddresses[i];
+      }
+
       return {
         zoneName: doc.zoneName || "-",
         zoneManager: doc.zoneManager || "-",
-        AddressOne: addresses[0] || "-",
-        AddressTwo: addresses[1] || "-",
-        AddressThree: addresses[2] || "-",
-        AddressFour: addresses[3] || "-",
-        addresses: addresses,
+        ...addressFields,
+        addresses: filledAddresses,
         uid: doc.uid,
       };
     });
+    return formatedAddress;
   };
 
   const formatDataByDate = (documents: any[] | { [key: string]: any }) => {
@@ -654,11 +661,11 @@ const DataTablesHook = (reference: string) => {
           uid: "Acciones",
           zoneName: "Nombre",
           zoneManager: "Jefe zona",
-          AddressOne: "Dirección 1",
-          AddressTwo: "Dirección 2",
-          AddressThree: "Dirección 3",
-          AddressFour: "Dirección 4",
-        };
+        }
+        // Añadir dinámicamente las columnas de direcciones
+        for (let i = 1; i <= maxAddresses; i++) {
+          columnNamesToDisplay[`Address${i}`] = `Dirección ${i}`;
+        }
       } else if (reference === "employees") {
         columnNamesToDisplay = {
           actions: "Acciones",
@@ -985,7 +992,17 @@ const DataTablesHook = (reference: string) => {
                               ? val === "date" || val === "meetingStart" || val === "meetingEnd"
                                 ? "8%"
                                 : "200px"
-                              : "auto",
+                              : reference === "zones"
+                                ? val === "uid" 
+                                  ? "8%"
+                                  : "200px"
+                              : reference === "fixedPoints"
+                                ? val === "timestamp"
+                                  ? "200px":
+                                    val === "uid" || val === "color"
+                                    ? "auto"
+                                    : "280px"
+                                : "auto",
           omit: !omittedColumns.includes(val),
           style:
             val === "uid" && reference === "meetingStatus" 
