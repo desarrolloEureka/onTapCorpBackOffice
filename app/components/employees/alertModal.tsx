@@ -62,7 +62,7 @@ const AlertModal = ({
                     className="tw-px-8"
                     style={{ borderTop: "2px solid #396593", marginTop: 6, textAlign: "center" }}
                 >
-                    <p>La cantidad de licencias autorizada ha llegado a su límite, por favor comunicarse con Redacol.</p>
+                    <p>La cantidad de licencias autorizada ha llegado a su límite, por favor comunicarse con One Tap.</p>
 
                 </Modal.Body>
             </Modal>
