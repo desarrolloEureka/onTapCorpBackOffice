@@ -11,13 +11,13 @@ export const initialData: CampusFormValuesData = {
     url: ["", false],
     phones: [{ text: "", indicative: "57", checked: false, ext: "" }],
     schedule: {
-        monday: { openTime: "00:00", closeTime: "00:00" },
-        tuesday: { openTime: "00:00", closeTime: "00:00" },
-        wednesday: { openTime: "00:00", closeTime: "00:00" },
-        thursday: { openTime: "00:00", closeTime: "00:00" },
-        friday: { openTime: "00:00", closeTime: "00:00" },
-        saturday: { openTime: "00:00", closeTime: "00:00" },
-        sunday: { openTime: "00:00", closeTime: "00:00" },
+        monday: { openTime: "N/A", closeTime: "N/A" },
+        tuesday: { openTime: "N/A", closeTime: "N/A" },
+        wednesday: { openTime: "N/A", closeTime: "N/A" },
+        thursday: { openTime: "N/A", closeTime: "N/A" },
+        friday: { openTime: "N/A", closeTime: "N/A" },
+        saturday: { openTime: "N/A", closeTime: "N/A" },
+        sunday: { openTime: "N/A", closeTime: "N/A" },
     },
     timestamp: "",
     isActive: true,
@@ -38,3 +38,4 @@ export const hoursArray = Array.from({ length: 24 }, (_, i) => {
     const hour = i.toString().padStart(2, "0") + ":00";
     return { value: hour, label: hour };
 });
+hoursArray.unshift({ value: "N/A", label: "N/A" });

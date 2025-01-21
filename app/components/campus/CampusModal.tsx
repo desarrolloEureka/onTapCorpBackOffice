@@ -369,8 +369,7 @@ const CampusModal = ({
                                   key={index}
                                   value={hour.value}
                                 >
-                                  {hour.label}
-                                  Hs
+                                  {hour.label} {hour.value !== "N/A" && "Hs"}
                                 </MenuItem>
                               ))}
                           </CustomSelect>
@@ -400,8 +399,7 @@ const CampusModal = ({
                                   key={index}
                                   value={hour.value}
                                 >
-                                  {hour.label}
-                                  Hs
+                                  {hour.label} {hour.value !== "N/A" && "Hs"}
                                 </MenuItem>
                               ))}
                           </CustomSelect>
