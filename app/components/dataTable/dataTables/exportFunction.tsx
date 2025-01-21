@@ -60,8 +60,12 @@ export default function convertArrayOfObjectsToCSV(
       "documentType",
       "documentNumber",
       "position",
-      "longitude",
-      "latitude",
+      "addressStartDay",
+      "latitudeStartDay",
+      "longitudeStartDay",
+      "addressEndDay",
+      "latitudeEndDay",
+      "longitudeEndDay",
       "totalTime",
     ];
     const headers: Record<string, string> = {
@@ -72,8 +76,12 @@ export default function convertArrayOfObjectsToCSV(
       documentType: "Tipo de Documento",
       documentNumber: "Documento",
       position: "Posicion",
-      longitude: "Longitud",
-      latitude: "Latitud",
+      addressStartDay: "Direccion Inicio",
+      latitudeStartDay: "Latitud Inicio",
+      longitudeStartDay: "Longitud Inicio",
+      addressEndDay: "Direccion Final",
+      latitudeEndDay: "Latitud Final",
+      longitudeEndDay: "Longitud Final",
       totalTime: "Jornada laboral",
     };
     result += keys.map((key: string) => headers[key]).join(columnDelimiter);
@@ -85,6 +93,9 @@ export default function convertArrayOfObjectsToCSV(
       "firstName",
       "lastName",
       "companyNameToVisit",
+      "address",
+      "latitude",
+      "longitude",
       "contactName",
       "email",
       "subject",
@@ -98,6 +109,9 @@ export default function convertArrayOfObjectsToCSV(
       firstName: "Nombres",
       lastName: "Apellidos",
       companyNameToVisit: "Cliente",
+      address: "Direccion",
+      latitude: "latitud",
+      longitude: "longitud",
       contactName: "Contacto",
       email: "Correo Contacto",
       subject: "Asunto",
@@ -191,12 +205,11 @@ export default function convertArrayOfObjectsToCSV(
     };
     result += keys.map((key: string) => headers[key]).join(columnDelimiter);
   } else if (reference == "zones") {
-    const maxAddresses = Math.max(...array.map((doc:any) => (doc?.addresses || []).length));
+    const maxAddresses = Math.max(
+      ...array.map((doc: any) => (doc?.addresses || []).length)
+    );
     // Añadir las claves solo del nombre de la zona y el jefe
-    keys = [
-      "zoneName",
-      "zoneManager"
-    ];
+    keys = ["zoneName", "zoneManager"];
     // Añadir encabezados solo del nombre de la zona y el jefe
     const headers: Record<string, string> = {
       zoneName: "Nombre",
@@ -295,6 +308,11 @@ export default function convertArrayOfObjectsToCSV(
         key === "endDay"
       ) {
         result += formatearFecha(item[key]);
+      } else if (
+        reference === "workingday" &&
+        (key === "addressStartDay" || key === "addressEndDay")
+      ) {
+        result += item[key].toString().replace(/,/g, "");
       } else if (reference === "meetings" && key === "date") {
         result += formatearFechaDias(item[key]);
       } else if (
@@ -302,6 +320,11 @@ export default function convertArrayOfObjectsToCSV(
         key === "meetingEnd"
       ) {
         result += formatearFechaHoras(item[key]);
+      } else if (
+        reference === "meetings" &&
+        (key === "address" || key === "latitude" || key === "longitude")
+      ) {
+        result += item[key].toString().replace(/,/g, "");
       } else if (Array.isArray(item[key])) {
         result += item[key][0] !== "" ? item[key][0] : "";
       } else {
