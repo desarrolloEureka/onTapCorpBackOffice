@@ -192,24 +192,24 @@ export const sendNotificationsToUsers = async (tokens: string[], title: string, 
 export const sendNotification = async (token: string, title: string, body: string, image: string) => {
   try {
     if (!token) {
-        return { success: false, message: "No token provided" };
+      return { success: false, message: "No token provided" };
     }
     const response = await fetch("https://one-tap-corp.vercel.app/api/notifications/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, title, body, image }),
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, title, body, image }),
     });
-    
+
     const data = await response.json();
 
     if (response.ok) {
       return { success: true, message: "Notification sent successfully", data };
     } else {
-        return { success: false, message: "Failed to send notification", data };
+      return { success: false, message: "Failed to send notification", data };
     }
   } catch (error) {
     console.error("Error al enviar la notificación2:", error);
-      return { success: false, message: "Error sending notification", error };
+    return { success: false, message: "Error sending notification", error };
   }
 };
 
@@ -748,8 +748,8 @@ export const getAllCompanies = async () => {
     const querySnapshot = await getDocs(companiesRef);
 
     const companies = querySnapshot.docs.map((doc) => ({
-      uid: doc.id, 
-      ...doc.data(), 
+      uid: doc.id,
+      ...doc.data(),
     }));
     return companies;
   } catch (error) {
@@ -760,7 +760,7 @@ export const getAllCompanies = async () => {
 
 export const saveEmployee = async (dataSave: any) => {
   try {
-    
+
     const docRef = doc(db, "users", dataSave.uid);
     const dataWithId = {
       ...dataSave,
@@ -781,7 +781,7 @@ export const saveEmployee = async (dataSave: any) => {
       ],
     };
 
-    
+
     // Guarda el documento en Firestore
     await setDoc(docRef, dataWithId);
 
@@ -1012,7 +1012,7 @@ export const deleteSocialNetwork = async (imageName: string, docId: string) => {
   try {
     await deleteObject(imageRef);
 
-    const docRef = doc(db, "logos", docId); 
+    const docRef = doc(db, "logos", docId);
     await deleteDoc(docRef);
 
     return { success: true, message: "Red social eliminada con éxito" };
@@ -1025,6 +1025,49 @@ export const deleteSocialNetwork = async (imageName: string, docId: string) => {
     };
   }
 };
+
+// Validar si el área existe
+export const validateArea = async (areaId: string) => {
+  try {
+    const areasRef = collection(db, "workAreas");
+    const q = query(areasRef, where("uid", "==", areaId));  // Filtrar por el campo id
+
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty; // Si hay documentos, significa que existe
+  } catch (error) {
+    console.error("Error validating area:", error);
+    return false;
+  }
+};
+
+// Validar si la sede existe
+export const validateHeadquarter = async (headquarterId: string) => {
+  try {
+    const headquartersRef = collection(db, "campus");
+    const q = query(headquartersRef, where("uid", "==", headquarterId)); // Filtrar por id
+
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty; // Si hay documentos, significa que existe
+  } catch (error) {
+    console.error("Error validating headquarter:", error);
+    return false;
+  }
+};
+
+// Validar si las rutas existen
+export const validateRoutes = async (routeIds: string) => {
+  try {
+    const routesRef = collection(db, "routes");
+    const q = query(routesRef, where("uid", "==", routeIds));
+
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  } catch (error) {
+    console.error("Error validating routes:", error);
+    return false;
+  }
+};
+
 
 
 

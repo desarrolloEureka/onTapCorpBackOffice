@@ -107,7 +107,7 @@ const CompanyHook = () => {
             data.state,
         )},${data.country}`;
 
-        //console.log('data :::: ', data)
+        console.log('data :::: ', data)
 
         const coords = await getCoordinates(formattedAddress);
 
@@ -136,7 +136,7 @@ const CompanyHook = () => {
         });
     };
 
-    const validateFields = () => {    
+    const validateFields = () => {
         const newErrors: { [key: string]: string } = {};
         if (!data.tradename[0]?.trim()) {
             newErrors.tradename = "El nombre es obligatorio";
@@ -184,10 +184,8 @@ const CompanyHook = () => {
         }
     };
 
-    
-
     const handleChange = (value: string, name: string, isChecked?: boolean) => {
-        
+
         if (typeof isChecked === "undefined") {
             // Manejo del cambio para el campo webSite
             if (name === "webSite" || name.startsWith('urlLink')) {
@@ -461,25 +459,25 @@ const CompanyHook = () => {
                 ? objToArrayItems[type ?? "urlName"].length
                 : 0;
 
-                listNewItem.forEach((item) => {
-                    const currentIndex = `${item}${itemIndex + 1}`;
-                    newItemUrl[currentIndex] =
-                        item === "urlName"
-                            ? [
-                                "",
-                                true,
-                                // Construimos el objeto con los uid de employees
-                                employees?.reduce((acc: any, employee: any) => {
-                                    acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
-                                    return acc;
-                                }, {})
-                            ]
-                            : item === "urlLink"
+            listNewItem.forEach((item) => {
+                const currentIndex = `${item}${itemIndex + 1}`;
+                newItemUrl[currentIndex] =
+                    item === "urlName"
+                        ? [
+                            "",
+                            false,
+                            // Construimos el objeto con los uid de employees
+                            employees?.reduce((acc: any, employee: any) => {
+                                acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
+                                return acc;
+                            }, {})
+                        ]
+                        : item === "urlLink"
+                            ? " "
+                            : item === "iconName"
                                 ? " "
-                                : item === "iconName"
-                                    ? " "
-                                    : " ";
-                });
+                                : " ";
+            });
 
 
             setData({ ...data, ...newItemUrl });
@@ -487,12 +485,17 @@ const CompanyHook = () => {
     };
 
     const handleDataNetworks = (text: any, index: any) => {
-        setData({ ...data, ["iconName" + "" + (index === 0 ? "" : index + 1)]: text, });
+        if (index === 'iconWebSite') {
+            setData({ ...data, "iconWebSite": text });
 
-        setItemUrlSelected({
-            ...objToArrayItems.urlName[index],
-            iconName: text,
-        });
+        } else {
+            setData({ ...data, ["iconName" + "" + (index === 0 ? "" : index + 1)]: text });
+            setItemUrlSelected({
+                ...objToArrayItems.urlName[index],
+                iconName: text,
+            });
+        }
+
         setTimeout(() => {
             setIsOpenModalIcons(false);
         }, 1000);
@@ -685,7 +688,7 @@ const CompanyHook = () => {
             }));
         }
     }, [employees]);
-    
+
     return {
         errors,
         data,

@@ -44,6 +44,9 @@ import {
   getAllCompanies,
   getCompaniesByUid,
   updateCompany,
+  validateArea,
+  validateHeadquarter,
+  validateRoutes,
 } from "@/firebase/Documents";
 import {
   uploadFile,
@@ -342,17 +345,17 @@ export const listenToEmployeesByCompanyIdQuery = (
   setData: (data: any[]) => void,
   uid: any
 ) => {
-  const collectionRef = collection(db, ref); 
+  const collectionRef = collection(db, ref);
   if (!uid) {
 
-    setData([]); 
-    return () => { }; 
+    setData([]);
+    return () => { };
   }
 
   const q = query(
     collectionRef,
     where("idCompany", "==", uid),
-    where("rolId", "==", "uysG1ULyEDklfbGDFate") 
+    where("rolId", "==", "uysG1ULyEDklfbGDFate")
   );
 
   const unsubscribe = onSnapshot(q, (snapshot: any) => {
@@ -371,11 +374,11 @@ export const listenToWorkAreaByCompanyIdQuery = (
   setData: (data: any[]) => void,
   uid: any
 ) => {
-  const collectionRef = collection(db, ref); 
+  const collectionRef = collection(db, ref);
   if (!uid) {
-  
-    setData([]); 
-    return () => { }; 
+
+    setData([]);
+    return () => { };
   }
 
   const q = query(collectionRef, where("companyId", "==", uid));
@@ -608,6 +611,21 @@ export const UpdateSocialNetwork = async (
 
 export const DeleteSocialNetwork = async (imageName: string, docId: any) => {
   const res = await deleteSocialNetwork(imageName, docId);
+  return res;
+};
+
+export const validateAreaQuery = async (areaId: string) => {
+  const res = await validateArea(areaId);
+  return res;
+};
+
+export const validateHeadquarterQuery = async (headquarterId: string) => {
+  const res = await validateHeadquarter(headquarterId);
+  return res;
+};
+
+export const validateRoutesQuery = async (routeIds: string) => {
+  const res = await validateRoutes(routeIds);
   return res;
 };
 

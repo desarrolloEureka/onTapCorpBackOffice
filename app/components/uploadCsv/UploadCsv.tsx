@@ -13,6 +13,10 @@ export default function CSVReader({
   setHandleShowCsv,
   reference,
   title,
+  isShowAlertCSV,
+  setIsShowAlertCSV,
+  dataAlertCSV,
+  setDataShowAlertCSV
 }: ModalParamsCsv) {
   const {
     CSVReader,
@@ -24,7 +28,7 @@ export default function CSVReader({
     errorDataUpload,
     show,
     handleClose,
-  } = UploadDocumentHook({ handleShowCsv, setHandleShowCsv, reference, title });
+  } = UploadDocumentHook({ handleShowCsv, setHandleShowCsv, reference, title, isShowAlertCSV, setIsShowAlertCSV, dataAlertCSV, setDataShowAlertCSV });
 
   return (
     <Modal show={show} onHide={handleClose} backdrop="static">
