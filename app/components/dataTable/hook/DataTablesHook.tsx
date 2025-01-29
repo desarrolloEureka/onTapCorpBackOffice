@@ -111,6 +111,9 @@ const DataTablesHook = (reference: string) => {
   const [statisticsDetail, setStatisticsDetail] = useState<any>();
   const [showAlert, setShowAlert] = useState(false);
   const [isShowQR, setIsShowQR] = useState(false);
+  const [isShowAlertCSV, setIsShowAlertCSV] = useState(false);
+  const [dataAlertCSV, setDataShowAlertCSV] = useState([]);
+
   const theme = localStorage.getItem("@theme");
   const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
 
@@ -1439,6 +1442,10 @@ const DataTablesHook = (reference: string) => {
     setStatisticsDetail,
     showAlert,
     isShowQR,
+    isShowAlertCSV,
+    setIsShowAlertCSV,
+    dataAlertCSV,
+    setDataShowAlertCSV
   };
 };
 

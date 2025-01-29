@@ -231,6 +231,10 @@ export const ExportCSV = ({
   SedeData,
   RutaData,
   ZonaData,
+  isShowAlertCSV,
+  setIsShowAlertCSV,
+  dataAlertCSV,
+  setDataShowAlertCSV
 }: UploadDataModalProps) => {
   const actionsMemo = useMemo(() => {
     return (
@@ -254,13 +258,13 @@ export const ExportCSV = ({
             selectedSede ||
             selectedZona ||
             selectedRuta) && (
-            <Button
-              className="tw-absolute tw-right-0 tw-bottom-0 text-gray-500 hover:text-gray-700"
-              onClick={clearSearch}
-            >
-              <TfiClose size={16} className="" />
-            </Button>
-          )}
+              <Button
+                className="tw-absolute tw-right-0 tw-bottom-0 text-gray-500 hover:text-gray-700"
+                onClick={clearSearch}
+              >
+                <TfiClose size={16} className="" />
+              </Button>
+            )}
         </div>
         <div className="tw-flex tw-items-center tw-space-x-4">
           {[
@@ -270,43 +274,43 @@ export const ExportCSV = ({
             "superadminEmployees",
             "statisticalReports",
           ].includes(reference) && (
-            <>
-              <BranchFilter
-                names={"areaName"}
-                titulo={"Area"}
-                setSelectedBranch={setSelectedArea}
-                branches={AreaData}
-              />
-              <BranchFilter
-                names={"name"}
-                titulo={"Sede"}
-                setSelectedBranch={setSelectedSede}
-                branches={SedeData}
-              />
-              <BranchFilter
-                names={"zoneName"}
-                titulo={"Zona"}
-                setSelectedBranch={setSelectedZona}
-                branches={ZonaData}
-              />
-              <BranchFilter
-                names={"routeName"}
-                titulo={"Ruta"}
-                setSelectedBranch={setSelectedRuta}
-                branches={RutaData}
-              />
-              <StartDayInput
-                startDate={startDate}
-                setStartDate={setStartDate}
-              />
-              <EndDayInput
-                endDate={endDate}
-                startDate={startDate}
-                setEndDate={setEndDate}
-              />
-              <Filter handleSearchAndFilter={handleSearchAndFilter} />
-            </>
-          )}
+              <>
+                <BranchFilter
+                  names={"areaName"}
+                  titulo={"Area"}
+                  setSelectedBranch={setSelectedArea}
+                  branches={AreaData}
+                />
+                <BranchFilter
+                  names={"name"}
+                  titulo={"Sede"}
+                  setSelectedBranch={setSelectedSede}
+                  branches={SedeData}
+                />
+                <BranchFilter
+                  names={"zoneName"}
+                  titulo={"Zona"}
+                  setSelectedBranch={setSelectedZona}
+                  branches={ZonaData}
+                />
+                <BranchFilter
+                  names={"routeName"}
+                  titulo={"Ruta"}
+                  setSelectedBranch={setSelectedRuta}
+                  branches={RutaData}
+                />
+                <StartDayInput
+                  startDate={startDate}
+                  setStartDate={setStartDate}
+                />
+                <EndDayInput
+                  endDate={endDate}
+                  startDate={startDate}
+                  setEndDate={setEndDate}
+                />
+                <Filter handleSearchAndFilter={handleSearchAndFilter} />
+              </>
+            )}
           {![
             "roles",
             "country",
@@ -370,27 +374,66 @@ export const ExportCSV = ({
   };
 
   return (
-    <DataTableExtensions
-      export={false}
-      print={false}
-      filter={false}
-      {...tableData}
-      filterPlaceholder="Buscar"
-    >
-      <DataTable
-        noDataComponent={
-          <NoDataCard emptyRef={isEmptyDataRef} reference={reference} />
-        }
-        defaultSortFieldId={2}
-        columns={columns}
-        data={data}
-        actions={actionsMemo}
-        pagination
-        paginationComponentOptions={paginationComponentOptions}
-        highlightOnHover
-        theme="solarized"
-        customStyles={customStyles}
-      />
-    </DataTableExtensions>
+    <>
+      {isShowAlertCSV && dataAlertCSV.length > 0 && reference === "employees" && (
+        <div
+          className="flex p-4 mb-4 text-sm text-blue-800 rounded-lg tw-bg-yellow-100 dark:text-blue-400"
+          role="alert"
+        >
+          <svg
+            className="flex-shrink-0 inline me-3 mt-[1px]"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            width="16"
+            height="16"
+          >
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+          </svg>
+          <span className="sr-only">Info</span>
+          <div>
+            <span className="font-medium">Errores encontrados en CSV:</span>
+            <ul className="mt-1.5 list-disc list-inside">
+              {dataAlertCSV.map((item: any, index: any) => (
+                <li key={index}>
+                  Línea {item.line}:
+                  <ul className="mt-1.5 list-disc list-inside ml-4">
+                    {item.errors.map((error: any, errorIndex: any) => (
+                      <li key={errorIndex}>{error}</li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
+
+      <DataTableExtensions
+        export={false}
+        print={false}
+        filter={false}
+        {...tableData}
+        filterPlaceholder="Buscar"
+      >
+        <DataTable
+          noDataComponent={
+            <NoDataCard emptyRef={isEmptyDataRef} reference={reference} />
+          }
+          defaultSortFieldId={2}
+          columns={columns}
+          data={data}
+          actions={actionsMemo}
+          pagination
+          paginationComponentOptions={paginationComponentOptions}
+          highlightOnHover
+          theme="solarized"
+          customStyles={customStyles}
+        />
+      </DataTableExtensions>
+    </>
+
   );
 };

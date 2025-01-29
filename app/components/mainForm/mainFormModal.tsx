@@ -7,6 +7,7 @@ import {
 } from "@/data/formConstant";
 import { ModalParamsMainForm } from "@/types/modals";
 import AddCardOutlinedIcon from "@mui/icons-material/AddCardOutlined";
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import GpsFixedOutlinedIcon from "@mui/icons-material/GpsFixedOutlined";
@@ -1070,7 +1071,7 @@ const MainFormModal = ({
                                                                     color="primary"
                                                                     fullWidth
                                                                     className={`tw-my-4`}
-                                                                    label="Cantidad de tarjetas"
+                                                                    label="Cantidad de usuarios"
                                                                     InputProps={{
                                                                         startAdornment:
                                                                             (
@@ -1078,7 +1079,7 @@ const MainFormModal = ({
                                                                                     className="tw-text-[#64a5e2]"
                                                                                     position="start"
                                                                                 >
-                                                                                    <AddCardOutlinedIcon />
+                                                                                    <PersonAddAlt1Icon />
                                                                                 </InputAdornment>
                                                                             ),
                                                                     }}
@@ -1377,7 +1378,7 @@ const MainFormModal = ({
                                                                 <p style={{ fontSize: "11px", fontWeight: 300, margin: 0, color:
                                                                     modeTheme === "light" ? "#000" : "#fff"}} >
                                                                    Recomendaciones:<br />
-                                                                    - Dimensiones: 250 x 200 px<br />
+                                                                    - Dimensiones: 250 x 72,5 px<br />
                                                                     - Tamaño: 100 KB<br />
                                                                     - Formato: JPG, JPEG o PNG<br />
                                                                 </p>

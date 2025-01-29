@@ -25,7 +25,7 @@ const CustomHorizontalContainer = styled(Container)`
   }
 `;
 
-const Footer = ({socialNetworks, userData}: {socialNetworks: any, userData: any}) => {
+const Footer = ({ socialNetworks, userData }: { socialNetworks: any, userData: any }) => {
   const { finalArray } = FooterHook({ socialNetworks });
   const reversedArray = [...finalArray].reverse();
   const shouldCenterItems = reversedArray.length < 4;

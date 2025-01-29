@@ -121,7 +121,8 @@ const ThemeOne = ({
   companyDataUrls.urls.push({
     url: companyData?.webSite[0] || "",
     name: companyData?.tradename[1] ? companyData?.tradename[0] : "",
-    icon: companyData?.icon[0],
+    //icon: companyData?.icon[0],
+    icon: companyData?.iconWebSite || "",
     checked: companyData?.webSite[1],
     urlName: "webSite"
   });

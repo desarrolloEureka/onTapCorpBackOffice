@@ -3,6 +3,10 @@ export interface ModalParamsCsv {
     setHandleShowCsv: (e: boolean) => void;
     reference: string;
     title: string;
+    isShowAlertCSV: any,
+    setIsShowAlertCSV: any
+    dataAlertCSV: any
+    setDataShowAlertCSV: any
 }
 
 export interface ModalParamsMainForm {

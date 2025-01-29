@@ -262,7 +262,7 @@ export type DataEmployees = {
     fridayRoute: string; 
     isGPSActive: boolean; 
     mondayRoute: string; 
-    routeApplicable: string; 
+    routeApplicable: boolean; 
     saturdayRoute: string; 
     selectedArea: string; 
     selectedHeadquarter: string; 
@@ -273,9 +273,10 @@ export type DataEmployees = {
     wednesdayRoute: string; 
     dateOfBirth: [string, boolean]; 
     position: [string, boolean]; 
-    phones: string[]; 
-    emails: string[]; 
-    additional: string[];
+    phones: any; 
+    emails:any; 
+    additional: any;
+    createdDate: any;
 };
 
 // Definición del tipo ErrorData

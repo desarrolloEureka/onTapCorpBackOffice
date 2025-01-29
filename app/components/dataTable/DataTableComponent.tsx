@@ -79,16 +79,20 @@ const DataTableComponent = ({
     isShowQR,
     setSelectedArea,
     selectedArea,
-    selectedSede, 
+    selectedSede,
     setSelectedSede,
-    selectedZona, 
+    selectedZona,
     setSelectedZona,
-    selectedRuta, 
+    selectedRuta,
     setSelectedRuta,
-    AreaData, 
-    SedeData, 
-    RutaData, 
-    ZonaData, 
+    AreaData,
+    SedeData,
+    RutaData,
+    ZonaData,
+    isShowAlertCSV,
+    setIsShowAlertCSV,
+    dataAlertCSV,
+    setDataShowAlertCSV
   } = DataTablesHook(reference);
 
   const theme = createTheme({
@@ -182,14 +186,18 @@ const DataTableComponent = ({
                   selectedArea={selectedArea}
                   selectedSede={selectedSede}
                   setSelectedSede={setSelectedSede}
-                  selectedZona={selectedZona} 
+                  selectedZona={selectedZona}
                   setSelectedZona={setSelectedZona}
-                  selectedRuta={selectedRuta} 
+                  selectedRuta={selectedRuta}
                   setSelectedRuta={setSelectedRuta}
-                  AreaData={AreaData} 
-                  SedeData={SedeData} 
-                  RutaData={RutaData} 
-                  ZonaData={ZonaData} 
+                  AreaData={AreaData}
+                  SedeData={SedeData}
+                  RutaData={RutaData}
+                  ZonaData={ZonaData}
+                  isShowAlertCSV={isShowAlertCSV}
+                  setIsShowAlertCSV={setIsShowAlertCSV}
+                  dataAlertCSV={dataAlertCSV}
+                  setDataShowAlertCSV={setDataShowAlertCSV}
                 />
               </div>
             </Card.Body>
@@ -206,6 +214,10 @@ const DataTableComponent = ({
           setHandleShowCsv={setHandleShowCsv}
           title={tableTitle}
           reference={reference}
+          isShowAlertCSV={isShowAlertCSV}
+          setIsShowAlertCSV={setIsShowAlertCSV}
+          dataAlertCSV={dataAlertCSV}
+          setDataShowAlertCSV={setDataShowAlertCSV}
         />
         {reference === "notifications" ? (
           <NotificationsFormModal
