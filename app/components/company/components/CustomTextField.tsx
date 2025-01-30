@@ -28,6 +28,7 @@ const CustomTextField = (props: any) => {
         const newValue = ((value || "") ?? "");
         if (props.isPhoneNumber) {
             if (type === "switch" && newValue.length === 10) {
+                props.onChange(newValue, name, checked);
                 setChecked(checked);
             } else if (type === "switch" && newValue.length != 10) {
                 Swal.fire({
@@ -37,11 +38,14 @@ const CustomTextField = (props: any) => {
                     confirmButtonColor: "#1f2937",
                     confirmButtonText: "Entendido",
                 });
+                props.onChange(newValue, name, true);
                 setChecked(true);
             } else if (type === "text" && newValue.length <= 10) {
                 setValue(newValue);
                 setChecked(true);
+                props.onChange(newValue, name, true);
             }
+
         } else if (props.isUrl && type === "switch") {
             if (props.datafilter) {
                 props.onChange(newValue, name, checked);
@@ -79,9 +83,6 @@ const CustomTextField = (props: any) => {
             }
         }
     }, [props.data]);
-
-    /* console.log(' props.item ', props.item);
-    console.log(' props.index ', props.index); */
 
     return (
         <div className="tw-flex tw-flex-row tw-mt-4 tw-w-full">

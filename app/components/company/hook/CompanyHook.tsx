@@ -82,6 +82,22 @@ const CompanyHook = () => {
     };
 
     const confirmSaveAlert = () => {
+        // Verifica si algún iconName está vacío
+        for (const key in data) {
+            if (key.startsWith("iconName") && (!data[key] || data[key].trim() === "")) {
+                // Extraer el número de iconName (por ejemplo, iconName7 -> 7)
+                const iconIndex = key.replace("iconName", "");
+                Swal.fire({
+                    title: "Error",
+                    text: `Por favor, seleccione un ícono para la Url Numero ${iconIndex}.`,
+                    icon: "error",
+                    confirmButtonColor: "#d33",
+                    confirmButtonText: "Aceptar",
+                });
+                return; // Detiene la ejecución si hay un campo vacío
+            }
+        }
+
         Swal.fire({
             title: "¿Confirma el envío de la información?",
             text: "Verifique la información, que todo esté correcto",
@@ -106,8 +122,6 @@ const CompanyHook = () => {
         const formattedAddress: string = `${data.city}, ${getStateName(
             data.state,
         )},${data.country}`;
-
-        console.log('data :::: ', data)
 
         const coords = await getCoordinates(formattedAddress);
 
@@ -678,8 +692,8 @@ const CompanyHook = () => {
             setData((prevData: any) => ({
                 ...prevData,
                 webSite: [
-                    "",
-                    true,
+                    prevData.webSite?.[0] ?? "",
+                    prevData.webSite?.[1] ?? true,
                     employees.reduce((acc: any, employee: any) => {
                         acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
                         return acc;
