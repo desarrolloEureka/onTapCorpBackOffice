@@ -17,6 +17,8 @@ import Swal from "sweetalert2";
 
 import { DEFAULT_REMOVE_HOVER_COLOR } from "../styles/stylesUploadCsv";
 import useAuth from "@/firebase/auth";
+import moment from "moment";
+import { addUser } from "@/firebase/user";
 
 const confirmAlert = (title: string) => {
     Swal.fire({
@@ -66,55 +68,56 @@ const UploadDocumentHook = ({
                     if (index === 0) { continue; }
                     const currentDataObject = { ...dataEmployees };
                     const documentRefUser: any = getDocumentReference("users");
+                    const currentDate = moment().format();
 
                     //console.log('val --> ', val);
                     currentDataObject.uid = documentRefUser.id;
                     currentDataObject.idCompany = userData?.companyId;
                     currentDataObject.ImageProfile = "";
-                    currentDataObject.createdDate = val[0];
-                    currentDataObject.firstName = [val[1], val[2] === "true"];
-                    currentDataObject.lastName = [val[3], val[4] === "true"];
-                    currentDataObject.documentType = [val[5], val[6] === "true"];
-                    currentDataObject.documentNumber = [val[7], val[8] === "true"];
-                    currentDataObject.dateOfBirth = [val[9], val[10] === "true"];
-                    currentDataObject.position = [val[11], val[12] === "true"];
-                    currentDataObject.isActive = val[13] === "true";
+                    currentDataObject.createdDate = currentDate //val[0];
+                    currentDataObject.firstName = [val[0], val[1] === "true"];
+                    currentDataObject.lastName = [val[2], val[3] === "true"];
+                    currentDataObject.documentType = [val[4], true];
+                    currentDataObject.documentNumber = [val[5], true];
+                    currentDataObject.dateOfBirth = [val[6], true];
+                    currentDataObject.position = [val[7], val[8] === "true"];
+                    currentDataObject.isActive = val[9] === "true";
                     currentDataObject.phones = [
                         {
-                            text: val[14],
-                            ext: val[15],
-                            indicative: val[16],
-                            checked: true,
+                            text: val[10],
+                            ext: val[11],
+                            indicative: val[12],
+                            checked: val[13] === "true",
                         },
                     ];
                     currentDataObject.emails = [
                         {
-                            text: val[17],
-                            checked: val[18] === "true",
+                            text: val[14],
+                            checked: val[15] === "true",
                         },
                     ];
                     currentDataObject.additional = [
                         {
-                            autodato: val[19],
-                            dato: val[20],
-                            createdDate: val[21],
-                            checked: val[22] === "true",
+                            autodato: "",
+                            dato: "",
+                            createdDate: "",
+                            checked: false,
                         },
                     ];
-                    currentDataObject.selectedArea = val[23];
-                    currentDataObject.selectedHeadquarter = val[24];
-                    currentDataObject.routeApplicable = val[25] === "true";
-                    currentDataObject.mondayRoute = val[26];
-                    currentDataObject.tuesdayRoute = val[27];
-                    currentDataObject.wednesdayRoute = val[28];
-                    currentDataObject.thursdayRoute = val[29];
-                    currentDataObject.fridayRoute = val[30];
-                    currentDataObject.saturdayRoute = val[31];
-                    currentDataObject.sundayRoute = val[32];
-                    currentDataObject.isGPSActive = val[33] === "true";
-                    currentDataObject.switch_activateCard = val[34] === "true";
-                    currentDataObject.phone = val[36];
-                    currentDataObject.email = val[37];
+                    currentDataObject.selectedArea = val[16];
+                    currentDataObject.selectedHeadquarter = val[17];
+                    currentDataObject.routeApplicable = val[18] === "true";
+                    currentDataObject.mondayRoute = val[19];
+                    currentDataObject.tuesdayRoute = val[20];
+                    currentDataObject.wednesdayRoute = val[21];
+                    currentDataObject.thursdayRoute = val[22];
+                    currentDataObject.fridayRoute = val[23];
+                    currentDataObject.saturdayRoute = val[24];
+                    currentDataObject.sundayRoute = val[25];
+                    currentDataObject.isGPSActive = val[26] === "true";
+                    currentDataObject.switch_activateCard = val[27] === "true";
+                    currentDataObject.phone = val[10];
+                    currentDataObject.email = val[14];
                     currentDataObject.preview = `https://one-tap-corp-dev.vercel.app/components/views/cardView/?uid=${documentRefUser.id}`;
                     currentDataObject.rolId = "uysG1ULyEDklfbGDFate";
                     currentDataObject.views = 0;
@@ -140,18 +143,15 @@ const UploadDocumentHook = ({
 
                     //Campos booleanos
                     const booleanFields = [
-                        { fieldName: 'Nombre', value: val[2] },
-                        { fieldName: 'Apellido', value: val[4] },
-                        { fieldName: 'Tipo de Documento', value: val[6] },
-                        { fieldName: 'Número de Documento', value: val[8] },
-                        { fieldName: 'Fecha de Nacimiento', value: val[10] },
-                        { fieldName: 'Cargo', value: val[12] },
-                        { fieldName: 'Estado', value: val[13] },
-                        { fieldName: 'Correo', value: val[18] },
-                        { fieldName: 'Datos Adicionales', value: val[22] },
-                        { fieldName: 'Aplica ruta', value: val[25] },
-                        { fieldName: 'GPS empleado', value: val[33] },
-                        { fieldName: 'Tarjeta empleado', value: val[34] },
+                        { fieldName: 'Nombre', value: val[1] },
+                        { fieldName: 'Apellido', value: val[3] },
+                        { fieldName: 'Cargo', value: val[8] },
+                        { fieldName: 'Estado', value: val[9] },
+                        { fieldName: 'Telefono', value: val[13] },
+                        { fieldName: 'Correo', value: val[15] },
+                        { fieldName: 'Aplica ruta', value: val[18] },
+                        { fieldName: 'GPS empleado', value: val[26] },
+                        { fieldName: 'Tarjeta empleado', value: val[27] },
                     ];
 
                     // Validación de booleanos
@@ -161,11 +161,11 @@ const UploadDocumentHook = ({
                         }
                     });
 
-                    const isAreaValid = await validateAreaQuery(val[23]);
-                    if (!isAreaValid) errors.push(`Área seleccionada no válida: ${val[23]}`);
+                    const isAreaValid = await validateAreaQuery(val[16]);
+                    if (!isAreaValid) errors.push(`Área seleccionada no válida: ${val[16]}`);
 
-                    const isHeadquarterValid = await validateHeadquarterQuery(val[24]);
-                    if (!isHeadquarterValid) errors.push(`Sede no válida: ${val[24]}`);
+                    const isHeadquarterValid = await validateHeadquarterQuery(val[17]);
+                    if (!isHeadquarterValid) errors.push(`Sede no válida: ${val[17]}`);
 
                     await Promise.all(
                         routesToValidate.map(async (routeId, index) => {
@@ -193,7 +193,12 @@ const UploadDocumentHook = ({
             } else {
                 // Subir usuarios si todos son válidos
                 for (const user of usersToUpload) {
-                    //console.log('user', user);
+                    await addUser({
+                        email: user?.email,
+                        password: user?.documentNumber[0],
+                        accessTokenUser,
+                        uid: user?.uid,
+                    });
                     await saveEmployeeQuery(user);
                 }
             }
