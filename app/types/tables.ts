@@ -23,16 +23,20 @@ export interface UploadDataModalProps {
   isEmptyDataRef: boolean;
   setSelectedArea: (e: any) => void;
   selectedArea: string;
-  selectedSede:string;
+  selectedSede: string;
   setSelectedSede: (e: any) => void;
-  selectedZona: string; 
+  selectedZona: string;
   setSelectedZona: (e: any) => void;
-  selectedRuta: string 
+  selectedRuta: string
   setSelectedRuta: (e: any) => void;
-  AreaData: any, 
-  SedeData: any, 
-  RutaData: any, 
-  ZonaData: any, 
+  AreaData: any,
+  SedeData: any,
+  RutaData: any,
+  ZonaData: any,
+  isShowAlertCSV: any,
+  setIsShowAlertCSV: any,
+  dataAlertCSV: any,
+  setDataShowAlertCSV: any
 }
 export interface UploadDataButtonModalProps {
   onUploadDataModalPdf?: () => void;

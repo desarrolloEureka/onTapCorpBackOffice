@@ -128,7 +128,7 @@ const Profile = () => {
                                                         Información Personal
                                                     </div>
                                                     <div className="mb-4 tw-text-xl text-capitalize">
-                                                        Nombre
+                                                        Nombres
                                                     </div>
                                                     <Row className="tw-mb-4 row-sm">
                                                         <Col md={3}>
@@ -139,9 +139,9 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {/* {
+                                                                {
                                                                     data?.displayName
-                                                                } */}
+                                                                }
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -153,7 +153,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {/* {data?.name} */}
+                                                                {data?.name}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -165,7 +165,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {/* {data?.lastName} */}
+                                                                {data?.lastName}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -177,7 +177,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {/* {data?.rol} */}
+                                                                {data?.rol}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -189,7 +189,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {/* {data?.position} */}
+                                                                {data?.position}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -209,7 +209,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {/* {data?.email} */}
+                                                                {data?.email}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -221,7 +221,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {/* {data?.phone} */}
+                                                                {data?.phoneAdmin}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -233,7 +233,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15">
-                                                                {/* {data?.address} */}
+                                                                {data?.address}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -250,7 +250,7 @@ const Profile = () => {
                                                         </Col>
                                                         <Col md={9}>
                                                             <p className="fs-15 tw-text-justify">
-                                                                {/* {data?.aboutMe} */}
+                                                                {data?.aboutMe}
                                                             </p>
                                                         </Col>
                                                     </Row>
@@ -298,7 +298,7 @@ const Profile = () => {
                                                                         // }
                                                                         type="text"
                                                                         name="displayName"
-                                                                        placeholder="User Name"
+                                                                        placeholder="Apodo"
                                                                         // defaultValue="Mack Adamia"
                                                                         onChange={
                                                                             changeHandler
@@ -322,7 +322,7 @@ const Profile = () => {
                                                                         // }
                                                                         type="text"
                                                                         name="name"
-                                                                        placeholder="First Name"
+                                                                        placeholder="Nombre"
                                                                         // defaultValue="Mack Adamia"
                                                                         onChange={
                                                                             changeHandler
@@ -346,7 +346,7 @@ const Profile = () => {
                                                                         // }
                                                                         type="text"
                                                                         name="lastName"
-                                                                        placeholder="Last Name"
+                                                                        placeholder="Apellidos"
                                                                         // defaultValue="Mack Adamia"
                                                                         onChange={
                                                                             changeHandler
@@ -394,7 +394,7 @@ const Profile = () => {
                                                                         // }
                                                                         type="text"
                                                                         name="position"
-                                                                        placeholder="Designation"
+                                                                        placeholder="Cargo"
                                                                         // defaultValue="Web Designer"
                                                                         onChange={
                                                                             changeHandler
@@ -428,7 +428,7 @@ const Profile = () => {
                                                                         // }
                                                                         type="text"
                                                                         name="email"
-                                                                        placeholder="email"
+                                                                        placeholder="Correo"
                                                                         // defaultValue="info@Spruha.in"
                                                                         onChange={
                                                                             changeHandler
@@ -452,7 +452,7 @@ const Profile = () => {
                                                                         // }
                                                                         type="text"
                                                                         name="phone"
-                                                                        placeholder="phone number"
+                                                                        placeholder="Teléfono"
                                                                         // defaultValue="+245 354 654"
                                                                         onChange={
                                                                             changeHandler
@@ -478,7 +478,7 @@ const Profile = () => {
                                                                         as="textarea"
                                                                         name="address"
                                                                         rows={2}
-                                                                        placeholder="Address"
+                                                                        placeholder="Dirección"
                                                                         // defaultValue="San Francisco, CA"
                                                                         onChange={
                                                                             changeHandler
@@ -509,7 +509,7 @@ const Profile = () => {
                                                                         rows={4}
                                                                         as="textarea"
                                                                         // aria-label="pleasure rationally encounter but because pursue consequences that are extremely painful.occur in which toil and pain can procure him some great pleasure.."
-                                                                        placeholder="About you"
+                                                                        placeholder="Sobre ti"
                                                                         // defaultValue="John Doe es un administrador experimentado en laboratorios de radiografías orales, con más de una década de experiencia. Es reconocido por su habilidad para garantizar la precisión y seguridad en todas las operaciones del laboratorio, así como por su enfoque proactivo en la actualización de equipos y tecnologías. Su dedicación a la excelencia en la salud bucal lo convierte en un líder valorado en su campo."
                                                                         onChange={
                                                                             changeHandler
@@ -559,7 +559,7 @@ const Profile = () => {
                                                         <div className="mb-4 tw-font-bold tw-text-xl tw-text-[#E9A225]">
                                                             Cambio Contraseña
                                                         </div>
-                                                        {/* <FormGroup className="form-group tw-mb-10">
+                                                        <FormGroup className="form-group tw-mb-10">
                                                             <Row className=" row-sm">
                                                                 <Col md={3}>
                                                                     <Form.Label className="fs-15 text-capitalize mb-3">
@@ -606,7 +606,7 @@ const Profile = () => {
                                                                     </InputGroup>
                                                                 </Col>
                                                             </Row>
-                                                        </FormGroup> */}
+                                                        </FormGroup>
                                                         <FormGroup className="form-group">
                                                             <Row className=" row-sm">
                                                                 <Col md={3}>

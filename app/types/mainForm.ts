@@ -245,10 +245,38 @@ export interface showPasswordParams {
 }
 
 export type DataEmployees = {
+    idCompany: string;
+    uid: string;
+    rolId: string;
     firstName: string[];
     lastName: string[];
+    documentType: string[];
     documentNumber: string[];
-    phone: string; // Sigue siendo string si no es un arreglo
+    isActive: boolean;
+    preview: string;
+    templateData: [{id: string; checked: boolean;}];
+    email: string;
+    phone: string; 
+    views: number,
+    ImageProfile: string; 
+    fridayRoute: string; 
+    isGPSActive: boolean; 
+    mondayRoute: string; 
+    routeApplicable: boolean; 
+    saturdayRoute: string; 
+    selectedArea: string; 
+    selectedHeadquarter: string; 
+    sundayRoute: string; 
+    switch_activateCard: boolean; 
+    thursdayRoute: string; 
+    tuesdayRoute: string; 
+    wednesdayRoute: string; 
+    dateOfBirth: [string, boolean]; 
+    position: [string, boolean]; 
+    phones: any; 
+    emails:any; 
+    additional: any;
+    createdDate: any;
 };
 
 // Definición del tipo ErrorData

@@ -226,9 +226,7 @@ const ZonesFormHook = ({
     };
 
     const handleAddAddress = () => {
-        if (addresses.length < 4) {
             setAddresses([...addresses, ""]);
-        }
     };
 
     const handleDeleteAddress = (index: number) => {

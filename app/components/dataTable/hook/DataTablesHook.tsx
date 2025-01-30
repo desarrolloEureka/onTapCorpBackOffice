@@ -39,6 +39,7 @@ import { MdModeEdit } from "react-icons/md";
 import Swal from "sweetalert2";
 import { LocalVariable } from "@/types/global";
 import { ref } from "firebase/storage";
+import { getAddressFromCoordinates } from "@/queries/GeoMapsQueries";
 require("dotenv").config();
 
 const CustomTitle = ({ row }: any) => (
@@ -110,8 +111,13 @@ const DataTablesHook = (reference: string) => {
   const [statisticsDetail, setStatisticsDetail] = useState<any>();
   const [showAlert, setShowAlert] = useState(false);
   const [isShowQR, setIsShowQR] = useState(false);
+  const [isShowAlertCSV, setIsShowAlertCSV] = useState(false);
+  const [dataAlertCSV, setDataShowAlertCSV] = useState([]);
+
   const theme = localStorage.getItem("@theme");
   const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
+
+  let maxAddresses = 0;
 
   const formatearFecha = (fechaISO: string): string => {
     if (fechaISO != "-") {
@@ -176,20 +182,25 @@ const DataTablesHook = (reference: string) => {
   };
 
   const formatZoneData = (documents: any[]) => {
-    return documents.map((doc) => {
+    maxAddresses = Math.max(...documents.map(doc => (doc?.addresses || []).length));
+    const formatedAddress = documents.map((doc) => {
       // Extraer direcciones del array 'addresses'
       const addresses = doc.addresses || [];
+      const filledAddresses = [...addresses, ...Array(maxAddresses - addresses.length).fill("")];
+      const addressFields: { [key: string]: string } = {};
+      for (let i = 0; i < maxAddresses; i++) {
+        addressFields[`Address${i + 1}`] = filledAddresses[i];
+      }
+
       return {
         zoneName: doc.zoneName || "-",
         zoneManager: doc.zoneManager || "-",
-        AddressOne: addresses[0] || "-",
-        AddressTwo: addresses[1] || "-",
-        AddressThree: addresses[2] || "-",
-        AddressFour: addresses[3] || "-",
-        addresses: addresses,
+        ...addressFields,
+        addresses: filledAddresses,
         uid: doc.uid,
       };
     });
+    return formatedAddress;
   };
 
   const formatDataByDate = (documents: any[] | { [key: string]: any }) => {
@@ -270,7 +281,7 @@ const DataTablesHook = (reference: string) => {
     );
   };
 
-  const formatReportData = (documents: any[], employees: any[]) => {
+  const formatReportData = async (documents: any[], employees: any[]) => {
     if (!Array.isArray(documents)) {
       return [];
     }
@@ -279,13 +290,11 @@ const DataTablesHook = (reference: string) => {
         new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     );
 
-    // Para almacenar los startDay pendientes por usuario
     const tempStartDays: { [key: string]: string | null } = {};
-
-    // Almacena los resultados procesados
+    const tempEndCoordinates: { [key: string]: { latitude: number; longitude: number } } = {};
     const result: any[] = [];
-    // Anexar los datos a los documentos
-    documentsDate.forEach((document) => {
+
+    for (const document of documentsDate) {
       const employeeData = employees.find(
         (employee) => employee.uid === document.employeeId
       );
@@ -295,9 +304,14 @@ const DataTablesHook = (reference: string) => {
         if (document.subject === "startDay") {
           if (!startDay) {
             // Si no hay un startDay previo pendiente, almacenamos el actual
-            tempStartDays[document.employeeId] = document.timestamp;
+            tempStartDays[document?.employeeId] = document.timestamp;
+            tempEndCoordinates[document?.employeeId] = {
+              latitude: document?.latitude,
+              longitude: document?.longitude,
+            };
           } else {
             // Si ya hay un startDay, creamos un registro con endDay vacío
+            const addressStartDay = await getAddressFromCoordinates(document?.latitude, document?.longitude);
             result.push({
               ...document,
               firstName: employeeData.firstName[0],
@@ -308,6 +322,12 @@ const DataTablesHook = (reference: string) => {
               startDay: startDay,
               endDay: "-", // No hay endDay correspondiente
               totalTime: "-", // No hay calculo de jornada
+              addressStartDay: addressStartDay || "-",
+              latitudeStartDay: document?.latitude || "-",
+              longitudeStartDay: document?.longitude || "-",
+              addressEndDay: "-",
+              latitudeEndDay: "-",
+              longitudeEndDay: "-",
             });
             // Actualizamos el nuevo startDay en tempStartDays
             tempStartDays[document.employeeId] = document.timestamp;
@@ -315,6 +335,14 @@ const DataTablesHook = (reference: string) => {
         } else if (document.subject === "endDay") {
           startDay = tempStartDays[document.employeeId]; // Recuperar el startDay pendiente
           if (startDay) {
+            const addressStartDay = await getAddressFromCoordinates(
+              tempEndCoordinates[document.employeeId]?.latitude,
+              tempEndCoordinates[document.employeeId]?.longitude
+            );
+            const addressEndDay = await getAddressFromCoordinates(
+              document?.latitude,
+              document?.longitude
+            );
             // Si hay un startDay pendiente, creamos un registro con startDay y endDay
             result.push({
               ...document,
@@ -328,15 +356,20 @@ const DataTablesHook = (reference: string) => {
               totalTime:
                 new Date(document.timestamp).getTime() -
                 new Date(startDay).getTime(),
+              addressStartDay: addressStartDay,
+              latitudeStartDay: tempEndCoordinates[document.employeeId]?.latitude,
+              longitudeStartDay: tempEndCoordinates[document.employeeId]?.longitude,
+              addressEndDay: addressEndDay,
+              latitudeEndDay: document?.latitude,
+              longitudeEndDay: document?.longitude,
             });
             // Limpiamos el startDay almacenado
             tempStartDays[document.employeeId] = null;
+            tempEndCoordinates[document.employeeId] = { latitude: 0, longitude: 0 };
           }
         }
       }
-    });
-
-
+    };
 
     // Procesar los startDay sin un endDay correspondiente al final
     for (const employeeId in tempStartDays) {
@@ -348,6 +381,7 @@ const DataTablesHook = (reference: string) => {
           const employeeData = employees.find(
             (employee) => employee.uid === employeeId
           );
+          const addressStartDay = await getAddressFromCoordinates(lastDocument?.latitude, lastDocument?.longitude);
           result.push({
             ...lastDocument,
             firstName: employeeData?.firstName[0],
@@ -359,6 +393,12 @@ const DataTablesHook = (reference: string) => {
             endDay: "-", // No hay endDay
             totalTime: "-", // No hay calculo de jornada
             timestamp: tempStartDays[employeeId],
+            addressStartDay: addressStartDay,
+            latitudeStartDay: lastDocument?.latitude,
+            longitudeStartDay: lastDocument?.longitude,
+            addressEndDay: "-",
+            latitudeEndDay: "-",
+            longitudeEndDay: "-",
           });
         }
       }
@@ -369,7 +409,7 @@ const DataTablesHook = (reference: string) => {
     );
   };
 
-  const formatReportDataMeetings = (
+  const formatReportDataMeetings = async (
     documents: any[],
     employees: any[],
     meetingStatus: any[]
@@ -382,12 +422,17 @@ const DataTablesHook = (reference: string) => {
         new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
     const result: any[] = [];
-    documentsDate.forEach((document) => {
+    for (const document of documentsDate) {
       const employeeData = employees.find(
         (employee) => employee.uid === document.employeeId
       );
       const meetingStatusData = meetingStatus.find(
         (meeting) => meeting.uid === document.meetingStatusId
+      );
+
+      const address = await getAddressFromCoordinates(
+        document?.meetingStart?.latitude,
+        document?.meetingStart?.longitude
       );
 
       if (employeeData && meetingStatusData) {
@@ -399,9 +444,13 @@ const DataTablesHook = (reference: string) => {
           date: document?.timestamp,
           meetingStart: document?.meetingStart?.timestamp,
           meetingEnd: document?.meetingEnd?.timestamp,
+          address: address || "",
+          latitude: document?.meetingStart?.latitude || "",
+          longitude: document?.meetingStart?.longitude || "",
         });
       }
-    });
+    };
+
     return result.sort(
       (a, b) =>
         new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
@@ -453,12 +502,12 @@ const DataTablesHook = (reference: string) => {
       // Obtener datos
       const employees = await getAllEmployeesQuery();
       const headquarters = await getHeadquartersByCompanyIdQuery(userData?.companyId);
-  
+
       if (!employees || !headquarters) {
         console.error("Error: Empleados o sedes no disponibles.");
         return [];
       }
-  
+
       // Crear mapa de sedes por idCompany
       const headquartersMap = headquarters.reduce((map, hq) => {
         if (hq.idCompany) {
@@ -471,23 +520,23 @@ const DataTablesHook = (reference: string) => {
         }
         return map;
       }, new Map());
-  
+
       // Combinar empleados con las sedes correspondientes
       const enrichedEmployees = employees.map((employee) => ({
         ...employee,
         headquarters: headquartersMap.get(employee.idCompany) || [],
       }));
-  
+
       //console.log("Combinación de empleados y sedes:", enrichedEmployees);
-  
+
       return enrichedEmployees;
     } catch (error) {
       console.error("Error combinando los datos de empleados y sedes", error);
       return [];
     }
   };
-  
-  
+
+
 
 
   const getAllDocuments = useCallback(async () => {
@@ -573,7 +622,7 @@ const DataTablesHook = (reference: string) => {
                                             : []
                                         )
                                         : reference === "workingday"
-                                          ? formatReportData(
+                                          ? await formatReportData(
                                             userData && userData?.companyId
                                               ? await getLocationsByCompanyIdAndWorkingdayQuery(
                                                 userData?.companyId
@@ -584,7 +633,7 @@ const DataTablesHook = (reference: string) => {
                                               : []
                                           )
                                           : reference === "meetings"
-                                            ? formatReportDataMeetings(
+                                            ? await formatReportDataMeetings(
                                               userData && userData?.companyId
                                                 ? await getMeetingsByCompanyIdQuery(userData?.companyId)
                                                 : [],
@@ -654,11 +703,11 @@ const DataTablesHook = (reference: string) => {
           uid: "Acciones",
           zoneName: "Nombre",
           zoneManager: "Jefe zona",
-          AddressOne: "Dirección 1",
-          AddressTwo: "Dirección 2",
-          AddressThree: "Dirección 3",
-          AddressFour: "Dirección 4",
-        };
+        }
+        // Añadir dinámicamente las columnas de direcciones
+        for (let i = 1; i <= maxAddresses; i++) {
+          columnNamesToDisplay[`Address${i}`] = `Dirección ${i}`;
+        }
       } else if (reference === "employees") {
         columnNamesToDisplay = {
           actions: "Acciones",
@@ -763,6 +812,8 @@ const DataTablesHook = (reference: string) => {
           lastName: "Apellidos",
           documentNumber: "Documento",
           totalTime: "Jornada Laboral",
+          addressStartDay: "Dirección Inicio",
+          addressEndDay: "Dirección Final",
         };
       } else if (reference === "meetings") {
         columnNamesToDisplay = {
@@ -772,6 +823,7 @@ const DataTablesHook = (reference: string) => {
           firstName: "Nombres",
           lastName: "Apellidos",
           companyNameToVisit: "Cliente",
+          address: "Dirección",
           contactName: "Contacto",
           email: "Correo Contacto",
           subject: "Asunto",
@@ -985,10 +1037,25 @@ const DataTablesHook = (reference: string) => {
                               ? val === "date" || val === "meetingStart" || val === "meetingEnd"
                                 ? "8%"
                                 : "200px"
-                              : "auto",
+                              : reference === "zones"
+                                ? val === "uid"
+                                  ? "8%"
+                                  : "200px"
+                                : reference === "fixedPoints"
+                                  ? val === "timestamp"
+                                    ? "200px" :
+                                    val === "uid" || val === "color"
+                                      ? "auto"
+                                      : "280px"
+                                  : reference === "workingday"
+                                    ? val === "startDay" || val === "endDay" || val === "documentNumber"
+                                      ? "160px"
+                                      : "200px"
+                                    :
+                                    "auto",
           omit: !omittedColumns.includes(val),
           style:
-            val === "uid" && reference === "meetingStatus" 
+            val === "uid" && reference === "meetingStatus"
               ? {
                 display: "flex",
                 alignItems: "center",
@@ -1002,10 +1069,10 @@ const DataTablesHook = (reference: string) => {
                 }
                 : {},
         };
-        
+
         cols.push(columnsData);
       });
-      
+
 
       const currentData = {
         columns: cols,
@@ -1088,7 +1155,7 @@ const DataTablesHook = (reference: string) => {
     });
   };
 
-    // Función para filtrar por área
+  // Función para filtrar por área
   const filteredByArea = (data: any[], selectedArea: string) => {
 
     if (!selectedArea) {
@@ -1118,10 +1185,10 @@ const DataTablesHook = (reference: string) => {
     if (!selectedZona) {
       return data; // Si no se selecciona un área, devuelve los datos originales
     }
-    
+
     const rutasPorZona = RutaData && RutaData.filter((item: any) => item?.zone === selectedZona);
     const uidsRutas = rutasPorZona.map((ruta: any) => ruta?.uid);
-    return data.filter((item: any) => Object.values(item).some(value => uidsRutas.includes(value)));   
+    return data.filter((item: any) => Object.values(item).some(value => uidsRutas.includes(value)));
   };
 
   // Función combinada
@@ -1157,7 +1224,7 @@ const DataTablesHook = (reference: string) => {
       columns,
       data: filterByZona,
     };
-    
+
     setDataTable(currentData);
   };
 
@@ -1298,28 +1365,28 @@ const DataTablesHook = (reference: string) => {
   }, [employeesData, companyData]);
 
   useEffect(() => {
-    const fetchData = async () => {      
-    if(userData?.companyId){
-    const fetchDataAreas = await getWorkAreasByCompanyIdQuery(
+    const fetchData = async () => {
+      if (userData?.companyId) {
+        const fetchDataAreas = await getWorkAreasByCompanyIdQuery(
           userData?.companyId
         );
-    const fetchDataSedes = await getHeadquartersByCompanyIdQuery(
+        const fetchDataSedes = await getHeadquartersByCompanyIdQuery(
           userData?.companyId
         );
-    const fetchDataRutas = await getRoutesByCompanyIdQuery(
+        const fetchDataRutas = await getRoutesByCompanyIdQuery(
           userData?.companyId
         );
-    const fetchDataZonas = await getZonesByCompanyIdQuery(
+        const fetchDataZonas = await getZonesByCompanyIdQuery(
           userData?.companyId
         );
-    setRutaData(fetchDataRutas.sort((a: any, b: any) => a?.routeName.localeCompare(b?.routeName)))
-    setAreaData(fetchDataAreas.sort((a: any, b: any) => a?.areaName.localeCompare(b?.areaName)))
-    setSedeData(fetchDataSedes.sort((a: any, b: any) => a?.name[0].localeCompare(b?.name[0])))
-    setZonaData(fetchDataZonas.sort((a: any, b: any) => a?.zoneName.localeCompare(b?.zoneName)))
-    }
+        setRutaData(fetchDataRutas.sort((a: any, b: any) => a?.routeName.localeCompare(b?.routeName)))
+        setAreaData(fetchDataAreas.sort((a: any, b: any) => a?.areaName.localeCompare(b?.areaName)))
+        setSedeData(fetchDataSedes.sort((a: any, b: any) => a?.name[0].localeCompare(b?.name[0])))
+        setZonaData(fetchDataZonas.sort((a: any, b: any) => a?.zoneName.localeCompare(b?.zoneName)))
+      }
     }
     fetchData()
-    }, [userData?.companyId]);
+  }, [userData?.companyId]);
   // console.log(!isEmptyDataRef);
 
   return {
@@ -1350,17 +1417,17 @@ const DataTablesHook = (reference: string) => {
     startDate,
     setStartDate,
     setSelectedArea,
-    selectedSede, 
+    selectedSede,
     setSelectedSede,
     selectedArea,
-    selectedZona, 
+    selectedZona,
     setSelectedZona,
-    selectedRuta, 
+    selectedRuta,
     setSelectedRuta,
-    AreaData, 
-    SedeData, 
-    RutaData, 
-    ZonaData, 
+    AreaData,
+    SedeData,
+    RutaData,
+    ZonaData,
     endDate,
     setEndDate,
     createdValid,
@@ -1375,6 +1442,10 @@ const DataTablesHook = (reference: string) => {
     setStatisticsDetail,
     showAlert,
     isShowQR,
+    isShowAlertCSV,
+    setIsShowAlertCSV,
+    dataAlertCSV,
+    setDataShowAlertCSV
   };
 };
 

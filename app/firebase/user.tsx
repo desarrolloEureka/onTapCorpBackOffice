@@ -228,7 +228,7 @@ export const SendDataUrlClick = async (documentId: string, data: any, urlName: s
     const res = await updateDoc(urlDocRef, {
         [urlName]: updatedArray,
     });
-    console.log("updateArray",updatedArray[2][uid]?.views)
+    //console.log("updateArray",updatedArray[2][uid]?.views)
     
     return null;
 };

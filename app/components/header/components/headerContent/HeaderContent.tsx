@@ -435,7 +435,7 @@ const HeaderContent = ({
                     eventKey="employeesMostVisits"
                   >
                     <IoDocumentOutline size={20} className="tw-mb-1 tw-mr-1" />
-                    Visitas
+                    Visitas Perfil
                   </NavDropdown.Item>
 
                   <NavDropdown.Item
@@ -444,7 +444,7 @@ const HeaderContent = ({
                     eventKey="clicksUrl"
                   >
                     <IoDocumentOutline size={20} className="tw-mb-1 tw-mr-1" />
-                    Clicks
+                    Visitas URL
                   </NavDropdown.Item>
                 </NavDropdown>
               )}

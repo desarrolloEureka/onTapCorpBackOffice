@@ -18,6 +18,7 @@ import employeesMostVisits from "@/components/employeesMostVisits/employeesMostV
 // import Swal from "sweetalert2";
 import moment from "moment";
 import { unstable_createMuiStrictModeTheme } from "@mui/material";
+import convertArrayOfObjectsToCSV from "./exportFunction";
 
 const DataTableExtensions: any = dynamic(
   () => import("react-data-table-component-extensions"),
@@ -33,215 +34,6 @@ const customStyles = {
     },
   },
 };
-
-function convertArrayOfObjectsToCSV(
-  array: object[],
-  reference: string
-): string {
-  if (array.length < 1) {
-    return "";
-  }
-  let result: string;
-  let keys: any;
-
-  const columnDelimiter = ",";
-  const lineDelimiter = "\n";
-  result = "";
-
-  const convertToHoursAndMinutes = (horaDuracionISO: number): string => {
-    const hours = Math.floor(
-      (horaDuracionISO % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-    );
-    const minutes = Math.ceil(
-      (horaDuracionISO % (1000 * 60 * 60)) / (1000 * 60)
-    );
-    return `${hours} hora${hours !== 1 ? "s" : ""} y ${minutes} minuto${
-      minutes !== 1 ? "s" : ""
-    }`;
-  };
-
-  const formatearFecha = (fechaISO: string): string => {
-    if (fechaISO != "-") {
-      return moment(fechaISO).format("DD/MM/YYYY HH:mm:ss");
-    } else {
-      return "-";
-    }
-  };
-
-  const formatearFechaDias = (fechaISO: string): string => {
-    if (fechaISO != "-") {
-      return moment(fechaISO).format("DD/MM/YYYY");
-    } else {
-      return "-";
-    }
-  };
-
-  const formatearFechaHoras = (fechaISO: string): string => {
-    if (fechaISO != "-") {
-      return moment(fechaISO).format("HH:mm:ss");
-    } else {
-      return "-";
-    }
-  };
-
-  if (reference == "workingday") {
-    keys = [
-      "startDay",
-      "endDay",
-      "firstName",
-      "lastName",
-      "documentType",
-      "documentNumber",
-      "position",
-      "longitude",
-      "latitude",
-      "totalTime",
-    ];
-    const headers: Record<string, string> = {
-      startDay: "Fecha Inicio",
-      endDay: "Fecha Final",
-      firstName: "Nombres",
-      lastName: "Apellidos",
-      documentType: "Tipo de Documento",
-      documentNumber: "Documento",
-      position: "Posición",
-      longitude: "Longitud",
-      latitude: "Latitud",
-      totalTime: "Jornada laboral",
-    };
-    result += keys.map((key: string) => headers[key]).join(columnDelimiter);
-  } else if (reference == "meetings") {
-    keys = [
-      "date",
-      "meetingStart",
-      "meetingEnd",
-      "firstName",
-      "lastName",
-      "companyNameToVisit",
-      "contactName",
-      "email",
-      "subject",
-      "name",
-      "observations",
-    ];
-    const headers: Record<string, string> = {
-      date: "Fecha",
-      meetingStart: "Hora Inicio",
-      meetingEnd: "Hora Final",
-      firstName: "Nombres",
-      lastName: "Apellidos",
-      companyNameToVisit: "Cliente",
-      contactName: "Contacto",
-      email: "Correo Contacto",
-      subject: "Asunto",
-      name: "Estado Reunión",
-      observations: "Observaciones",
-    };
-    result += keys.map((key: string) => headers[key]).join(columnDelimiter);
-  } else if (reference == "employees") {
-    keys = [
-      "createdDate",
-      "firstName",
-      "lastName",
-      "documentType",
-      "documentNumber",
-      "position",
-      "phone",
-      "email",
-      "isGPSActive",
-    ];
-    const headers: Record<string, string> = {
-      createdDate: "Fecha creación",
-      firstName: "Nombres",
-      lastName: "Apellidos",
-      documentType: "Tipo de Documento",
-      documentNumber: "Número de Documento",
-      position: "Cargo",
-      phone: "Teléfono",
-      email: "Correo Empleado",
-      isGPSActive: "GPS",
-    };
-    result += keys.map((key: string) => headers[key]).join(columnDelimiter);
-  } else if (reference == "superadminEmployees") {
-    keys = [
-      "createdDate",
-      "firstName",
-      "lastName",
-      "documentType",
-      "documentNumber",
-      "position",
-      "phone",
-      "email",
-      "companyName"
-    ];
-    const headers: Record<string, string> = {
-      createdDate: "Fecha creación",
-      firstName: "Nombres",
-      lastName: "Apellidos",
-      documentType: "Tipo de Documento",
-      documentNumber: "Número de Documento",
-      position: "Cargo",
-      phone: "Teléfono",
-      email: "Correo Empleado",
-    };
-    result += keys.map((key: string) => headers[key]).join(columnDelimiter);
-  } else if (reference == "statisticalReports") {
-    keys = [
-      "createdDate",
-      "firstName",
-      "lastName",
-      "documentNumber",
-      "email",
-      "phone",
-    ];
-
-    const headers: Record<string, string> = {
-      createdDate: "Fecha Registro",
-      firstName: "Nombres",
-      lastName: "Apellidos",
-      documentNumber: "Número de Identificación",
-      email: "Correo",
-      phone: "Teléfono",
-    };
-
-    result += keys.map((key: string) => headers[key]).join(columnDelimiter);
-  } else {
-    keys = Object.keys(array[0]);
-    result += keys.join(columnDelimiter);
-  }
-  result += lineDelimiter;
-
-  array.forEach((item: any) => {
-    let ctr = 0;
-    keys.forEach((key: string) => {
-      if (ctr > 0) result += columnDelimiter;
-      if (
-        reference === "workingday" &&
-        key === "totalTime" &&
-        typeof item[key] === "number"
-      ) {
-        result += convertToHoursAndMinutes(item[key]);
-      } else if (
-        (reference === "workingday" && key === "startDay") ||
-        key === "endDay"
-      ) {
-        result += formatearFecha(item[key]);
-      } else if (reference === "meetings" && key === "date") {
-        result += formatearFechaDias(item[key]);
-      } else if (
-        (reference === "meetings" && key === "meetingStart") ||
-        key === "meetingEnd"
-      ) {
-        result += formatearFechaHoras(item[key]);
-      } else {
-        result += item[key] !== undefined ? item[key] : "";
-      }
-      ctr++;
-    });
-    result += lineDelimiter;
-  });
-  return result;
-}
 
 function downloadCSV(array: any[], tableTitle: string, reference: string) {
   const link = document.createElement("a");
@@ -278,54 +70,51 @@ const BranchFilter = ({
   branches = [],
   setSelectedBranch,
 }: {
-  names: string
+  names: string;
   titulo: string;
   branches: any[];
   setSelectedBranch: (branch: string) => void;
 }) => {
   //console.log("branches", branches);
-   return ( 
+  return (
+    <Form.Group controlId="branchFilter">
+      <Form.Label style={{ fontSize: "15px" }} className="filter-label">
+        Filtrar por {titulo}
+      </Form.Label>
+      <Form.Control
+        style={{
+          width: "170px",
+        }}
+        as="select"
+        onChange={(e) => setSelectedBranch(e.target.value)}
+        defaultValue=""
+      >
+        <option value="">
+          {branches.length > 0
+            ? `Selecciona una ${titulo}`
+            : `No hay ${titulo?.toLocaleLowerCase()}s disponibles`}
+        </option>
+        {branches.map((branch) => {
+          const displayValue =
+            names === "name" ? branch?.[names]?.[0] : branch?.[names];
 
-  <Form.Group controlId="branchFilter">
-    <Form.Label style={{ fontSize: "15px" }} className="filter-label">Filtrar por {titulo}</Form.Label>
-    <Form.Control
-    style={{
-      width: "170px"
-    }}
-
-      as="select"
-      onChange={(e) => setSelectedBranch(e.target.value)}
-      defaultValue=""
-    >
-      <option value="">
-        {branches.length > 0
-          ? `Selecciona una ${titulo}`
-          : `No hay ${titulo?.toLocaleLowerCase()}s disponibles`}
-      </option>
-      {branches.map((branch) => {
-        const displayValue =
-          names === "name"
-            ? branch?.[names]?.[0]
-            : branch?.[names];
-
-        return (
-          <option
-            key={branch?.uid || branch}
-            value={branch?.uid}
-          >
-            {displayValue}
-          </option>
-        );
-      })}
-    </Form.Control>
-
-  </Form.Group>
-)}
+          return (
+            <option key={branch?.uid || branch} value={branch?.uid}>
+              {displayValue}
+            </option>
+          );
+        })}
+      </Form.Control>
+    </Form.Group>
+  );
+};
 
 const UploadDataCsvModal = ({
   onUploadDataModalCsv,
 }: UploadDataButtonModalProps) => (
-  <Button onClick={onUploadDataModalCsv}><TfiImport size={18} className="" /></Button>
+  <Button onClick={onUploadDataModalCsv}>
+    <TfiImport size={18} className="" />
+  </Button>
 );
 
 const MainFormModal = ({ onMainFormModal }: UploadDataButtonModalProps) => (
@@ -380,7 +169,6 @@ const EndDayInput = ({
   </Form.Group>
 );
 
-
 const Filter = ({
   handleSearchAndFilter,
 }: {
@@ -410,9 +198,7 @@ const NoDataCard = ({ emptyRef, reference }: NoDataCardProps) => (
   </div>
 );
 
-const refToShowButtonCsv = [
-  "employees",
-];
+const refToShowButtonCsv = ["employees"];
 
 export const ExportCSV = ({
   onUploadDataModalCsv,
@@ -434,17 +220,21 @@ export const ExportCSV = ({
   endDate,
   setSelectedArea,
   selectedArea,
-  selectedSede, 
+  selectedSede,
   setSelectedSede,
   setEndDate,
-  selectedZona, 
+  selectedZona,
   setSelectedZona,
-  selectedRuta, 
+  selectedRuta,
   setSelectedRuta,
-  AreaData, 
-  SedeData, 
-  RutaData, 
-  ZonaData, 
+  AreaData,
+  SedeData,
+  RutaData,
+  ZonaData,
+  isShowAlertCSV,
+  setIsShowAlertCSV,
+  dataAlertCSV,
+  setDataShowAlertCSV
 }: UploadDataModalProps) => {
   const actionsMemo = useMemo(() => {
     return (
@@ -461,15 +251,20 @@ export const ExportCSV = ({
             aria-label="search"
             onChange={handleSearchAndFilter}
           />
-          
-          {(searchTerm || endDate || selectedArea || selectedSede || selectedZona || selectedRuta) && (
-            <Button
-              className="tw-absolute tw-right-0 tw-bottom-0 text-gray-500 hover:text-gray-700"
-              onClick={clearSearch}
-            >
-              <TfiClose size={16} className="" />
-            </Button>
-          )}
+
+          {(searchTerm ||
+            endDate ||
+            selectedArea ||
+            selectedSede ||
+            selectedZona ||
+            selectedRuta) && (
+              <Button
+                className="tw-absolute tw-right-0 tw-bottom-0 text-gray-500 hover:text-gray-700"
+                onClick={clearSearch}
+              >
+                <TfiClose size={16} className="" />
+              </Button>
+            )}
         </div>
         <div className="tw-flex tw-items-center tw-space-x-4">
           {[
@@ -479,43 +274,43 @@ export const ExportCSV = ({
             "superadminEmployees",
             "statisticalReports",
           ].includes(reference) && (
-            <>
-              <BranchFilter
-                names={"areaName"}
-                titulo={"Area"}
-                setSelectedBranch={setSelectedArea}
-                branches={AreaData}
-              />
-              <BranchFilter
-                names={"name"}             
-                titulo={"Sede"}
-                setSelectedBranch={setSelectedSede}
-                branches={SedeData}
-              />
-              <BranchFilter
-                names={"zoneName"}
-                titulo={"Zona"}
-                setSelectedBranch={setSelectedZona}
-                branches={ZonaData}
-              />
-              <BranchFilter
-                names={"routeName"}
-                titulo={"Ruta"}
-                setSelectedBranch={setSelectedRuta}
-                branches={RutaData}
-              />
-              <StartDayInput
-                startDate={startDate}
-                setStartDate={setStartDate}
-              />
-              <EndDayInput
-                endDate={endDate}
-                startDate={startDate}
-                setEndDate={setEndDate}
-              />
-              <Filter handleSearchAndFilter={handleSearchAndFilter} />
-            </>
-          )}
+              <>
+                <BranchFilter
+                  names={"areaName"}
+                  titulo={"Area"}
+                  setSelectedBranch={setSelectedArea}
+                  branches={AreaData}
+                />
+                <BranchFilter
+                  names={"name"}
+                  titulo={"Sede"}
+                  setSelectedBranch={setSelectedSede}
+                  branches={SedeData}
+                />
+                <BranchFilter
+                  names={"zoneName"}
+                  titulo={"Zona"}
+                  setSelectedBranch={setSelectedZona}
+                  branches={ZonaData}
+                />
+                <BranchFilter
+                  names={"routeName"}
+                  titulo={"Ruta"}
+                  setSelectedBranch={setSelectedRuta}
+                  branches={RutaData}
+                />
+                <StartDayInput
+                  startDate={startDate}
+                  setStartDate={setStartDate}
+                />
+                <EndDayInput
+                  endDate={endDate}
+                  startDate={startDate}
+                  setEndDate={setEndDate}
+                />
+                <Filter handleSearchAndFilter={handleSearchAndFilter} />
+              </>
+            )}
           {![
             "roles",
             "country",
@@ -579,27 +374,66 @@ export const ExportCSV = ({
   };
 
   return (
-    <DataTableExtensions
-      export={false}
-      print={false}
-      filter={false}
-      {...tableData}
-      filterPlaceholder="Buscar"
-    >
-      <DataTable
-        noDataComponent={
-          <NoDataCard emptyRef={isEmptyDataRef} reference={reference} />
-        }
-        defaultSortFieldId={2}
-        columns={columns}
-        data={data}
-        actions={actionsMemo}
-        pagination
-        paginationComponentOptions={paginationComponentOptions}
-        highlightOnHover
-        theme="solarized"
-        customStyles={customStyles}
-      />
-    </DataTableExtensions>
+    <>
+      {isShowAlertCSV && dataAlertCSV.length > 0 && reference === "employees" && (
+        <div
+          className="flex p-4 mb-4 text-sm text-blue-800 rounded-lg tw-bg-yellow-100 dark:text-blue-400"
+          role="alert"
+        >
+          <svg
+            className="flex-shrink-0 inline me-3 mt-[1px]"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            width="16"
+            height="16"
+          >
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+          </svg>
+          <span className="sr-only">Info</span>
+          <div>
+            <span className="font-medium">Errores encontrados en CSV:</span>
+            <ul className="mt-1.5 list-disc list-inside">
+              {dataAlertCSV.map((item: any, index: any) => (
+                <li key={index}>
+                  Línea {item.line}:
+                  <ul className="mt-1.5 list-disc list-inside ml-4">
+                    {item.errors.map((error: any, errorIndex: any) => (
+                      <li key={errorIndex}>{error}</li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
+
+      <DataTableExtensions
+        export={false}
+        print={false}
+        filter={false}
+        {...tableData}
+        filterPlaceholder="Buscar"
+      >
+        <DataTable
+          noDataComponent={
+            <NoDataCard emptyRef={isEmptyDataRef} reference={reference} />
+          }
+          defaultSortFieldId={2}
+          columns={columns}
+          data={data}
+          actions={actionsMemo}
+          pagination
+          paginationComponentOptions={paginationComponentOptions}
+          highlightOnHover
+          theme="solarized"
+          customStyles={customStyles}
+        />
+      </DataTableExtensions>
+    </>
+
   );
 };

@@ -50,6 +50,10 @@ const CompanyPage = ({ theme }: CompanyProps) => {
     handleChangeUrls
   } = CompanyHook();
 
+  const datafilterWebSite = dataLogos?.find(
+    (val: any) => val.logoName === data?.iconWebSite
+  );
+
   return (
     data && (
       <>
@@ -219,6 +223,7 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                               ),
                             }}
                           />
+
                           <CustomTextField
                             checked={allChecked}
                             data={data.webSite}
@@ -228,13 +233,18 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                               checked: boolean
                             ) => handleChange(value, name, checked)}
                             name="webSite"
-                            type="url"
+                            type="text"
                             helperText={errors.webSite}
                             error={!!errors.webSite}
                             switch="true"
                             theme={theme}
                             id="webSite"
                             fullWidth
+                            icon="true"
+                            handleOpenModalIcons={() => {
+                              handleOpenModalIcons({}, 'iconWebSite');
+                            }}
+                            datafilter={datafilterWebSite}
                             label="Sitio Web"
                             InputProps={{
                               startAdornment: (
@@ -365,33 +375,31 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                 checked={allChecked}
                                 data={[item[1], item[2]]}
                                 onChange={(value: string, name: string, checked: boolean) => {
-                                  
-                                const numericValue = value.replace(/\D/g, '');
-
-                                if (numericValue.length === 10) {
-                                  handleChange(value, name, checked);
-                                }
-                              }}
-                              name={item[0]}
-                              type="text"
-                              switch="true"
-                              theme={theme}
-                              id={item[0]}
-                              fullWidth
-                              label="Teléfono"
-                              InputProps={{
-                                startAdornment: (
-                                  <InputAdornment position="start">
-                                    <LocalPhoneOutlinedIcon />
-                                  </InputAdornment>
-                                ),
-                              }}
-                              inputProps={{
-                                maxLength: 10,
-                                pattern: '[0-9]*', 
-                              }}
-                            />
-
+                                  const numericValue = value.replace(/\D/g, ''); // Filtrar solo números
+                                  handleChange(numericValue, name, checked);
+                                }}
+                                name={item[0]}
+                                type="text"
+                                switch="true"
+                                theme={theme}
+                                id={item[0]}
+                                fullWidth
+                                label="Teléfono"
+                                InputProps={{
+                                  startAdornment: (
+                                    <InputAdornment position="start">
+                                      <LocalPhoneOutlinedIcon />
+                                    </InputAdornment>
+                                  ),
+                                }}
+                                inputProps={{
+                                  maxLength: 10,
+                                  pattern: '[0-9]*',
+                                }}
+                                error={!!errors.phone}
+                                helperText={errors.phone || ''}
+                                isPhoneNumber={true}
+                              />
                             </div>
                             <CustomTextField
                               data={item[4]}
@@ -510,6 +518,8 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                                 id={item[0]}
                                 fullWidth
                                 label="Nombre del url"
+                                datafilter={datafilter}
+                                isUrl={true}
                                 InputProps={{
                                   startAdornment: (
                                     <InputAdornment position="start">

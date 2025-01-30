@@ -36,7 +36,6 @@ const CompanyHook = () => {
 
     let newIndex = 0;
 
-
     useEffect(() => {
         //const fetchDocuments = listenToDocumentsQuery("logos", setDataLogos, companyData?.uid);
         const fetchDocuments = listenToIconsQuery("logos", setDataLogos, companyData?.uid);
@@ -83,6 +82,22 @@ const CompanyHook = () => {
     };
 
     const confirmSaveAlert = () => {
+        // Verifica si algún iconName está vacío
+        for (const key in data) {
+            if (key.startsWith("iconName") && (!data[key] || data[key].trim() === "")) {
+                // Extraer el número de iconName (por ejemplo, iconName7 -> 7)
+                const iconIndex = key.replace("iconName", "");
+                Swal.fire({
+                    title: "Error",
+                    text: `Por favor, seleccione un ícono para la Url Numero ${iconIndex}.`,
+                    icon: "error",
+                    confirmButtonColor: "#d33",
+                    confirmButtonText: "Aceptar",
+                });
+                return; // Detiene la ejecución si hay un campo vacío
+            }
+        }
+
         Swal.fire({
             title: "¿Confirma el envío de la información?",
             text: "Verifique la información, que todo esté correcto",
@@ -107,8 +122,6 @@ const CompanyHook = () => {
         const formattedAddress: string = `${data.city}, ${getStateName(
             data.state,
         )},${data.country}`;
-
-        //console.log('data :::: ', data)
 
         const coords = await getCoordinates(formattedAddress);
 
@@ -149,9 +162,12 @@ const CompanyHook = () => {
             newErrors.id = "El NIT es obligatorio";
         }
 
-        // if (data.webSite[0] && !/^https:\/\/.+\..+$/.test(data.webSite[0])) {
-        //     newErrors.webSite = "Ej: https://example.com";
-        // }
+        const phoneValue = Array.isArray(data.phone) && data.phone[0]?.toString().trim() || "";
+
+        // Validación del teléfono
+        if (!/^\d{10}$/.test(phoneValue)) {
+            newErrors.phone = "El número de teléfono debe tener exactamente 10 dígitos";
+        }
 
         // Validación para URLs dinámicas que comienzan con 'urlLink'
         for (const key in data) {
@@ -183,6 +199,7 @@ const CompanyHook = () => {
     };
 
     const handleChange = (value: string, name: string, isChecked?: boolean) => {
+
         if (typeof isChecked === "undefined") {
             // Manejo del cambio para el campo webSite
             if (name === "webSite" || name.startsWith('urlLink')) {
@@ -456,25 +473,25 @@ const CompanyHook = () => {
                 ? objToArrayItems[type ?? "urlName"].length
                 : 0;
 
-                listNewItem.forEach((item) => {
-                    const currentIndex = `${item}${itemIndex + 1}`;
-                    newItemUrl[currentIndex] =
-                        item === "urlName"
-                            ? [
-                                "",
-                                true,
-                                // Construimos el objeto con los uid de employees
-                                employees?.reduce((acc: any, employee: any) => {
-                                    acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
-                                    return acc;
-                                }, {})
-                            ]
-                            : item === "urlLink"
+            listNewItem.forEach((item) => {
+                const currentIndex = `${item}${itemIndex + 1}`;
+                newItemUrl[currentIndex] =
+                    item === "urlName"
+                        ? [
+                            "",
+                            false,
+                            // Construimos el objeto con los uid de employees
+                            employees?.reduce((acc: any, employee: any) => {
+                                acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
+                                return acc;
+                            }, {})
+                        ]
+                        : item === "urlLink"
+                            ? " "
+                            : item === "iconName"
                                 ? " "
-                                : item === "iconName"
-                                    ? " "
-                                    : " ";
-                });
+                                : " ";
+            });
 
 
             setData({ ...data, ...newItemUrl });
@@ -482,12 +499,17 @@ const CompanyHook = () => {
     };
 
     const handleDataNetworks = (text: any, index: any) => {
-        setData({ ...data, ["iconName" + "" + (index === 0 ? "" : index + 1)]: text, });
+        if (index === 'iconWebSite') {
+            setData({ ...data, "iconWebSite": text });
 
-        setItemUrlSelected({
-            ...objToArrayItems.urlName[index],
-            iconName: text,
-        });
+        } else {
+            setData({ ...data, ["iconName" + "" + (index === 0 ? "" : index + 1)]: text });
+            setItemUrlSelected({
+                ...objToArrayItems.urlName[index],
+                iconName: text,
+            });
+        }
+
         setTimeout(() => {
             setIsOpenModalIcons(false);
         }, 1000);
@@ -670,8 +692,8 @@ const CompanyHook = () => {
             setData((prevData: any) => ({
                 ...prevData,
                 webSite: [
-                    "",
-                    true,
+                    prevData.webSite?.[0] ?? "",
+                    prevData.webSite?.[1] ?? true,
                     employees.reduce((acc: any, employee: any) => {
                         acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
                         return acc;
@@ -680,7 +702,7 @@ const CompanyHook = () => {
             }));
         }
     }, [employees]);
-    
+
     return {
         errors,
         data,

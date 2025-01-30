@@ -281,6 +281,7 @@ export const GoogleMapsHook = () => {
                     
                     routesFound && (setRouteCoordinates(routesLocations),
                         setRouteCoordinatesData(routesLocations));
+
                 },
             );
 
@@ -471,7 +472,6 @@ export const GoogleMapsHook = () => {
 
     const renderZones = ( ) => {
         
-        console.log("coordinatesZones", selectedZona)
         if (selectedZona === "") {
             setZoneCoordinates(zoneCoordinatesData)
 
@@ -562,8 +562,7 @@ export const GoogleMapsHook = () => {
     
         const filteredFixedPoints = fixedPointsData?.filter((point: any) => filteredEmployeeUIDs.includes(point.uid));
         setFixedPoints(filteredFixedPoints);
-    };
-    
+    };    
     
 
     return {

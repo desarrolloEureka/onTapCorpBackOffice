@@ -30,16 +30,25 @@ const ProfileHook = (props?: Props) => {
         setData({ ...data, [e.target.name]: e.target.value });
     };
 
-    const ConfirmAlert = () => {
+    const ConfirmPasswordAlert = () => {
         Swal.fire({
             position: "center",
             icon: "success",
-            title: "La información se guardó correctamente",
+            title: "La contraseña se guardó correctamente",
+            showConfirmButton: false,
+            timer: 2000,
+        });
+    };
+    
+    const ConfirmProfileAlert = () => {
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "La información del perfil se guardó correctamente",
             showConfirmButton: false,
             timer: 2000,
         }).then(() => {
             setKey("first");
-            // setIsDisabled(true);
         });
     };
 
@@ -58,33 +67,44 @@ const ProfileHook = (props?: Props) => {
     const handleUpdateProfile = async (e: any) => {
         e.preventDefault();
         e.stopPropagation();
-
+    
         const { password, confirmPassword, ...rest } = data;
-
-        if (password && confirmPassword) {
-            passValidation
-                ? await updateUserPassword({
-                      uid: data.uid,
-                      password,
-                      accessTokenUser,
-                  }).then(async () => {
-                      await saveUserById({
-                          ...rest,
-                          uid: user?.uid,
-                          emailVerified: user?.emailVerified,
-                      })
-                          .then(ConfirmAlert)
-                          .catch(ErrorAlert);
-                  })
-                : setErrorPass(true);
-        } else {
-            await saveUserById({
-                ...rest,
-                uid: user?.uid,
-                emailVerified: user?.emailVerified,
-            })
-                .then(ConfirmAlert)
-                .catch(ErrorAlert);
+    
+        try {
+            if (password && confirmPassword) {
+                if (passValidation) {
+                    // Guardar la contraseña
+                    await updateUserPassword({
+                        uid: data.uid,
+                        password,
+                        accessTokenUser,
+                    });
+    
+                    ConfirmPasswordAlert();
+    
+                    // Guardar la información del perfil
+                    await saveUserById({
+                        ...rest,
+                        uid: user?.uid,
+                        emailVerified: user?.emailVerified,
+                    });
+    
+                    ConfirmProfileAlert();
+                } else {
+                    setErrorPass(true);
+                }
+            } else {
+                // Solo guardar la información del perfil
+                await saveUserById({
+                    ...rest,
+                    uid: user?.uid,
+                    emailVerified: user?.emailVerified,
+                });
+    
+                ConfirmProfileAlert();
+            }
+        } catch (error) {
+            ErrorAlert();
         }
     };
 
@@ -97,6 +117,7 @@ const ProfileHook = (props?: Props) => {
         // console.log({ ...userData });
     }, [user]);
 
+    //console.log("data", data)
     useEffect(() => {
         getUserProfileData();
     }, [getUserProfileData]);

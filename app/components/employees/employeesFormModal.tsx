@@ -1401,7 +1401,7 @@ const EmployeesFormModal = ({
                       !dataForm?.isGPSActive ? (
                         <p style={{ color: "red" }}>
                           La cantidad de licencias GPS ha llegado a su limite,
-                          por favor comunicarse con Redacol
+                          por favor comunicarse con One Tap.
                         </p>
                       ) : !isEdit &&
                         handleShowMainFormEdit &&
@@ -1410,7 +1410,7 @@ const EmployeesFormModal = ({
                         !createdGPSValid && (
                           <p style={{ color: "red" }}>
                             La cantidad de licencias GPS ha llegado a su limite,
-                            por favor comunicarse con Redacol
+                            por favor comunicarse con One Tap.
                           </p>
                         )
                       )}

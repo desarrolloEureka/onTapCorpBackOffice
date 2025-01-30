@@ -160,7 +160,6 @@ const ZonesFormModal = ({
                                         />
                                     </div>
                                     <div className="tw-flex tw-flex-row tw-px-3 tw-mt-7 tw-mb-4 tw-w-full">
-                                    {addresses?.length < 4 && (
                                         <div className="tw-flex tw-flex-row tw-w-38 tw-rounded-3xl tw-bg-[#396593] tw-ml-auto">
                                             <Button
                                                 variant="outlined"
@@ -170,7 +169,6 @@ const ZonesFormModal = ({
                                                 Añadir Dirección
                                             </Button>
                                         </div>
-                                    )}
                                 </div>
                                     {addresses.map((address, index) => (
                                         <div key={index} className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full">

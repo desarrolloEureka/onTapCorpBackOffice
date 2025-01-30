@@ -7,6 +7,7 @@ import CustomSwitch from "./CustomSwitch";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import { Button } from "react-bootstrap";
 import Image from "next/image";
+import Swal from "sweetalert2";
 
 const CustomTextField = (props: any) => {
     const [value, setValue] = useState<string>("");
@@ -22,12 +23,49 @@ const CustomTextField = (props: any) => {
         value: string,
         name: string,
         checked: boolean,
+        type?: string
     ) => {
         const newValue = ((value || "") ?? "");
-        if (newValue === '' || newValue.length <= props.maxLength || props.maxLength === undefined) {
+        if (props.isPhoneNumber) {
+            if (type === "switch" && newValue.length === 10) {
+                props.onChange(newValue, name, checked);
+                setChecked(checked);
+            } else if (type === "switch" && newValue.length != 10) {
+                Swal.fire({
+                    title: "No se puede activar el switch",
+                    text: "El teléfonos debe tener exactamente 10 dígitos.",
+                    icon: "warning",
+                    confirmButtonColor: "#1f2937",
+                    confirmButtonText: "Entendido",
+                });
+                props.onChange(newValue, name, true);
+                setChecked(true);
+            } else if (type === "text" && newValue.length <= 10) {
+                setValue(newValue);
+                setChecked(true);
+                props.onChange(newValue, name, true);
+            }
+
+        } else if (props.isUrl && type === "switch") {
+            if (props.datafilter) {
+                props.onChange(newValue, name, checked);
+                setValue(newValue);
+                setChecked(checked);
+            } else {
+                props.onChange(newValue, name, true);
+                setValue(newValue);
+                Swal.fire({
+                    title: "No se puede activar el switch",
+                    text: "Debe seleccionar un logo antes de continuar.",
+                    icon: "warning",
+                    confirmButtonColor: "#1f2937",
+                    confirmButtonText: "Entendido",
+                });
+            }
+        } else if (newValue === '' || newValue.length <= props.maxLength || props.maxLength === undefined) {
             props.onChange(newValue, name, checked);
             setValue(newValue);
-            setChecked(checked);        
+            setChecked(checked);
         }
     };
 
@@ -45,7 +83,7 @@ const CustomTextField = (props: any) => {
             }
         }
     }, [props.data]);
-    
+
     return (
         <div className="tw-flex tw-flex-row tw-mt-4 tw-w-full">
             <ThemeProvider theme={theme}>
@@ -57,9 +95,10 @@ const CustomTextField = (props: any) => {
                             e.target.value,
                             e.target.name,
                             checked,
+                            'text'
                         )
                     }
-                    onClick={() => {}}
+                    onClick={() => { }}
                     name={props.name}
                     variant="standard"
                     color="primary"
@@ -85,6 +124,7 @@ const CustomTextField = (props: any) => {
                                 value,
                                 props.name,
                                 !e.target.checked,
+                                'switch'
                             )
                         }
                     />
@@ -111,7 +151,7 @@ const CustomTextField = (props: any) => {
                                 )
                             }
                             variant="text"
-                            style={{padding: 0}}
+                            style={{ padding: 0 }}
                         >
                             <Avatar
                                 sx={{
@@ -122,7 +162,7 @@ const CustomTextField = (props: any) => {
                                 }}
                             >
                                 {props.datafilter &&
-                                props.datafilter?.imageUrl ? (
+                                    props.datafilter?.imageUrl ? (
                                     <Image
                                         src={props.datafilter.imageUrl}
                                         alt="avatar"
@@ -135,7 +175,7 @@ const CustomTextField = (props: any) => {
                                         style={{
                                             fontSize: 34,
                                         }}
-                                     />
+                                    />
                                 )}
                             </Avatar>
                         </Button>
