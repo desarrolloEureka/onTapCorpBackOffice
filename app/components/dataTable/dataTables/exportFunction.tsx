@@ -22,9 +22,8 @@ export default function convertArrayOfObjectsToCSV(
     const minutes = Math.ceil(
       (horaDuracionISO % (1000 * 60 * 60)) / (1000 * 60)
     );
-    return `${hours} hora${hours !== 1 ? "s" : ""} y ${minutes} minuto${
-      minutes !== 1 ? "s" : ""
-    }`;
+    return `${hours} hora${hours !== 1 ? "s" : ""} y ${minutes} minuto${minutes !== 1 ? "s" : ""
+      }`;
   };
 
   const formatearFecha = (fechaISO: string): string => {
@@ -93,9 +92,12 @@ export default function convertArrayOfObjectsToCSV(
       "firstName",
       "lastName",
       "companyNameToVisit",
-      "address",
-      "latitude",
-      "longitude",
+      "addressStart",
+      "latitudeStart",
+      "longitudeStart",
+      "addressEnd",
+      "latitudeEnd",
+      "longitudeEnd",
       "contactName",
       "email",
       "subject",
@@ -109,9 +111,12 @@ export default function convertArrayOfObjectsToCSV(
       firstName: "Nombres",
       lastName: "Apellidos",
       companyNameToVisit: "Cliente",
-      address: "Direccion",
-      latitude: "latitud",
-      longitude: "longitud",
+      addressStart: "Direccion Inicio",
+      latitudeStart: "Latitud Inicio",
+      longitudeStart: "Longitud Inicio",
+      addressEnd: "Direccion Final",
+      latitudeEnd: "Latitud Final",
+      longitudeEnd: "Longitud Final",
       contactName: "Contacto",
       email: "Correo Contacto",
       subject: "Asunto",
@@ -322,7 +327,14 @@ export default function convertArrayOfObjectsToCSV(
         result += formatearFechaHoras(item[key]);
       } else if (
         reference === "meetings" &&
-        (key === "address" || key === "latitude" || key === "longitude")
+        (
+          key === "addressStart" ||
+          key === "latitudeStart" ||
+          key === "longitudeStart" ||
+          key === "addressEnd" ||
+          key === "latitudeEnd" ||
+          key === "longitudeEnd"
+        )
       ) {
         result += item[key].toString().replace(/,/g, "");
       } else if (Array.isArray(item[key])) {

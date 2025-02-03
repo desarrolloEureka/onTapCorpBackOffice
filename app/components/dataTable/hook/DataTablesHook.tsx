@@ -39,7 +39,6 @@ import { MdModeEdit } from "react-icons/md";
 import Swal from "sweetalert2";
 import { LocalVariable } from "@/types/global";
 import { ref } from "firebase/storage";
-import { getAddressFromCoordinates } from "@/queries/GeoMapsQueries";
 require("dotenv").config();
 
 const CustomTitle = ({ row }: any) => (
@@ -291,7 +290,7 @@ const DataTablesHook = (reference: string) => {
     );
 
     const tempStartDays: { [key: string]: string | null } = {};
-    const tempEndCoordinates: { [key: string]: { latitude: number; longitude: number } } = {};
+    const tempEndCoordinates: { [key: string]: { latitude: number; longitude: number; address: string } } = {};
     const result: any[] = [];
 
     for (const document of documentsDate) {
@@ -306,12 +305,12 @@ const DataTablesHook = (reference: string) => {
             // Si no hay un startDay previo pendiente, almacenamos el actual
             tempStartDays[document?.employeeId] = document.timestamp;
             tempEndCoordinates[document?.employeeId] = {
+              address: document?.address,
               latitude: document?.latitude,
               longitude: document?.longitude,
             };
           } else {
             // Si ya hay un startDay, creamos un registro con endDay vacío
-            const addressStartDay = await getAddressFromCoordinates(document?.latitude, document?.longitude);
             result.push({
               ...document,
               firstName: employeeData.firstName[0],
@@ -322,7 +321,7 @@ const DataTablesHook = (reference: string) => {
               startDay: startDay,
               endDay: "-", // No hay endDay correspondiente
               totalTime: "-", // No hay calculo de jornada
-              addressStartDay: addressStartDay || "-",
+              addressStartDay: document?.address || "-",
               latitudeStartDay: document?.latitude || "-",
               longitudeStartDay: document?.longitude || "-",
               addressEndDay: "-",
@@ -335,14 +334,6 @@ const DataTablesHook = (reference: string) => {
         } else if (document.subject === "endDay") {
           startDay = tempStartDays[document.employeeId]; // Recuperar el startDay pendiente
           if (startDay) {
-            const addressStartDay = await getAddressFromCoordinates(
-              tempEndCoordinates[document.employeeId]?.latitude,
-              tempEndCoordinates[document.employeeId]?.longitude
-            );
-            const addressEndDay = await getAddressFromCoordinates(
-              document?.latitude,
-              document?.longitude
-            );
             // Si hay un startDay pendiente, creamos un registro con startDay y endDay
             result.push({
               ...document,
@@ -356,16 +347,16 @@ const DataTablesHook = (reference: string) => {
               totalTime:
                 new Date(document.timestamp).getTime() -
                 new Date(startDay).getTime(),
-              addressStartDay: addressStartDay,
+              addressStartDay: tempEndCoordinates[document.employeeId]?.address,
               latitudeStartDay: tempEndCoordinates[document.employeeId]?.latitude,
               longitudeStartDay: tempEndCoordinates[document.employeeId]?.longitude,
-              addressEndDay: addressEndDay,
+              addressEndDay: document?.address,
               latitudeEndDay: document?.latitude,
               longitudeEndDay: document?.longitude,
             });
             // Limpiamos el startDay almacenado
             tempStartDays[document.employeeId] = null;
-            tempEndCoordinates[document.employeeId] = { latitude: 0, longitude: 0 };
+            tempEndCoordinates[document.employeeId] = { latitude: 0, longitude: 0, address: "" };
           }
         }
       }
@@ -381,7 +372,6 @@ const DataTablesHook = (reference: string) => {
           const employeeData = employees.find(
             (employee) => employee.uid === employeeId
           );
-          const addressStartDay = await getAddressFromCoordinates(lastDocument?.latitude, lastDocument?.longitude);
           result.push({
             ...lastDocument,
             firstName: employeeData?.firstName[0],
@@ -393,7 +383,7 @@ const DataTablesHook = (reference: string) => {
             endDay: "-", // No hay endDay
             totalTime: "-", // No hay calculo de jornada
             timestamp: tempStartDays[employeeId],
-            addressStartDay: addressStartDay,
+            addressStartDay: lastDocument?.address,
             latitudeStartDay: lastDocument?.latitude,
             longitudeStartDay: lastDocument?.longitude,
             addressEndDay: "-",
@@ -430,11 +420,6 @@ const DataTablesHook = (reference: string) => {
         (meeting) => meeting.uid === document.meetingStatusId
       );
 
-      const address = await getAddressFromCoordinates(
-        document?.meetingStart?.latitude,
-        document?.meetingStart?.longitude
-      );
-
       if (employeeData && meetingStatusData) {
         result.push({
           ...document,
@@ -443,10 +428,13 @@ const DataTablesHook = (reference: string) => {
           name: meetingStatusData.name,
           date: document?.timestamp,
           meetingStart: document?.meetingStart?.timestamp,
+          addressStart: document?.meetingStart?.address || "",
+          latitudeStart: document?.meetingStart?.latitude || "",
+          longitudeStart: document?.meetingStart?.longitude || "",
           meetingEnd: document?.meetingEnd?.timestamp,
-          address: address || "",
-          latitude: document?.meetingStart?.latitude || "",
-          longitude: document?.meetingStart?.longitude || "",
+          addressEnd: document?.meetingEnd?.address || "",
+          latitudeEnd: document?.meetingEnd?.latitude || "",
+          longitudeEnd: document?.meetingEnd?.longitude || "",
         });
       }
     };
@@ -823,7 +811,8 @@ const DataTablesHook = (reference: string) => {
           firstName: "Nombres",
           lastName: "Apellidos",
           companyNameToVisit: "Cliente",
-          address: "Dirección",
+          addressStart: "Dirección Inicio",
+          addressEnd: "Dirección Final",
           contactName: "Contacto",
           email: "Correo Contacto",
           subject: "Asunto",
