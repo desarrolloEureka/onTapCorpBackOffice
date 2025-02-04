@@ -1,36 +1,38 @@
 import React from "react";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
-import FilePresentOutlinedIcon from "@mui/icons-material/FilePresentOutlined";
 import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 import { Box, Button, Container, Typography } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Carousel from "react-material-ui-carousel";
 import SaveContactButtonColor from "../saveContactButton/SaveContactButtonColor";
-import { countries } from "@/data/constants";
 
 const orderArray = (profile: any, headquarterData: any) => {
   const finalArray: any = [
     [
       {
         icon: "WorkOutlineOutlinedIcon",
-        text: `${profile.firstName[0]} ${profile.lastName[0]}`,
+        text: `${profile.firstName[1] ? profile.firstName[0] + " " : ""}${
+          profile.lastName[1] ? profile.lastName[0] : ""
+        }`,
       },
       {
         icon: "WorkOutlineOutlinedIcon",
-        text: profile.position[0],
+        text: profile.position[1] ? profile.position[0] : "",
       },
       {
         icon: "EmailOutlinedIcon",
-        text: profile.emails[0].text,
+        text: profile?.emails[0]?.checked ? profile.emails[0].text : "",
         label: "Correo",
       },
       {
         icon: "LocalPhoneOutlinedIcon",
-        text: profile.phones[0].text,
+        text: profile?.phones[0]?.checked ? profile?.phones[0]?.text : "",
         label: "phones",
-        indicative: null,
+        indicative: profile?.phones[0]?.checked
+          ? profile?.phones[0]?.indicative
+          : "",
       },
     ],
     [
@@ -62,31 +64,80 @@ const orderArray = (profile: any, headquarterData: any) => {
     [
       {
         icon: "L",
-        text: `${headquarterData.schedule.monday.openTime} - ${headquarterData.schedule.monday.closeTime}`,
+        text: `${
+          headquarterData?.schedule?.monday?.openTime !== "N/A" &&
+          headquarterData?.schedule?.monday?.closeTime !== "N/A"
+            ? headquarterData?.schedule?.monday?.openTime +
+              " - " +
+              headquarterData?.schedule?.monday?.closeTime
+            : ""
+        }`,
       },
       {
         icon: "M",
-        text: `${headquarterData.schedule.tuesday.openTime} - ${headquarterData.schedule.tuesday.closeTime}`,
+        text: `${
+          headquarterData?.schedule?.tuesday?.openTime !== "N/A" &&
+          headquarterData?.schedule?.tuesday?.closeTime !== "N/A"
+            ? headquarterData?.schedule?.tuesday?.openTime +
+              " - " +
+              headquarterData?.schedule?.tuesday?.closeTime
+            : ""
+        }`,
       },
       {
         icon: "M",
-        text: `${headquarterData.schedule.wednesday.openTime} - ${headquarterData.schedule.wednesday.closeTime}`,
+        text: `${
+          headquarterData?.schedule?.wednesday?.openTime !== "N/A" &&
+          headquarterData?.schedule?.wednesday?.closeTime !== "N/A"
+            ? headquarterData?.schedule?.wednesday?.openTime +
+              " - " +
+              headquarterData?.schedule?.wednesday?.closeTime
+            : ""
+        }`,
       },
       {
         icon: "J",
-        text: `${headquarterData.schedule.thursday.openTime} - ${headquarterData.schedule.thursday.closeTime}`,
+        text: `${
+          headquarterData?.schedule?.thursday?.openTime !== "N/A" &&
+          headquarterData?.schedule?.thursday?.closeTime !== "N/A"
+            ? headquarterData?.schedule?.thursday?.openTime +
+              " - " +
+              headquarterData?.schedule?.thursday?.closeTime
+            : ""
+        }`,
       },
       {
         icon: "V",
-        text: `${headquarterData.schedule.friday.openTime} - ${headquarterData.schedule.friday.closeTime}`,
+        text: `${
+          headquarterData?.schedule?.friday?.openTime !== "N/A" &&
+          headquarterData?.schedule?.friday?.closeTime !== "N/A"
+            ? headquarterData?.schedule?.friday?.openTime +
+              " - " +
+              headquarterData?.schedule?.friday?.closeTime
+            : ""
+        }`,
       },
       {
         icon: "S",
-        text: `${headquarterData.schedule.saturday.openTime} - ${headquarterData.schedule.saturday.closeTime}`,
+        text: `${
+          headquarterData?.schedule?.saturday?.openTime !== "N/A" &&
+          headquarterData?.schedule?.saturday?.closeTime !== "N/A"
+            ? headquarterData?.schedule?.saturday?.openTime +
+              " - " +
+              headquarterData?.schedule?.saturday?.closeTime
+            : ""
+        }`,
       },
       {
         icon: "D",
-        text: `${headquarterData.schedule.sunday.openTime} - ${headquarterData.schedule.sunday.closeTime}`,
+        text: `${
+          headquarterData?.schedule?.sunday?.openTime !== "N/A" &&
+          headquarterData?.schedule?.sunday?.closeTime !== "N/A"
+            ? headquarterData?.schedule?.sunday?.openTime +
+              " - " +
+              headquarterData?.schedule?.sunday?.closeTime
+            : ""
+        }`,
       },
     ],
   ];
@@ -111,11 +162,6 @@ const TemplateContainer = ({
   const finalArray = orderArray(userData, headquarterData);
   const isSmallScreen = useMediaQuery("(max-height:780px)");
 
-  const getCountryName = (item: any) => {
-    const country = countries.find((country) => country.id === item);
-    return country ? country.code : "";
-  };
-
   const clickType = (type: string, url: string) => {
     switch (type) {
       case "EmailOutlinedIcon":
@@ -134,86 +180,79 @@ const TemplateContainer = ({
 
   const Item = ({ item }: { item: any[] }) => (
     <div className="tw-flex tw-flex-col tw-items-center tw-w-full tw-overflow-y-auto">
-      {item.map((val, key) => (
-        <Button
-          variant="contained"
-          sx={{ textTransform: "none", backgroundColor: color }}
-          className={`tw-rounded-s-2xl tw-rounded-e-2xl tw-drop-shadow-sm tw-w-full ${isSmallScreen ? "tw-h-[35px]" : "tw-h-[34px]"
+      {item.map((val, key) =>
+        val?.text ? (
+          <Button
+            variant="contained"
+            sx={{ textTransform: "none", backgroundColor: color }}
+            className={`tw-rounded-s-2xl tw-rounded-e-2xl tw-drop-shadow-sm tw-w-full ${
+              isSmallScreen ? "tw-h-[35px]" : "tw-h-[34px]"
             } tw-px-1 tw-relative tw-my-1.5 tw-shadow-[0_0px_05px_05px_rgba(0,0,0,0.1)]`}
-          key={key}
-          onClick={() =>
-            val.icon &&
-            val.text &&
-            clickType(
-              val.icon,
-              val.label === "phones"
-                ? getCountryName(val.indicative) + "" + val.text
-                : val.text
-            )
-          }
-          startIcon={
-            val.icon === "FilePresentOutlinedIcon" ? (
-              <FilePresentOutlinedIcon
-                style={{
-                  color: "white",
-                  fontSize: "1.4rem",
-                  marginLeft: "0.7rem",
-                }}
-              />
-            ) : val.icon == "WorkOutlineOutlinedIcon" ? (
-              <WorkOutlineOutlinedIcon
-                style={{
-                  color: "white",
-                  fontSize: "1.4rem",
-                  marginLeft: "0.7rem",
-                }}
-              />
-            ) : val.icon == "ExploreOutlinedIcon" ? (
-              <ExploreOutlinedIcon
-                style={{
-                  color: "white",
-                  fontSize: "1.4rem",
-                  marginLeft: "0.7rem",
-                }}
-              />
-            ) : val.icon === "LocalPhoneOutlinedIcon" ? (
-              <LocalPhoneOutlinedIcon
-                style={{
-                  color: "white",
-                  fontSize: "1.4rem",
-                  marginLeft: "0.7rem",
-                }}
-              />
-            ) : val.icon === "EmailOutlinedIcon" ? (
-              <EmailOutlinedIcon
-                style={{
-                  color: "white",
-                  fontSize: "1.4rem",
-                  marginLeft: "0.7rem",
-                }}
-              />
-            ) : (
-              <Typography
-                style={{ marginLeft: "0.9rem" }}
-                className={`tw-w-[90%] tw-pr-9 tw-text-center tw-capitalize`}
-              >
-                {val.icon}
-              </Typography>
-            )
-          }
-        >
-          <Typography
-            style={{ fontSize: val.label === "Correo" ? "14px" : undefined }}
-            className={`tw-w-[90%] tw-pr-9 tw-text-center tw-truncate`}
+            key={key}
+            onClick={() =>
+              val.icon &&
+              val.text &&
+              clickType(
+                val.icon,
+                val.label === "phones" ? val?.indicative + val?.text : val.text
+              )
+            }
+            startIcon={
+              val.icon == "WorkOutlineOutlinedIcon" ? (
+                <WorkOutlineOutlinedIcon
+                  style={{
+                    color: "white",
+                    fontSize: "1.4rem",
+                    marginLeft: "0.7rem",
+                  }}
+                />
+              ) : val.icon == "ExploreOutlinedIcon" ? (
+                <ExploreOutlinedIcon
+                  style={{
+                    color: "white",
+                    fontSize: "1.4rem",
+                    marginLeft: "0.7rem",
+                  }}
+                />
+              ) : val.icon === "LocalPhoneOutlinedIcon" ? (
+                <LocalPhoneOutlinedIcon
+                  style={{
+                    color: "white",
+                    fontSize: "1.4rem",
+                    marginLeft: "0.7rem",
+                  }}
+                />
+              ) : val.icon === "EmailOutlinedIcon" ? (
+                <EmailOutlinedIcon
+                  style={{
+                    color: "white",
+                    fontSize: "1.4rem",
+                    marginLeft: "0.7rem",
+                  }}
+                />
+              ) : (
+                <Typography
+                  style={{ marginLeft: "0.9rem" }}
+                  className={`tw-w-[90%] tw-pr-9 tw-text-center tw-capitalize`}
+                >
+                  {val.icon}
+                </Typography>
+              )
+            }
           >
-            {val.label === "phones" ||
-              val.label === "Telefono" ||
-              val.label === "Teléfono"
-              ? getCountryName(val.indicative) + "" + val.text
-              : val?.text?.length > 21 ? val?.text.substring(0, 18) + "..." : val?.text}
-          </Typography>
-        </Button>
-      ))}
+            <Typography
+              style={{ fontSize: val.label === "Correo" ? "14px" : undefined }}
+              className={`tw-w-[90%] tw-pr-9 tw-text-center tw-truncate`}
+            >
+              {val.label === "phones"
+                ? val?.indicative + " " + val?.text
+                : val?.text && val?.text?.length > 20
+                ? val?.text.substring(0, 17) + "..."
+                : val?.text || ""}
+            </Typography>
+          </Button>
+        ) : null
+      )}
     </div>
   );
 
@@ -222,8 +261,9 @@ const TemplateContainer = ({
     companyData &&
     headquarterData && (
       <Container
-        className={`tw-h-[50%] tw-flex tw-flex-col tw-content-center tw-items-center tw-justify-center tw-p-0 ${isSmallScreen ? "tw-mt-2" : "tw-mt-0"
-          }`}
+        className={`tw-h-[50%] tw-flex tw-flex-col tw-content-center tw-items-center tw-justify-center tw-p-0 ${
+          isSmallScreen ? "tw-mt-2" : "tw-mt-0"
+        }`}
       >
         <SaveContactButtonColor
           colorButton={color}
@@ -261,9 +301,9 @@ const TemplateContainer = ({
               }}
               navButtonsProps={{
                 style: {
-                  margin: "0 10px"
-              }
-              }}  
+                  margin: "0 10px",
+                },
+              }}
             >
               {finalArray.map((item: any, i: number) => (
                 <Box
