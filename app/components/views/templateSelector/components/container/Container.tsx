@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
@@ -161,6 +161,29 @@ const TemplateContainer = ({
 }) => {
   const finalArray = orderArray(userData, headquarterData);
   const isSmallScreen = useMediaQuery("(max-height:780px)");
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [windowSize, setWindowSize] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        setWindowSize({
+          width: containerRef.current.offsetWidth,
+          height: containerRef.current.offsetHeight,
+        });
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const clickType = (type: string, url: string) => {
     switch (type) {
@@ -178,16 +201,23 @@ const TemplateContainer = ({
     }
   };
 
-  const Item = ({ item }: { item: any[] }) => (
-    <div className="tw-flex tw-flex-col tw-items-center tw-w-full tw-overflow-y-auto">
+  const Item = ({ item, isPadding }: { item: any[]; isPadding: boolean }) => (
+    <>
       {item.map((val, key) =>
         val?.text ? (
           <Button
             variant="contained"
-            sx={{ textTransform: "none", backgroundColor: color }}
-            className={`tw-rounded-s-2xl tw-rounded-e-2xl tw-drop-shadow-sm tw-w-full ${
-              isSmallScreen ? "tw-h-[35px]" : "tw-h-[34px]"
-            } tw-px-1 tw-relative tw-my-1.5 tw-shadow-[0_0px_05px_05px_rgba(0,0,0,0.1)]`}
+            sx={{
+              textTransform: "none",
+              backgroundColor: color,
+              marginBottom: isPadding
+                ? `${Math.min(windowSize.height, windowSize.width) * 0.06}px`
+                : 0,
+              paddingY: !isPadding
+                ? `${Math.min(windowSize.height, windowSize.width) * 0.02}px`
+                : 0,
+            }}
+            className={`tw-rounded-full tw-w-full tw-drop-shadow-sm tw-relative tw-shadow-[0_0px_05px_05px_rgba(0,0,0,0.1)]`}
             key={key}
             onClick={() =>
               val.icon &&
@@ -202,38 +232,64 @@ const TemplateContainer = ({
                 <WorkOutlineOutlinedIcon
                   style={{
                     color: "white",
-                    fontSize: "1.4rem",
-                    marginLeft: "0.7rem",
+                    fontSize: `${
+                      Math.min(windowSize.height, windowSize.width) * 0.08
+                    }px`,
+                    marginLeft: `${
+                      Math.min(windowSize.height, windowSize.width) * 0.04
+                    }px`,
                   }}
                 />
               ) : val.icon == "ExploreOutlinedIcon" ? (
                 <ExploreOutlinedIcon
                   style={{
                     color: "white",
-                    fontSize: "1.4rem",
-                    marginLeft: "0.7rem",
+                    fontSize: `${
+                      Math.min(windowSize.height, windowSize.width) * 0.08
+                    }px`,
+                    marginLeft: `${
+                      Math.min(windowSize.height, windowSize.width) * 0.04
+                    }px`,
                   }}
                 />
               ) : val.icon === "LocalPhoneOutlinedIcon" ? (
                 <LocalPhoneOutlinedIcon
                   style={{
                     color: "white",
-                    fontSize: "1.4rem",
-                    marginLeft: "0.7rem",
+                    fontSize: `${
+                      Math.min(windowSize.height, windowSize.width) * 0.08
+                    }px`,
+                    marginLeft: `${
+                      Math.min(windowSize.height, windowSize.width) * 0.04
+                    }px`,
                   }}
                 />
               ) : val.icon === "EmailOutlinedIcon" ? (
                 <EmailOutlinedIcon
                   style={{
                     color: "white",
-                    fontSize: "1.4rem",
-                    marginLeft: "0.7rem",
+                    fontSize: `${
+                      Math.min(windowSize.height, windowSize.width) * 0.08
+                    }px`,
+                    marginLeft: `${
+                      Math.min(windowSize.height, windowSize.width) * 0.04
+                    }px`,
                   }}
                 />
               ) : (
                 <Typography
-                  style={{ marginLeft: "0.9rem" }}
-                  className={`tw-w-[90%] tw-pr-9 tw-text-center tw-capitalize`}
+                  style={{
+                    fontSize: `${
+                      Math.min(windowSize.height, windowSize.width) * 0.07
+                    }px`,
+                    marginLeft: `${
+                      Math.min(windowSize.height, windowSize.width) * 0.04
+                    }px`,
+                    paddingRight: `${
+                      Math.min(windowSize.height, windowSize.width) * 0.04
+                    }px`,
+                  }}
+                  className={`tw-w-[90%] tw-text-center tw-capitalize`}
                 >
                   {val.icon}
                 </Typography>
@@ -241,19 +297,26 @@ const TemplateContainer = ({
             }
           >
             <Typography
-              style={{ fontSize: val.label === "Correo" ? "14px" : undefined }}
-              className={`tw-w-[90%] tw-pr-9 tw-text-center tw-truncate`}
+              style={{
+                fontSize: `${
+                  Math.min(windowSize.height, windowSize.width) * 0.05
+                }px`,
+                paddingRight: `${
+                  Math.min(windowSize.height, windowSize.width) * 0.04
+                }px`,
+              }}
+              className={`tw-w-[90%] tw-text-center tw-truncate`}
             >
               {val.label === "phones"
                 ? val?.indicative + " " + val?.text
-                : val?.text && val?.text?.length > 20
-                ? val?.text.substring(0, 17) + "..."
+                : val?.text && val?.text?.length > 21
+                ? val?.text.substring(0, 18) + "..."
                 : val?.text || ""}
             </Typography>
           </Button>
         ) : null
       )}
-    </div>
+    </>
   );
 
   return (
@@ -261,9 +324,7 @@ const TemplateContainer = ({
     companyData &&
     headquarterData && (
       <Container
-        className={`tw-h-[50%] tw-flex tw-flex-col tw-content-center tw-items-center tw-justify-center tw-p-0 ${
-          isSmallScreen ? "tw-mt-2" : "tw-mt-0"
-        }`}
+        className={`tw-h-[50%] tw-flex tw-flex-col tw-content-center tw-items-center tw-justify-center tw-p-0`}
       >
         <SaveContactButtonColor
           colorButton={color}
@@ -271,16 +332,16 @@ const TemplateContainer = ({
           companyData={companyData}
           companyDataUrls={companyDataUrls}
           areaData={areaDataUrls}
-          second={false}
         />
         <Container
-          className={`tw-flex tw-flex-col tw-items-center tw-justify-center tw-z-10 tw-h-[90%] tw-p-0`}
+          ref={containerRef}
+          className={`tw-flex tw-z-10 tw-h-[90%] tw-p-0`}
         >
           {finalArray.length > 0 && (
             <Carousel
               navButtonsAlwaysVisible
               swipe={false}
-              className={`tw-flex tw-flex-col tw-w-full tw-h-full tw-content-center tw-items-center tw-justify-center `}
+              className={`tw-flex tw-flex-col tw-w-full tw-h-full tw-justify-end `}
               autoPlay={false}
               activeIndicatorIconButtonProps={{
                 style: {
@@ -293,7 +354,7 @@ const TemplateContainer = ({
                   top: 0, // Posiciona los indicadores en la parte superior
                   margin: 0,
                   width: "100%",
-                  height: "12%", // Ajusta la altura del contenedor de indicadores
+                  height: "10%", // Ajusta la altura del contenedor de indicadores
                   textAlign: "center",
                   alignContent: "center",
                   zIndex: 1,
@@ -311,16 +372,18 @@ const TemplateContainer = ({
                   sx={{
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "center",
                     alignItems: "center",
-                    textAlign: "center", // Esto asegura que todo quede centrado
-                    width: "100%", // Asegúrate de que use todo el ancho
+                    height: windowSize.height * 0.9,
                   }}
                 >
                   {i === 2 && (
-                    <div className="tw-flex tw-pt-6 tw-w-[60%]">
+                    <div className="tw-flex tw-w-[60%]">
                       <Typography
-                        style={{ fontSize: "15px" }}
+                        style={{
+                          fontSize: `${
+                            Math.min(windowSize.height, windowSize.width) * 0.04
+                          }px`,
+                        }}
                         className={`tw-w-[90%] tw-text-start tw-truncate tw-font-bold tw-text-white`}
                       >
                         Horario
@@ -328,9 +391,9 @@ const TemplateContainer = ({
                     </div>
                   )}
                   <div
-                    className={`tw-overflow-y-auto tw-h-full tw-max-h-[230px]`}
+                    className={`tw-flex tw-flex-col tw-h-full tw-w-[80%] tw-justify-around tw-overflow-y-auto`}
                   >
-                    <Item item={item} />
+                    <Item item={item} isPadding={i === 2} />
                   </div>
                 </Box>
               ))}

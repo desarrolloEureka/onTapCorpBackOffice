@@ -2,9 +2,7 @@ import { GetAllSocialNetworks, SendDataUrlClick, } from "@/firebase/user";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { Typography } from "@mui/material";
-
 
 //const regex = /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,}(\/[a-zA-Z0-9\-._~:?#\[\]@!$&'()*+,;=]*)?(\?[;&a-zA-Z0-9%_.~+=-]*)?(#[a-zA-Z0-9-_]*)?$/i;
 const regex = /^(https?:\/\/)?(([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,})(\/[^\s]*)?$/i;
@@ -33,32 +31,34 @@ const CustomButton = ({
   styles,
   urlName,
   collectionRef,
-  documentId
+  documentId,
+  widthSize,
+  heightSize,
 }: {
   userData: any;
   name: string;
   nameLabel?: string;
   link: string;
   styles?: string;
-  urlName: string
-  collectionRef: string
-  documentId: string
+  urlName: string;
+  collectionRef: string;
+  documentId: string;
+  widthSize: number;
+  heightSize: number;
 }) => {
   const [data, setData] = useState<any>(null);
-  const isSmallScreen = useMediaQuery("(max-height:780px)");
   let icon = data?.find((val: any) => val.logoName === name);
+
   if (!icon) {
     try {
       new URL(name); // Verifica si 'name' es una URL válida
-      icon = {
-        imageUrl: name,
-      };
-    } catch {}
+      icon = { imageUrl: name };
+    } catch { }
   }
 
   useEffect(() => {
     const fetchAllSocialNetworks = async () => {
-      if(userData?.idCompany){
+      if (userData?.idCompany) {
         const data2 = await GetAllSocialNetworks(userData?.idCompany);
         setData(data2);
       }
@@ -82,47 +82,51 @@ const CustomButton = ({
     if (!isValidUrl(fullUrl)) {
       event.preventDefault();
       alert("La URL proporcionada no es válida."); // Muestra un mensaje de error al usuario
-      
+
     }
     if (userData && urlName) {
-        const dataSend = {
-          //prueba: "PruebaUrl"
-          timestamp: new Date().toISOString()
-        };
-          await SendDataUrlClick(documentId, dataSend, urlName, userData?.uid, collectionRef);
-        }
+      const dataSend = {
+        //prueba: "PruebaUrl"
+        timestamp: new Date().toISOString()
+      };
+      await SendDataUrlClick(documentId, dataSend, urlName, userData?.uid, collectionRef);
+    }
   };
 
   return (
     icon?.imageUrl && (
       <Link
-        className={`tw-rounded-full tw-mt-1 tw-drop-shadow-xl ${styles}`}
+        className={`tw-items-center tw-justify-center tw-rounded-full tw-drop-shadow-xl ${styles}`}
         style={{ textDecoration: "none" }}
         href={finalUrl || "#"}
         target="_blank"
         rel="noopener noreferrer"
         onClick={handleClick}
       >
-        <div className="tw-flex tw-items-center tw-justify-center tw-flex-col tw-mx-2" style={{ minWidth: '50px' }}>
-          <Image
-            className="tw-shadow-[0_0px_05px_05px_rgba(0,0,0,0.1)] tw-rounded-full"
-            src={icon.imageUrl}
-            alt={name}
-            width={isSmallScreen ? 45 : 54}
-            height={isSmallScreen ? 45 : 54}
-          />
-          <Typography
-            style={{ width: "100%", textDecoration: "none" }}
-            className="tw-text-white tw-z-10 tw-text-xs tw-flex tw-items-center tw-justify-center tw-capitalize tw-pt-1"
-            color={"white"}
-          >
-            {nameLabel
-              && nameLabel.length > 9
-                ? nameLabel.substring(0, 6) + "..."
-                : nameLabel
-              }
-          </Typography>
-        </div>
+        {widthSize && heightSize && <Image
+          className="tw-shadow-[0_0px_05px_05px_rgba(0,0,0,0.1)] tw-rounded-full"
+          src={icon.imageUrl}
+          alt={name}
+          width={(widthSize > heightSize ? heightSize : widthSize) * 0.7}
+          height={(widthSize > heightSize ? heightSize : widthSize) * 0.7}
+        />}
+
+        <Typography
+          style={{ 
+            width: "100%",
+            textDecoration: "none",
+            fontSize: `${Math.min(widthSize, heightSize) * 0.15}px`,
+            marginTop: `${Math.max(widthSize, heightSize) * 0.03}px`,
+          }}
+          className="tw-z-10 tw-flex tw-items-center tw-justify-center tw-capitalize"
+          color={"white"}
+        >
+          {nameLabel
+            && nameLabel.length > 9
+            ? nameLabel.substring(0, 6) + "..."
+            : nameLabel
+          }
+        </Typography>
       </Link>
     )
   );
