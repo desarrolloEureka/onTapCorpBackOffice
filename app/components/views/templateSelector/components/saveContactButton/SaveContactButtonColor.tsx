@@ -1,7 +1,7 @@
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { countries } from "@/data/constants";
+import { useEffect, useRef, useState } from "react";
 
 const SaveContactButtonColor = ({
   colorButton,
@@ -9,16 +9,36 @@ const SaveContactButtonColor = ({
   companyData,
   companyDataUrls,
   areaData,
-  second,
 }: {
-  second?: boolean;
   colorButton?: string;
   userData: any;
   companyData: any;
   companyDataUrls: any;
   areaData: any;
 }) => {
-  const isSmallScreen = useMediaQuery("(max-height:780px)");
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [windowSize, setWindowSize] = useState({
+    width: 0,
+    height: 0,
+  });
+
+    useEffect(() => {
+      const handleResize = () => {
+        if (containerRef.current) {
+          setWindowSize({
+            width: containerRef.current.offsetWidth,
+            height: containerRef.current.offsetHeight,
+          });
+        }
+      };
+  
+      handleResize();
+      window.addEventListener("resize", handleResize);
+  
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }, []);
 
   const downloadTxtFile = (vcfText: string) => {
     const element = document.createElement("a");
@@ -36,13 +56,6 @@ const SaveContactButtonColor = ({
 
   const saveVCard = () => {
     if (userData) {
-      // Convertir la imagen a base64
-      // var reader = new FileReader();
-      // reader.readAsDataURL();
-      // reader.onload = function () {
-      //   var imageData = reader.result.split(',')[1]; // Obtener solo los datos base64
-      // };
-
       var vCardData = `BEGIN:VCARD\nVERSION:3.0\nFN:${
         userData.firstName[1] && userData.firstName[0]
           ? userData.firstName[0]
@@ -112,25 +125,23 @@ const SaveContactButtonColor = ({
       downloadTxtFile(vCardData);
     }
   };
+
   return (
     <Box
+      ref={containerRef} 
       sx={{ position: "relative" }}
-      className={`tw-flex tw-rounded-3xl ${
-        second ? "tw-h-[100%]" : "tw-h-[10%]"
-      } tw-w-[100%] tw-content-center tw-items-center tw-justify-center`}
+      className={`tw-flex tw-rounded-3xl tw-h-[10%] tw-w-full tw-content-center tw-items-center tw-justify-center`}
     >
       <Button
         onClick={saveVCard}
         sx={{ textTransform: "none" }}
-        className={`tw-drop-shadow-xl tw-rounded-2xl tw-bg-white ${
-          isSmallScreen ? "tw-h-[30px] " : "tw-h-[36px] "
-        } `}
+        className={`tw-drop-shadow-xl tw-rounded-full tw-bg-white`}
         variant="contained"
         startIcon={
           <SaveOutlinedIcon
             style={{
               color: colorButton ?? undefined,
-              fontSize: "1.5rem",
+              fontSize: `${Math.min(windowSize.height, windowSize.width) * 0.6}px`,
             }}
           />
         }
@@ -138,7 +149,12 @@ const SaveContactButtonColor = ({
         <Typography
           className="tw-capitalize"
           color={colorButton}
-          style={{ fontWeight: 500, fontSize: 14 }}
+          style={{ 
+            fontWeight: 500,
+            width: "100%",
+            textDecoration: "none",
+            fontSize: `${Math.min(windowSize.height, windowSize.width) * 0.35}px`,
+          }}
         >
           guardar Contacto
         </Typography>

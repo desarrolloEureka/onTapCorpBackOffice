@@ -60,6 +60,7 @@ DirectionsMapsProps) {
             strokeWeight: 7,
           },
           infoWindow: infoWindow,
+          preserveViewport: true,
         });
         setRoutes(response.routes);
       });

@@ -1,8 +1,6 @@
-import { daysInSpanish } from "@/data/campus";
+import React, { useEffect, useState } from "react";
 import { GoogleMapComponentProps } from "@/types/googleMaps";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import { MenuItem, Select } from "@mui/material";
-import { styled } from "@mui/system";
 import {
   AdvancedMarker,
   APIProvider,
@@ -17,58 +15,51 @@ import { MdOutlineBusinessCenter, MdOutlinePhone } from "react-icons/md";
 import { PiPersonArmsSpreadFill } from "react-icons/pi";
 import DirectionsMaps from "./Directions";
 import Polygon from "./Polygon";
-import React from "react";
 
 const GoogleMapComponent2 = ({
   mapContainerStyle,
   center,
-  fixedPoints,
-  routeCoordinates,
-  zoneCoordinates,
-  selectedMarker,
-  setSelectedMarker,
-  dataRoutes,
-  dataFixedPoints,
-  setDataFixedPoints,
-  selectedPosition,
-  setSelectedPosition,
-  setDataRoutes,
-  officeLocations,
-  zoom = 11,
   mapToShow,
+  zoneCoordinates,
+  officeLocations,
   employeeLocations,
-  dataCampus,
-  setDataCampus,
-  selectedCampus,
-  setSelectedCampus,
-  selectedEmployee,
-  setSelectedEmployee,
-  dataEmployee,
-  setDataEmployee,
-  handleChangeDay,
-  day,
+  routeCoordinates,
+  fixedPoints,
 }: GoogleMapComponentProps) => {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
   const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID || "";
 
-  const CustomSelect = styled(Select)({
-    backgroundColor: "#396593",
-    width: "auto",
-    height: 32,
-    color: "#fff",
-    "& .MuiSelect-icon": {
-      color: "#fff",
-    },
-    "& .MuiOutlinedInput-notchedOutline": {
-      borderColor: "transparent",
-    },
-    "&:hover .MuiOutlinedInput-notchedOutline": {
-      borderColor: "transparent",
-    },
-    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-      borderColor: "transparent",
-    },
-  });
+  const [dataCampusInfo, setDataCampusInfo] = useState<any>();
+  const [dataEmployeeInfo, setDataEmployeeInfo] = useState<any>();
+  const [dataRoutesInfo, setDataRoutesInfo] = useState<any>();
+  const [dataFixedPointsInfo, setDataFixedPointsInfo] = useState<any>();
+  const [day, setDay] = useState("");
+
+  const [positionViewCampus, setPositionViewCampus] =
+    useState<google.maps.LatLngLiteral | null>(null);
+  const [positionViewEmployee, setPositionViewEmployee] = useState<
+    google.maps.LatLngLiteral | any
+  >(null);
+  const [positionViewRoute, setPositionViewRoute] =
+    useState<google.maps.LatLngLiteral | null>(null);
+  const [positionViewFixedPoint, setPositionViewFixedPoint] =
+    useState<google.maps.LatLngLiteral | null>(null);
+
+  useEffect(() => {
+    const today = new Date().getDay();
+    // Mapeo de días a las rutas correspondientes
+    const routes: { [key: number]: string } = {
+      0: "sundayRoute",
+      1: "mondayRoute",
+      2: "tuesdayRoute",
+      3: "wednesdayRoute",
+      4: "thursdayRoute",
+      5: "fridayRoute",
+      6: "saturdayRoute",
+    };
+    // Establece la ruta correspondiente al día actual
+    setDay(routes[today]);
+  }, []);
 
   return (
     center && (
@@ -76,45 +67,43 @@ const GoogleMapComponent2 = ({
         <Map
           style={mapContainerStyle}
           defaultCenter={center}
-          defaultZoom={zoom}
-          // gestureHandling={"greedy"}
+          defaultZoom={15}
           mapId={mapId}
           disableDefaultUI={false}
-          // scaleControl={true}
           streetViewControl={false}
         >
           {(mapToShow === "fixedPoints" || mapToShow === "all") && (
-            <div>
+            <>
               {/* Marcadores en puntos específicos */}
               {fixedPoints?.map((point, index) => (
                 <AdvancedMarker
                   key={index}
                   position={point}
                   onClick={() => {
-                    setSelectedMarker({
+                    setPositionViewFixedPoint({
                       lat: point.lat,
                       lng: point.lng,
                     });
-                    setDataFixedPoints(point);
+                    setDataFixedPointsInfo(point);
                   }}
                 >
                   <IoPin size={38} color={point?.color} />
                 </AdvancedMarker>
               ))}
               {/* Si hay un marcador seleccionado, mostramos InfoWindow */}
-              {selectedMarker && (
+              {positionViewFixedPoint?.lat && positionViewFixedPoint?.lng && (
                 <InfoWindow
-                  position={selectedMarker}
+                  position={positionViewFixedPoint}
                   onCloseClick={() => {
-                    setSelectedMarker(null);
-                    setDataFixedPoints(null);
+                    setPositionViewFixedPoint(null);
+                    setDataFixedPointsInfo(null);
                   }}
                 >
                   <div className="tw-text-black tw-flex tw-flex-col tw-w-52">
                     <div className="tw-flex tw-flex-row tw-space-x-2">
                       <span
                         style={{
-                          color: dataFixedPoints?.color,
+                          color: dataFixedPointsInfo?.color,
                         }}
                       >
                         <IoPin size={28} />
@@ -122,32 +111,32 @@ const GoogleMapComponent2 = ({
                       <h4 className="tw-m-0">Nombre: </h4>
                     </div>
                     <span className="tw-text-lg tw-pb-2">
-                      {dataFixedPoints?.name}
+                      {dataFixedPointsInfo?.name}
                     </span>
                     <h5 className="tw-m-0 tw-text-[#396593]">Nombre Punto:</h5>
                     <span className="tw-text-base tw-pb-2">
-                      {dataFixedPoints?.pointName}
+                      {dataFixedPointsInfo?.pointName}
                     </span>
                     <h5 className="tw-m-0 tw-text-[#396593]">Dirección:</h5>
                     <span className="tw-text-base tw-pb-2">
-                      {dataFixedPoints?.address}
+                      {dataFixedPointsInfo?.address}
                     </span>
                   </div>
                 </InfoWindow>
               )}
-            </div>
+            </>
           )}
 
           {(mapToShow === "campus" || mapToShow === "all") && (
-            <div>
+            <>
               {/* Marcadores en las sedes */}
               {officeLocations?.map((campus, index) => (
                 <AdvancedMarker
                   key={index}
                   position={campus.geolocation}
                   onClick={() => {
-                    setSelectedCampus(campus.geolocation);
-                    setDataCampus(campus);
+                    setPositionViewCampus(campus.geolocation);
+                    setDataCampusInfo(campus);
                   }}
                 >
                   <IoBusiness size={32} color="#CF10EE" />
@@ -155,12 +144,12 @@ const GoogleMapComponent2 = ({
               ))}
 
               {/* Si hay una sede seleccionada, mostramos InfoWindow */}
-              {selectedCampus && (
+              {positionViewCampus && (
                 <InfoWindow
-                  position={selectedCampus}
+                  position={positionViewCampus}
                   onCloseClick={() => {
-                    setSelectedCampus(null);
-                    setDataCampus(null);
+                    setPositionViewCampus(null);
+                    setDataCampusInfo(null);
                   }}
                 >
                   <div className="tw-text-black tw-flex tw-flex-col tw-w-64">
@@ -169,63 +158,65 @@ const GoogleMapComponent2 = ({
                       <h4 className="tw-m-0">Nombre: </h4>
                     </div>
                     <span className="tw-text-lg tw-pb-2">
-                      {dataCampus?.name}
+                      {dataCampusInfo?.name}
                     </span>
                     <h5 className="tw-m-0 tw-text-[#396593]">Dirección:</h5>
                     <span className="tw-text-base tw-pb-2">
-                      {dataCampus?.address}
+                      {dataCampusInfo?.address}
                     </span>
                     <h5 className="tw-m-0 tw-text-[#396593]">Url:</h5>
                     <span className="tw-text-base tw-pb-2">
-                      {dataCampus?.url}
+                      {dataCampusInfo?.url}
                     </span>
                     <div className="tw-flex tw-pb-2 tw-w-full">
-                      {dataCampus?.phones?.map((phone: any, index: number) => (
-                        <div
-                          key={index}
-                          className="tw-flex tw-flex-col tw-w-full tw-gap-2"
-                        >
-                          <h5 className="tw-m-0 tw-text-[#396593]">
-                            Teléfono:
-                          </h5>
-                          <div className="tw-space-x-2">
-                            <span className="tw-text-base">
-                              {phone.indicative.includes("+")
-                                ? phone.indicative
-                                : `+${phone.indicative}`}
-                            </span>
-                            <span className="tw-text-base">{phone.text}</span>
+                      {dataCampusInfo?.phones?.map(
+                        (phone: any, index: number) => (
+                          <div
+                            key={index}
+                            className="tw-flex tw-flex-col tw-w-full tw-gap-2"
+                          >
+                            <h5 className="tw-m-0 tw-text-[#396593]">
+                              Teléfono:
+                            </h5>
+                            <div className="tw-space-x-2">
+                              <span className="tw-text-base">
+                                {phone.indicative.includes("+")
+                                  ? phone.indicative
+                                  : `+${phone.indicative}`}
+                              </span>
+                              <span className="tw-text-base">{phone.text}</span>
+                            </div>
+                            <div className="">
+                              <h5 className="tw-m-0 tw-text-[#396593]">Ext:</h5>
+                              <span className="tw-text-base">{phone.ext}</span>
+                            </div>
                           </div>
-                          <div className="">
-                            <h5 className="tw-m-0 tw-text-[#396593]">Ext:</h5>
-                            <span className="tw-text-base">{phone.ext}</span>
-                          </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                   </div>
                 </InfoWindow>
               )}
-            </div>
+            </>
           )}
 
           {(mapToShow === "employees" || mapToShow === "all") && (
-            <div>
+            <>
               {/* Marcadores de los empleados */}
               {employeeLocations?.map((employee, index) => (
                 <AdvancedMarker
                   key={index}
                   position={employee.geolocation}
                   onClick={() => {
-                    setSelectedEmployee(employee.geolocation);
-                    setDataEmployee(employee);
+                    setPositionViewEmployee(employee.geolocation);
+                    setDataEmployeeInfo(employee);
                   }}
                 >
                   <PiPersonArmsSpreadFill size={32} color="#E32B2B" />
                 </AdvancedMarker>
               ))}
               {/* Si hay un Empleado seleccionado, mostramos InfoWindow */}
-              {selectedEmployee && (
+              {positionViewEmployee && (
                 <InfoWindow
                   className="border-top border-primary"
                   headerContent={
@@ -234,14 +225,15 @@ const GoogleMapComponent2 = ({
                       <PiPersonArmsSpreadFill size={26} />
                       <h6 className="tw-m-0">Empleado: </h6>
                       <span className="tw-text-[#396593] tw-text-base tw-font-bold">
-                        {dataEmployee?.firstName} {dataEmployee?.lastName}
+                        {dataEmployeeInfo?.firstName}{" "}
+                        {dataEmployeeInfo?.lastName}
                       </span>
                     </div>
                   }
-                  position={selectedEmployee}
+                  position={positionViewEmployee}
                   onCloseClick={() => {
-                    setSelectedEmployee(null);
-                    setDataEmployee(null);
+                    setPositionViewEmployee(null);
+                    setDataEmployeeInfo(null);
                   }}
                 >
                   <div className="tw-text-black tw-flex tw-flex-col tw-w-auto lg:tw-w-[600px] tw-h-full tw-px-5 lg:tw-px-10 tw-space-y-4">
@@ -259,7 +251,7 @@ const GoogleMapComponent2 = ({
                           height: "122px",
                           border: "8px solid #396593",
                           borderRadius: "50%",
-                          backgroundColor: dataEmployee.ImageProfile
+                          backgroundColor: dataEmployeeInfo.ImageProfile
                             ? "transparent"
                             : "#396593",
                           display: "flex",
@@ -270,7 +262,7 @@ const GoogleMapComponent2 = ({
                           textAlign: "center",
                         }}
                       >
-                        {dataEmployee.ImageProfile && (
+                        {dataEmployeeInfo.ImageProfile && (
                           <img
                             style={{
                               width: "101%",
@@ -279,11 +271,7 @@ const GoogleMapComponent2 = ({
                               borderRadius: "50%",
                             }}
                             className="tw-rounded-full tw-object-cover"
-                            src={
-                              dataEmployee.ImageProfile
-                                ? dataEmployee.ImageProfile
-                                : ""
-                            }
+                            src={dataEmployeeInfo?.ImageProfile || ""}
                             alt="Profile Photo"
                           />
                         )}
@@ -296,7 +284,7 @@ const GoogleMapComponent2 = ({
                         <div className="tw-flex tw-flex-row tw-space-x-2 tw-text-[#396593] border-bottom border-primary tw-items-center">
                           <PersonOutlineOutlinedIcon />
                           <span className="tw-text-lg tw-font-normal">
-                            {dataEmployee?.firstName}
+                            {dataEmployeeInfo?.firstName}
                           </span>
                         </div>
                         <span className="tw-text-sm">Nombre</span>
@@ -307,7 +295,7 @@ const GoogleMapComponent2 = ({
                         <div className="tw-flex tw-flex-row tw-space-x-2 tw-text-[#396593] border-bottom border-primary tw-items-center">
                           <PersonOutlineOutlinedIcon />
                           <span className="tw-text-lg tw-font-normal">
-                            {dataEmployee?.lastName}
+                            {dataEmployeeInfo?.lastName}
                           </span>
                         </div>
                         <span className="tw-text-sm">Apellido</span>
@@ -318,7 +306,7 @@ const GoogleMapComponent2 = ({
                         <div className="tw-flex tw-flex-row tw-space-x-2 tw-text-[#396593] border-bottom border-primary tw-items-center">
                           <FaRegAddressCard size={19} />
                           <span className="tw-text-lg tw-font-normal">
-                            {dataEmployee?.documentType}
+                            {dataEmployeeInfo?.documentType}
                           </span>
                         </div>
                         <span className="tw-text-sm">Tipo de Documento</span>
@@ -329,7 +317,7 @@ const GoogleMapComponent2 = ({
                         <div className="tw-flex tw-flex-row tw-space-x-2 tw-text-[#396593] border-bottom border-primary tw-items-center">
                           <FaRegAddressCard size={19} />
                           <span className="tw-text-lg tw-font-normal">
-                            {dataEmployee?.documentNumber}
+                            {dataEmployeeInfo?.documentNumber}
                           </span>
                         </div>
                         <span className="tw-text-sm">Documento</span>
@@ -340,7 +328,7 @@ const GoogleMapComponent2 = ({
                         <div className="tw-flex tw-flex-row tw-space-x-2 tw-text-[#396593] border-bottom border-primary tw-items-center">
                           <LiaBirthdayCakeSolid size={22} />
                           <span className="tw-text-lg tw-font-normal">
-                            {dataEmployee?.dateOfBirth}
+                            {dataEmployeeInfo?.dateOfBirth}
                           </span>
                         </div>
                         <span className="tw-text-sm">Fecha de Nacimiento</span>
@@ -351,14 +339,14 @@ const GoogleMapComponent2 = ({
                         <div className="tw-flex tw-flex-row tw-space-x-2 tw-text-[#396593] border-bottom border-primary tw-items-center">
                           <MdOutlineBusinessCenter size={20} />
                           <span className="tw-text-lg tw-font-normal">
-                            {dataEmployee?.position}
+                            {dataEmployeeInfo?.position}
                           </span>
                         </div>
                         <span className="tw-text-sm">Cargo</span>
                       </div>
 
                       {/* Emails */}
-                      {dataEmployee?.emails?.map(
+                      {dataEmployeeInfo?.emails?.map(
                         (email: string, index: number) => (
                           <div
                             key={index}
@@ -378,20 +366,22 @@ const GoogleMapComponent2 = ({
                       )}
 
                       {/* Teléfonos */}
-                      {dataEmployee?.phones.map((phone: any, index: number) => (
-                        <div
-                          key={index}
-                          className="tw-flex tw-w-full tw-flex-col tw-space-y-1 tw-pb-4"
-                        >
-                          <div className="tw-flex tw-flex-row tw-space-x-2 tw-text-[#396593] border-bottom border-primary tw-items-center">
-                            <MdOutlinePhone size={18} />
-                            <span className="tw-text-lg tw-font-normal">
-                              {phone.text}
-                            </span>
+                      {dataEmployeeInfo?.phones.map(
+                        (phone: any, index: number) => (
+                          <div
+                            key={index}
+                            className="tw-flex tw-w-full tw-flex-col tw-space-y-1 tw-pb-4"
+                          >
+                            <div className="tw-flex tw-flex-row tw-space-x-2 tw-text-[#396593] border-bottom border-primary tw-items-center">
+                              <MdOutlinePhone size={18} />
+                              <span className="tw-text-lg tw-font-normal">
+                                {phone.text}
+                              </span>
+                            </div>
+                            <span className="tw-text-sm">Teléfono</span>
                           </div>
-                          <span className="tw-text-sm">Teléfono</span>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                     {/* Datos laborales */}
                     <div className="tw-flex tw-w-full tw-flex-col tw-justify-center tw-items-center">
@@ -399,66 +389,23 @@ const GoogleMapComponent2 = ({
                         <div className="tw-flex tw-w-full tw-flex-col tw-space-y-1 ">
                           <h5 className="tw-m-0">Área de trabajo:</h5>
                           <span className="tw-text-base tw-bg-[#396593] tw-rounded-md tw-px-3 tw-w-3/4 tw-text-white tw-py-1">
-                            {dataEmployee?.selectedArea}
+                            {dataEmployeeInfo?.selectedArea}
                           </span>
                         </div>
                         <div className="tw-flex tw-w-full tw-flex-col tw-space-y-1">
                           <h5 className="tw-m-0">Sede:</h5>
                           <span className="tw-text-base tw-bg-[#396593] tw-rounded-md tw-px-3 tw-w-3/4 tw-text-white tw-py-1">
-                            {dataEmployee?.selectedHeadquarter}
+                            {dataEmployeeInfo?.selectedHeadquarter}
                           </span>
                         </div>
                       </div>
 
                       <div className="tw-flex tw-w-full tw-flex-row tw-justify-center tw-items-center tw-pb-4">
-                        {/* <div className="tw-flex tw-w-full tw-flex-col tw-space-y-1">
-                                                    <h5 className="tw-m-0">
-                                                        Día de Ruta:
-                                                    </h5>
-
-                                                    <CustomSelect
-                                                        className="tw-rounded-md tw-w-3/4"
-                                                        labelId="area-label"
-                                                        value={day}
-                                                        onChange={
-                                                            handleChangeDay
-                                                        }
-                                                        label=""
-                                                    >
-                                                        {dataEmployee?.routes &&
-                                                            Object.keys(
-                                                                dataEmployee?.routes,
-                                                            ).map(
-                                                                (
-                                                                    day,
-                                                                    index,
-                                                                ) => (
-                                                                    <MenuItem
-                                                                        key={
-                                                                            index
-                                                                        }
-                                                                        value={
-                                                                            day
-                                                                        }
-                                                                    >
-                                                                        {
-                                                                            daysInSpanish[
-                                                                                day.slice(
-                                                                                    0,
-                                                                                    -5,
-                                                                                )
-                                                                            ]
-                                                                        }
-                                                                    </MenuItem>
-                                                                ),
-                                                            )}
-                                                    </CustomSelect>
-                                                </div> */}
                         <div className="tw-flex tw-w-full tw-flex-col tw-space-y-1">
                           <h5 className="tw-m-0">Nombre de Ruta:</h5>
                           <span className="tw-text-base text-black">
-                            {dataEmployee?.routes[day]
-                              ? dataEmployee?.routes[day]
+                            {dataEmployeeInfo?.routes[day]
+                              ? dataEmployeeInfo?.routes[day]
                               : "N/A"}
                           </span>
                         </div>
@@ -467,31 +414,28 @@ const GoogleMapComponent2 = ({
                   </div>
                 </InfoWindow>
               )}
-            </div>
+            </>
           )}
 
           {(mapToShow === "routes" || mapToShow === "all") && (
-            <div>
+            <>
               <div>
                 {routeCoordinates?.map((route: any, index: number) => {
-                  const waypointsCoords = route.geolocations.map(
-                    (geo: any) => geo.coords
-                  );
                   return (
                     <DirectionsMaps
                       key={index}
-                      waypointsCoords={waypointsCoords}
+                      waypointsCoords={route?.geolocations?.map((geo: any) => geo.coords)}
                     />
                   );
                 })}
               </div>
-              {selectedPosition && (
+              {positionViewRoute && (
                 // Mostrar información de la ruta
                 <InfoWindow
-                  position={selectedPosition}
+                  position={positionViewRoute}
                   onCloseClick={() => {
-                    setSelectedPosition(null);
-                    setDataRoutes(null);
+                    setPositionViewRoute(null);
+                    setDataRoutesInfo(null);
                   }}
                 >
                   <div className="tw-text-black tw-flex tw-flex-col tw-w-80">
@@ -502,19 +446,19 @@ const GoogleMapComponent2 = ({
                       <h4 className="tw-m-0">Nombre: </h4>
                     </div>
                     <span className="tw-text-lg tw-pb-2">
-                      {dataRoutes?.routeName}
+                      {dataRoutesInfo?.routeName}
                     </span>
                     <h5 className="tw-m-0 tw-text-[#396593]">
                       Zona a la que corresponde:
                     </h5>
                     <span className="tw-text-base tw-pb-2">
-                      {dataRoutes?.zoneName}
+                      {dataRoutesInfo?.zoneName}
                     </span>
                     <h5 className="tw-m-0 tw-text-[#396593]">Jefe de ruta:</h5>
                     <span className="tw-text-base tw-pb-2">
-                      {dataRoutes?.routeManager}
+                      {dataRoutesInfo?.routeManager}
                     </span>
-                    {dataRoutes?.geolocations?.map(
+                    {dataRoutesInfo?.geolocations?.map(
                       (point: any, index: number) => (
                         <div key={index}>
                           <div className="tw-flex tw-flex-row tw-space-x-2">
@@ -531,15 +475,15 @@ const GoogleMapComponent2 = ({
                   </div>
                 </InfoWindow>
               )}
-            </div>
+            </>
           )}
 
           {(mapToShow === "areas" || mapToShow === "all") && (
-            <div>
+            <>
               {/* Resaltar un área con polígono */}
               {zoneCoordinates?.map((zone: any, index: number) => (
                 <Polygon
-                  paths={zone?.slice(1)}
+                  paths={zone?.slice(2)}
                   key={index}
                   fillColor="#FB9232"
                   fillOpacity={0.5}
@@ -548,7 +492,7 @@ const GoogleMapComponent2 = ({
                   strokeWeight={2}
                 />
               ))}
-            </div>
+            </>
           )}
         </Map>
       </APIProvider>
