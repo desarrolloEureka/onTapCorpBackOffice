@@ -399,8 +399,9 @@ export const GoogleMapsHook = () => {
         });
     };
 
-    useEffect(() => {
-        if (selectedBySearch === "") {
+    const handleInputChange = useCallback((text: string) => {
+        setSelectedBySearch(text);
+        if (text === "") {
             setZoneCoordinatesFiltered(zoneCoordinatesData);
             setOfficeLocationsFiltered(officeLocationsData);
             setEmployeeLocationsFiltered(employeeLocationsData);
@@ -411,9 +412,9 @@ export const GoogleMapsHook = () => {
             setOfficeLocationsFiltered([]);
             setRouteCoordinatesFiltered([]);
             setFixedPointsFiltered([]);
-            setEmployeeLocationsFiltered(filterEmployeesBySearch(selectedBySearch, employeeLocationsData));
+            setEmployeeLocationsFiltered(filterEmployeesBySearch(text, employeeLocationsData));
         }
-    }, [selectedBySearch, zoneCoordinatesData, officeLocationsData, employeeLocationsData, routeCoordinatesData, fixedPointsData]);
+    }, [zoneCoordinatesData, officeLocationsData, employeeLocationsData, routeCoordinatesData, fixedPointsData]);
 
     return {
         mapContainerStyle,
@@ -431,7 +432,7 @@ export const GoogleMapsHook = () => {
         fixedPointsFiltered,
 
         selectedBySearch,
-        setSelectedBySearch,
+        handleInputChange,
 
         filterSelect,
     };

@@ -72,7 +72,7 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
     fixedPointsFiltered,
 
     selectedBySearch,
-    setSelectedBySearch,
+    handleInputChange,
 
     filterSelect,
   } = GoogleMapsHook();
@@ -92,7 +92,7 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
                 placeholder="Búsqueda"
                 inputProps={{ "aria-label": "Búsqueda" }}
                 value={selectedBySearch}
-                onChange={(e) => setSelectedBySearch(e.target.value)}
+                onChange={(e) => handleInputChange(e.target.value)}
 
               />
               <IoSearchSharp size={32} color="#757575" className="tw-mr-3 tw-my-2" />
