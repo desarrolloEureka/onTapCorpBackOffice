@@ -66,42 +66,18 @@ export interface EmployeesCoords {
 export interface GoogleMapComponentProps {
     mapContainerStyle: MapContainerProps;
     center: Coords | undefined;
-    options?: { [key: string]: any };
-    onMapLoad?: (map: any) => void;
-    zoom?: number;
-    fixedPoints?: FixedPointsCoords[];
-    routeCoordinates?: RoutesCoords[];
+    mapToShow?:
+    | "all"
+    | "campus"
+    | "fixedPoints"
+    | "employees"
+    | "routes"
+    | "areas";
     zoneCoordinates?: Coords[][];
     officeLocations?: CampusCoords[];
     employeeLocations?: FormValuesData[];
-    polygonCoords?: number[][][];
-    mapToShow?:
-        | "all"
-        | "campus"
-        | "fixedPoints"
-        | "employees"
-        | "routes"
-        | "areas";
-    selectedMarker: google.maps.LatLngLiteral | null;
-    setSelectedMarker: (e: any) => void;
-    dataRoutes: any;
-    setDataRoutes: (e: any) => void;
-    dataFixedPoints: any;
-    setDataFixedPoints: (e: any) => void;
-    selectedPosition: google.maps.LatLngLiteral | null;
-    setSelectedPosition: (e: any) => void;
-    dataCampus: any;
-    setDataCampus: (e: any) => void;
-    selectedCampus: google.maps.LatLngLiteral | null;
-    setSelectedCampus: (e: any) => void;
-    dataEmployeeLocations: any;
-    setDataEmployeeLocations: (e: any) => void;
-    selectedEmployee: google.maps.LatLngLiteral | null;
-    setSelectedEmployee: (e: any) => void;
-    dataEmployee: any;
-    setDataEmployee: (e: any) => void;
-    handleChangeDay: (e: any) => void;
-    day: string;
+    routeCoordinates?: RoutesCoords[];
+    fixedPoints?: FixedPointsCoords[];
 }
 
 // Definir la estructura de las coordenadas
@@ -114,12 +90,12 @@ export type PolygonData = {
 
 export interface GooglePageProps {
     mapToShow?:
-        | "all"
-        | "campus"
-        | "fixedPoints"
-        | "employees"
-        | "routes"
-        | "areas";
+    | "all"
+    | "campus"
+    | "fixedPoints"
+    | "employees"
+    | "routes"
+    | "areas";
 }
 
 export type InfoWindowMapsProps = {

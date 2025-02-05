@@ -1,5 +1,5 @@
 import { Box, Container } from "@mui/material";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CustomButton from "../customButtons/CustomButton";
 
 const getSocialNetworksOrderedByObject = (urls: any[], columns: number) => {
@@ -33,27 +33,46 @@ const getSocialNetworksOrderedByObject = (urls: any[], columns: number) => {
 const VerticalColButtons = ({ socialNetworks, userData }: { socialNetworks: any[], userData: any }) => {
   const { data } = getSocialNetworksOrderedByObject(socialNetworks, 2);
   const reversedArray = data.slice().reverse();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [windowSize, setWindowSize] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        setWindowSize({
+          width: containerRef.current.offsetWidth,
+          height: containerRef.current.offsetHeight,
+        });
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
-    <Container className="tw-h-[100%] tw-w-[100%] tw-overflow-y-scroll no-scrollbar">
+    <Container ref={containerRef} className="tw-h-[85%] tw-w-[100%] tw-overflow-y-scroll tw-p-0">
       {reversedArray.map((val: any, key: any) => {
         return (
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(2, 1fr)",
-              gap: "15px",
-              marginLeft: -15,
-              marginRight: -15,
+              height: windowSize.height * 0.4,
+              marginBottom: 10
             }}
             key={key}
           >
             {val.map((value: any, i: any) => {
               return (
-                <Box
-                  sx={{ width: "100%", height: 74, paddingBottom: 2 }}
-                  key={i}
-                >
+                <Box key={i}>
                   <CustomButton
                     documentId={userData?.selectedArea}
                     collectionRef="workAreas"
@@ -64,6 +83,8 @@ const VerticalColButtons = ({ socialNetworks, userData }: { socialNetworks: any[
                     styles={`tw-flex tw-flex-col`}
                     userData={userData}
                     urlName={value?.urlName}
+                    widthSize={windowSize.width * 0.5}
+                    heightSize={windowSize.height * 0.4}
                   />
                 </Box>
               );

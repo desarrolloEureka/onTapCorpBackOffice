@@ -1,4 +1,3 @@
-import IconButton from "@mui/material/IconButton";
 import InputBase from "@mui/material/InputBase";
 import Paper from "@mui/material/Paper";
 import { FaSquare } from "react-icons/fa6";
@@ -21,10 +20,9 @@ const BranchFilter = ({
   names2: string
   titulo: string;
   branches: any[];
-  setSelectedBranch: (branch: string) => void;
+  setSelectedBranch: (typeFilter: string, uidSelect: string) => void;
 }) => {
   return (
-
     <Form.Group controlId="branchFilter">
       <Form.Label style={{ fontSize: "15px" }} className="filter-label">Filtrar por {titulo}</Form.Label>
       <Form.Control
@@ -33,21 +31,20 @@ const BranchFilter = ({
         }}
 
         as="select"
-        onChange={(e) => setSelectedBranch(e.target.value)}
+        onChange={(e) => setSelectedBranch(titulo, e.target.value)}
         defaultValue=""
       >
         <option value="">
           {branches.length > 0
-            //? `Seleccionar ${titulo}`
             ? `Mostrar Todos`
             : `No hay ${titulo?.toLocaleLowerCase()}s disponibles`}
         </option>
         {branches.map((branch) => {
-          const displayValue = names2 !== "" ? `${branch?.[names]?.[0]} ${branch?.[names2]?.[0]}` : names === "name" && titulo === "Sede" ? branch?.[names]?.[0] : branch?.[names];
+          const displayValue = names2 !== "" ? `${branch?.[names]} ${branch?.[names2]}` : names === "zoneName" ? branch[1] : branch?.[names];
           return (
             <option
               key={branch?.uid || branch}
-              value={branch?.uid}
+              value={names === "zoneName" ? branch[0] : branch?.uid}
             >
               {displayValue}
             </option>
@@ -63,49 +60,23 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
   const {
     mapContainerStyle,
     center,
-    options,
-    zoom,
-    fixedPoints,
-    officeLocations,
-    zoneCoordinates,
-    selectedMarker,
-    setSelectedMarker,
-    routeCoordinates,
-    dataRoutes,
-    setDataRoutes,
-    dataFixedPoints,
-    setDataFixedPoints,
-    selectedPosition,
-    setSelectedPosition,
-    selectedCampus,
-    setSelectedCampus,
-    dataCampus,
-    setDataCampus,
-    employeeLocations,
-    dataEmployeeLocations,
-    setDataEmployeeLocations,
-    selectedEmployee,
-    setSelectedEmployee,
-    dataEmployee,
-    setDataEmployee,
-    handleChangeDay,
-    day,
-    setSelectedPuntoFijo,
-    setSelectedRuta,
-    setSelectedZona,
-    setSelectedSede,
-    setSelectedEmpleado,
-    EmpleadoData,
-    SedeData,
-    ZonaData,
-    RutaData,
-    PuntoFijoData,
-    selectedEmpleado,
-    selectedEmpleadoByserch,
-    renderSearchEmployees,
-    setSelectedEmpleadoByserch
-  } = GoogleMapsHook();
+    zoneCoordinatesData,
+    officeLocationsData,
+    employeeLocationsData,
+    routeCoordinatesData,
+    fixedPointsData,
+    zoneCoordinatesFiltered,
+    officeLocationsFiltered,
+    employeeLocationsFiltered,
+    routeCoordinatesFiltered,
+    fixedPointsFiltered,
 
+    selectedBySearch,
+    handleInputChange,
+
+    filterSelect,
+  } = GoogleMapsHook();
+  
   return (
     <div className="tw-flew tw-w-full tw-justify-center tw-items-center">
       <div className="tw-container tw-flex tw-flex-col tw-w-auto lg:tw-w-full tw-items-center">
@@ -120,19 +91,11 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
                 className="tw-flex-1 tw-ml-1"
                 placeholder="Búsqueda"
                 inputProps={{ "aria-label": "Búsqueda" }}
-                value={selectedEmpleadoByserch}
-                onChange={(e) => setSelectedEmpleadoByserch(e.target.value)}
+                value={selectedBySearch}
+                onChange={(e) => handleInputChange(e.target.value)}
 
               />
-              <IconButton
-                type="button"
-                className="tw-p-3"
-                aria-label="search"
-                onClick={() => renderSearchEmployees()}
-
-              >
-                <IoSearchSharp size={32} />
-              </IconButton>
+              <IoSearchSharp size={32} color="#757575" className="tw-mr-3 tw-my-2" />
             </Paper>
 
             {/* Filtros */}
@@ -141,8 +104,8 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
                 names={"zoneName"}
                 names2={""}
                 titulo={"Zona"}
-                setSelectedBranch={setSelectedZona}
-                branches={ZonaData}
+                setSelectedBranch={filterSelect}
+                branches={zoneCoordinatesData}
               />
             )}
             {(mapToShow === "all" || mapToShow === "campus") && (
@@ -150,8 +113,8 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
                 names={"name"}
                 names2={""}
                 titulo={"Sede"}
-                setSelectedBranch={setSelectedSede}
-                branches={SedeData}
+                setSelectedBranch={filterSelect}
+                branches={officeLocationsData}
               />
             )}
             {(mapToShow === "all" || mapToShow === "routes") && (
@@ -159,8 +122,8 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
                 names={"routeName"}
                 names2={""}
                 titulo={"Ruta"}
-                setSelectedBranch={setSelectedRuta}
-                branches={RutaData}
+                setSelectedBranch={filterSelect}
+                branches={routeCoordinatesData}
               />
             )}
             {(mapToShow === "all" || mapToShow === "fixedPoints") && (
@@ -168,8 +131,8 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
                 names={"name"}
                 names2={""}
                 titulo={"Puntos Fijos"}
-                setSelectedBranch={setSelectedPuntoFijo}
-                branches={PuntoFijoData}
+                setSelectedBranch={filterSelect}
+                branches={fixedPointsData}
               />
             )}
             {(mapToShow === "all" || mapToShow === "employees") && (
@@ -177,8 +140,8 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
                 names={"firstName"}
                 names2={"lastName"}
                 titulo={"Empleado"}
-                setSelectedBranch={setSelectedEmpleado}
-                branches={EmpleadoData}
+                setSelectedBranch={filterSelect}
+                branches={employeeLocationsData}
               />
             )}
           </div>
@@ -186,35 +149,14 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
 
         <div className="tw-w-full tw-shadow-2xl tw-rounded-lg">
           <GoogleMapComponent2
-            zoom={zoom}
             mapContainerStyle={mapContainerStyle}
-            employeeLocations={employeeLocations}
             center={center}
             mapToShow={mapToShow}
-            fixedPoints={fixedPoints}
-            routeCoordinates={routeCoordinates}
-            zoneCoordinates={zoneCoordinates}
-            selectedMarker={selectedMarker}
-            setSelectedMarker={setSelectedMarker}
-            dataRoutes={dataRoutes}
-            dataFixedPoints={dataFixedPoints}
-            setDataFixedPoints={setDataFixedPoints}
-            officeLocations={officeLocations}
-            selectedPosition={selectedPosition}
-            setSelectedPosition={setSelectedPosition}
-            setDataRoutes={setDataRoutes}
-            dataCampus={dataCampus}
-            setDataCampus={setDataCampus}
-            selectedCampus={selectedCampus}
-            setSelectedCampus={setSelectedCampus}
-            dataEmployeeLocations={dataEmployeeLocations}
-            setDataEmployeeLocations={setDataEmployeeLocations}
-            selectedEmployee={selectedEmployee}
-            setSelectedEmployee={setSelectedEmployee}
-            dataEmployee={dataEmployee}
-            setDataEmployee={setDataEmployee}
-            handleChangeDay={handleChangeDay}
-            day={day}
+            zoneCoordinates={zoneCoordinatesFiltered}
+            officeLocations={officeLocationsFiltered}
+            employeeLocations={employeeLocationsFiltered}
+            routeCoordinates={routeCoordinatesFiltered}
+            fixedPoints={fixedPointsFiltered}
           />
         </div>
         <div className="tw-flex tw-flex-col sm:tw-flex-row tw-justify-center tw-items-center sm:tw-justify-between tw-w-full tw-px-10 tw-pt-16 tw-space-x-0 sm:tw-space-x-4 tw-space-y-4 sm:tw-space-y-0">

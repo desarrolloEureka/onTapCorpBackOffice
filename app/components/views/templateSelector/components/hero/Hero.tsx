@@ -15,28 +15,21 @@ const Hero = ({
   photoCompany: string;
 }) => {
   return (
-      <Container className='tw-flex tw-flex-col tw-relative tw-w-[100%] tw-h-[30%]'>
-        <div style={{ display: 'flex', height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-          <div style={{ display: 'flex', height: '100%', width: '50%', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-            <div style={{ height: '25%', width: '100%' }}>
-              <CustomLogo
-                image={photoCompany}
-              />
-            </div>
-            <div style={{ height: '65%', width: '100%' }}>
-              <CustomAvatar
-                image={photo}
-                size={150}
-              />
-            </div>
-          </div>
-          <div style={{ display: 'flex', height: '100%', width: '50%', justifyContent: 'center', alignItems: 'center' }}>
-            <div style={{ display: 'flex', height: '75%', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-              <VerticalColButtons socialNetworks={socialNetworks} userData={userData}/>
-            </div>
-          </div>
+    <Container className='tw-flex tw-flex-col tw-relative tw-w-[100%] tw-h-[27%]'>
+      <div style={{ display: 'flex', height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ display: 'flex', height: '100%', width: '50%', justifyContent: 'space-around', alignItems: 'center', flexDirection: 'column' }}>
+          <CustomLogo
+            image={photoCompany}
+          />
+          <CustomAvatar
+            image={photo}
+          />
         </div>
-      </Container>
+        <div style={{ display: 'flex', height: '100%', width: '50%', justifyContent: 'center', alignItems: 'center' }}>
+            <VerticalColButtons socialNetworks={socialNetworks} userData={userData} />
+        </div>
+      </div>
+    </Container>
   );
 };
 
