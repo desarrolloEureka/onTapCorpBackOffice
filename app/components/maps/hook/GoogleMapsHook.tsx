@@ -28,62 +28,22 @@ export const GoogleMapsHook = () => {
         companyData && (companyData.geolocation as Coords),
     );
 
-    const [fixedPoints, setFixedPoints] = useState<FixedPointsCoords[]>([]);
+    const [zoneCoordinatesData, setZoneCoordinatesData] = useState<Coords[][]>([]);
+    const [zoneCoordinatesFiltered, setZoneCoordinatesFiltered] = useState<Coords[][]>();
 
-    const [zoom, setZoom] = useState<number>(11);
+    const [officeLocationsData, setOfficeLocationsData] = useState<any>();
+    const [officeLocationsFiltered, setOfficeLocationsFiltered] = useState<any>();
 
-    const [selectedMarker, setSelectedMarker] =
-        useState<google.maps.LatLngLiteral | null>(null);
+    const [employeeLocationsData, setEmployeeLocationsData] = useState<any>();
+    const [employeeLocationsFiltered, setEmployeeLocationsFiltered] = useState<any>();
 
-    const [selectedPosition, setSelectedPosition] =
-        useState<google.maps.LatLngLiteral | null>(null);
+    const [routeCoordinatesData, setRouteCoordinatesData] = useState<RoutesCoords[]>([]);
+    const [routeCoordinatesFiltered, setRouteCoordinatesFiltered] = useState<RoutesCoords[]>([]);
 
-    const [selectedCampus, setSelectedCampus] =
-        useState<google.maps.LatLngLiteral | null>(null);
+    const [fixedPointsData, setFixedPointsData] = useState<FixedPointsCoords[]>([]);
+    const [fixedPointsFiltered, setFixedPointsFiltered] = useState<FixedPointsCoords[]>([]);
 
-    const [selectedEmployee, setSelectedEmployee] =
-        useState<google.maps.LatLngLiteral | null>(null);
-
-    const [routeCoordinates, setRouteCoordinates] = useState<RoutesCoords[]>();
-
-    const [officeLocations, setOfficeLocations] = useState<any>();
-
-    const [zoneCoordinates, setZoneCoordinates] = useState<Coords[][]>();
-
-    const [dataFixedPoints, setDataFixedPoints] = useState<any>();
-
-    const [employeeLocations, setEmployeeLocations] = useState<any>();
-
-    const [dataEmployeeLocations, setDataEmployeeLocations] = useState<any>();
-
-    const [dataRoutes, setDataRoutes] = useState<any>();
-
-    const [dataCampus, setDataCampus] = useState<any>();
-
-    const [dataEmployee, setDataEmployee] = useState<any>();
-
-    const [dataZones, setDataZones] = useState<any>();
-
-    const [day, setDay] = useState("");
-
-      const [selectedEmpleado, setSelectedEmpleado] = useState<string>("");
-      const [selectedEmpleadoByserch, setSelectedEmpleadoByserch] = useState<string>("");
-      const [selectedSede, setSelectedSede] = useState<string>("");
-      const [selectedZona, setSelectedZona] = useState<string>("");
-      const [selectedRuta, setSelectedRuta] = useState<string>("");
-      const [selectedPuntoFijo, setSelectedPuntoFijo] = useState<string>("");
-
-      const [EmpleadoData, setEmpleadoData] = useState<any>();
-      const [SedeData, setSedeData] = useState<any>();
-      const [ZonaData, setZonaData] = useState<any>();
-      const [RutaData, setRutaData] = useState<any>();
-      const [PuntoFijoData, setPuntoFijoData] = useState<any>();
-
-      const [zoneCoordinatesData, setZoneCoordinatesData] = useState<Coords[][]>();
-      const [officeLocationsData, setOfficeLocationsData] = useState<any>();
-      const [routeCoordinatesData, setRouteCoordinatesData] = useState<RoutesCoords[]>();
-      const [fixedPointsData, setFixedPointsData] = useState<FixedPointsCoords[]>([]);
-      const [employeeLocationsData, setEmployeeLocationsData] = useState<any>();
+    const [selectedBySearch, setSelectedBySearch] = useState<string>("");
 
     // Define las opciones para el mapa
     const mapContainerStyle = {
@@ -91,16 +51,6 @@ export const GoogleMapsHook = () => {
         height: "550px",
         borderRadius: "0.5rem",
         overflow: "hidden",
-    };
-
-    // Define las opciones de mapa
-    const options = {
-        disableDefaultUI: true,
-        zoomControl: true,
-    };
-
-    const handleChangeDay = (e: any) => {
-        setDay(e.target.value);
     };
 
     // Función para encontrar la fecha más reciente
@@ -119,6 +69,74 @@ export const GoogleMapsHook = () => {
 
         return mostRecent;
     };
+
+    const getZones = useCallback(async () => {
+        if (companyData) {
+            const unsubscribe = getDocsByCompanyIdInRealTime(
+                companyData.uid,
+                "zones",
+                (zonesFound: any) => {
+                    const zonesLocations: Coords[][] = zonesFound.map(
+                        (zone: any) => {
+                            const { geolocations, uid, zoneName } = zone;
+                            const zoneLocations = geolocations.map(
+                                (point: any) => {
+                                    return point.coords;
+                                },
+                            );
+                            return [uid, zoneName, ...zoneLocations];
+                        },
+                    );
+
+                    const sortedZones = zonesLocations.sort((a: any, b: any) => a[1].localeCompare(b[1]))
+                    zonesFound &&
+                        (setZoneCoordinatesData(sortedZones),
+                            setZoneCoordinatesFiltered(sortedZones)
+                        );
+                },
+            );
+
+            return () => unsubscribe();
+        }
+    }, [companyData]);
+
+    const getCampus = useCallback(async () => {
+        if (companyData) {
+            const unsubscribe = getDocsByCompanyIdInRealTime(
+                companyData.uid,
+                "campus",
+                (campusFound: any) => {
+                    const campusLocations: CampusCoords[] = campusFound.map(
+                        (campus: any) => {
+                            const {
+                                uid,
+                                geolocation,
+                                name,
+                                address,
+                                url,
+                                phones,
+                            } = campus;
+                            return {
+                                uid,
+                                geolocation,
+                                name: name[0],
+                                address: address[0],
+                                url: url[0],
+                                phones,
+                            };
+                        },
+                    );
+
+                    const sortedCampus = campusLocations.sort((a: any, b: any) => a?.name.localeCompare(b?.name))
+                    campusFound && (
+                        setOfficeLocationsFiltered(sortedCampus),
+                        setOfficeLocationsData(sortedCampus));
+                },
+            );
+
+            return () => unsubscribe();
+        }
+    }, [companyData]);
 
     const getEmployees = useCallback(async () => {
         if (!companyData) return;
@@ -220,137 +238,61 @@ export const GoogleMapsHook = () => {
                     const dataUpdated =
                         employeesLocations.length > 0
                             ? employeesLocations.map((employee: any) => {
-                                  const geolocations = getMostRecentItem(
-                                      locationsFound.filter(
-                                          (geolocation: any) =>
-                                              geolocation.employeeId ===
-                                              employee.uid,
-                                      ),
-                                  );
-                                  const dataWithGeolocation = {
-                                      ...employee,
-                                      geolocation: geolocations
-                                          ? {
-                                                lat: Number(
-                                                    geolocations?.latitude,
-                                                ),
-                                                lng: Number(
-                                                    geolocations?.longitude,
-                                                ),
-                                            }
-                                          : null,
-                                  };
-                                  return dataWithGeolocation;
-                              })
+                                const geolocations = getMostRecentItem(
+                                    locationsFound.filter(
+                                        (geolocation: any) =>
+                                            geolocation.employeeId ===
+                                            employee.uid,
+                                    ),
+                                );
+                                const dataWithGeolocation = {
+                                    ...employee,
+                                    geolocation: geolocations
+                                        ? {
+                                            lat: Number(
+                                                geolocations?.latitude,
+                                            ),
+                                            lng: Number(
+                                                geolocations?.longitude,
+                                            ),
+                                        }
+                                        : null,
+                                };
+                                return dataWithGeolocation;
+                            })
                             : [];
-                            setEmployeeLocations(dataUpdated)
-                            setEmployeeLocationsData(dataUpdated);
+
+                    const sortedEmployees = dataUpdated.sort((a: any, b: any) => a?.firstName.localeCompare(b?.firstName));
+                    setEmployeeLocationsFiltered(sortedEmployees);
+                    setEmployeeLocationsData(sortedEmployees);
                 },
             );
 
             return () => unsubscribe();
         } catch (error) {
-            console.error("Error fetching employee data:", error);
+            setEmployeeLocationsData([]);
+            setEmployeeLocationsFiltered([]);
         }
     }, [companyData]);
 
     const getRoutes = useCallback(async () => {
-        if (companyData) {
-            const unsubscribe = getDocsByCompanyIdInRealTime(
-                companyData.uid,
-                "routes",
-                (routesFound: any) => {
-                    const routesLocations: RoutesCoords[] = routesFound.map(
-                        (route: any) => {
-                            const {
-                                uid,
-                                geolocations,
-                                zoneName,
-                                routeName,
-                                routeManager,
-                            } = route;
-                            return {
-                                uid,
-                                geolocations,
-                                zoneName,
-                                routeName,
-                                routeManager,
-                            };
-                        },
-                    );
-                    
-                    routesFound && (setRouteCoordinates(routesLocations),
-                        setRouteCoordinatesData(routesLocations));
+        if (!companyData) return
 
-                },
-            );
+        return getDocsByCompanyIdInRealTime(companyData.uid, "routes", (routesFound: any) => {
+            if (!routesFound) return;
 
-            return () => unsubscribe();
-        }
-    }, [companyData]);
+            const routesLocations: RoutesCoords[] = routesFound.map(({ uid, geolocations, zoneName, routeName, routeManager }: any) => ({
+                uid,
+                geolocations,
+                zoneName,
+                routeName,
+                routeManager,
+            }));
 
-    const getCampus = useCallback(async () => {
-        if (companyData) {
-            const unsubscribe = getDocsByCompanyIdInRealTime(
-                companyData.uid,
-                "campus",
-                (campusFound: any) => {
-                    const campusLocations: CampusCoords[] = campusFound.map(
-                        (campus: any) => {
-                            const {
-                                uid,
-                                geolocation,
-                                name,
-                                address,
-                                url,
-                                phones,
-                            } = campus;
-                            return {
-                                uid,
-                                geolocation,
-                                name: name[0],
-                                address: address[0],
-                                url: url[0],
-                                phones,
-                            };
-                        },
-                    );
-                    
-                    campusFound && (setOfficeLocations(campusLocations),
-                        setOfficeLocationsData(campusLocations));
-                },
-            );
-
-            return () => unsubscribe();
-        }
-    }, [companyData]);
-
-    const getZones = useCallback(async () => {
-        if (companyData) {
-            const unsubscribe = getDocsByCompanyIdInRealTime(
-                companyData.uid,
-                "zones",
-                (zonesFound: any) => {
-                    const zonesLocations: Coords[][] = zonesFound.map(
-                        (zone: any) => {
-                            const { geolocations, uid } = zone;
-                            const zoneLocations = geolocations.map(
-                                (point: any) => {
-                                    return point.coords;
-                                },
-                            );
-                            return [uid, ...zoneLocations];
-                        },
-                    );
-                    zonesFound &&
-                        (setZoneCoordinatesData(zonesLocations),
-                        setZoneCoordinates(zonesLocations),
-                        setDataZones(zonesFound));
-                },
-            );
- 
-            return () => unsubscribe();
-        }
+            const sortedRoutes = routesLocations.sort((a, b) => a.routeName.localeCompare(b.routeName));
+            setRouteCoordinatesFiltered(sortedRoutes);
+            setRouteCoordinatesData(sortedRoutes);
+        });
     }, [companyData]);
 
     const getFixedPoints = useCallback(() => {
@@ -367,8 +309,11 @@ export const GoogleMapsHook = () => {
                             const { directions, color, name, uid } = doc.data();
                             return { ...directions[0], color, name, uid };
                         });
-                        setFixedPoints(fixedPointsCoordsFound)
-                        setFixedPointsData(fixedPointsCoordsFound);
+
+
+                    const sortedFixedPoints = fixedPointsCoordsFound.sort((a: any, b: any) => a?.name.localeCompare(b?.name))
+                    setFixedPointsFiltered(sortedFixedPoints)
+                    setFixedPointsData(sortedFixedPoints);
                 }
             });
             return () => unsubscribe();
@@ -392,222 +337,102 @@ export const GoogleMapsHook = () => {
 
     useEffect(() => {
         if (companyData) {
-            setCenter(companyData.geolocation);
+            setCenter(companyData?.geolocation);
         }
     }, [companyData]);
 
-    useEffect(() => {
-        const today = new Date().getDay();
-        // Mapeo de días a las rutas correspondientes
-        const routes: { [key: number]: string } = {
-            0: "sundayRoute",
-            1: "mondayRoute",
-            2: "tuesdayRoute",
-            3: "wednesdayRoute",
-            4: "thursdayRoute",
-            5: "fridayRoute",
-            6: "saturdayRoute",
-        };
-        // Establece la ruta correspondiente al día actual
-        setDay(routes[today]);
-    }, []);
-
-      useEffect(() => {
-        const fetchData = async () => {      
-        if(companyData?.uid){
-        const fetchDataEmployees = await getEmployeesByCompanyIdQuery(companyData?.uid);
-        const fetchDataSedes = await getDocsByCompanyIdQuery(companyData.uid, "campus")
-        const fetchDataRutas = await getDocsByCompanyIdQuery(companyData.uid, "routes")
-        const fetchDataZonas = await getZonesByCompanyIdQuery(companyData.uid);
-        const fetchDataPuntosFijos = await getDocsByCompanyIdQuery(companyData.uid, "fixedPoints")
-        setEmpleadoData(fetchDataEmployees.sort((a: any, b: any) => a?.firstName[0].localeCompare(b?.firstName[0])))
-        setRutaData(fetchDataRutas.sort((a: any, b: any) => a?.routeName.localeCompare(b?.routeName)))
-        setPuntoFijoData(fetchDataPuntosFijos.sort((a: any, b: any) => a?.name.localeCompare(b?.name)))
-        setSedeData(fetchDataSedes.sort((a: any, b: any) => a?.name[0].localeCompare(b?.name[0])))
-        setZonaData(fetchDataZonas.sort((a: any, b: any) => a?.zoneName.localeCompare(b?.zoneName)))
-        }
-        }
-        fetchData()
-        }, [companyData?.uid]);
-            useEffect(() => {
-            renderZones()
-            }, [selectedZona]);
-
-            useEffect(() => {
-                renderRoutes()
-            }, [selectedRuta]);
-
-            useEffect(() => {
-                renderFixedPoints()
-            }, [selectedPuntoFijo]);
-
-            useEffect(() => {
-                renderCampuses()
-            }, [selectedSede]);
-
-            useEffect(() => {
-                const filteredEmployees = filterEmployeesBySearch(employeeLocationsData, selectedEmpleadoByserch);
-                const filteredSelect = renderEmployees(filteredEmployees);
-                setEmployeeLocations(filteredSelect);
-            }, [selectedEmpleado, employeeLocationsData, selectedEmpleadoByserch]);
-            
-
-        // Filtrar empleados por nombre, apellido o cédula
-        const filterEmployeesBySearch = (data: any[], searchValue: string) => {
-            if (!searchValue) {
-                return data; 
-            }
-
-            return data.filter((item: any) => {
-                const searchLower = searchValue.toLowerCase();
-
-                const fullName = `${item.firstName || ""} ${item.lastName || ""}`.toLowerCase();
-
-                return (
-                    fullName.includes(searchLower) || // Nombre completo
-                    item.documentNumber?.toString().toLowerCase().includes(searchLower) // Documento
-                );
-            });
-        };
-
-    const renderZones = ( ) => {
-        
-        if (selectedZona === "") {
-            setZoneCoordinates(zoneCoordinatesData)
-
-          } else {
-            const filteredZones = zoneCoordinatesData && zoneCoordinatesData.filter((item: any) => {
-                return item[0] === selectedZona;
-            });
-              setZoneCoordinates(filteredZones)
-          }
+    const restoreOriginalData = () => {
+        setZoneCoordinatesFiltered(zoneCoordinatesData);
+        setOfficeLocationsFiltered(officeLocationsData);
+        setEmployeeLocationsFiltered(employeeLocationsData);
+        setRouteCoordinatesFiltered(routeCoordinatesData);
+        setFixedPointsFiltered(fixedPointsData);
     };
-    
-    
-    const renderRoutes = () => {
-        if (selectedRuta === "") {
-            setRouteCoordinates(routeCoordinatesData);
-            return;
-        }
-    
-        const filteredRoutes = routeCoordinatesData?.filter((item: any) => {
-            return Object.values(item).includes(selectedRuta);
-        });
-    
-        setRouteCoordinates(filteredRoutes);
+
+    const resetFilters = () => {
+        setZoneCoordinatesFiltered([]);
+        setOfficeLocationsFiltered([]);
+        setEmployeeLocationsFiltered([]);
+        setRouteCoordinatesFiltered([]);
+        setFixedPointsFiltered([]);
     };
-    
-    const renderCampuses = () => {
-        if (selectedSede === "") {
-            setOfficeLocations(officeLocationsData);
-            return;
+
+    /////////////////////////////////////////////////////////////////////////////
+    const filterSelect = (typeFilter: string, uidSelect: string) => {
+        if (uidSelect === "") {
+            restoreOriginalData();
+            return
         }
-    
-        const filteredCampuses = officeLocationsData?.filter((item: any) => {
-            return item.uid === selectedSede;
-        });
-        setOfficeLocations(filteredCampuses);
-    };
-    
-    const renderEmployees = (data:any[]) => {
-        if (selectedEmpleado === "") {
-            return data;
+
+        resetFilters();
+
+        switch (typeFilter) {
+            case "Zona":
+                setZoneCoordinatesFiltered(zoneCoordinatesData.filter((item: any) => item[0] === uidSelect));
+                break;
+            case "Sede":
+                setOfficeLocationsFiltered(officeLocationsData?.filter((item: any) => item.uid === uidSelect));
+                break;
+            case "Empleado":
+                setEmployeeLocationsFiltered(employeeLocationsData?.filter((item: any) => item?.uid === uidSelect));
+                break;
+            case "Ruta":
+                setRouteCoordinatesFiltered(routeCoordinatesData?.filter((item: any) => item?.uid === uidSelect));
+                break;
+            case "Puntos Fijos":
+                setFixedPointsFiltered(fixedPointsData?.filter((item: FixedPointsCoords) => item.uid === uidSelect));
+                break;
+            default:
+                restoreOriginalData();
+                break;
         }
-    
-        const filteredEmployees = data?.filter((item: any) => {
-            return item.uid === selectedEmpleado;
-        });
-    
-        return filteredEmployees;
-    };
-    
-    const renderFixedPoints = () => {
-        if (selectedPuntoFijo === "") {
-            setFixedPoints(fixedPointsData);
-            return;
-        }
-    
-        const filteredFixedPoints = fixedPointsData?.filter((item: FixedPointsCoords) => {
-            return item.uid === selectedPuntoFijo;
-        });
-        
-        setFixedPoints(filteredFixedPoints);
     }
 
-    const renderSearchEmployees = () => {
-        if (!employeeLocationsData || !selectedEmpleadoByserch) {
-            // Si no hay búsqueda, restaura todos los datos originales
-            setEmployeeLocations(employeeLocationsData);
-            setZoneCoordinates(zoneCoordinatesData);
-            setRouteCoordinates(routeCoordinatesData);
-            setOfficeLocations(officeLocationsData);
-            setFixedPoints(fixedPointsData);
-            return;
+    // Filtrar empleados por nombre, apellido o cédula
+    const filterEmployeesBySearch = (searchValue: string, employees: any[]) => {
+        return employees.filter((item: any) => {
+            const fullName = `${item?.firstName || ""} ${item?.lastName || ""}`.toLowerCase();
+            return (
+                fullName.includes(searchValue.toLowerCase()) || // Nombre completo
+                item?.documentNumber?.toString().includes(searchValue.toLowerCase()) // Documento
+            );
+        });
+    };
+
+    useEffect(() => {
+        if (selectedBySearch === "") {
+            setZoneCoordinatesFiltered(zoneCoordinatesData);
+            setOfficeLocationsFiltered(officeLocationsData);
+            setEmployeeLocationsFiltered(employeeLocationsData);
+            setRouteCoordinatesFiltered(routeCoordinatesData);
+            setFixedPointsFiltered(fixedPointsData);
+        } else {
+            setZoneCoordinatesFiltered([]);
+            setOfficeLocationsFiltered([]);
+            setRouteCoordinatesFiltered([]);
+            setFixedPointsFiltered([]);
+            setEmployeeLocationsFiltered(filterEmployeesBySearch(selectedBySearch, employeeLocationsData));
         }
-    
-        // Filtrar empleados por nombre, apellido, cédula
-        const filteredEmployees = filterEmployeesBySearch(employeeLocationsData, selectedEmpleadoByserch);
-        setEmployeeLocations(filteredEmployees);
-    
-        const filteredEmployeeUIDs = filteredEmployees.map((employee) => employee.uid);
-    
-        const filteredZones = zoneCoordinatesData?.filter((zone: any) => filteredEmployeeUIDs.includes(zone[0]));
-        setZoneCoordinates(filteredZones);
-    
-        const filteredRoutes = routeCoordinatesData?.filter((route: any) => filteredEmployeeUIDs.includes(route.uid));
-        setRouteCoordinates(filteredRoutes);
-    
-        const filteredCampuses = officeLocationsData?.filter((campus: any) => filteredEmployeeUIDs.includes(campus.uid));
-        setOfficeLocations(filteredCampuses);
-    
-        const filteredFixedPoints = fixedPointsData?.filter((point: any) => filteredEmployeeUIDs.includes(point.uid));
-        setFixedPoints(filteredFixedPoints);
-    };    
-    
+    }, [selectedBySearch, zoneCoordinatesData, officeLocationsData, employeeLocationsData, routeCoordinatesData, fixedPointsData]);
 
     return {
         mapContainerStyle,
         center,
-        options,
-        zoom,
-        fixedPoints,
-        officeLocations,
-        employeeLocations,
-        zoneCoordinates,
-        selectedMarker,
-        setSelectedMarker,
-        routeCoordinates,
-        dataRoutes,
-        setDataRoutes,
-        dataFixedPoints,
-        setDataFixedPoints,
-        selectedPosition,
-        setSelectedPosition,
-        selectedCampus,
-        setSelectedCampus,
-        dataCampus,
-        setDataCampus,
-        dataEmployeeLocations,
-        setDataEmployeeLocations,
-        selectedEmployee,
-        setSelectedEmployee,
-        dataEmployee,
-        setDataEmployee,
-        handleChangeDay,
-        day,
-        setSelectedPuntoFijo,
-        setSelectedRuta,
-        setSelectedZona,
-        setSelectedSede,
-        setSelectedEmpleado,
-        setSelectedEmpleadoByserch,
-        EmpleadoData,
-        SedeData,
-        ZonaData,
-        RutaData,
-        PuntoFijoData,
-        selectedEmpleado,
-        renderSearchEmployees,
-        selectedEmpleadoByserch
+
+        zoneCoordinatesData,
+        officeLocationsData,
+        employeeLocationsData,
+        routeCoordinatesData,
+        fixedPointsData,
+        zoneCoordinatesFiltered,
+        officeLocationsFiltered,
+        employeeLocationsFiltered,
+        routeCoordinatesFiltered,
+        fixedPointsFiltered,
+
+        selectedBySearch,
+        setSelectedBySearch,
+
+        filterSelect,
     };
 };
