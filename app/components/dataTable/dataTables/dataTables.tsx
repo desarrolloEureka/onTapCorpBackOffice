@@ -19,6 +19,7 @@ import employeesMostVisits from "@/components/employeesMostVisits/employeesMostV
 import moment from "moment";
 import { unstable_createMuiStrictModeTheme } from "@mui/material";
 import convertArrayOfObjectsToCSV from "./exportFunction";
+import { IoClose } from "react-icons/io5";
 
 const DataTableExtensions: any = dynamic(
   () => import("react-data-table-component-extensions"),
@@ -380,6 +381,15 @@ export const ExportCSV = ({
           className="flex p-4 mb-4 text-sm text-blue-800 rounded-lg tw-bg-yellow-100 dark:text-blue-400"
           role="alert"
         >
+
+          <div className="tw-flex tw-justify-end tw-items-center tw-h-2 text-sm text-blue-800 rounded-lg">
+            <button
+              onClick={() => setIsShowAlertCSV(false)}
+              className="tw-w-[5%] tw-h-full tw-flex tw-justify-center tw-items-center tw-p-0 tw-border-none tw-bg-transparent tw-outline-none">
+              <IoClose size={24} />
+            </button>
+          </div>
+
           <svg
             className="flex-shrink-0 inline me-3 mt-[1px]"
             aria-hidden="true"
