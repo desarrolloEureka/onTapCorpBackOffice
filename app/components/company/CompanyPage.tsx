@@ -122,7 +122,6 @@ const CompanyPage = ({ theme }: CompanyProps) => {
 
                         <div className="tw-px-3 tw-w-full">
                           <CustomTextField
-                            required
                             checked={allChecked}
                             data={data.tradename}
                             onChange={(

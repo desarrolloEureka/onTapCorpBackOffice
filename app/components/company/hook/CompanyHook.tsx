@@ -152,9 +152,6 @@ const CompanyHook = () => {
 
     const validateFields = () => {
         const newErrors: { [key: string]: string } = {};
-        if (!data.tradename[0]?.trim()) {
-            newErrors.tradename = "El nombre es obligatorio";
-        }
         if (!data.businessName[0]?.trim()) {
             newErrors.businessName = "La razón social es obligatorio";
         }
