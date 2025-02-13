@@ -31,6 +31,7 @@ import {
 import { Key } from "react";
 import ModalQR from "./components/ModalQR";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import BackgroundFormModal from "../backgroundImages/backgroundFormModal";
 
 const DataTableComponent = ({
   componentTitle,
@@ -295,6 +296,16 @@ const DataTableComponent = ({
             title={tableTitle}
             reference={reference}
             isSuperAdmin={reference === "logosSuperAdmin" ? true : false}
+          />
+        ) : reference === "backgroundImages" ? (
+          <BackgroundFormModal
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            handleShowMainFormEdit={handleShowMainFormEdit}
+            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+            editData={editData}
+            title={tableTitle}
+            reference={reference}
           />
         ) : reference === "meetingStatus" ? (
           <MeetingStatusesModal

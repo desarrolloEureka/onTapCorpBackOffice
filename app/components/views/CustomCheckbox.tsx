@@ -22,31 +22,58 @@ const CustomCheckbox = ({
     setTemplateSelect,
     templates,
     checked,
+    handleCloseModal,
+    handleSelectBackground,
+    selectedTemplate,
+    getUserData
 }: {
     uid?: string;
     value: any;
     setTemplateSelect?: (e: any) => void;
     templates?: TemplateData[];
     checked: boolean;
+    handleCloseModal?: () => void;
+    handleSelectBackground?: any;
+    selectedTemplate?: string;
+    getUserData?: any;
 }) => {
     const checkboxRef = useRef<any>(null);
+
+    const handleSaveTemplate = async (background_id: string) => {
+        const userId = uid;
+        const templateData = templates;
+
+        if (templateData && selectedTemplate && userId) {
+            const newData = templateData?.map((val: any) => {
+                val.id === selectedTemplate && (val.background_id = background_id);
+                return val;
+            });
+            newData && (await SendTemplateSelected(userId, newData).then(() => {
+                handleCloseModal && handleCloseModal();
+            }));
+        }
+    };
 
     const handleSelectTemplate = async () => {
         const userId = uid;
         const newCheckedState = !checked;
 
-        if (newCheckedState) {
-            setTemplateSelect && setTemplateSelect(value); // Si se selecciona, actualiza el template seleccionado
-        }
-        const fakeDataClone = templates ? [...templates] : [];
-        const templateIndex = fakeDataClone[0]?.id === checkboxRef.current.id
+        if (handleSelectBackground) {
+            handleSaveTemplate(checkboxRef?.current?.id);
+        } else {
+            setTemplateSelect && setTemplateSelect(value.id);
+            const fakeDataClone = templates ? [...templates] : [];
+            const templateIndex = fakeDataClone[0]?.id === checkboxRef.current.id
 
-        if (!templateIndex) {
-            const dataSend = [{
-                id: checkboxRef.current.id,
-                checked: newCheckedState,
-            }]
-            userId && (await SendTemplateSelected(userId, dataSend));
+            if (!templateIndex) {
+                const dataSend = [{
+                    id: checkboxRef.current.id,
+                    checked: newCheckedState,
+                    background_id: 'TtGgR1wrCH5neEFlrgUN',
+                }]
+                userId && (await SendTemplateSelected(userId, dataSend));
+            }
+            getUserData();
         }
     }
 
@@ -61,7 +88,7 @@ const CustomCheckbox = ({
                 <RadioButtonUncheckedOutlinedIcon
                     style={{
                         fontSize: checked ? "1rem" : "1.1rem",
-                        color: checked ? "#ffffff" : "#ffffff ",
+                        color: handleSelectBackground ? '#5278a0' : '#ffffff ',
                     }}
                 />
             }
@@ -69,7 +96,7 @@ const CustomCheckbox = ({
                 <RadioButtonCheckedOutlinedIcon
                     style={{
                         fontSize: checked ? "1rem" : "1.1rem",
-                        color: checked ? "#ffffff" : "#ffffff ",
+                        color: handleSelectBackground ? '#5278a0' : '#ffffff ',
                     }}
                 />
             }

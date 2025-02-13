@@ -128,7 +128,7 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
             )}
             {(mapToShow === "all" || mapToShow === "fixedPoints") && (
               <BranchFilter
-                names={"name"}
+                names={"pointName"}
                 names2={""}
                 titulo={"Puntos Fijos"}
                 setSelectedBranch={filterSelect}

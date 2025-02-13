@@ -599,6 +599,27 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
           />
         </Tab.Pane>
 
+        {/* Vista del Fondos */}
+        <Tab.Pane
+          className="tab-pane text-muted"
+          id="fondos"
+          role="tabpanel"
+          eventKey="fondos"
+        >
+          <BannerMenu
+            seoTitle="Fondos"
+            title="Fondos"
+            item="Dashboard"
+            activeItem="Registro de Fondos"
+          />
+          <DataTableComponent
+            componentTitle="Tabla del Listado de Fondos."
+            componentDescription="En esta tabla se encuentran listados todos los usuarios para su administración."
+            tableTitle="Fondos"
+            reference="backgroundImages"
+          />
+        </Tab.Pane>
+
         {/* Vista de Plantillas */}
         <Tab.Pane
           className="tab-pane text-muted"

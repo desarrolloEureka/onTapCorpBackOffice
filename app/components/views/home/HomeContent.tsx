@@ -1,70 +1,47 @@
-import { GetUser } from "@/firebase/user";
-import { getAllTemplates } from "@/firebase/user";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Button } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import Image from "next/image";
-import { useState, useEffect } from "react";
-import CustomModalAlert from "@/components/customModalAlert/CustomModalAlert";
+import { MdDynamicFeed } from "react-icons/md";
 import CustomCheckbox from "../CustomCheckbox";
-
-interface TemplateType {
-    id: string;
-    name: string;
-    image: string;
-}
+import CustomModalAlert from "@/components/customModalAlert/CustomModalAlert";
+import Image from "next/image";
+import HomeContentHook from "./hook/HomeContentHook";
+import BackgroundFormModal from "./components/BackgroundModal";
 
 const TempladeContent = () => {
-    const [templateSelect, setTemplateSelect] = useState<any>({
-        id: "",
-        name: "",
-        image: "",
-    });
-    const [isAlertProfile, setIsAlertProfile] = useState(false);
-    const handleAlertProfile = (status: boolean) =>
-        setIsAlertProfile(!isAlertProfile);
-    const [data, setData] = useState<any>(null);
-    const [templates, setTemplates] = useState<any>([]);
-
-    useEffect(() => {
-        const fetchUser = async () => {
-            const userData = await GetUser(true);
-            setData(userData);
-        };
-
-        const fetchTemplate = async () => {
-            const templateData = await getAllTemplates();
-            setTemplates(templateData);
-        };
-
-        fetchTemplate();
-        fetchUser();
-    }, []);
-
-    const handlePreview = async () => {
-        const urlSplit = window.location.href.split("/");
-        const baseUrl = `http://${urlSplit[2]}/components/views/cardView?&platform=template`;
-        if (data) {
-            window.open(baseUrl);
-        } else {
-            setIsAlertProfile(true);
-        }
-    };
-
-    const screenHeight = useMediaQuery("(max-height: 745px)");
+    const {
+        modeTheme,
+        templateSelect,
+        setTemplateSelect,
+        isAlertProfile,
+        setIsAlertProfile,
+        handleAlertProfile,
+        templates,
+        setTemplates,
+        backgroundImages,
+        setBackgroundImages,
+        data,
+        screenHeight,
+        isModalOpen,
+        setIsModalOpen,
+        handleCloseModal,
+        handleOpenModal,
+        backgroundSelect,
+        setBackgroundSelect,
+        handleSelectBackground,
+        getUserData
+    } = HomeContentHook();
 
     return (
         <div
-            className={`tw-bg-cover tw-bg-center ${
-                screenHeight ? "" : "md:tw-min-h-screen"
-            }`}
+            className={`tw-bg-cover tw-bg-center ${screenHeight ? "" : "md:tw-min-h-screen"
+                }`}
         >
             <div className="tw-flex tw-items-center tw-justify-center">
                 <div className="tw-grid md:tw-grid-cols-2 lg:tw-grid-cols-3 lg:tw-w-[1300px] xl:tw-w-[1250px]">
-                    {templates.map((value: any, index: any) => {
-                        const item = data?.templateData?.find(
-                            (val: any) => val.id === value.id,
-                        );
+                    {templates && templates.map((value: any, index: any) => {
+
+                        const item = data?.templateData?.find((val: any) => {
+                            return val.id === value.id;
+                        });
 
                         return (
                             <div
@@ -122,26 +99,68 @@ const TempladeContent = () => {
                                                     </div>
                                                     <div className="tw-w-[50%] tw-h-[100%] tw-flex tw-items-start tw-justify-end ">
                                                         <div className="tw-w-[35%] tw-h-[80%] tw-flex tw-items-start tw-justify-center">
-                                                            {/* {data && (
+                                                            {data && (
                                                                 <CustomCheckbox
-                                                                    uid={
-                                                                        data.uid
-                                                                    }
+                                                                    uid={data.uid}
                                                                     value={value}
                                                                     setTemplateSelect={setTemplateSelect}
-                                                                    templates={
-                                                                        data.templateData
-                                                                    }
-                                                                    checked={ 
-                                                                        value?.id  === (item?.id || templateSelect?.id ) ?
-                                                                        true : false
-                                                                    }
+                                                                    templates={data.templateData}
+                                                                    checked={item ? item.checked : false}
+                                                                    getUserData={getUserData}
                                                                 />
-                                                            )} */}
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div className='tw-w-[100%] tw-h-[50%] tw-flex tw-items-end tw-justify-center'>
+                                                <div className='tw-w-[100%] tw-h-[30%] tw-flex tw-items-center tw-justify-center '>
+                                                    <div className='tw-w-[50%] tw-h-[100%] tw-flex tw-items-center tw-justify-start'>
+                                                        <div className='tw-w-[50%] tw-h-[100%] tw-flex tw-items-center tw-justify-center'>
+                                                            {/*  <span
+                                                            style={{ fontSize: '13px' }}
+                                                            className='tw-text-white'
+                                                        >
+                                                            {dictionary?.homeView?.labelTemplate}{' '}
+                                                            {index + 1}
+                                                        </span> */}
+                                                        </div>
+                                                    </div>
+                                                    <div className='tw-w-[50%] tw-h-[100%] tw-flex tw-items-center tw-justify-end tw-pl-12 tw-mb-8'>
+                                                        <Button
+                                                            disabled={item ? !item.checked : true}
+                                                            style={{ borderRadius: 0 }}
+                                                            onClick={() => handleOpenModal(value)}
+                                                            className='tw-w-[60%] tw-h-[100%] tw-flex tw-flex-col tw-items-center tw-justify-center'
+                                                        >
+                                                            <div className='tw-w-[100%] tw-h-[60%] tw-flex tw-items-center tw-justify-center'>
+                                                                <MdDynamicFeed
+                                                                    style={{
+                                                                        fontSize: '2rem',
+                                                                        color: 'white',
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                            <div
+                                                                style={{
+                                                                    textTransform: 'none',
+                                                                    borderRadius: 0,
+                                                                }}
+                                                                className='tw-w-[100%] tw-h-[40%] tw-flex tw-items-center tw-justify-center tw-mt-4'
+                                                            >
+                                                                <span
+                                                                    style={{ fontSize: '9px' }}
+                                                                    className='tw-text-white'
+                                                                >
+                                                                    Cambiar <br /> Fondo
+                                                                </span>
+                                                            </div>
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -158,6 +177,17 @@ const TempladeContent = () => {
                 isModalAlert={isAlertProfile}
                 isClosed={true}
             />
+
+            <BackgroundFormModal
+                isModalOpen={isModalOpen}
+                handleClose={handleCloseModal}
+                backgroundImages={backgroundImages}
+                data={data}
+                modeTheme={modeTheme}
+                templateSelect={templateSelect}
+                handleSelectBackground={handleSelectBackground}
+            >
+            </BackgroundFormModal>
         </div>
     );
 };

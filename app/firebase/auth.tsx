@@ -122,6 +122,7 @@ const useAuth = () => {
         accessTokenUser,
         userData,
         companyData,
+        getUserData
     };
 };
 export default useAuth;
