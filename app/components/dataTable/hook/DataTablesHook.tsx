@@ -39,6 +39,7 @@ import { MdModeEdit } from "react-icons/md";
 import Swal from "sweetalert2";
 import { LocalVariable } from "@/types/global";
 import { ref } from "firebase/storage";
+import { deleteBackgroundImage } from "@/firebase/Documents";
 require("dotenv").config();
 
 const CustomTitle = ({ row }: any) => (
@@ -597,7 +598,8 @@ const DataTablesHook = (reference: string) => {
                                       reference === "policy" ||
                                       reference === "forms" ||
                                       reference === "news" ||
-                                      reference === "logos"
+                                      reference === "logos" ||
+                                      reference === "backgroundImages"
                                       ? formatDataByDate(
                                         userData && userData?.companyId
                                           ? await getDocsByCompanyIdQuery(userData?.companyId, reference)
@@ -751,6 +753,13 @@ const DataTablesHook = (reference: string) => {
           // createdTime: "Hora de creación",
           timestamp: "Fecha Registro",
           logoName: "Nombre",
+          imageUrl: "Imagen",
+        };
+      } else if (reference === "backgroundImages") {
+        columnNamesToDisplay = {
+          uid: "Acciones",
+          timestamp: "Fecha Registro",
+          name: "Nombre",
           imageUrl: "Imagen",
         };
       } else if (reference === "meetingStatus") {
@@ -939,6 +948,7 @@ const DataTablesHook = (reference: string) => {
                   </>
                 ) : reference !== "routes" &&
                   reference !== "logos" &&
+                  reference !== "backgroundImages" &&
                   reference !== "meetingStatus" &&
                   reference !== "circular" &&
                   reference !== "events" &&
@@ -980,6 +990,10 @@ const DataTablesHook = (reference: string) => {
               ) : (
                 row[val]
               )
+            ) : val === "imageUrl" && reference === "backgroundImages" ? (
+              <div>
+                <Image src={row[val]} alt="Facebook" width={25} height={45} />
+              </div>
             ) : val === "imageUrl" ? (
               <div>
                 <Image src={row[val]} alt="Facebook" width={40} height={40} />
@@ -1275,6 +1289,8 @@ const DataTablesHook = (reference: string) => {
       if (result.isConfirmed) {
         if (reference === "logos") {
           await DeleteSocialNetwork(row?.logoName, row?.uid);
+        } else if (reference === "backgroundImages") {
+          await deleteBackgroundImage(row?.uid);
         } else {
           await deleteDocumentByIdQuery(reference, row?.uid).then(confirmAlert);
         }

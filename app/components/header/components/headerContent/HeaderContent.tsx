@@ -373,6 +373,11 @@ const HeaderContent = ({
                         Logos
                       </NavDropdown.Item>
 
+                      <NavDropdown.Item eventKey="fondos">
+                        <FaRegAddressCard size={20} className="tw-mb-1 tw-mr-1" />
+                        Fondos
+                      </NavDropdown.Item>
+
                       <NavDropdown.Item eventKey="plantillas">
                         <FaRegAddressCard size={20} className="tw-mb-1 tw-mr-1" />
                         Plantillas
@@ -419,7 +424,7 @@ const HeaderContent = ({
                     <IoDocumentOutline size={20} className="tw-mb-1 tw-mr-1" />
                     Jornada Laboral
                   </NavDropdown.Item>
-                  
+
                   <NavDropdown.Item
                     //estadisticas
                     //href="#statisticalReports"
@@ -428,7 +433,7 @@ const HeaderContent = ({
                     <IoDocumentOutline size={20} className="tw-mb-1 tw-mr-1" />
                     Estadística
                   </NavDropdown.Item>
-                  
+
                   <NavDropdown.Item
                     //visitas de empleado
                     //href="#statisticalReports"

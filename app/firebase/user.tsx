@@ -215,7 +215,7 @@ export const SendDataMetrics = async (userId: string, data: any) => {
     return res;
 };
 
-export const SendDataUrlClick = async (documentId: string, data: any, urlName: string, uid:string, collectionRef: string) => {
+export const SendDataUrlClick = async (documentId: string, data: any, urlName: string, uid: string, collectionRef: string) => {
     //console.log("dataCompany",documentId, data, urlName,  uid, collectionRef)
     const urlDocRef = doc(db, collectionRef, documentId);
     const docSnap = await getDoc(urlDocRef);
@@ -229,13 +229,25 @@ export const SendDataUrlClick = async (documentId: string, data: any, urlName: s
         [urlName]: updatedArray,
     });
     //console.log("updateArray",updatedArray[2][uid]?.views)
-    
+
     return null;
 };
 
 export const getAllTemplates = async () => {
     const templatesData: any[] = [];
     const querySnapshot = await getDocs(collection(db, "templates"));
+    if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc) => {
+            const dataResult = doc.data();
+            templatesData.push({ ...dataResult, id: doc.id });
+        });
+    }
+    return templatesData;
+};
+
+export const getAllBackgrounds = async () => {
+    const templatesData: any[] = [];
+    const querySnapshot = await getDocs(collection(db, "backgroundImages"));
     if (!querySnapshot.empty) {
         querySnapshot.forEach((doc) => {
             const dataResult = doc.data();
@@ -287,7 +299,7 @@ export const GetAllSocialNetworks = async (companyID: string) => {
     if (!querySnapshot.empty) {
         querySnapshot.forEach((doc: any) => {
             const dataResult = doc.data();
-            if ( dataResult?.type === "global") {
+            if (dataResult?.type === "global") {
                 backgroundImages.push({ ...dataResult, id: doc.uid });
             } else if (dataResult?.idCompany === companyID) {
                 backgroundImages.push({ ...dataResult, id: doc.uid });

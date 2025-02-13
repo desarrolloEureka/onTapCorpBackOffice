@@ -777,6 +777,7 @@ export const saveEmployee = async (dataSave: any) => {
         {
           id: "VGMUWYOP3RK374gi30I8", // ID DEL TEMPLATE 1
           checked: true,
+          background_id: "TtGgR1wrCH5neEFlrgUN",
         },
       ],
     };
@@ -887,28 +888,6 @@ export const deleteDocumentById = async (
     };
   }
 };
-
-/* export const saveSocialNetworkImage = async (data: any, imageFile: File) => {
-    const storage = getStorage();
-    const imageRef = ref(storage, `social_networks/${data?.logoName}`);
-
-    try {
-        // Subir el nuevo archivo
-        const snapshot = await uploadBytes(imageRef, imageFile);
-        const imageUrl = await getDownloadURL(snapshot.ref);
-
-        //  Registrar su referencia en Firestore
-        const docRef = await addDoc(allRef({ ref: 'logos' }), {
-            ...data,
-            imageUrl: imageUrl,
-        });
-
-        return { success: true, message: 'Documento registrado con éxito' };
-    } catch (error) {
-        console.error('Error al cargar la imagen en Firebase Storage: ', error);
-        return { success: false, message: 'Error al registrar el documento', error };
-    }
-}; */
 
 export const saveSocialNetworkImage = async (data: any, imageFile: File) => {
   const storage = getStorage();
@@ -1021,6 +1000,66 @@ export const deleteSocialNetwork = async (imageName: string, docId: string) => {
     return {
       success: false,
       message: "Error al eliminar la red social",
+      error,
+    };
+  }
+};
+
+//Crear Fondo
+export const saveBackgroundImage = async (data: any) => {
+
+  try {
+    const docRef = getReference("backgroundImages");
+
+    // Registrar su referencia en Firestore
+    await setDoc(docRef, {
+      ...data,
+      uid: docRef.id,
+    });
+
+    return {
+      success: true,
+      message: "Documento registrado con éxito",
+    };
+  } catch (error) {
+    console.error("Error al cargar la imagen en Firebase Storage: ", error);
+    return {
+      success: false,
+      message: "Error al registrar el documento",
+      error,
+    };
+  }
+};
+
+// Actualizar fondo
+export const updateBackgroundImage = async (data: any, docId: string) => {
+  try {
+    const docRef = doc(db, "backgroundImages", docId);
+    await updateDoc(docRef, data);
+
+    return { success: true, message: "Documento actualizado con éxito" };
+  } catch (error) {
+    console.error("Error during update operation:", error);
+    return {
+      success: false,
+      message: "Error al actualizar el documento",
+      error,
+    };
+  }
+};
+
+// Elimina una Fondo
+export const deleteBackgroundImage = async (docId: string) => {
+  try {
+    const docRef = doc(db, "backgroundImages", docId);
+    await deleteDoc(docRef);
+
+    return { success: true, message: "Fondo eliminado con éxito" };
+  } catch (error) {
+    console.error("Error during the delete process: ", error);
+    return {
+      success: false,
+      message: "Error al eliminar el fondo",
       error,
     };
   }
