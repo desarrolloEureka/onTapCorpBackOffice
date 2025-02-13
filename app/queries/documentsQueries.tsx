@@ -47,6 +47,8 @@ import {
   validateArea,
   validateHeadquarter,
   validateRoutes,
+  saveBackgroundImage,
+  updateBackgroundImage,
 } from "@/firebase/Documents";
 import {
   uploadFile,
@@ -591,6 +593,16 @@ export const deleteDocumentByIdQuery = async (
 
 export const SaveSocialNetwork = async (data: any, imageFile: File) => {
   const res = await saveSocialNetworkImage(data, imageFile);
+  return res;
+};
+
+export const SaveBackgroundImage = async (data: any) => {
+  const res = await saveBackgroundImage(data);
+  return res;
+};
+
+export const UpdateBackgroundImage = async (data: any, uid: any) => {
+  const res = await updateBackgroundImage(data, uid);
   return res;
 };
 
