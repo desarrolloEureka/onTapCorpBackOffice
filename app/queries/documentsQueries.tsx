@@ -49,6 +49,7 @@ import {
   validateRoutes,
   saveBackgroundImage,
   updateBackgroundImage,
+  getLogosByCompanyId,
 } from "@/firebase/Documents";
 import {
   uploadFile,
@@ -231,6 +232,21 @@ export const getDocsByCompanyIdQuery = async (
   valueToFound?: string
 ) => {
   const documents = await getDocsByCompanyId(
+    idCompany,
+    reference,
+    fieldPathInDB,
+    valueToFound
+  );
+  return documents;
+};
+
+export const getLogosByCompanyIdQuery = async (
+  idCompany: string,
+  reference: string,
+  fieldPathInDB?: string,
+  valueToFound?: string
+) => {
+  const documents = await getLogosByCompanyId(
     idCompany,
     reference,
     fieldPathInDB,

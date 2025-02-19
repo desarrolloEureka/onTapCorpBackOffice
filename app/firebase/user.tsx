@@ -28,7 +28,7 @@ const backendClient = async (accessTokenUser: string) => {
     });
 };
 
-export const addUser = async ({
+/* export const addUser = async ({
     email,
     password,
     accessTokenUser,
@@ -53,6 +53,35 @@ export const addUser = async ({
             }
         });
     });
+};
+ */
+
+export const addUser = async ({
+    email,
+    password,
+    accessTokenUser,
+    uid,
+}: {
+    email: string;
+    password: string;
+    accessTokenUser: string;
+    uid: string;
+}) => {
+    try {
+        const client = await backendClient(accessTokenUser);
+        const response = await client.post(`auth/createUser`, {
+            uid,
+            email,
+            password,
+        });
+
+        return response.data;
+    } catch (error: any) {
+        return {
+            success: false,
+            message: error.response?.data?.message || "Error desconocido al crear usuario",
+        };
+    }
 };
 
 export const updateUserPassword = async ({

@@ -60,7 +60,8 @@ const Export = ({ onExport }: ExportProps) => (
       onExport(e.currentTarget.value)
     }
   >
-    <TfiExport size={18} className="" />
+    <TfiImport size={18} className="" />
+
   </Button>
 );
 
@@ -79,13 +80,14 @@ const BranchFilter = ({
   //console.log("branches", branches);
   return (
     <Form.Group controlId="branchFilter">
-      <Form.Label style={{ fontSize: "15px" }} className="filter-label">
+      <Form.Label style={{ fontSize: "14px" }} className="filter-label">
         Filtrar por {titulo}
       </Form.Label>
       <Form.Control
-        style={{
+        /* style={{
           width: "170px",
-        }}
+        }} */
+        className="w-full md:w-auto min-w-[170px]"
         as="select"
         onChange={(e) => setSelectedBranch(e.target.value)}
         defaultValue=""
@@ -114,7 +116,7 @@ const UploadDataCsvModal = ({
   onUploadDataModalCsv,
 }: UploadDataButtonModalProps) => (
   <Button onClick={onUploadDataModalCsv}>
-    <TfiImport size={18} className="" />
+    <TfiExport size={18} className="" />
   </Button>
 );
 
@@ -133,7 +135,7 @@ const StartDayInput = ({
   setStartDate: (value: string) => void;
 }) => (
   <Form.Group controlId="startDate">
-    <Form.Label style={{ fontSize: "15px" }}>Fecha Inicio</Form.Label>
+    <Form.Label style={{ fontSize: "14px" }}>Fecha Inicio</Form.Label>
     <Form.Control
       type="date"
       value={startDate || ""}
@@ -156,7 +158,7 @@ const EndDayInput = ({
   setEndDate: (value: string) => void;
 }) => (
   <Form.Group controlId="endDate">
-    <Form.Label style={{ fontSize: "15px" }}>Fecha Fin</Form.Label>
+    <Form.Label style={{ fontSize: "14px" }}>Fecha Fin</Form.Label>
     <Form.Control
       type="date"
       value={endDate || ""}
@@ -238,9 +240,11 @@ export const ExportCSV = ({
   setDataShowAlertCSV
 }: UploadDataModalProps) => {
   const actionsMemo = useMemo(() => {
+    const FILTERED_REFERENCES = ["workingday", "meetings", "employees", "superadminEmployees", "statisticalReports"];
     return (
-      <div className="tw-flex tw-justify-between tw-w-full tw-space-x-4 tw-items-center">
-        <div className="tw-flex tw-w-1/2 tw-h-1/2 tw-relative">
+      <div
+        className={`tw-flex ${FILTERED_REFERENCES.includes(reference) ? "tw-flex-col tw-items-start" : "tw-items-center tw-mb-5"} tw-justify-between tw-w-full`} >
+        <div className={`tw-flex tw-w-1/2 tw-h-1/2 tw-relative ${FILTERED_REFERENCES.includes(reference) && "tw-mb-4"}`}>
           <Form.Control
             value={searchTerm}
             name="search"
@@ -267,7 +271,7 @@ export const ExportCSV = ({
               </Button>
             )}
         </div>
-        <div className="tw-flex tw-items-center tw-space-x-4">
+        <div className={`tw-flex tw-w-[100%] tw-items-center tw-justify-end tw-space-x-4 ${FILTERED_REFERENCES.includes(reference) && "tw-mb-3"}`}>
           {[
             "workingday",
             "meetings",
@@ -342,21 +346,7 @@ export const ExportCSV = ({
         </div>
       </div>
     );
-  }, [
-    searchTerm,
-    startDate,
-    setStartDate,
-    endDate,
-    setEndDate,
-    handleSearchAndFilter,
-    clearSearch,
-    reference,
-    onMainFormModal,
-    onUploadDataModalCsv,
-    onUploadDataModalPdf,
-    data,
-    tableTitle,
-  ]);
+  }, [reference, searchTerm, handleSearchAndFilter, endDate, selectedArea, selectedSede, selectedZona, selectedRuta, clearSearch, setSelectedArea, AreaData, setSelectedSede, SedeData, setSelectedZona, ZonaData, setSelectedRuta, RutaData, startDate, setStartDate, setEndDate, onMainFormModal, onUploadDataModalCsv, onUploadDataModalPdf, data.length, tableData?.data, tableTitle]);
 
   const conditionalRowStyles = [
     {

@@ -44,6 +44,10 @@ export const GoogleMapsHook = () => {
     const [fixedPointsFiltered, setFixedPointsFiltered] = useState<FixedPointsCoords[]>([]);
 
     const [selectedBySearch, setSelectedBySearch] = useState<string>("");
+    const [selectedCategory, setSelectedCategory] = useState<string>("");
+    const [fixedPointsFilteredByCat, setFixedPointsFilteredByCat] = useState<FixedPointsCoords[]>([]);
+    const [fixedPointsFilteredByCatAux, setFixedPointsFilteredByCatAux] = useState<FixedPointsCoords[]>([]);
+
 
     // Define las opciones para el mapa
     const mapContainerStyle = {
@@ -312,8 +316,17 @@ export const GoogleMapsHook = () => {
 
 
                     const sortedFixedPoints = fixedPointsCoordsFound.sort((a: any, b: any) => a?.name.localeCompare(b?.name))
-                    setFixedPointsFiltered(sortedFixedPoints)
                     setFixedPointsData(sortedFixedPoints);
+
+
+                    const uniqueFixedPoints = Object.values(
+                        fixedPointsCoordsFound.reduce((acc, current) => {
+                            acc[current.name] = current; // Sobrescribe el valor anterior si el nombre ya existe
+                            return acc;
+                        }, {} as Record<string, FixedPointsCoords>)
+                    );
+                    setFixedPointsFilteredByCatAux(uniqueFixedPoints);
+                    setFixedPointsFiltered(uniqueFixedPoints);
                 }
             });
             return () => unsubscribe();
@@ -359,14 +372,17 @@ export const GoogleMapsHook = () => {
 
     /////////////////////////////////////////////////////////////////////////////
     const filterSelect = (typeFilter: string, uidSelect: string) => {
-        if (uidSelect === "") {
+
+        if (uidSelect === "" && (typeFilter !== "Puntos Fijos/Categoría" && typeFilter !== "Categorías")) {
             restoreOriginalData();
             return
         }
 
-        resetFilters();
+        if (typeFilter != "Categorías" && (typeFilter !== "Puntos Fijos/Categoría" && typeFilter !== "Categorías")) {
+            resetFilters();
+        }
 
-        switch (typeFilter) {
+        switch (typeFilter.trim()) {
             case "Zona":
                 setZoneCoordinatesFiltered(zoneCoordinatesData.filter((item: any) => item[0] === uidSelect));
                 break;
@@ -381,6 +397,27 @@ export const GoogleMapsHook = () => {
                 break;
             case "Puntos Fijos":
                 setFixedPointsFiltered(fixedPointsData?.filter((item: FixedPointsCoords) => item.uid === uidSelect));
+                break;
+            case "Puntos Fijos/Categoría":
+                if (uidSelect === "") {
+                    setFixedPointsFiltered(fixedPointsData?.filter((item: FixedPointsCoords) => item.name === selectedCategory));
+                } else {
+                    setFixedPointsFiltered(fixedPointsData?.filter((item: FixedPointsCoords) => item.uid === uidSelect));
+                }
+                break;
+            case "Categorías":
+                if (uidSelect === "") {
+                    setSelectedCategory("");
+                    setFixedPointsFilteredByCat([]);
+                    setFixedPointsFiltered(fixedPointsData);
+                } else {
+                    const dataCategory: any = fixedPointsData?.filter((item: FixedPointsCoords) => item.uid === uidSelect);
+                    const nameCategory = dataCategory[0]?.name;
+                    setSelectedCategory(nameCategory);
+                    const aux = fixedPointsData?.filter((item: FixedPointsCoords) => item.name === nameCategory);
+                    setFixedPointsFilteredByCat(aux);
+                    setFixedPointsFiltered(aux);
+                }
                 break;
             default:
                 restoreOriginalData();
@@ -435,5 +472,9 @@ export const GoogleMapsHook = () => {
         handleInputChange,
 
         filterSelect,
+        selectedCategory,
+        setSelectedCategory,
+        fixedPointsFilteredByCat,
+        fixedPointsFilteredByCatAux
     };
 };

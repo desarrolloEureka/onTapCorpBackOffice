@@ -194,7 +194,8 @@ export const sendNotification = async (token: string, title: string, body: strin
     if (!token) {
       return { success: false, message: "No token provided" };
     }
-    const response = await fetch("https://one-tap-corp.vercel.app/api/notifications/", {
+    //const response = await fetch("https://one-tap-corp.vercel.app/api/notifications/", {
+    const response = await fetch("https://backofficecorp.onetap.com.co/api/notifications/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token, title, body, image }),
@@ -322,6 +323,39 @@ export const getDocsByCompanyId = async (
     const docs: { [key: string]: any } = querySnapshot.docs.map((doc) => ({
       ...doc.data(),
     }));
+    return docs;
+  } catch (error) {
+    console.error("Error fetching Docs:", error);
+    return [];
+  }
+};
+
+export const getLogosByCompanyId = async (
+  companyId: any,
+  reference: string,
+  fieldPathInDB?: string,
+  valueToFound?: string
+) => {
+  try {
+    const q =
+      fieldPathInDB && valueToFound
+        ? query(
+          collection(db, reference),
+          where("idCompany", "==", companyId),
+          where(fieldPathInDB, "==", valueToFound)
+        )
+        : query(
+          collection(db, reference),
+          where("idCompany", "==", companyId)
+        );
+
+    const querySnapshot = await getDocs(q);
+
+    const docs: { [key: string]: any } = querySnapshot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id
+    }));
+
     return docs;
   } catch (error) {
     console.error("Error fetching Docs:", error);
@@ -769,15 +803,24 @@ export const saveEmployee = async (dataSave: any) => {
       rolId: "uysG1ULyEDklfbGDFate", //  ID DEL ROL DE EMPLEADO
       views: 0,
       isActive: true,
+
+      /* 
+      LINK DE PRE-PRODUCCIÓN VERCEL
       preview: `https://one-tap-corp.vercel.app/components/views/cardView/?uid=${dataSave.uid}`,
-      /*preview: `https://one-tap-corp-dev.vercel.app/components/views/cardView/?uid=${dataSave.uid}`,
-              LINK DE DESARROLLO VERCEL*/
+      */
+
+      /*
+      LINK DE DESARROLLO VERCEL
+      preview: `https://one-tap-corp-dev.vercel.app/components/views/cardView/?uid=${dataSave.uid}`,
+      */
+
+      preview: `https://backofficecorp.onetap.com.co/components/views/cardView/?uid=${dataSave.uid}`,
       switch_activateCard: true,
       templateData: [
         {
           id: "VGMUWYOP3RK374gi30I8", // ID DEL TEMPLATE 1
           checked: true,
-          background_id: "TtGgR1wrCH5neEFlrgUN",
+          background_id: "",
         },
       ],
     };
