@@ -120,7 +120,7 @@ const UploadDocumentHook = ({
                     currentDataObject.switch_activateCard = val[27] === "true";
                     currentDataObject.phone = val[10];
                     currentDataObject.email = val[14];
-                    currentDataObject.preview = `https://one-tap-corp-dev.vercel.app/components/views/cardView/?uid=${documentRefUser.id}`;
+                    currentDataObject.preview = `https://backofficecorp.onetap.com.co/components/views/cardView/?uid=${documentRefUser.id}`;
                     currentDataObject.rolId = "uysG1ULyEDklfbGDFate";
                     currentDataObject.views = 0;
                     currentDataObject.templateData = [
