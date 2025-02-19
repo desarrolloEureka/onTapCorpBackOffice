@@ -201,7 +201,7 @@ const TemplateContainer = ({
     }
   };
 
-  const Item = ({ item, isPadding }: { item: any[]; isPadding: boolean }) => (
+  const Item = ({ item, isPadding }: { item: any[]; isPadding: any }) => (
     <>
       {item.map((val, key) =>
         val?.text ? (
@@ -210,11 +210,12 @@ const TemplateContainer = ({
             sx={{
               textTransform: "none",
               backgroundColor: color,
-              marginBottom: isPadding
+              marginTop: isPadding === 0 || isPadding === 1 ? 3 : 0,
+              marginBottom: isPadding === 2
                 ? `${Math.min(windowSize.height, windowSize.width) * 0.06}px`
                 : 0,
-              paddingY: !isPadding
-                ? `${Math.min(windowSize.height, windowSize.width) * 0.02}px`
+              paddingY: isPadding != 2
+                ? `${Math.min(windowSize.height, windowSize.width) * 0.026}px`
                 : 0,
             }}
             className={`tw-rounded-full tw-w-full tw-drop-shadow-sm tw-relative tw-shadow-[0_0px_05px_05px_rgba(0,0,0,0.1)]`}
@@ -391,9 +392,9 @@ const TemplateContainer = ({
                     </div>
                   )}
                   <div
-                    className={`tw-flex tw-flex-col tw-h-full tw-w-[80%] tw-justify-around tw-overflow-y-auto`}
+                    className={`tw-flex tw-flex-col tw-h-full tw-w-[80%] tw-overflow-y-auto`}
                   >
-                    <Item item={item} isPadding={i === 2} />
+                    <Item item={item} isPadding={i} />
                   </div>
                 </Box>
               ))}

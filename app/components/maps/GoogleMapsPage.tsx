@@ -24,7 +24,7 @@ const BranchFilter = ({
 }) => {
   return (
     <Form.Group controlId="branchFilter">
-      <Form.Label style={{ fontSize: "15px" }} className="filter-label">Filtrar por {titulo}</Form.Label>
+      <Form.Label style={{ fontSize: "15px" }} className="filter-label">Filtrar por {titulo === "Puntos Fijos/Categoría" ? 'Puntos Fijos' : titulo}</Form.Label>
       <Form.Control
         style={{
           width: "170px"
@@ -37,7 +37,7 @@ const BranchFilter = ({
         <option value="">
           {branches.length > 0
             ? `Mostrar Todos`
-            : `No hay ${titulo?.toLocaleLowerCase()}s disponibles`}
+            : `No hay ${titulo === "Puntos Fijos/Categoría" ? "puntos fijos" : titulo?.toLocaleLowerCase()}s disponibles`}
         </option>
         {branches.map((branch) => {
           const displayValue = names2 !== "" ? `${branch?.[names]} ${branch?.[names2]}` : names === "zoneName" ? branch[1] : branch?.[names];
@@ -75,8 +75,12 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
     handleInputChange,
 
     filterSelect,
+    selectedCategory,
+    setSelectedCategory,
+    fixedPointsFilteredByCat,
+    fixedPointsFilteredByCatAux
   } = GoogleMapsHook();
-  
+
   return (
     <div className="tw-flew tw-w-full tw-justify-center tw-items-center">
       <div className="tw-container tw-flex tw-flex-col tw-w-auto lg:tw-w-full tw-items-center">
@@ -126,7 +130,7 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
                 branches={routeCoordinatesData}
               />
             )}
-            {(mapToShow === "all" || mapToShow === "fixedPoints") && (
+            {(mapToShow === "all") && (
               <BranchFilter
                 names={"pointName"}
                 names2={""}
@@ -134,6 +138,24 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
                 setSelectedBranch={filterSelect}
                 branches={fixedPointsData}
               />
+            )}
+            {(mapToShow === "fixedPoints") && (
+              <>
+                <BranchFilter
+                  names={"name"}
+                  names2={""}
+                  titulo={"Categorías"}
+                  setSelectedBranch={filterSelect}
+                  branches={fixedPointsFilteredByCatAux}
+                />
+                <BranchFilter
+                  names={"pointName"}
+                  names2={""}
+                  titulo={"Puntos Fijos/Categoría"}
+                  setSelectedBranch={filterSelect}
+                  branches={selectedCategory ? fixedPointsFilteredByCat : []}
+                />
+              </>
             )}
             {(mapToShow === "all" || mapToShow === "employees") && (
               <BranchFilter

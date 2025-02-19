@@ -130,7 +130,7 @@ const SaveContactButtonColor = ({
     <Box
       ref={containerRef} 
       sx={{ position: "relative" }}
-      className={`tw-flex tw-rounded-3xl tw-h-[10%] tw-w-full tw-content-center tw-items-center tw-justify-center`}
+      className={`tw-flex tw-rounded-3xl tw-h-[20%] tw-w-full tw-content-center tw-items-center tw-justify-center`}
     >
       <Button
         onClick={saveVCard}
@@ -141,7 +141,7 @@ const SaveContactButtonColor = ({
           <SaveOutlinedIcon
             style={{
               color: colorButton ?? undefined,
-              fontSize: `${Math.min(windowSize.height, windowSize.width) * 0.6}px`,
+              fontSize: `${Math.min(windowSize.height, windowSize.width) * 0.3}px`,
             }}
           />
         }
@@ -153,7 +153,7 @@ const SaveContactButtonColor = ({
             fontWeight: 500,
             width: "100%",
             textDecoration: "none",
-            fontSize: `${Math.min(windowSize.height, windowSize.width) * 0.35}px`,
+            fontSize: `${Math.min(windowSize.height, windowSize.width) * 0.20}px`,
           }}
         >
           guardar Contacto
