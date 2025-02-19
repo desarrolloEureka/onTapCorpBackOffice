@@ -24,11 +24,20 @@ export const handleSendWelcomeEmail = async (data: any) => {
                 password: data.id,
                 rolId: data.rolId,
                 //Cambiar la URL de login a producción
-                /* loginUrl: "https://one-tap-corp-dev.vercel.app/components/signIn/",
-                 LINK DE LOGUEO DE BIENVENIDA DESARROLLO VERCEL*/
+                
+
+                /* LINK DE LOGUEO DE BIENVENIDA DESARROLLO VERCEL
+                loginUrl: "https://one-tap-corp-dev.vercel.app/components/signIn/",
+                */
+
+                /* LINK DE LOGUEO DE BIENVENIDA PRE-PRODUCCIÓN VERCEL
+                loginUrl: "https://one-tap-corp.vercel.app/components/signIn/",
+                */
+            
+
                 loginUrlApple: "https://apps.apple.com/co/app/one-tap-corp/id6737350479",
                 loginUrlAndroid: "https://play.google.com/store/apps/details?id=onetapcorp.appspot.com&pcampaignid=web_share",
-                loginUrl: "https://one-tap-corp.vercel.app/components/signIn/",
+                loginUrl: "https://backofficecorp.onetap.com.co/components/signIn/",
                 contactEmail: "info@onetap.com.co",
             }),
         });

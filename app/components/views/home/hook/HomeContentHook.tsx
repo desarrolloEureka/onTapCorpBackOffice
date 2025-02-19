@@ -1,14 +1,9 @@
 import { useState, useEffect } from "react";
-import { getAllBackgrounds, getAllTemplates } from "@/firebase/user";
+import { getAllTemplates } from "@/firebase/user";
 import useAuth from "@/firebase/auth";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { LocalVariable } from "@/types/global";
-
-interface TemplateType {
-    id: string;
-    name: string;
-    image: string;
-}
+import { getLogosByCompanyIdQuery } from "@/queries/documentsQueries";
 
 const HomeContentHook = () => {
     const { userData: data, getUserData } = useAuth();
@@ -36,13 +31,13 @@ const HomeContentHook = () => {
         };
 
         const fetchBackground = async () => {
-            const backgroundData = await getAllBackgrounds();
+            const backgroundData = await getLogosByCompanyIdQuery(data?.companyId, "backgroundImages");
             setBackgroundImages(backgroundData);
         };
 
         fetchTemplate();
         fetchBackground();
-    }, [isModalOpen]);
+    }, [data?.companyId, isModalOpen]);
 
     const handleCloseModal = () => {
         setIsModalOpen(false);

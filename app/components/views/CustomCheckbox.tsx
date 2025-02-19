@@ -69,7 +69,7 @@ const CustomCheckbox = ({
                 const dataSend = [{
                     id: checkboxRef.current.id,
                     checked: newCheckedState,
-                    background_id: 'TtGgR1wrCH5neEFlrgUN',
+                    background_id: '',
                 }]
                 userId && (await SendTemplateSelected(userId, dataSend));
             }

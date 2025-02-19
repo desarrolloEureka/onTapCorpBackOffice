@@ -66,6 +66,8 @@ const UploadDocumentHook = ({
             for (const [index, val] of results.data.entries()) {
                 if (reference === "employees" && !(Array.isArray(val) && val.length === 1 && val[0] === '')) {
                     if (index === 0) { continue; }
+
+                    const errors: string[] = [];
                     const currentDataObject = { ...dataEmployees };
                     const documentRefUser: any = getDocumentReference("users");
                     const currentDate = moment().format();
@@ -127,8 +129,6 @@ const UploadDocumentHook = ({
                             checked: true,
                         },
                     ];
-
-                    const errors: string[] = [];
 
                     // Rutas
                     const routesToValidate = [
@@ -193,12 +193,26 @@ const UploadDocumentHook = ({
             } else {
                 // Subir usuarios si todos son válidos
                 for (const user of usersToUpload) {
-                    await addUser({
+                    const result = await addUser({
                         email: user?.email,
                         password: user?.documentNumber[0],
                         accessTokenUser,
                         uid: user?.uid,
                     });
+
+                    // Si hay un error, detener el proceso y guardar en `errors`
+                    if (result.success === false) {
+                        invalidUsersDetails.push({
+                            line: usersToUpload.indexOf(user) + 1,
+                            errors: [`Error con ${user?.email}: ${result?.message?.includes("The email address is already in use")
+                                ? "La dirección de correo electrónico ya está en uso por otra cuenta."
+                                : result.message}`]
+                        });
+                        setIsShowAlertCSV(true);
+                        setDataShowAlertCSV(invalidUsersDetails);
+                        return;
+                    }
+
                     await saveEmployeeQuery(user);
                 }
             }
