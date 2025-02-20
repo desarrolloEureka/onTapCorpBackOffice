@@ -27,7 +27,9 @@ const TempladeContent = () => {
         backgroundSelect,
         setBackgroundSelect,
         handleSelectBackground,
-        getUserData
+        getUserData,
+        dataCompanyByUser,
+        getCompanyData
     } = HomeContentHook();
 
     return (
@@ -39,10 +41,14 @@ const TempladeContent = () => {
                 <div className="tw-grid md:tw-grid-cols-2 lg:tw-grid-cols-3 lg:tw-w-[1300px] xl:tw-w-[1250px]">
                     {templates && templates.map((value: any, index: any) => {
 
-                        const item = data?.templateData?.find((val: any) => {
+                        /* const item = data?.templateData?.find((val: any) => {
+                            return val.id === value.id;
+                        }); */
+
+                        const item = dataCompanyByUser?.templateData?.find((val: any) => {
                             return val.id === value.id;
                         });
-
+                        
                         return (
                             <div
                                 key={index}
@@ -99,14 +105,15 @@ const TempladeContent = () => {
                                                     </div>
                                                     <div className="tw-w-[50%] tw-h-[100%] tw-flex tw-items-start tw-justify-end ">
                                                         <div className="tw-w-[35%] tw-h-[80%] tw-flex tw-items-start tw-justify-center">
-                                                            {data && (
+                                                            {dataCompanyByUser && (
                                                                 <CustomCheckbox
-                                                                    uid={data.uid}
+                                                                    uid={dataCompanyByUser.uid}
                                                                     value={value}
                                                                     setTemplateSelect={setTemplateSelect}
-                                                                    templates={data.templateData}
+                                                                    templates={dataCompanyByUser.templateData}
                                                                     checked={item ? item.checked : false}
                                                                     getUserData={getUserData}
+                                                                    getCompanyData={getCompanyData}
                                                                 />
                                                             )}
                                                         </div>
@@ -182,7 +189,7 @@ const TempladeContent = () => {
                 isModalOpen={isModalOpen}
                 handleClose={handleCloseModal}
                 backgroundImages={backgroundImages}
-                data={data}
+                data={dataCompanyByUser}
                 modeTheme={modeTheme}
                 templateSelect={templateSelect}
                 handleSelectBackground={handleSelectBackground}

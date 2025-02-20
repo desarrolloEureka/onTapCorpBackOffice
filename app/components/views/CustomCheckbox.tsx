@@ -2,13 +2,7 @@ import { SendTemplateSelected } from "@/firebase/user";
 import { Checkbox } from "@mui/material";
 import RadioButtonUncheckedOutlinedIcon from "@mui/icons-material/RadioButtonUncheckedOutlined";
 import RadioButtonCheckedOutlinedIcon from "@mui/icons-material/RadioButtonCheckedOutlined";
-import React, { useRef, useState } from "react";
-
-interface TemplateType {
-    id: string;
-    name: string;
-    image: string;
-}
+import React, { useRef } from "react";
 
 interface TemplateData {
     id: string;
@@ -25,7 +19,8 @@ const CustomCheckbox = ({
     handleCloseModal,
     handleSelectBackground,
     selectedTemplate,
-    getUserData
+    getUserData,
+    getCompanyData
 }: {
     uid?: string;
     value: any;
@@ -36,6 +31,7 @@ const CustomCheckbox = ({
     handleSelectBackground?: any;
     selectedTemplate?: string;
     getUserData?: any;
+    getCompanyData?: any;
 }) => {
     const checkboxRef = useRef<any>(null);
 
@@ -64,7 +60,6 @@ const CustomCheckbox = ({
             setTemplateSelect && setTemplateSelect(value.id);
             const fakeDataClone = templates ? [...templates] : [];
             const templateIndex = fakeDataClone[0]?.id === checkboxRef.current.id
-
             if (!templateIndex) {
                 const dataSend = [{
                     id: checkboxRef.current.id,
@@ -74,6 +69,7 @@ const CustomCheckbox = ({
                 userId && (await SendTemplateSelected(userId, dataSend));
             }
             getUserData();
+            getCompanyData();
         }
     }
 
