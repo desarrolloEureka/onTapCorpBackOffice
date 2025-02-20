@@ -286,8 +286,9 @@ export const getAllBackgrounds = async () => {
     return templatesData;
 };
 
-export const SendTemplateSelected = async (userId: string, data: any[]) => {
-    const userDocRef = doc(db, "users", userId);
+export const SendTemplateSelected = async (id: string, data: any[]) => {
+    //const userDocRef = doc(db, "users", userId);
+    const userDocRef = doc(db, "companies", id);
     const userDoc = await getDoc(userDocRef);
     if (userDoc.exists()) {
         const userData = userDoc.data();
@@ -300,7 +301,7 @@ export const SendTemplateSelected = async (userId: string, data: any[]) => {
             { templateData: existingTemplateData },
             { merge: true },
         ); // Sobrescribe el array templateData con los nuevos datos
-        await localStorage.setItem("@user", JSON.stringify(userData));
+        //await localStorage.setItem("@user", JSON.stringify(userData));
     }
 };
 
@@ -314,6 +315,24 @@ export const GetTemplate = async ({
     if (id) {
         setId(null);
         const querySnapshot = await getDoc(doc(db, "templates", id));
+        if (querySnapshot.exists()) {
+            return querySnapshot.data();
+        }
+        return null;
+    }
+    return null;
+};
+
+export const GetBackgroundImage = async ({
+    id,
+    setId,
+}: {
+    id: string | null;
+    setId: (e: string | null) => void;
+}) => {
+    if (id) {
+        setId(null);
+        const querySnapshot = await getDoc(doc(db, "backgroundImages", id));
         if (querySnapshot.exists()) {
             return querySnapshot.data();
         }

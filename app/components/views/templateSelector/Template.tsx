@@ -20,10 +20,10 @@ const Template = ({
   handleAceptCookies: () => Promise<void>;
 }) => {
   const [isDataError, setIsDataError] = useState(true);
-  const { currentTemplate } = TemplateSelectorHook(userData);
+  const { currentBackground, currentTemplate } = TemplateSelectorHook(userData, companyData);
 
   if (userData) {
-    if (currentTemplate) {
+    if (currentTemplate && currentBackground) {
       switch (currentTemplate?.name) {
         case "themeOne":
           return (
@@ -35,6 +35,7 @@ const Template = ({
                 areaData: areaData,
                 handleAceptCookiesPage: handleAceptCookies,
                 isCookies: isCookies,
+                background: currentBackground
               }}
             />
           );
@@ -48,6 +49,7 @@ const Template = ({
                 areaData: areaData,
                 handleAceptCookiesPage: handleAceptCookies,
                 isCookies: isCookies,
+                background: currentBackground
               }}
             />
           );

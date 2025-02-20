@@ -363,6 +363,22 @@ export const getLogosByCompanyId = async (
   }
 };
 
+export const getCompanyById = async (
+  companyId: any,
+  reference: string,
+) => {
+  try {
+    const q = query(collection(db, reference), where("uid", "==", companyId))
+
+    const querySnapshot = await getDocs(q);
+
+    return { ...querySnapshot.docs[0].data() };
+  } catch (error) {
+    console.error("Error fetching Docs:", error);
+    return null;
+  }
+};
+
 export const getLogosBySuperAdmin = async (
   idAdmin: any,
   reference: string,

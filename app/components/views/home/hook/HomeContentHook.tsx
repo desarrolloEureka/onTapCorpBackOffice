@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getAllTemplates } from "@/firebase/user";
 import useAuth from "@/firebase/auth";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { LocalVariable } from "@/types/global";
-import { getLogosByCompanyIdQuery } from "@/queries/documentsQueries";
+import { getCompanyByIdQuery, getLogosByCompanyIdQuery } from "@/queries/documentsQueries";
 
 const HomeContentHook = () => {
     const { userData: data, getUserData } = useAuth();
     const [templateSelect, setTemplateSelect] = useState<any>();
+    const [dataCompanyByUser, setDataCompanyByUser] = useState<any>();
     const [isAlertProfile, setIsAlertProfile] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const handleAlertProfile = (status: boolean) => setIsAlertProfile(!isAlertProfile);
@@ -24,6 +25,12 @@ const HomeContentHook = () => {
         setBackgroundSelect(data);
     };
 
+    const getCompanyData = useCallback(async () => {
+        if (!data?.companyId) return;
+        const dataCompany = await getCompanyByIdQuery(data.companyId, "companies");
+        setDataCompanyByUser(dataCompany);
+    }, [data?.companyId]);
+
     useEffect(() => {
         const fetchTemplate = async () => {
             const templateData = await getAllTemplates();
@@ -37,16 +44,18 @@ const HomeContentHook = () => {
 
         fetchTemplate();
         fetchBackground();
-    }, [data?.companyId, isModalOpen]);
+        getCompanyData();
+
+    }, [data?.companyId, isModalOpen, getCompanyData]);
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-    }
+    };
 
     const handleOpenModal = (item: any) => {
         setTemplateSelect(item.id);
         setIsModalOpen(true);
-    }
+    };
 
     const screenHeight = useMediaQuery("(max-height: 745px)");
 
@@ -70,8 +79,10 @@ const HomeContentHook = () => {
         backgroundSelect,
         setBackgroundSelect,
         handleSelectBackground,
-        getUserData
-    }
+        getUserData,
+        dataCompanyByUser,
+        getCompanyData
+    };
 };
 
 export default HomeContentHook;

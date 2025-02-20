@@ -1,28 +1,41 @@
-import { GetTemplate } from '@/firebase/user';
+import { GetBackgroundImage, GetTemplate } from '@/firebase/user';
 import { useLayoutEffect, useState, useEffect } from 'react';
 
-const TemplateSelectorHook = (user: any) => {
-  const [templateId, setTemplateId] = useState<string | null>(null);
+const TemplateSelectorHook = (user: any, companyData: any) => {
   const [template, setTemplate] = useState<any>();
+  const [background, setBackground] = useState<any>();
+
+  const [templateId, setTemplateId] = useState<string | null>(null);
+  const [backgroundId, setBackgroundId] = useState<string | undefined | null>(null);
+
 
   useLayoutEffect(() => {
-    const temId = user?.templateData[0];
-    if (temId) {
-      setTemplateId(temId.id);
+    //const temId = user?.templateData[0];
+    const dataCompany = companyData?.templateData[0];
+
+    /*   if (temId) {
+        setTemplateId(temId.id);
+      } */
+
+    if (dataCompany) {
+      setTemplateId(dataCompany.id);
+      setBackgroundId(dataCompany.background_id);
     }
-  }, [user]);
+  }, [companyData, user]);
 
   useEffect(() => {
     const fetchTemplateData = async () => {
-      if (templateId) {
+      if (templateId && backgroundId) {
         const data = await GetTemplate({ id: templateId, setId: setTemplateId });
+        const databackground = await GetBackgroundImage({ id: backgroundId, setId: setBackgroundId });
         setTemplate(data || null);
+        setBackground(databackground || null);
       }
     };
     fetchTemplateData();
-  }, [templateId]);
+  }, [backgroundId, templateId, companyData]);
 
-  return { currentTemplate: template };
+  return { currentTemplate: template, currentBackground: background };
 };
 
 export default TemplateSelectorHook;
