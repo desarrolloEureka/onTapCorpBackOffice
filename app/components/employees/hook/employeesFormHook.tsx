@@ -622,6 +622,8 @@ const EmployeesFormHook = ({
                         timer: 2500,
                     });
                     //console.log("Usuario guardado con éxito");
+                    // Enviar correo de bienvenida
+                    await handleSendWelcomeEmail(dataToSendOnEmail);
                 } else {
                     Swal.fire({
                         icon: "error",
@@ -644,9 +646,6 @@ const EmployeesFormHook = ({
             console.error("Error al enviar el formulario:", error);
         } finally {
             // setIsLoading(false);
-
-            // Enviar correo de bienvenida
-            await handleSendWelcomeEmail(dataToSendOnEmail);
             Swal.hideLoading();
             handleClose();
         }
