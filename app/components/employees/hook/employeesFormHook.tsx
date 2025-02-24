@@ -584,12 +584,22 @@ const EmployeesFormHook = ({
 
             if (userData?.companyId) {
                 //console.log("data", email, password, documentRefUser, accessTokenUser)
-                await addUser({
+                const res = await addUser({
                     email: email || "",
                     password: password,
                     accessTokenUser,
                     uid: documentRefUser.id,
                 });
+
+                if (!res.success) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error al registrar usuario",
+                        text: `La dirección de correo electrónico ya está siendo utilizada por otra cuenta`,
+                        timer: 6000,
+                    });
+                    return;
+                }
 
                 const combinedData = {
                     ...updatedData,
