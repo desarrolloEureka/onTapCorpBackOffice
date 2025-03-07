@@ -201,7 +201,7 @@ const UploadDocumentHook = ({
                     });
 
                     // Si hay un error, detener el proceso y guardar en `errors`
-                    if (result.success === false) {
+                    if (result?.success === false) {
                         invalidUsersDetails.push({
                             line: usersToUpload.indexOf(user) + 1,
                             errors: [`Error con ${user?.email}: ${result?.message?.includes("The email address is already in use")

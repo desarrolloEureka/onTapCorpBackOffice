@@ -591,7 +591,7 @@ const EmployeesFormHook = ({
                     uid: documentRefUser.id,
                 });
 
-                if (!res.success) {
+                if (res?.success === false) {
                     Swal.fire({
                         icon: "error",
                         title: "Error al registrar usuario",
@@ -903,8 +903,6 @@ const EmployeesFormHook = ({
                         views: []
                     };
                 }
-            } else {
-                console.log("entro")
             }
         }
         await editCompanyQuery(urlsCompanyData, selectCompanieUid);

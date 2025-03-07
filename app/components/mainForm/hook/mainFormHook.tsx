@@ -163,7 +163,7 @@ const MainFormHook = ({
 
         if (name.startsWith('urlLink') || name === "webSite") {
             // Verificación de la URL solo si hay un valor completo
-            if (!(value.toString().startsWith('https://') || value.toString().startsWith('http://') || value.toString().startsWith('h')) && value !='') {
+            if (!(value.toString().startsWith('https://') || value.toString().startsWith('http://') || value.toString().startsWith('h')) && value != '') {
                 // Si no comienza con http o https, agregar https://
                 setData((prevData: any) => ({
                     ...prevData,
@@ -355,6 +355,54 @@ const MainFormHook = ({
         // console.log("data", data);
         //console.log("reference", reference);
 
+        // Función auxiliar para agregar un usuario y guardar los datos correspondientes
+        const addCompanyUserAndData = async (
+            data: any,
+            newData: any,
+            documentRefUser: any,
+            documentRef: any,
+            accessTokenUser: string,
+        ) => {
+            // Agrega nuevo usuario
+            const res = await addUser({
+                email: data.email,
+                password: data.id,
+                accessTokenUser,
+                uid: documentRefUser.id,
+            });
+
+            if (res?.success === false) {
+                Swal.close();
+
+                await Swal.fire({
+                    icon: "error",
+                    title: "Error al registrar usuario",
+                    text: `La dirección de correo electrónico ya está siendo utilizada por otra cuenta`,
+                    timer: 6000,
+                });
+
+                throw new Error("La dirección de correo electrónico ya está en uso");
+            }
+
+            // Guardar datos del usuario
+            await saveDataDocumentsQuery({
+                documentRef: documentRefUser,
+                data: newData.admin,
+            });
+
+            // Guardar datos de la compañía
+            await saveDataDocumentsQuery({
+                documentRef,
+                data: {
+                    ...newData.company,
+                    adminId: documentRefUser.id,
+                },
+            });
+
+            // Enviar correo de bienvenida
+            await handleSendWelcomeEmail(data);
+        };
+
         // Función auxiliar para guardar datos del administrador y la compañía
         const saveCompanyData = async (
             data: any,
@@ -374,41 +422,6 @@ const MainFormHook = ({
                 data: newData.company,
                 reference,
             });
-        };
-
-        // Función auxiliar para agregar un usuario y guardar los datos correspondientes
-        const addCompanyUserAndData = async (
-            data: any,
-            newData: any,
-            documentRefUser: any,
-            documentRef: any,
-            accessTokenUser: string,
-        ) => {
-            // Agrega nuevo usuario
-            await addUser({
-                email: data.email,
-                password: data.id,
-                accessTokenUser,
-                uid: documentRefUser.id,
-            });
-
-            // Guardar datos del usuario
-            await saveDataDocumentsQuery({
-                documentRef: documentRefUser,
-                data: newData.admin,
-            });
-
-            // Guardar datos de la compañía
-            await saveDataDocumentsQuery({
-                documentRef,
-                data: {
-                    ...newData.company,
-                    adminId: documentRefUser.id,
-                },
-            });
-
-            // Enviar correo de bienvenida
-            await handleSendWelcomeEmail(data);
         };
 
         // Lógica principal
@@ -579,14 +592,11 @@ const MainFormHook = ({
     }
 
     const handleNewCompany = (type: string) => {
-        console.log("aaa")
         const listNewItem: string[] = ["urlName", "urlLink", "iconName"];
         const newItemUrl: { [key: string]: any[] | string } = {};
         const itemIndex = objToArrayItems[type ?? "urlName"].length
             ? objToArrayItems[type ?? "urlName"].length
             : 0;
-
-        console.log("objToArrayItems",objToArrayItems)
 
         listNewItem.forEach((item) => {
             const currentIndex = `${item}${itemIndex + 1}`;
@@ -731,7 +741,7 @@ const MainFormHook = ({
         return newObject;
     }, [data]);
 
-    
+
 
     const clearSelectFields = () => {
         setData(dataMainFormObject);

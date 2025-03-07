@@ -132,15 +132,15 @@ const LogosFormModal = ({
                                             <img
                                                 src={
                                                     !isEdit &&
-                                                    handleShowMainFormEdit
+                                                        handleShowMainFormEdit
                                                         ? isUpdateImage
                                                             ? URL.createObjectURL(
-                                                                  selectedImage,
-                                                              )
+                                                                selectedImage,
+                                                            )
                                                             : selectedImage + ""
                                                         : URL.createObjectURL(
-                                                              selectedImage,
-                                                          )
+                                                            selectedImage,
+                                                        )
                                                 }
                                                 alt="Vista previa"
                                                 className="tw-w-[150px] tw-h-[150px] tw-object-cover tw-rounded tw-mt-4 tw-mb-1"
@@ -176,6 +176,10 @@ const LogosFormModal = ({
                                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                             />
                                         </label>
+
+                                        <Typography style={{ fontSize: "15px", textAlign: "left" }} className="tw-text-gray-500 tw-mt-3 tw-mb-4">
+                                            <strong>Tamaño recomendado:</strong> 190x190 px
+                                        </Typography>
                                     </div>
 
                                     {imageError && (
@@ -214,9 +218,8 @@ const LogosFormModal = ({
                         ) : (
                             <button
                                 type="submit"
-                                className={`${
-                                    isLoading && "btn-loader"
-                                } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
+                                className={`${isLoading && "btn-loader"
+                                    } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
                             >
                                 {isLoading ? (
                                     <span className="ml-2 loading">
