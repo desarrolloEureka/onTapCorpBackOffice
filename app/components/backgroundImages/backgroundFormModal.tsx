@@ -176,6 +176,10 @@ const BackgroundFormModal = ({
                                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                             />
                                         </label>
+
+                                        <Typography style={{ fontSize: "15px",textAlign: "left" }} className="tw-text-gray-500 tw-mt-3 tw-mb-4">
+                                            <strong>Tamaño recomendado:</strong> 2344x5075 px
+                                        </Typography>
                                     </div>
 
                                     {imageError && (
