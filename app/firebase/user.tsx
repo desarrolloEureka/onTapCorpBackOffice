@@ -116,13 +116,24 @@ export const saveUserById = async (data: any) => {
 export const getProfileDataByIdFb = async (uid: any) => {
     const docRef = doc(db, "users", uid);
     const docSnap = await getDoc(docRef);
-    let userData = {};
+    let userData: any = {};
 
     if (docSnap.exists()) {
-        // console.log("Document data:", docSnap.data());
         userData = docSnap.data();
+
+        // Verificamos si tiene companyId
+        if (userData.companyId) {
+            const companyRef = doc(db, "companies", userData.companyId);
+            const companySnap = await getDoc(companyRef);
+
+            if (companySnap.exists()) {
+                userData.company = companySnap.data();
+            } else {
+                console.log("No such company document!");
+            }
+        }
     } else {
-        console.log("No such document!");
+        console.log("No such user document!");
     }
     return userData;
 };

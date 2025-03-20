@@ -6,6 +6,7 @@ import {
     image_flag3,
     image_flag4,
     image_flag5,
+    main_logo_dark,
 } from "@/globals/images";
 import SelectOptions, { HeaderDropDownProps, Notify } from "@/data/header";
 import { useEffect, useState } from "react";
@@ -15,12 +16,8 @@ import { LocalVariable } from "@/types/global";
 
 const HeadDropDown = (params: HeaderDropDownProps) => {
     const [notifications, setNotifications] = useState([...Notify]);
-    // console.log('localVariable>>>', localVariable);
     const handleToggleDark = () => {
         const localVariable = localStorage.getItem("@theme");
-        // console.log("localVariable", localVariable);
-
-        // console.log('localVariableClone', localVariableClone);
         if (localVariable) {
             const localVariableClone = {
                 ...JSON.parse(localVariable),
@@ -37,8 +34,6 @@ const HeadDropDown = (params: HeaderDropDownProps) => {
                 "data-theme-mode",
                 localVariableClone.dataThemeMode,
             );
-
-            // console.log("localVariableClone", localVariableClone);
             localStorage.setItem("@theme", JSON.stringify(localVariableClone));
         }
     };
@@ -142,7 +137,7 @@ const HeadDropDown = (params: HeaderDropDownProps) => {
                 <div className="header-element header-fullscreen d-xl-flex d-none">
                     <div
                         className="header-link d-xl-block d-none"
-                        // onClick={Fullscreen}
+                    // onClick={Fullscreen}
                     >
                         <i className="fe fe-maximize full-screen-open header-link-icon"></i>
                     </div>
@@ -259,7 +254,7 @@ const HeadDropDown = (params: HeaderDropDownProps) => {
                                                 <Link
                                                     href="#!"
                                                     className="min-w-fit-content text-muted me-1 dropdown-item-close1"
-                                                    // onClick={() => handleRemove1(id)}
+                                                // onClick={() => handleRemove1(id)}
                                                 >
                                                     <i className="ti ti-x fs-16"></i>
                                                 </Link>
@@ -271,11 +266,10 @@ const HeadDropDown = (params: HeaderDropDownProps) => {
                         </SimpleBar>
                         {/* </SimpleBar> */}
                         <div
-                            className={`p-3 empty-header-item1 border-top ${
-                                notifications.length === 0
-                                    ? "d-none"
-                                    : "d-block"
-                            }`}
+                            className={`p-3 empty-header-item1 border-top ${notifications.length === 0
+                                ? "d-none"
+                                : "d-block"
+                                }`}
                         >
                             <div className="d-grid">
                                 <Link
@@ -287,11 +281,10 @@ const HeadDropDown = (params: HeaderDropDownProps) => {
                             </div>
                         </div>
                         <div
-                            className={`p-5 empty-item1 ${
-                                notifications.length === 0
-                                    ? "d-block"
-                                    : "d-none"
-                            }`}
+                            className={`p-5 empty-item1 ${notifications.length === 0
+                                ? "d-block"
+                                : "d-none"
+                                }`}
                         >
                             <div className="text-center">
                                 <span className="avatar avatar-xl avatar-rounded bg-secondary-transparent">
@@ -319,40 +312,61 @@ const HeadDropDown = (params: HeaderDropDownProps) => {
                     className="main-header-dropdown dropdown-menu pt-0 overflow-hidden dropdown-menu-end"
                     aria-labelledby="mainHeaderProfile"
                 >
-                    <div className="header-navheading border-bottom">
-                        <div className="tw-pb-5">
+                    <div className="header-navheading border-bottom tw-pb-4 tw-text-center">
+                        <div className="tw-pb-3">
                             <img
-                                src={`https://ui-avatars.com/api/?name=${params.data?.displayName}?size=150?bold=true`}
+                                src={
+                                    params.data?.description === "Super administrador"
+                                        ? main_logo_dark.src
+                                        : params.data?.urlPhoto
+                                            ? params.data.urlPhoto
+                                            : `https://ui-avatars.com/api/?name=${params.data?.name}+${params.data?.lastName}&size=150&bold=true`
+                                }
                                 alt="img"
-                                width="32"
-                                height="32"
+                                width="64"
+                                height="64"
                                 className="rounded-circle"
+                                style={{ objectFit: "cover", aspectRatio: "1/1" }}
                             />
+
                         </div>
                         <h6 className="main-notification-title">
-                            {params.data?.displayName
-                                ? params.data?.displayName
-                                : "John Doe"}
+                            {params.data?.description === "Super administrador"
+                                ? params.data?.name || "Super Admin"
+                                : `${params.data?.name || "Nombre"} ${params.data?.lastName || "Apellido"}`}
                         </h6>
-                        <p className="main-notification-text mb-0">
-                            {/* {params.data?.rol
-                                ? params.data?.rol
-                                : "Super Admin"} */}
+                        <p className="main-notification-text mb-0 tw-px-6">
+                            {params.data?.description === "Super administrador"
+                                ? params.data?.description
+                                : params.data?.rol || "Rol no asignado"}
                         </p>
+
+                        {params.data?.rol === "Administrador" && params.data?.company?.tradename && (
+                            <p className="main-notification-text mb-0 tw-text-sm tw-text-gray-500 tw-mt-1">
+                                {params.data.company.tradename[0]}
+                            </p>
+                        )}
                     </div>
+
                     <Dropdown.Item href="#profile" eventKey="profile">
                         <i className="fe fe-user fs-16 align-middle me-2"></i>
                         Perfil
                     </Dropdown.Item>
+
                     <li>
                         <hr className="dropdown-divider" />
                     </li>
+
                     <Dropdown.Item onClick={params.logOut}>
                         <i className="fe fe-power fs-16 align-middle me-2"></i>
                         Cerrar sesión
                     </Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
+
+
+
+
         </>
     );
 };

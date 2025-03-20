@@ -177,8 +177,15 @@ const BackgroundFormModal = ({
                                             />
                                         </label>
 
-                                        <Typography style={{ fontSize: "15px",textAlign: "left" }} className="tw-text-gray-500 tw-mt-3 tw-mb-4">
-                                            <strong>Tamaño recomendado:</strong> 2344x5075 px
+                                        <Typography
+                                            style={{ fontSize: "15px", textAlign: "left" }}
+                                            className={`tw-mt-3 tw-mb-4 ${modeTheme === "light" ? "tw-text-gray-700" : "tw-text-white"
+                                                }`}
+                                        >
+                                            <strong>Tamaño recomendado:</strong> 2344x5075 px <br />
+                                            <span className="tw-mt-2 tw-block">
+                                                <strong>Formatos permitidos:</strong> JPG, JPEG, PNG
+                                            </span>
                                         </Typography>
                                     </div>
 

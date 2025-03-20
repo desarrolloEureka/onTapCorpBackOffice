@@ -94,6 +94,19 @@ const CompanyPage = ({ theme }: CompanyProps) => {
                 </span>
               )}
 
+              {/* Tamaño recomendado y formatos permitidos */}
+              <div className="tw-text-center tw-mt-2">
+                <p
+                  className={`tw-text-sm ${theme === "light" ? "tw-text-gray-600" : "tw-text-white"
+                    }`}
+                >
+                  <strong>Tamaño recomendado:</strong> 200x200 px <br />
+                  <span className="tw-block tw-mt-1">
+                    <strong>Formatos permitidos:</strong> JPG, JPEG, PNG
+                  </span>
+                </p>
+              </div>
+
               <div className="tw-absolute tw-left-5 tw-bottom-5">
                 <h5 className="h5">Compartir Todo</h5>
                 <CustomSwitch
