@@ -147,6 +147,8 @@ Width
     --white-7: rgba(255, 255, 255, 0.7);
     --white-8: rgba(255, 255, 255, 0.8);
     --white-9: rgba(255, 255, 255, 0.9);
+    --colorNav: rgba(255, 255, 255, 0.9);
+
     /* Black set */
     --black-1: rgba(0, 0, 0, 0.1);
     --black-2: rgba(0, 0, 0, 0.2);
@@ -236,6 +238,8 @@ Width
     --white-7: rgba(0, 0, 0, 0.7);
     --white-8: rgba(0, 0, 0, 0.8);
     --white-9: rgba(0, 0, 0, 0.9);
+    --colorNav: rgba(255, 255, 255, 0.9);
+
     /* black set */
     --black-1: rgba(255, 255, 255, 0.05);
     --black-2: rgba(255, 255, 255, 0.2);
@@ -21396,7 +21400,7 @@ html[dir="rtl"] .carousel-item-prev:not(.carousel-item-end) {
 }
 
 .btn.show {
-    color: var(--default-text-color) !important;
+    color: var(--colorNav) !important;
 }
 
 .btn-group .btn {
@@ -26085,7 +26089,7 @@ label:is(.form-label) {
 }
 
 .nav-link {
-    color: var(--default-text-color);
+    color: var(--colorNav); 
     border-radius: 0.688rem;
 }
 

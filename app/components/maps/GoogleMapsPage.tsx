@@ -37,7 +37,7 @@ const BranchFilter = ({
         <option value="">
           {branches.length > 0
             ? `Mostrar Todos`
-            : `No hay ${titulo === "Puntos Fijos/Categoría" ? "puntos fijos" : titulo?.toLocaleLowerCase()}s disponibles`}
+            : `No hay ${titulo === "Puntos Fijos/Categoría" ? "puntos fijos" : titulo?.toLocaleLowerCase() + 's'} disponibles`}
         </option>
         {branches.map((branch) => {
           const displayValue = names2 !== "" ? `${branch?.[names]} ${branch?.[names2]}` : names === "zoneName" ? branch[1] : branch?.[names];
@@ -130,7 +130,17 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
                 branches={routeCoordinatesData}
               />
             )}
-            {(mapToShow === "all") && (
+            {(mapToShow === "all" || mapToShow === "employees") && (
+              <BranchFilter
+                names={"firstName"}
+                names2={"lastName"}
+                titulo={"Empleado"}
+                setSelectedBranch={filterSelect}
+                branches={employeeLocationsData}
+              />
+            )}
+
+            {/*  {(mapToShow === "all") && (
               <BranchFilter
                 names={"pointName"}
                 names2={""}
@@ -138,8 +148,8 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
                 setSelectedBranch={filterSelect}
                 branches={fixedPointsData}
               />
-            )}
-            {(mapToShow === "fixedPoints") && (
+            )} */}
+            {(mapToShow === "all" || mapToShow === "fixedPoints") && (
               <>
                 <BranchFilter
                   names={"name"}
@@ -157,18 +167,9 @@ const GoogleMapsPage = ({ mapToShow }: GooglePageProps) => {
                 />
               </>
             )}
-            {(mapToShow === "all" || mapToShow === "employees") && (
-              <BranchFilter
-                names={"firstName"}
-                names2={"lastName"}
-                titulo={"Empleado"}
-                setSelectedBranch={filterSelect}
-                branches={employeeLocationsData}
-              />
-            )}
           </div>
         </div>
-
+        
         <div className="tw-w-full tw-shadow-2xl tw-rounded-lg">
           <GoogleMapComponent2
             mapContainerStyle={mapContainerStyle}

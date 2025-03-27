@@ -13,9 +13,10 @@ const IconsUrlModal = ({
     val,
     modeTheme,
 }: ModalIcons) => {
-    const globalLogos = dataLogos?.filter((logo: any) => logo.type === "global");
-    const companyLogos = dataLogos?.filter((logo: any) => logo.type === "company");
-
+    const uniqueLogos = Array.from(new Map(dataLogos?.map((logo: any) => [logo.imageUrl, logo])).values());
+    const globalLogos = uniqueLogos.filter((logo: any) => logo.type === "global");
+    const companyLogos = uniqueLogos.filter((logo: any) => logo.type === "company");
+    
     return dataLogos && (
         <Modal
             centered
@@ -59,10 +60,16 @@ const IconsUrlModal = ({
                         >
                             Íconos Globales
                         </Typography>
-                        <div className="tw-grid tw-grid-cols-5 tw-gap-x-0.5 tw-overflow-y-scroll tw-max-h-[250px]">
+                        <div
+                            className="tw-grid tw-grid-cols-5 tw-gap-x-0.5 tw-overflow-y-auto tw-max-h-[250px]"
+                            style={{
+                                scrollbarWidth: "thin",
+                                scrollbarColor: "#888 transparent",
+                            }}
+                        >
                             {globalLogos?.map((logo: any, index: any) => (
                                 <IconCard
-                                    key={index}
+                                    key={logo.id}
                                     logo={logo}
                                     modeTheme={modeTheme}
                                     val={val}
@@ -81,10 +88,16 @@ const IconsUrlModal = ({
                             Íconos de la Compañía
                         </Typography>
                         {companyLogos && companyLogos.length > 0 ?
-                            <div className="tw-grid tw-grid-cols-5 tw-gap-x-0.5 tw-overflow-y-scroll tw-max-h-[250px]">
+                            <div
+                                className="tw-grid tw-grid-cols-5 tw-gap-x-0.5 tw-overflow-y-auto tw-max-h-[250px]"
+                                style={{
+                                    scrollbarWidth: "thin",
+                                    scrollbarColor: "#888 transparent",
+                                }}
+                            >
                                 {companyLogos.map((logo: any, index: any) => (
                                     <IconCard
-                                        key={index}
+                                        key={logo.id}
                                         logo={logo}
                                         modeTheme={modeTheme}
                                         val={val}
@@ -115,6 +128,7 @@ const IconCard = ({ logo, modeTheme, val, handleDataNetworks, itemKey }: any) =>
                 style={{
                     fontSize: 14,
                     color: modeTheme === "light" ? "black" : "white",
+                    maxWidth: 90,
                 }}
             >
                 {logo.imageName.length > 8 ? logo.imageName.substring(0, 10) : logo.imageName}

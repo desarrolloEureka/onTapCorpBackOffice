@@ -218,7 +218,11 @@ export const listenToIconsQuery = (ref: string, setData: (data: any[]) => void, 
           return true;
         }
         return icon.type === "global"; // Los íconos globales siempre deben incluirse
+      })
+      .sort((a: any, b: any) => {
+        return a.logoName.localeCompare(b.logoName, undefined, { numeric: true });
       });
+
     setData(updatedData);
   });
 
