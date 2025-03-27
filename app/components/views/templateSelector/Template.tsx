@@ -22,6 +22,14 @@ const Template = ({
   const [isDataError, setIsDataError] = useState(true);
   const { currentBackground, currentTemplate } = TemplateSelectorHook(userData, companyData);
 
+  if (!userData && currentTemplate === undefined && currentBackground === undefined) {
+    return (
+      <Box className="tw-flex tw-justify-center tw-items-center tw-h-screen">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   if (userData) {
     if (currentTemplate && currentBackground) {
       switch (currentTemplate?.name) {
@@ -55,9 +63,17 @@ const Template = ({
           );
       }
     } else {
-      <Box className="tw-flex tw-justify-center tw-items-center tw-h-screen">
-        <CircularProgress />
-      </Box>;
+      return (
+        <CustomModalAlert
+          isModalAlert={isDataError}
+          handleModalAlert={() => setIsDataError(false)}
+          title={"Configuración Pendiente"}
+          description={
+            "El administrador de la empresa aún no ha seleccionado una plantilla o un fondo. Por favor, contacta con él para poder visualizar la tarjeta."
+          }
+          isClosed={false}
+        />
+      );
     }
   } else {
     return (

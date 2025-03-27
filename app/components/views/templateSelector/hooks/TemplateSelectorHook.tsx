@@ -11,7 +11,7 @@ const TemplateSelectorHook = (user: any, companyData: any) => {
 
   useLayoutEffect(() => {
     //const temId = user?.templateData[0];
-    const dataCompany = companyData?.templateData[0];
+    const dataCompany = Array.isArray(companyData?.templateData) ? companyData.templateData[0] : undefined;
 
     /*   if (temId) {
         setTemplateId(temId.id);

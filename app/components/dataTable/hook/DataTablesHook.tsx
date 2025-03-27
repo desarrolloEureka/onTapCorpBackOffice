@@ -1044,18 +1044,24 @@ const DataTablesHook = (reference: string) => {
                                 ? val === "uid"
                                   ? "8%"
                                   : "200px"
-                                : reference === "fixedPoints"
-                                  ? val === "timestamp"
-                                    ? "200px" :
-                                    val === "uid" || val === "color"
-                                      ? "auto"
-                                      : "280px"
-                                  : reference === "workingday"
-                                    ? val === "startDay" || val === "endDay" || val === "documentNumber"
-                                      ? "160px"
-                                      : "200px"
-                                    :
-                                    "auto",
+                                : reference === "campus"
+                                  ? val === "uid"
+                                    ? "8%"
+                                    : val === "address" ?
+                                      "500px"
+                                      : "220px"
+                                  : reference === "fixedPoints"
+                                    ? val === "timestamp"
+                                      ? "200px" :
+                                      val === "uid" || val === "color"
+                                        ? "auto"
+                                        : "280px"
+                                    : reference === "workingday"
+                                      ? val === "startDay" || val === "endDay" || val === "documentNumber"
+                                        ? "160px"
+                                        : "200px"
+                                      :
+                                      "auto",
           omit: !omittedColumns.includes(val),
           style:
             val === "uid" && reference === "meetingStatus"

@@ -69,6 +69,7 @@
     --white-7: rgba(255, 255, 255, 0.7);
     --white-8: rgba(255, 255, 255, 0.8);
     --white-9: rgba(255, 255, 255, 0.9);
+    --colorNav: rgba(255, 255, 255, 0.9);
 
     /* Black set */
     --black-1: rgba(0, 0, 0, 0.1);
@@ -205,6 +206,7 @@ $white-6: var(--white-6);
 $white-7: var(--white-7);
 $white-8: var(--white-8);
 $white-9: var(--white-9);
+$color-Nav: var(--colorNav);
 
 /*black set*/
 $black-1: var(--black-1);
@@ -266,6 +268,7 @@ $black-9: var(--black-9);
     --white-7: rgba(0, 0, 0, 0.7);
     --white-8: rgba(0, 0, 0, 0.8);
     --white-9: rgba(0, 0, 0, 0.9);
+    --colorNav: rgba(255, 255, 255, 0.9);
 
     /* black set */
     --black-1: rgba(255, 255, 255, 0.05);

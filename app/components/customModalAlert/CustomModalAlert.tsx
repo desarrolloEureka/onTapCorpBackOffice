@@ -30,9 +30,13 @@ function CustomModalAlert({
           justifyContent: 'center',
           alignItems: 'center',
           bgcolor: '#030124',
-          padding: 7,
+          padding: 5,
           borderRadius: 3,
           position: 'relative',
+          maxWidth: 500,
+          width: '90%',
+          margin: 'auto',
+          boxShadow: 24,
         }}
       >
         {isClosed && (
@@ -46,7 +50,7 @@ function CustomModalAlert({
         <Typography className=' tw-text-lg tw-font-bold tw-text-white tw-text-center'>
           {title}
         </Typography>
-        <Typography className='tw-text-white tw-my-2'>{description}</Typography>
+        <Typography className='tw-text-white tw-my-2  tw-text-center'>{description}</Typography>
       </Box>
     </Modal>
   );

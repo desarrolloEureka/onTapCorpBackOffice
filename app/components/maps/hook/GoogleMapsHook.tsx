@@ -317,7 +317,7 @@ export const GoogleMapsHook = () => {
 
                     const sortedFixedPoints = fixedPointsCoordsFound.sort((a: any, b: any) => a?.name.localeCompare(b?.name))
                     setFixedPointsData(sortedFixedPoints);
-
+                    setFixedPointsFiltered(sortedFixedPoints);
 
                     const uniqueFixedPoints = Object.values(
                         fixedPointsCoordsFound.reduce((acc, current) => {
@@ -325,8 +325,8 @@ export const GoogleMapsHook = () => {
                             return acc;
                         }, {} as Record<string, FixedPointsCoords>)
                     );
+
                     setFixedPointsFilteredByCatAux(uniqueFixedPoints);
-                    setFixedPointsFiltered(uniqueFixedPoints);
                 }
             });
             return () => unsubscribe();
@@ -378,9 +378,7 @@ export const GoogleMapsHook = () => {
             return
         }
 
-        if (typeFilter != "Categorías" && (typeFilter !== "Puntos Fijos/Categoría" && typeFilter !== "Categorías")) {
-            resetFilters();
-        }
+        resetFilters();
 
         switch (typeFilter.trim()) {
             case "Zona":

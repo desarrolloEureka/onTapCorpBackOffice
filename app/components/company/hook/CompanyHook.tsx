@@ -668,18 +668,20 @@ const CompanyHook = () => {
 
     useEffect(() => {
         if (employees.length > 0) {
-            // Si employees tiene datos y urlName aún no se ha inicializado
-            setData((prevData: any) => ({
-                ...prevData,
-                urlName: [
-                    "",
-                    true,
-                    employees.reduce((acc: any, employee: any) => {
-                        acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
-                        return acc;
-                    }, {}),
-                ],
-            }));
+            setData((prevData: any) => {
+                const prevUrlName = prevData.urlName || [];
+                return {
+                    ...prevData,
+                    urlName: [
+                        prevUrlName[0] ?? "",
+                        prevUrlName[1] ?? true,
+                        employees.reduce((acc: any, employee: any) => {
+                            acc[employee.uid] = { isActive: true, uid: employee.uid, views: [] };
+                            return acc;
+                        }, {}),
+                    ],
+                };
+            });
         }
     }, [employees]);
 
