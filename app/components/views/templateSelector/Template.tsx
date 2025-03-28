@@ -22,7 +22,7 @@ const Template = ({
   const [isDataError, setIsDataError] = useState(true);
   const { currentBackground, currentTemplate } = TemplateSelectorHook(userData, companyData);
 
-  if (!userData && currentTemplate === undefined && currentBackground === undefined) {
+  if (!userData || (currentTemplate === undefined && currentBackground === undefined)) {
     return (
       <Box className="tw-flex tw-justify-center tw-items-center tw-h-screen">
         <CircularProgress />
