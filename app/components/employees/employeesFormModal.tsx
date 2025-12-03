@@ -73,6 +73,7 @@ const EmployeesFormModal = ({
     handleChangeSwitch2,
     routeData,
     areaData,
+    planData,
     mondayRoute,
     tuesdayRoute,
     wednesdayRoute,
@@ -88,6 +89,8 @@ const EmployeesFormModal = ({
     headquartersData,
     selectedHeadquarter,
     handleHeadquartersChange,
+    selectedPlan,
+    handlePlanChange,
     handleEditForm,
     handleFileChange,
     selectedImage,
@@ -97,6 +100,7 @@ const EmployeesFormModal = ({
     handleChangeStep,
     selectedAreaError,
     selectedHeadquarterError,
+    selectedPlanError,
     routeApplicableError,
     mondayRouteError,
     tuesdayRouteError,
@@ -107,6 +111,7 @@ const EmployeesFormModal = ({
     sundayRouteError,
     employeeCardStatusError,
     handleChangeItemAditional,
+    selectedPlanData,
   } = EmployeesFormHook({
     handleShowMainForm,
     setHandleShowMainForm,
@@ -221,9 +226,9 @@ const EmployeesFormModal = ({
                             color: "white",
                             fontSize: "16px",
                             textAlign: "center",
-                            position: "relative", 
+                            position: "relative",
                           }}
-                          >
+                        >
                           {selectedImage ? (
                             <img
                               style={{
@@ -239,22 +244,22 @@ const EmployeesFormModal = ({
                           ) : (
                             <span>Agregar foto</span>
                           )}
-                          
+
                           {/* Información del tamaño de la foto */}
                           <div
                             className="tw-text-sm tw-text-gray-500"
                             style={{
                               position: "absolute",
-                              bottom: "-20px",  
-                              left: "100%",    
-                              marginLeft: "10px", 
-                              textAlign: "left",  
+                              bottom: "-20px",
+                              left: "100%",
+                              marginLeft: "10px",
+                              textAlign: "left",
                             }}
                           >
                             Tamaño recomendado: 200x200px
                           </div>
                         </div>
-                     </div>
+                      </div>
 
                       <div
                         className="tw-flex tw-w-full tw-flex-col tw-justify-center tw-items-center"
@@ -550,7 +555,7 @@ const EmployeesFormModal = ({
                                       className="tw-pl-10"
                                       value={
                                         item.indicative &&
-                                        item.indicative.includes("+")
+                                          item.indicative.includes("+")
                                           ? item.indicative
                                           : "+" + item.indicative
                                       }
@@ -574,35 +579,35 @@ const EmployeesFormModal = ({
                                     />
                                   </div>
                                   <CustomTextField
-                                  data={[item.text, item.checked]}
-                                  onChange={(value: string, name: string, checked: boolean) => {
-                                    const numericValue = value.replace(/\D/g, '');
+                                    data={[item.text, item.checked]}
+                                    onChange={(value: string, name: string, checked: boolean) => {
+                                      const numericValue = value.replace(/\D/g, '');
 
-                                    if (numericValue.length <= 10) {
-                                      handleChangeItem("phones", index, name, numericValue, checked);
-                                    }
-                                  }}
-                                  name="text"
-                                  type="text"
-                                  switch="true"
-                                  theme={modeTheme}
-                                  id={`phone-${index}`}
-                                  fullWidth
-                                  label="Teléfono"
-                                  helperText={errors.phones}
-                                  error={!!errors.phones}
-                                  InputProps={{
-                                    startAdornment: (
-                                      <InputAdornment position="start">
-                                        <LocalPhoneOutlinedIcon />
-                                      </InputAdornment>
-                                    ),
-                                  }}
-                                  inputProps={{
-                                    maxLength: 10, 
-                                    pattern: '[0-9]*', 
-                                  }}
-                                />
+                                      if (numericValue.length <= 10) {
+                                        handleChangeItem("phones", index, name, numericValue, checked);
+                                      }
+                                    }}
+                                    name="text"
+                                    type="text"
+                                    switch="true"
+                                    theme={modeTheme}
+                                    id={`phone-${index}`}
+                                    fullWidth
+                                    label="Teléfono"
+                                    helperText={errors.phones}
+                                    error={!!errors.phones}
+                                    InputProps={{
+                                      startAdornment: (
+                                        <InputAdornment position="start">
+                                          <LocalPhoneOutlinedIcon />
+                                        </InputAdornment>
+                                      ),
+                                    }}
+                                    inputProps={{
+                                      maxLength: 10,
+                                      pattern: '[0-9]*',
+                                    }}
+                                  />
 
                                 </div>
                                 <CustomTextField
@@ -826,7 +831,11 @@ const EmployeesFormModal = ({
                             value={selectedArea}
                             onChange={handleAreaChange}
                             label=""
+                            displayEmpty
                           >
+                            <MenuItem value="" disabled>
+                              Seleccione
+                            </MenuItem>
                             {areaData &&
                               areaData.map((area, index) => (
                                 <MenuItem key={index} value={area.uid}>
@@ -864,7 +873,11 @@ const EmployeesFormModal = ({
                             value={selectedHeadquarter}
                             onChange={handleHeadquartersChange}
                             label="Sede"
+                            displayEmpty
                           >
+                            <MenuItem value="" disabled>
+                              Seleccione
+                            </MenuItem>
                             {headquartersData &&
                               headquartersData.map((area, index) => (
                                 <MenuItem key={index} value={area.uid}>
@@ -886,8 +899,49 @@ const EmployeesFormModal = ({
                         </div>
                       </div>
                     </div>
-                    <div className="tw-flex tw-w-full tw-flex-col tw-mt-5">
+
+                    <div className="tw-flex tw-w-full tw-flex-col tw-mt-6 tw-mb-1">
                       <div className="tw-flex tw-pt-4 tw-rounded tw-flex-col tw-justify-center tw-items-start">
+                        <h6 className="h5">Elige un Plan:</h6>
+                      </div>
+                      <div className="tw-flex tw-h-14 tw-rounded tw-flex-col tw-justify-center tw-items-start">
+                        <div className="tw-flex tw-rounded tw-flex-col tw-justify-center tw-items-start tw-w-60">
+                          <CustomSelect
+                            labelId="plan-label"
+                            value={selectedPlan}
+                            onChange={handlePlanChange}
+                            label="Plan"
+                            displayEmpty
+                          >
+
+                            <MenuItem value="" disabled>
+                              Seleccione
+                            </MenuItem>
+
+                            {planData &&
+                              planData.map((plan, index) => (
+                                <MenuItem key={index} value={plan.uid}>
+                                  {plan.name}
+                                </MenuItem>
+                              ))}
+                          </CustomSelect>
+
+                          {selectedPlanError ? (
+                            <div
+                              style={{
+                                color: "#d32f2f",
+                                fontSize: "12px",
+                              }}
+                            >
+                              {selectedPlanError}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="tw-flex tw-w-full tw-flex-col tw-mt-5">
+                      {/* <div className="tw-flex tw-pt-4 tw-rounded tw-flex-col tw-justify-center tw-items-start">
                         <h6 className="h5">Ruta:</h6>
                         <div className="tw-flex tw-flex-col tw-w-full tw-h-8 tw-justify-center">
                           <p className="tw-text-left">
@@ -924,9 +978,9 @@ const EmployeesFormModal = ({
                             </div>
                           ) : null}
                         </div>
-                      </div>
+                      </div> */}
 
-                      {routeApplicable && (
+                      {selectedPlanData?.gps === true && (
                         <div className="tw-flex  tw-rounded tw-flex-col tw-justify-center tw-items-start">
                           <div className="tw-flex tw-rounded tw-flex-col tw-justify-center tw-items-start tw-w-100">
                             <TableContainer>
@@ -1334,11 +1388,10 @@ const EmployeesFormModal = ({
                         </div>
                       )}
 
+
+
                       <div
                         className="tw-flex tw-flex-row tw-justify-between tw-items-start tw-mt-7"
-                        style={{
-                          borderTop: "1px solid #DFDFDF",
-                        }}
                       >
                         <div className="tw-flex tw-flex-col tw-h-24 tw-justify-center tw-items-start tw-w-100">
                           <SwitchForm
@@ -1351,23 +1404,16 @@ const EmployeesFormModal = ({
                           />
                           {/* {employeeCardStatusError ? <div style={{ color: '#d32f2f', fontSize: '12px' }}>{employeeCardStatusError}</div> : null} */}
                         </div>
-                        <div className="tw-flex tw-flex-col tw-h-24 tw-justify-center tw-items-start tw-w-100">
+                        {/* <div className="tw-flex tw-flex-col tw-h-24 tw-justify-center tw-items-start tw-w-100">
                           {!isEdit &&
-                          handleShowMainFormEdit &&
-                          !createdGPSValid ? (
+                            handleShowMainFormEdit &&
+                            !createdGPSValid ? (
                             <SwitchForm
                               modeTheme={"light"}
-                              checked={
-                                employeeStatusGPS === true
-                                  ? employeeStatusGPS
-                                  : false
-                              }
-                              onChange={(e) => {
-                                dataForm?.isGPSActive === true
-                                  ? handleChangeSwitch2()
-                                  : null;
-                              }}
+                              checked={selectedPlanData?.gps === true}
+                              onChange={() => { }}
                               text={"Estado GPS empleado"}
+                              disable={true}
                             />
                           ) : !isEdit &&
                             handleShowMainFormEdit &&
@@ -1375,30 +1421,26 @@ const EmployeesFormModal = ({
                             employeeStatusGPS ? (
                             <SwitchForm
                               modeTheme={"light"}
-                              checked={employeeStatusGPS}
-                              onChange={(e) => {
-                                handleChangeSwitch2();
-                              }}
+                              checked={selectedPlanData?.gps === true}
+                              onChange={() => { }}
                               text={"Estado GPS empleado"}
+                              disable={true}
                             />
                           ) : (
                             <SwitchForm
                               modeTheme={"light"}
-                              checked={
-                                createdGPSValid ? employeeStatusGPS : false
-                              }
-                              onChange={(e) => {
-                                handleChangeSwitch2();
-                              }}
+                              checked={selectedPlanData?.gps === true}
+                              onChange={() => { }}
                               text={"Estado GPS empleado"}
+                              disable={true}
                             />
                           )}
-                        </div>
+                        </div> */}
                       </div>
-                      {!isEdit &&
-                      handleShowMainFormEdit &&
-                      !createdGPSValid &&
-                      !dataForm?.isGPSActive ? (
+                      {/*  {!isEdit &&
+                        handleShowMainFormEdit &&
+                        !createdGPSValid &&
+                        !dataForm?.isGPSActive ? (
                         <p style={{ color: "red" }}>
                           La cantidad de licencias GPS ha llegado a su limite,
                           por favor comunicarse con One Tap.
@@ -1413,7 +1455,7 @@ const EmployeesFormModal = ({
                             por favor comunicarse con One Tap.
                           </p>
                         )
-                      )}
+                      )} */}
                     </div>
                   </div>
                 )}

@@ -22,6 +22,8 @@ export const initialData: CampusFormValuesData = {
     timestamp: "",
     isActive: true,
     isDeleted: false,
+    latitude: "",
+    longitude: ""
 };
 
 export const daysInSpanish: { [key: string]: string } = {

@@ -45,6 +45,9 @@ const CampusHook = ({
     const [campusNumError, setCampusNumError] = useState("");
     const [campusAddressError, setCampusAddressError] = useState("");
     const [campusUrlError, setCampusUrlError] = useState("");
+    const [latitudeError, setLatitudeError] = useState("");
+    const [longitudeError, setLongitudeError] = useState("");
+
 
     const theme = localStorage.getItem("@theme");
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
@@ -104,7 +107,7 @@ const CampusHook = ({
         setData((prevData) => {
             const maxItems = 3;
             let newData = { ...prevData };
-    
+
             if (type === "phone") {
                 // Solo agregar un nuevo teléfono si no hemos llegado al límite de 3
                 if ((prevData.phones || []).length < maxItems) {
@@ -115,12 +118,12 @@ const CampusHook = ({
                     newData = { ...newData, phones: updatedPhones };
                 }
             }
-    
+
             return newData;
-            
+
         });
     };
-    
+
     const handleDeleteItem = (indexItem: number) => {
         setData((prevData) => ({
             ...prevData,
@@ -151,7 +154,7 @@ const CampusHook = ({
 
     const validateFields = () => {
         let valid = true;
-    
+
         // Validación del campo 'name'
         if (!data.name[0].trim()) {
             setCampusNameError("El nombre de la sede es requerido");
@@ -162,7 +165,27 @@ const CampusHook = ({
         } else {
             setCampusNameError("");
         }
-    
+
+        if (!data?.latitude?.trim()) {
+            setLatitudeError("La latitud es requerida");
+            valid = false;
+        } else if (isNaN(Number(data.latitude)) || Number(data.latitude) < -90 || Number(data.latitude) > 90) {
+            setLatitudeError("La latitud debe ser un número entre -90 y 90");
+            valid = false;
+        } else {
+            setLatitudeError("");
+        }
+
+        if (!data?.longitude?.trim()) {
+            setLongitudeError("La longitud es requerida");
+            valid = false;
+        } else if (isNaN(Number(data.longitude)) || Number(data.longitude) < -180 || Number(data.longitude) > 180) {
+            setLongitudeError("La longitud debe ser un número entre -180 y 180");
+            valid = false;
+        } else {
+            setLongitudeError("");
+        }
+
         // Validación del campo 'address'
         if (!data.address[0].trim()) {
             setCampusAddressError("La dirección de la sede es requerida");
@@ -172,9 +195,9 @@ const CampusHook = ({
             valid = false;
         } else {
             setCampusAddressError("");
-        } 
+        }
 
-      // Validación del campo 'phones' (número de teléfono)
+        // Validación del campo 'phones' (número de teléfono)
         if (!data.phones || data.phones.length === 0 || data.phones[0].text.trim().replace(/\D/g, '').length !== 10) {
             setCampusNumError("El número de teléfono debe tener exactamente 10 caracteres");
             valid = false;
@@ -182,8 +205,6 @@ const CampusHook = ({
             setCampusNumError(""); // Limpiar error si es válido
         }
 
-
-         
         return valid;
     };
 
@@ -197,21 +218,20 @@ const CampusHook = ({
         // Validar los campos antes de continuar
         if (!validateFields()) return;
 
-        //Coordenadas de la Dirección
-        const coordsFromAddress: {
-            lat: number;
-            lng: number;
-        } | null = await getGeolocation(data.address[0], companyData);
-
         setIsLoading(true);
         try {
             if (userData?.companyId) {
+
+                const { latitude, longitude, ...rest } = data;
+
                 const formData = {
-                    ...data,
+                    ...rest,
                     idCompany: userData.companyId,
                     uid: documentRef.id,
-                    //Geo localización con la dirección formateada
-                    geolocation: coordsFromAddress,
+                    geolocation: {
+                        lat: Number(data.latitude),
+                        lng: Number(data.longitude)
+                    }
                 };
 
                 const campusQueryResult = await saveCampusQuery(
@@ -220,15 +240,12 @@ const CampusHook = ({
                 );
 
                 if (campusQueryResult.success) {
-                    //console.log("Saved successfully");
                     confirmAlert();
                 } else {
                     console.error("Failed to save:", campusQueryResult.message);
                 }
             } else {
-                // console.log(
-                //     "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",
-                // );
+                // console.log("No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.");
                 return;
             }
         } catch (error) {
@@ -254,6 +271,8 @@ const CampusHook = ({
         setCampusAddressError("");
         setCampusUrlError("");
         setCampusNumError("");
+        setLatitudeError("");
+        setLongitudeError("");
     };
 
     //Para actualizar los datos
@@ -262,31 +281,29 @@ const CampusHook = ({
         e.stopPropagation();
 
         if (!validateFields()) return;
-
-        //Coordenadas de la Dirección
-        const coordsFromAddress: {
-            lat: number;
-            lng: number;
-        } | null = await getGeolocation(data.address[0], companyData);
-
         setIsLoading(true);
         try {
             if (userData?.companyId) {
-                const campusQueryResult = await updateCampusQuery({
-                    ...data, //Geo localización con la dirección formateada
-                    geolocation: coordsFromAddress,
-                });
+                const { latitude, longitude, ...rest } = data;
+
+                const editedData = {
+                    ...rest,
+                    geolocation: {
+                        lat: Number(latitude),
+                        lng: Number(longitude),
+                    },
+                    idCompany: userData.companyId,
+                };
+
+                const campusQueryResult = await updateCampusQuery(editedData);
 
                 if (campusQueryResult.success) {
-                    //console.log("Saved successfully");
                     confirmAlert();
                 } else {
                     console.error("Failed to save:", campusQueryResult.message);
                 }
             } else {
-                // console.log(
-                //     "No se pudo encontrar la compañía o el ID de la fila. Por favor, inténtalo de nuevo.",
-                // );
+                // console.log("No se pudo encontrar la compañía o el ID de la fila. Por favor, inténtalo de nuevo.");
                 return;
             }
         } catch (error) {
@@ -328,6 +345,8 @@ const CampusHook = ({
         campusAddressError,
         campusUrlError,
         campusNumError,
+        latitudeError,
+        longitudeError,
         daysInSpanish,
         hoursArray,
         handleSendForm,

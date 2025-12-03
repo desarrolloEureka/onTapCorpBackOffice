@@ -63,6 +63,7 @@ const RoutesFormModal = ({
         zoneError,
         hoursError,
         minutesError,
+        addressErrors
     } = RoutesFormHook({
         handleShowMainForm,
         setHandleShowMainForm,
@@ -281,51 +282,86 @@ const RoutesFormModal = ({
                                         <div className="tw-flex tw-flex-col tw-w-full tw-h-auto">
                                             <div
                                                 className="tw-px-2 tw-pb-4">
-                                                {addresses.map(
-                                                    (address, index) => (
-                                                        <div
-                                                            key={index}
-                                                            className={`tw-flex tw-flex-row ${
-                                                                index !== 0
-                                                                    ? "tw-mt-6"
-                                                                    : "tw-mt-2"
-                                                            } tw-w-full`}
-                                                        >
+                                                {addresses?.map((item, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className={`tw-flex tw-flex-col ${index !== 0 ? "tw-mt-6" : "tw-mt-2"} tw-w-full`}
+                                                    >
+                                                        <CustomTextField
+                                                            data={item.address}
+                                                            onChange={(value: string) =>
+                                                                handleAddressChange(index, "address", value)
+                                                            }
+                                                            type="text"
+                                                            id={`address-${index}`}
+                                                            fullWidth
+                                                            label={`Dirección ${index + 1}`}
+                                                            variant="standard"
+                                                            color="primary"
+                                                            theme={modeTheme}
+                                                            deleted={index < 2 ? "" : "true"}
+                                                            onClick={() => { handleDeleteAddress(index) }}
+                                                            error={!!addressErrors[index]?.address}
+                                                            helperText={addressErrors[index]?.address}
+                                                            InputProps={{
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <ExploreOutlinedIcon />
+                                                                    </InputAdornment>
+                                                                ),
+                                                            }}
+                                                        />
+
+                                                        <div className="tw-flex tw-flex-row tw-gap-4 tw-mt-4 tw-w-full">
                                                             <CustomTextField
-                                                                data={address}
-                                                                onChange={(newValue: string, name: string, checked: boolean) =>
-                                                                    handleAddressChange(index, newValue)
+                                                                data={item?.coords?.lat}
+                                                                onChange={(value: string) =>
+                                                                    handleAddressChange(index, "lat", value)
                                                                 }
-                                                                type="text"
-                                                                id={`address-${index}`}
+                                                                type="number"
+                                                                id={`lat-${index}`}
                                                                 fullWidth
-                                                                label={`Dirección ${index + 1}`}
                                                                 variant="standard"
                                                                 color="primary"
                                                                 theme={modeTheme}
-                                                                deleted={index < 2 ? "" : "true" }
-                                                                onClick={() => {handleDeleteAddress(index)}}
-                                                                helperText={
-                                                                    index ===
-                                                                    addresses.length - 1
-                                                                        ? addressesError
-                                                                        : ""
-                                                                }
-                                                                error={
-                                                                    index ===
-                                                                        addresses.length - 1 &&
-                                                                    !!addressesError
-                                                                }
+                                                                label={`Latitud ${index + 1}`}
+                                                                error={!!addressErrors[index]?.lat}
+                                                                helperText={addressErrors[index]?.lat}
                                                                 InputProps={{
                                                                     startAdornment: (
                                                                         <InputAdornment position="start">
                                                                             <ExploreOutlinedIcon />
                                                                         </InputAdornment>
                                                                     ),
-                                                                }}                                               
+                                                                }}
+                                                            />
+
+                                                            <CustomTextField
+                                                                data={item?.coords?.lng}
+                                                                onChange={(value: string) =>
+                                                                    handleAddressChange(index, "lng", value)
+                                                                }
+                                                                type="number"
+                                                                id={`lng-${index}`}
+                                                                fullWidth
+                                                                variant="standard"
+                                                                color="primary"
+                                                                theme={modeTheme}
+                                                                label={`Longitud ${index + 1}`}
+                                                                error={!!addressErrors[index]?.lng}
+                                                                helperText={addressErrors[index]?.lng}
+                                                                InputProps={{
+                                                                    startAdornment: (
+                                                                        <InputAdornment position="start">
+                                                                            <ExploreOutlinedIcon />
+                                                                        </InputAdornment>
+                                                                    ),
+                                                                }}
                                                             />
                                                         </div>
-                                                    ),
+
+                                                    </div>
+                                                ),
                                                 )}
                                             </div>
                                         </div>
@@ -365,12 +401,11 @@ const RoutesFormModal = ({
                                                             ).map((hour) => (
                                                                 <div
                                                                     key={hour}
-                                                                    className={`tw-p-2 ${
-                                                                        hour ===
+                                                                    className={`tw-p-2 ${hour ===
                                                                         hours
-                                                                            ? "tw-text-white"
-                                                                            : "tw-text-[#A3A3A3]"
-                                                                    }`}
+                                                                        ? "tw-text-white"
+                                                                        : "tw-text-[#A3A3A3]"
+                                                                        }`}
                                                                     onClick={() =>
                                                                         setHours(
                                                                             hour,
@@ -392,12 +427,11 @@ const RoutesFormModal = ({
                                                             ).map((minute) => (
                                                                 <div
                                                                     key={minute}
-                                                                    className={`tw-p-2 ${
-                                                                        minute ===
+                                                                    className={`tw-p-2 ${minute ===
                                                                         minutes
-                                                                            ? "tw-text-white"
-                                                                            : "tw-text-[#A3A3A3]"
-                                                                    }`}
+                                                                        ? "tw-text-white"
+                                                                        : "tw-text-[#A3A3A3]"
+                                                                        }`}
                                                                     onClick={() =>
                                                                         setMinutes(
                                                                             minute,
@@ -454,9 +488,8 @@ const RoutesFormModal = ({
                         ) : (
                             <button
                                 type="submit"
-                                className={`${
-                                    isLoading && "btn-loader"
-                                } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
+                                className={`${isLoading && "btn-loader"
+                                    } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
                             >
                                 {isLoading ? (
                                     <span className="ml-2 loading">

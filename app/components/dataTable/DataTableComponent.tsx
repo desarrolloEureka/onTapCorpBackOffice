@@ -32,6 +32,7 @@ import { Key } from "react";
 import ModalQR from "./components/ModalQR";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import BackgroundFormModal from "../backgroundImages/backgroundFormModal";
+import PlansModal from "../plans/PlansModal";
 
 const DataTableComponent = ({
   componentTitle,
@@ -86,10 +87,13 @@ const DataTableComponent = ({
     setSelectedZona,
     selectedRuta,
     setSelectedRuta,
+    selectedPlan,
+    setSelectedPlan,
     AreaData,
     SedeData,
     RutaData,
     ZonaData,
+    PlansData,
     isShowAlertCSV,
     setIsShowAlertCSV,
     dataAlertCSV,
@@ -191,10 +195,13 @@ const DataTableComponent = ({
                   setSelectedZona={setSelectedZona}
                   selectedRuta={selectedRuta}
                   setSelectedRuta={setSelectedRuta}
+                  selectedPlan={selectedPlan}
+                  setSelectedPlan={setSelectedPlan}
                   AreaData={AreaData}
                   SedeData={SedeData}
                   RutaData={RutaData}
                   ZonaData={ZonaData}
+                  PlansData={PlansData}
                   isShowAlertCSV={isShowAlertCSV}
                   setIsShowAlertCSV={setIsShowAlertCSV}
                   dataAlertCSV={dataAlertCSV}
@@ -256,7 +263,7 @@ const DataTableComponent = ({
             setHandleShowMainForm={setHandleShowMainForm}
             data={editData}
           />
-        ) : createdValid && !isShowQR && reference === "employees" ? (
+        ) : /* createdValid && */ !isShowQR && reference === "employees" ? (
           <EmployeesFormModal
             handleShowMainForm={handleShowMainForm}
             setHandleShowMainForm={setHandleShowMainForm}
@@ -342,6 +349,16 @@ const DataTableComponent = ({
             handleShowMainForm={handleShowMainForm}
             setHandleShowMainForm={setHandleShowMainForm}
             data={editData}
+          />
+        ) : reference === "plans" ? (
+          <PlansModal
+            handleShowMainForm={handleShowMainForm}
+            setHandleShowMainForm={setHandleShowMainForm}
+            handleShowMainFormEdit={handleShowMainFormEdit}
+            setHandleShowMainFormEdit={setHandleShowMainFormEdit}
+            editData={editData}
+            title={tableTitle}
+            reference={reference}
           />
         ) : reference === "circular" ||
           reference === "events" ||

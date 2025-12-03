@@ -266,10 +266,12 @@ const MainFormHook = ({
 
             currentDataObjectCompany.idType = data.idType;
             currentDataObjectCompany.id = data.id;
+            currentDataObjectCompany.sendToAllEmployees = data.sendToAllEmployees;
+            currentDataObjectCompany.showHomeInfo = data.showHomeInfo;
             currentDataObjectCompany.businessName = data.businessName;
             currentDataObjectCompany.tradename = data.tradename;
-            currentDataObjectCompany.cards = data.cards;
-            currentDataObjectCompany.cardGPS = data.cardGPS;
+            currentDataObjectCompany.standardUsers = data.standardUsers;
+            currentDataObjectCompany.premiumUsers = data.premiumUsers;
             currentDataObjectCompany.address = data.address;
             currentDataObjectCompany.indicative = data.indicative;
             currentDataObjectCompany.phone = data.phone;
@@ -460,14 +462,12 @@ const MainFormHook = ({
         data.idType &&
         data.id &&
         data.businessName &&
-        data.cards &&
-        data.cardGPS &&
-        parseInt(data.cards) >= parseInt(data.cardGPS) &&
+        data.standardUsers &&
+        data.premiumUsers &&
         data.country &&
         data.state &&
         data.city &&
-        data.id.length > 6 &&
-        data.id.length < 12;
+        data.id.length >= 6 && data.id.length <= 12;
 
     const urlVal = () => {
         if (data?.webSite) {

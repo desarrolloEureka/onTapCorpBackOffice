@@ -40,6 +40,7 @@ const ZonesFormModal = ({
         handleDeleteAddress,
         isEdit,
         handleEditForm,
+        addressErrors
     } = ZonesFormHook({
         handleShowMainForm,
         setHandleShowMainForm,
@@ -58,7 +59,7 @@ const ZonesFormModal = ({
 
     return (
         <Modal
-        
+
             size={reference === "companies" ? "xl" : "lg"}
             centered
             show={show}
@@ -67,7 +68,7 @@ const ZonesFormModal = ({
             aria-modal="true"
             contentClassName={reference !== "companies" ? "modal-admin" : ""}
             backdrop="static"
-            
+
         >
             <Form onReset={handleReset} onSubmit={handleSendForm}>
                 <ThemeProvider theme={theme}>
@@ -93,118 +94,166 @@ const ZonesFormModal = ({
                     </Modal.Title>
 
                     <Modal.Body className="tw-px-8">
-                    <div className="tw-flex tw-w-full tw-flex-col tw-space-y-4">
-                        <div className="tw-flex tw-w-full tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-admin-body">
-                            
-                            {/* Contenedor con scroll */}
-                            <div className="tw-overflow-y-auto tw-max-h-96 tw-px-3 tw-w-full"
-                                style={{
-                                    scrollbarWidth: "thin", 
-                                    scrollbarColor: "#9c9c9c #f1f1f1" 
-                                }}>
-                                <div className="tw-flex tw-flex-col tw-w-full">
-                                    <div className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full">
-                                        <TextField
-                                            value={zoneName}
-                                            onChange={(e) => setZoneName(e.target.value)}
-                                            type="text"
-                                            id="zoneName"
-                                            fullWidth
-                                            label="Nombre Zona"
-                                            variant="standard"
-                                            color="primary"
-                                            helperText={zoneNameError}
-                                            error={!!zoneNameError}
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <FilePresentIcon />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                            InputLabelProps={{
-                                                style: {
-                                                    fontSize: "20px",
-                                                    fontWeight: "bold",
-                                                    color: modeTheme === "light" ? "#396593" : "#8bb8e7",
-                                                },
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full">
-                                        <TextField
-                                            value={zoneManager}
-                                            onChange={(e) => setZoneManager(e.target.value)}
-                                            type="text"
-                                            id="zoneManager"
-                                            fullWidth
-                                            label="Jefe Zona"
-                                            variant="standard"
-                                            color="primary"
-                                            helperText={zoneManagerError}
-                                            error={!!zoneManagerError}
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <PersonOutlineOutlinedIcon />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                            InputLabelProps={{
-                                                style: {
-                                                    fontSize: "20px",
-                                                    fontWeight: "bold",
-                                                    color: modeTheme === "light" ? "#396593" : "#8bb8e7",
-                                                },
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="tw-flex tw-flex-row tw-px-3 tw-mt-7 tw-mb-4 tw-w-full">
-                                        <div className="tw-flex tw-flex-row tw-w-38 tw-rounded-3xl tw-bg-[#396593] tw-ml-auto">
-                                            <Button
-                                                variant="outlined"
-                                                onClick={handleAddAddress}
-                                                className="tw-text-white"
-                                            >
-                                                Añadir Dirección
-                                            </Button>
-                                        </div>
-                                </div>
-                                    {addresses.map((address, index) => (
-                                        <div key={index} className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full">
-                                            <CustomTextField
-                                                data={address}
-                                                onChange={(newValue: string, name: string, checked: boolean) =>
-                                                    handleAddressChange(index, newValue)
-                                                }
+                        <div className="tw-flex tw-w-full tw-flex-col tw-space-y-4">
+                            <div className="tw-flex tw-w-full tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-admin-body">
+
+                                {/* Contenedor con scroll */}
+                                <div className="tw-overflow-y-auto tw-max-h-96 tw-px-3 tw-w-full"
+                                    style={{
+                                        scrollbarWidth: "thin",
+                                        scrollbarColor: "#9c9c9c #f1f1f1"
+                                    }}>
+                                    <div className="tw-flex tw-flex-col tw-w-full">
+                                        <div className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full">
+                                            <TextField
+                                                value={zoneName}
+                                                onChange={(e) => setZoneName(e.target.value)}
                                                 type="text"
-                                                id={`address-${index}`}
+                                                id="zoneName"
                                                 fullWidth
-                                                label={`Dirección ${index + 1}`}
+                                                label="Nombre Zona"
                                                 variant="standard"
                                                 color="primary"
-                                                theme={modeTheme}
-                                                deleted={index < 3 ? "" : "true"}
-                                                onClick={() => { handleDeleteAddress(index) }}
-                                                helperText={index === addresses.length - 1 ? addressesError : ""}
-                                                error={index === addresses.length - 1 && !!addressesError}
+                                                helperText={zoneNameError}
+                                                error={!!zoneNameError}
                                                 InputProps={{
                                                     startAdornment: (
                                                         <InputAdornment position="start">
-                                                            <ExploreOutlinedIcon />
+                                                            <FilePresentIcon />
                                                         </InputAdornment>
                                                     ),
                                                 }}
+                                                InputLabelProps={{
+                                                    style: {
+                                                        fontSize: "20px",
+                                                        fontWeight: "bold",
+                                                        color: modeTheme === "light" ? "#396593" : "#8bb8e7",
+                                                    },
+                                                }}
                                             />
                                         </div>
-                                    ))}
+                                        <div className="tw-flex tw-flex-row tw-px-3 tw-mt-6 tw-w-full">
+                                            <TextField
+                                                value={zoneManager}
+                                                onChange={(e) => setZoneManager(e.target.value)}
+                                                type="text"
+                                                id="zoneManager"
+                                                fullWidth
+                                                label="Jefe Zona"
+                                                variant="standard"
+                                                color="primary"
+                                                helperText={zoneManagerError}
+                                                error={!!zoneManagerError}
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <PersonOutlineOutlinedIcon />
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                                InputLabelProps={{
+                                                    style: {
+                                                        fontSize: "20px",
+                                                        fontWeight: "bold",
+                                                        color: modeTheme === "light" ? "#396593" : "#8bb8e7",
+                                                    },
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="tw-flex tw-flex-row tw-px-3 tw-mt-7 tw-mb-4 tw-w-full">
+                                            <div className="tw-flex tw-flex-row tw-w-38 tw-rounded-3xl tw-bg-[#396593] tw-ml-auto">
+                                                <Button
+                                                    variant="outlined"
+                                                    onClick={handleAddAddress}
+                                                    className="tw-text-white"
+                                                >
+                                                    Añadir Dirección
+                                                </Button>
+                                            </div>
+                                        </div>
+                                        {addresses?.map((item, index) => (
+                                            <div
+                                                key={index}
+                                                className="tw-flex tw-flex-col tw-gap-4 tw-px-3 tw-mt-6 tw-w-full"
+                                            >
+                                                <CustomTextField
+                                                    data={item.address}
+                                                    onChange={(value: string) =>
+                                                        handleAddressChange(index, "address", value)
+                                                    }
+                                                    type="text"
+                                                    id={`address-${index}`}
+                                                    fullWidth
+                                                    label={`Dirección ${index + 1}`}
+                                                    variant="standard"
+                                                    color="primary"
+                                                    theme={modeTheme}
+                                                    deleted={index < 3 ? "" : "true"}
+                                                    onClick={() => handleDeleteAddress(index)}
+                                                    error={!!addressErrors[index]?.address}
+                                                    helperText={addressErrors[index]?.address}
+                                                    InputProps={{
+                                                        startAdornment: (
+                                                            <InputAdornment position="start">
+                                                                <ExploreOutlinedIcon />
+                                                            </InputAdornment>
+                                                        ),
+                                                    }}
+                                                />
 
+                                                <CustomTextField
+                                                    data={item.coords.lat}
+                                                    onChange={(value: string) =>
+                                                        handleAddressChange(index, "lat", value)
+                                                    }
+                                                    type="number"
+                                                    id={`lat-${index}`}
+                                                    fullWidth
+                                                    variant="standard"
+                                                    color="primary"
+                                                    theme={modeTheme}
+                                                    label={`Latitud ${index + 1}`}
+                                                    error={!!addressErrors[index]?.lat}
+                                                    helperText={addressErrors[index]?.lat}
+                                                    InputProps={{
+                                                        startAdornment: (
+                                                            <InputAdornment position="start">
+                                                                <ExploreOutlinedIcon />
+                                                            </InputAdornment>
+                                                        ),
+                                                    }}
+                                                />
 
+                                                <CustomTextField
+                                                    data={item.coords.lng}
+                                                    onChange={(value: string) =>
+                                                        handleAddressChange(index, "lng", value)
+                                                    }
+                                                    type="number"
+                                                    id={`lng-${index}`}
+                                                    fullWidth
+                                                    variant="standard"
+                                                    color="primary"
+                                                    theme={modeTheme}
+                                                    label={`Longitud ${index + 1}`}
+                                                    error={!!addressErrors[index]?.lng}
+                                                    helperText={addressErrors[index]?.lng}
+                                                    InputProps={{
+                                                        startAdornment: (
+                                                            <InputAdornment position="start">
+                                                                <ExploreOutlinedIcon />
+                                                            </InputAdornment>
+                                                        ),
+                                                    }}
+                                                />
+                                            </div>
+                                        ))}
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </Modal.Body>
+                    </Modal.Body>
 
                 </ThemeProvider>
 
@@ -230,9 +279,8 @@ const ZonesFormModal = ({
                         ) : (
                             <button
                                 type="submit"
-                                className={`${
-                                    isLoading && "btn-loader"
-                                } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
+                                className={`${isLoading && "btn-loader"
+                                    } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
                             >
                                 {isLoading ? (
                                     <span className="ml-2 loading">

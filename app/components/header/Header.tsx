@@ -565,15 +565,15 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
           eventKey="logos"
         >
           <BannerMenu
-            seoTitle="Logos"
-            title="Logos"
+            seoTitle="Iconos"
+            title="Iconos"
             item="Dashboard"
-            activeItem="Registro de Logos"
+            activeItem="Registro de Iconos"
           />
           <DataTableComponent
-            componentTitle="Tabla del Listado de Logos."
+            componentTitle="Tabla del Listado de Iconos."
             componentDescription="En esta tabla se encuentran listados todos los usuarios para su administración."
-            tableTitle="Logos"
+            tableTitle="Iconos"
             reference="logos"
           />
         </Tab.Pane>
@@ -586,15 +586,15 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
           eventKey="logosSuperAdmin"
         >
           <BannerMenu
-            seoTitle="Logos"
-            title="Logos"
+            seoTitle="Iconos"
+            title="Iconos"
             item="Dashboard"
-            activeItem="Registro de Logos"
+            activeItem="Registro de Iconos"
           />
           <DataTableComponent
-            componentTitle="Tabla del Listado de Logos."
+            componentTitle="Tabla del Listado de Iconos."
             componentDescription="En esta tabla se encuentran listados todos los usuarios para su administración."
-            tableTitle="Logos"
+            tableTitle="Iconos"
             reference="logosSuperAdmin"
           />
         </Tab.Pane>
@@ -695,6 +695,26 @@ const Header = ({ hamburger }: { hamburger?: boolean }) => {
             componentDescription="Este reporte muestra información detallada y analítica sobre los empleados registrados en el sistema, accesible únicamente por superadministradores."
             tableTitle="Empleados"
             reference="superadminEmployees"
+          />
+        </Tab.Pane>
+
+        <Tab.Pane
+          className="tab-pane text-muted"
+          id="plans"
+          role="tabpanel"
+          eventKey="plans"
+        >
+          <BannerMenu
+            seoTitle="Reporte de Planes"
+            title="Reporte de Planes"
+            item="Dashboard"
+            activeItem="Planes"
+          />
+          <DataTableComponent
+            componentTitle="Reporte de Planes"
+            componentDescription="Este reporte muestra información detallada de los planes"
+            tableTitle="Planes"
+            reference="plans"
           />
         </Tab.Pane>
 

@@ -28,6 +28,8 @@ export type CampusDataSchedule = {
 export type CampusFormValuesData = {
     uid: string;
     name: [string, boolean];
+    latitude: string;
+    longitude: string;
     address: [string, boolean];
     url: [string, boolean];
     phones?: CampusDataPhone[];
@@ -35,4 +37,5 @@ export type CampusFormValuesData = {
     timestamp: string;
     isActive: boolean;
     isDeleted: boolean;
+
 };

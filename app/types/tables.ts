@@ -7,7 +7,7 @@ export interface UploadDataModalProps {
   onShowQr?: () => void;
   onMainFormModal?: () => void;
   onMainFormModalEdit: (e: any) => void;
-  handleSearchAndFilter: (e: any) => void;
+  handleSearchAndFilter: (e: any, reference?: any,) => void;
   data: any;
   tableData?: setDataTable;
   columns: any;
@@ -29,10 +29,13 @@ export interface UploadDataModalProps {
   setSelectedZona: (e: any) => void;
   selectedRuta: string
   setSelectedRuta: (e: any) => void;
+  selectedPlan: string
+  setSelectedPlan: (e: any) => void;
   AreaData: any,
   SedeData: any,
   RutaData: any,
   ZonaData: any,
+  PlansData: any,
   isShowAlertCSV: any,
   setIsShowAlertCSV: any,
   dataAlertCSV: any,

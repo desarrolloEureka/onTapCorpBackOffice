@@ -67,11 +67,13 @@ const SwitchForm = ({
     onChange,
     modeTheme,
     text,
+    disable
 }: {
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     checked: boolean;
     modeTheme: string;
     text: string;
+    disable?: boolean;
 }) => {
     const theme = createTheme({
         palette: {
@@ -89,6 +91,7 @@ const SwitchForm = ({
                             onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                 onChange(e);
                             }}
+                            disabled={disable}
                         />
                         <Box
                             sx={{

@@ -11,6 +11,8 @@ import {
     editAreaQuery,
     getCompaniesByUidQuery,
     editCompanyQuery,
+    getAllDocumentsQuery,
+    canRegisterEmployeeQuery,
 } from "@/queries/documentsQueries";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
@@ -53,6 +55,7 @@ const EmployeesFormHook = ({
     const initialErrors = {
         selectedArea: "",
         selectedHeadquarter: "",
+        selectedPlan: "",
         routeApplicable: "",
         mondayRoute: "",
         tuesdayRoute: "",
@@ -123,6 +126,10 @@ const EmployeesFormHook = ({
     );
     const [areaData, setAreaData] = useState<any[] | null>(null);
     const [routeData, setRouteData] = useState<any[] | null>(null);
+
+    const [planData, setPlanData] = useState<any[] | null>(null);
+    const [selectedPlan, setSelectedPlan] = useState<string>("");
+    const [selectedPlanError, setSelectedPlanError] = useState("");
 
     const handleAddData = (type: "phone" | "email" | "additional") => {
         setData((prevData) => {
@@ -462,6 +469,13 @@ const EmployeesFormHook = ({
             setSelectedHeadquarterError("");
         }
 
+        if (!selectedPlan) {
+            setSelectedPlanError("El plan seleccionado es requerido.");
+            valid = false;
+        } else {
+            setSelectedPlanError("");
+        }
+
         // Validación de booleanos y rutas (puedes ajustar la validación según tus reglas)
         if (routeApplicable === null) {
             setRouteApplicableError("El campo de ruta aplicable es requerido.");
@@ -549,8 +563,10 @@ const EmployeesFormHook = ({
             routeApplicable: routeApplicable,
             selectedArea: selectedArea,
             selectedHeadquarter: selectedHeadquarter,
+            selectedPlan: selectedPlan,
             switch_activateCard: employeeCardStatus,
-            isGPSActive: employeeStatusGPS,
+            //isGPSActive: employeeStatusGPS,
+            isGPSActive: selectedPlanData?.gps,
             mondayRoute: mondayRoute,
             tuesdayRoute: tuesdayRoute,
             wednesdayRoute: wednesdayRoute,
@@ -673,8 +689,10 @@ const EmployeesFormHook = ({
             routeApplicable: routeApplicable,
             selectedArea: selectedArea,
             selectedHeadquarter: selectedHeadquarter,
+            selectedPlan: selectedPlan,
             switch_activateCard: employeeCardStatus,
-            isGPSActive: employeeStatusGPS,
+            //isGPSActive: employeeStatusGPS,
+            isGPSActive: selectedPlanData?.gps,
             //employeeCardStatus: employeeCardStatus,
         };
 
@@ -761,6 +779,7 @@ const EmployeesFormHook = ({
         setErrors(initialErrors);
         setSelectedAreaError("");
         setSelectedHeadquarterError("");
+        setSelectedPlanError("");
         setRouteApplicableError("");
         setMondayRouteError("");
         setTuesdayRouteError("");
@@ -770,6 +789,7 @@ const EmployeesFormHook = ({
         setSaturdayRouteError("");
         setSundayRouteError("");
         setEmployeeCardStatusError("");
+        setSelectedPlan("");
     };
 
     const getDataEmployee = async (editData: any) => {
@@ -826,7 +846,31 @@ const EmployeesFormHook = ({
         setSelectedHeadquarter(event.target.value);
     };
 
+    const handlePlanChange = async (event: any) => {
+        const newPlan = event.target.value;
+
+        const result = await canRegisterEmployeeQuery(userData?.companyId, newPlan);
+
+        if (!result.allowed) {
+            Swal.fire({
+                icon: "warning",
+                title: "Cupo completo",
+                text: result?.message + " Por favor, selecciona otro plan o contacta con el administrador.",
+                confirmButtonText: "Entendido",
+                confirmButtonColor: "#3085d6",
+                background: "#fefefe",
+                color: "#333",
+                iconColor: "#f59e0b",
+            });
+            return;
+        }
+
+        setSelectedPlan(newPlan);
+        setSelectedPlanError("");
+    };
+
     const getRouteData = async () => {
+
         if (userData?.companyId) {
             const defaultOption = {
                 routeName: "N/A",
@@ -841,6 +885,7 @@ const EmployeesFormHook = ({
             const dataHeadquarters = await getHeadquartersByCompanyIdQuery(
                 userData.companyId,
             );
+            const dataPlans = await getAllDocumentsQuery("plans");
             dataRoutes.sort((a: any, b: any) => a.routeName.localeCompare(b.routeName));
             dataAreas.sort((a: any, b: any) => a.areaName.localeCompare(b.areaName));
             dataHeadquarters.sort((a: any, b: any) => a.name[0].localeCompare(b.name[0]));
@@ -848,6 +893,7 @@ const EmployeesFormHook = ({
             setHeadquartersData(dataHeadquarters);
             setRouteData(dataRoutes);
             setAreaData(dataAreas);
+            setPlanData(dataPlans);
         }
     };
 
@@ -908,6 +954,8 @@ const EmployeesFormHook = ({
         await editCompanyQuery(urlsCompanyData, selectCompanieUid);
     }
 
+    const selectedPlanData = planData?.find(plan => plan.uid === selectedPlan);
+
     useEffect(() => {
         getRouteData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -929,6 +977,7 @@ const EmployeesFormHook = ({
             //Paso 2
             setSelectedArea(editData?.selectedArea || ""),
             setSelectedHeadquarter(editData?.selectedHeadquarter || ""),
+            setSelectedPlan(editData?.selectedPlan || ""),
             setRouteApplicable(editData?.routeApplicable || false),
             setMondayRoute(editData?.mondayRoute || "default"),
             setTuesdayRoute(editData?.tuesdayRoute || "default"),
@@ -940,6 +989,7 @@ const EmployeesFormHook = ({
             setEmployeeStatusGPS(editData?.isGPSActive || false),
             setEmployeeCardStatus(editData?.switch_activateCard || false)
         );
+
         getRouteData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editData, handleShowMainFormEdit]);
@@ -964,6 +1014,7 @@ const EmployeesFormHook = ({
         handleChangeSwitch2,
         routeData,
         areaData,
+        planData,
         mondayRoute,
         tuesdayRoute,
         wednesdayRoute,
@@ -979,6 +1030,8 @@ const EmployeesFormHook = ({
         headquartersData,
         selectedHeadquarter,
         handleHeadquartersChange,
+        selectedPlan,
+        handlePlanChange,
         handleEditForm,
         handleFileChange,
         selectedImage,
@@ -989,6 +1042,7 @@ const EmployeesFormHook = ({
         handleChangeStep,
         selectedAreaError,
         selectedHeadquarterError,
+        selectedPlanError,
         routeApplicableError,
         mondayRouteError,
         tuesdayRouteError,
@@ -999,6 +1053,7 @@ const EmployeesFormHook = ({
         sundayRouteError,
         employeeCardStatusError,
         handleChangeItemAditional,
+        selectedPlanData
     };
 };
 

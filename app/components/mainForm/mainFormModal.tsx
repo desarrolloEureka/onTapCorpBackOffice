@@ -48,8 +48,10 @@ import CustomSelect from "../company/components/CustomSelect";
 import CustomTextField from "../company/components/CustomTextField";
 import MainFormHook from "./hook/mainFormHook";
 import IconsUrlModal from "../company/components/iconsUrlModal";
+import SwitchForm from "../employees/components/SwitchForm";
 
 const Select = dynamic(() => import("react-select"), { ssr: false });
+
 
 // const animatedComponents = makeAnimated();
 
@@ -170,7 +172,7 @@ const MainFormModal = ({
         handleNewItem,
         objToArrayItems,
         handleDeleteItem,
-        handleNewCompany
+        handleNewCompany,
     } = MainFormHook({
         handleShowMainForm,
         setHandleShowMainForm,
@@ -207,7 +209,7 @@ const MainFormModal = ({
                         // validated={errorForm}
                         onReset={handleReset}
                         onSubmit={handleSendForm}
-                        // className="modal-admin"
+                    // className="modal-admin"
                     >
                         {/* <Modal.Header
                             closeButton={true}
@@ -216,18 +218,17 @@ const MainFormModal = ({
                         </Modal.Header> */}
                         <ThemeProvider theme={theme}>
                             <Modal.Title
-                                className={`${
-                                    reference === "companies"
-                                        ? "modal-title"
-                                        : "modal-title-admin"
-                                } tw-pt-5 tw-px-8 tw-flex tw-flex-row tw-justify-between`}
+                                className={`${reference === "companies"
+                                    ? "modal-title"
+                                    : "modal-title-admin"
+                                    } tw-pt-5 tw-px-8 tw-flex tw-flex-row tw-justify-between`}
                                 as="h6"
                             >
                                 <span>
                                     {
-                                        !handleShowMainFormEdit ? "Nuevo Registro" : 
-                                        reference === "companies" ? "Detalle Empresa" :
-                                        reference === "workAreas" ? "Editar Area" : ""
+                                        !handleShowMainFormEdit ? "Nuevo Registro" :
+                                            reference === "companies" ? "Detalle Empresa" :
+                                                reference === "workAreas" ? "Editar Area" : ""
 
                                     }
                                 </span>
@@ -310,7 +311,7 @@ const MainFormModal = ({
                                                     aria-hidden="false"
                                                     data={
                                                         data &&
-                                                        data.isActive
+                                                            data.isActive
                                                             ? "true"
                                                             : ""
                                                     }
@@ -362,98 +363,99 @@ const MainFormModal = ({
                                                     onClick={() => handleNewCompany("urlName")}
                                                     className="add-button-item tw-flex tw-justify-center tw-items-center tw-rounded tw-px-2 tw-text-md tw-cursor-pointer"
                                                 >
-                                                    <IoAddCircle size={25}/>
-                                                        Agregar Url Adicional
+                                                    <IoAddCircle size={25} />
+                                                    Agregar Url Adicional
                                                 </div>
                                             </div>
                                             {objToArrayItems?.urlName?.map(
-                                                    (item: any, index: any) => {
-                                                        const datafilter =
-                                                            dataLogos?.find(
-                                                                (val: any) =>
-                                                                    val.logoName ===
-                                                                    item[7],
-                                                            );
-                                                        return (
-                                            <div
-                                                key={index}
-                                                className="tw-flex tw-flex-col tw-px-3 tw-w-full"
-                                            >
-                                                <CustomTextField
-                                                    data={[
-                                                        item[1],
-                                                        item[2],
-                                                    ]}
-                                                    onChange={(
-                                                        value: string,
-                                                        name: string,
-                                                        checked: boolean,
-                                                    ) =>
-                                                        handleChange(
-                                                            value,
-                                                            name,
-                                                            checked,
-                                                        )
-                                                    }
-                                                    name={item[0]}
-                                                    type="text"
-                                                    switch="true"
-                                                    theme={modeTheme}
-                                                    id={item[0]}
-                                                    fullWidth
-                                                    label="Nombre del url"
-                                                    InputProps={{
-                                                        startAdornment: (
-                                                            <InputAdornment position="start">
-                                                                <ExploreOutlinedIcon />
-                                                            </InputAdornment>
-                                                        ),
-                                                    }}
-                                                />
-
-                                                <CustomTextField
-                                                    required
-                                                    onChange={(
-                                                        value: string,
-                                                        name: string,
-                                                    ) => handleChange(value, name)}
-                                                    onClick={() => {
-                                                        handleDeleteItem(
-                                                            item,
+                                                (item: any, index: any) => {
+                                                    const datafilter =
+                                                        dataLogos?.find(
+                                                            (val: any) =>
+                                                                val.logoName ===
+                                                                item[7],
                                                         );
-                                                    }}
-                                                    data={item[5]}
-                                                    name={item[4]}
-                                                    type="url"
-                                                    helperText={
-                                                        "Ej: https://example.com"
-                                                    }
-                                                    theme={modeTheme}
-                                                    id={item[4]}
-                                                    fullWidth
-                                                    InputProps={{
-                                                        startAdornment: (
-                                                            <InputAdornment position="start">
-                                                                <Typography className="tw-font-bold">
-                                                                    URL
-                                                                </Typography>
-                                                            </InputAdornment>
-                                                        ),
-                                                    }}
-                                                    deleted={
-                                                        index !==
-                                                        0
-                                                            ? "true"
-                                                            : ""
-                                                    }
-                                                    icon="true"
-                                                    handleOpenModalIcons={() => {handleOpenModalIcons(item, index)}}
-                                                    datafilter={datafilter}
-                                                    item={item}
-                                                    index={index}
-                                                />
-                                            </div>
-                                             )})}
+                                                    return (
+                                                        <div
+                                                            key={index}
+                                                            className="tw-flex tw-flex-col tw-px-3 tw-w-full"
+                                                        >
+                                                            <CustomTextField
+                                                                data={[
+                                                                    item[1],
+                                                                    item[2],
+                                                                ]}
+                                                                onChange={(
+                                                                    value: string,
+                                                                    name: string,
+                                                                    checked: boolean,
+                                                                ) =>
+                                                                    handleChange(
+                                                                        value,
+                                                                        name,
+                                                                        checked,
+                                                                    )
+                                                                }
+                                                                name={item[0]}
+                                                                type="text"
+                                                                switch="true"
+                                                                theme={modeTheme}
+                                                                id={item[0]}
+                                                                fullWidth
+                                                                label="Nombre del url"
+                                                                InputProps={{
+                                                                    startAdornment: (
+                                                                        <InputAdornment position="start">
+                                                                            <ExploreOutlinedIcon />
+                                                                        </InputAdornment>
+                                                                    ),
+                                                                }}
+                                                            />
+
+                                                            <CustomTextField
+                                                                required
+                                                                onChange={(
+                                                                    value: string,
+                                                                    name: string,
+                                                                ) => handleChange(value, name)}
+                                                                onClick={() => {
+                                                                    handleDeleteItem(
+                                                                        item,
+                                                                    );
+                                                                }}
+                                                                data={item[5]}
+                                                                name={item[4]}
+                                                                type="url"
+                                                                helperText={
+                                                                    "Ej: https://example.com"
+                                                                }
+                                                                theme={modeTheme}
+                                                                id={item[4]}
+                                                                fullWidth
+                                                                InputProps={{
+                                                                    startAdornment: (
+                                                                        <InputAdornment position="start">
+                                                                            <Typography className="tw-font-bold">
+                                                                                URL
+                                                                            </Typography>
+                                                                        </InputAdornment>
+                                                                    ),
+                                                                }}
+                                                                deleted={
+                                                                    index !==
+                                                                        0
+                                                                        ? "true"
+                                                                        : ""
+                                                                }
+                                                                icon="true"
+                                                                handleOpenModalIcons={() => { handleOpenModalIcons(item, index) }}
+                                                                datafilter={datafilter}
+                                                                item={item}
+                                                                index={index}
+                                                            />
+                                                        </div>
+                                                    )
+                                                })}
                                         </div>
                                     </div>
                                 </Modal.Body>
@@ -472,6 +474,7 @@ const MainFormModal = ({
                                                                     Datos Empresa
                                                                 </h6>
                                                             </div>
+
                                                             <Col
                                                                 md={6}
                                                                 // lg={4}
@@ -577,7 +580,7 @@ const MainFormModal = ({
                                                                                 "bold",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#396593"
                                                                                     : "#8bb8e7",
                                                                         },
@@ -641,7 +644,7 @@ const MainFormModal = ({
                                                                                 "bold",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#396593"
                                                                                     : "#8bb8e7",
                                                                         },
@@ -703,7 +706,7 @@ const MainFormModal = ({
                                                                                 "bold",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#396593"
                                                                                     : "#8bb8e7",
                                                                         },
@@ -766,7 +769,7 @@ const MainFormModal = ({
                                                                                 "bold",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#396593"
                                                                                     : "#8bb8e7",
                                                                         },
@@ -788,10 +791,10 @@ const MainFormModal = ({
                                                                     className="tw-mt-4 tw-w-full"
                                                                     value={
                                                                         data &&
-                                                                        data.indicative &&
-                                                                        data.indicative.includes(
-                                                                            "+",
-                                                                        )
+                                                                            data.indicative &&
+                                                                            data.indicative.includes(
+                                                                                "+",
+                                                                            )
                                                                             ? data.indicative
                                                                             : "+" +
                                                                             data.indicative
@@ -825,44 +828,44 @@ const MainFormModal = ({
                                                                 className="mb-3"
                                                             >
                                                                 <TextField
-                                                                value={data && data.phone}
-                                                                onChange={(e) => {
-                                                                    // Elimina cualquier carácter no numérico
-                                                                    const numericValue = e.target.value.replace(/\D/g, '');
-                                                                    
-                                                                    // Limita la longitud a 10 caracteres
-                                                                    if (numericValue.length <= 10) {
-                                                                    handleChange(numericValue, e.target.name);
-                                                                    }
-                                                                }}
-                                                                name="phone"
-                                                                id="phone"
-                                                                type="text"
-                                                                variant="standard"
-                                                                color="primary"
-                                                                fullWidth
-                                                                className={`tw-my-4`}
-                                                                label="Teléfono/Cel"
-                                                                InputProps={{
-                                                                    startAdornment: (
-                                                                    <InputAdornment className="tw-text-[#64a5e2]" position="start">
-                                                                        <FaPhone size={18} />
-                                                                    </InputAdornment>
-                                                                    ),
-                                                                }}
-                                                                InputLabelProps={{
-                                                                    style: {
-                                                                    fontSize: "20px",
-                                                                    fontWeight: "bold",
-                                                                    color: modeTheme === "light" ? "#396593" : "#8bb8e7",
-                                                                    },
-                                                                }}
-                                                                inputProps={{
-                                                                    maxLength: 10, 
-                                                                    pattern: "[0-9]*", 
-                                                                    title: "Por favor, ingrese un número de teléfono válido",
-                                                                    readOnly: !isEdit,
-                                                                }}
+                                                                    value={data && data.phone}
+                                                                    onChange={(e) => {
+                                                                        // Elimina cualquier carácter no numérico
+                                                                        const numericValue = e.target.value.replace(/\D/g, '');
+
+                                                                        // Limita la longitud a 10 caracteres
+                                                                        if (numericValue.length <= 10) {
+                                                                            handleChange(numericValue, e.target.name);
+                                                                        }
+                                                                    }}
+                                                                    name="phone"
+                                                                    id="phone"
+                                                                    type="text"
+                                                                    variant="standard"
+                                                                    color="primary"
+                                                                    fullWidth
+                                                                    className={`tw-my-4`}
+                                                                    label="Teléfono/Cel"
+                                                                    InputProps={{
+                                                                        startAdornment: (
+                                                                            <InputAdornment className="tw-text-[#64a5e2]" position="start">
+                                                                                <FaPhone size={18} />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                    }}
+                                                                    InputLabelProps={{
+                                                                        style: {
+                                                                            fontSize: "20px",
+                                                                            fontWeight: "bold",
+                                                                            color: modeTheme === "light" ? "#396593" : "#8bb8e7",
+                                                                        },
+                                                                    }}
+                                                                    inputProps={{
+                                                                        maxLength: 10,
+                                                                        pattern: "[0-9]*",
+                                                                        title: "Por favor, ingrese un número de teléfono válido",
+                                                                        readOnly: !isEdit,
+                                                                    }}
                                                                 />
 
                                                             </Col>
@@ -915,7 +918,7 @@ const MainFormModal = ({
                                                                                 "bold",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#396593"
                                                                                     : "#8bb8e7",
                                                                         },
@@ -973,7 +976,7 @@ const MainFormModal = ({
                                                                                 "bold",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#396593"
                                                                                     : "#8bb8e7",
                                                                         },
@@ -1031,7 +1034,7 @@ const MainFormModal = ({
                                                                                 "bold",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#396593"
                                                                                     : "#8bb8e7",
                                                                         },
@@ -1053,7 +1056,7 @@ const MainFormModal = ({
                                                                 <TextField
                                                                     value={
                                                                         data &&
-                                                                        data.cards
+                                                                        data.standardUsers
                                                                     }
                                                                     onChange={(e) =>
                                                                         handleChange(
@@ -1064,14 +1067,14 @@ const MainFormModal = ({
                                                                         )
                                                                     }
                                                                     required
-                                                                    name="cards"
-                                                                    id="cards"
+                                                                    name="standardUsers"
+                                                                    id="standardUsers"
                                                                     type="text"
                                                                     variant="standard"
                                                                     color="primary"
                                                                     fullWidth
                                                                     className={`tw-my-4`}
-                                                                    label="Cantidad de usuarios"
+                                                                    label="Cantidad de usuarios Standard"
                                                                     InputProps={{
                                                                         startAdornment:
                                                                             (
@@ -1091,7 +1094,7 @@ const MainFormModal = ({
                                                                                 "bold",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#396593"
                                                                                     : "#8bb8e7",
                                                                         },
@@ -1112,7 +1115,7 @@ const MainFormModal = ({
                                                                 <TextField
                                                                     value={
                                                                         data &&
-                                                                        data.cardGPS
+                                                                        data.premiumUsers
                                                                     }
                                                                     onChange={(e) =>
                                                                         handleChange(
@@ -1123,14 +1126,14 @@ const MainFormModal = ({
                                                                         )
                                                                     }
                                                                     required
-                                                                    name="cardGPS"
-                                                                    id="cardGPS"
+                                                                    name="premiumUsers"
+                                                                    id="premiumUsers"
                                                                     type="text"
                                                                     variant="standard"
                                                                     color="primary"
                                                                     fullWidth
                                                                     className={`tw-my-4`}
-                                                                    label="Cantidad con GPS"
+                                                                    label="Cantidad de usuarios Premium con GPS"
                                                                     InputProps={{
                                                                         startAdornment:
                                                                             (
@@ -1150,7 +1153,7 @@ const MainFormModal = ({
                                                                                 "bold",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#396593"
                                                                                     : "#8bb8e7",
                                                                         },
@@ -1158,7 +1161,7 @@ const MainFormModal = ({
                                                                     inputProps={{
                                                                         min: 0,
                                                                         max: Number(
-                                                                            data.cards,
+                                                                            data.standardUsers,
                                                                         ),
                                                                         readOnly:
                                                                             !isEdit,
@@ -1289,7 +1292,7 @@ const MainFormModal = ({
                                                                     }
                                                                     options={
                                                                         data &&
-                                                                        data.state
+                                                                            data.state
                                                                             ? getCities(
                                                                                 data.state,
                                                                             )
@@ -1334,9 +1337,46 @@ const MainFormModal = ({
                                                                     }}
                                                                 />
                                                             </Col>
-                                                            <Col 
+                                                            <Col
                                                                 md={6}
-                                                                className="mb-3 d-flex align-items-center justify-content-end"
+                                                                lg={2}
+                                                                className="mb-3 d-flex align-items-center justify-content-center tw-mt-3 tw-mb-8"
+                                                            >
+                                                                <div className="tw-flex tw-flex-col tw-h-20 tw-justify-center tw-items-start tw-w-100">
+                                                                    <SwitchForm
+                                                                        modeTheme={"light"}
+                                                                        checked={data && data?.sendToAllEmployees}
+                                                                        onChange={(e) => handleChange(e.target.checked, 'sendToAllEmployees')}
+                                                                        text={""}
+                                                                    />
+                                                                    <Typography className="tw-font-bold tw-text-sm url-label tw-w-[150px] -tw-mt-3 tw-text-center">
+                                                                        {"Enviar notificaciones a todos los empleados"}
+                                                                    </Typography>
+                                                                </div>
+                                                            </Col>
+
+                                                            <Col
+                                                                md={6}
+                                                                lg={2}
+                                                                className="mb-3 d-flex align-items-center justify-content-center tw-mt-3 tw-mb-8"
+                                                            >
+                                                                <div className="tw-flex tw-flex-col tw-h-20 tw-justify-center tw-items-start tw-w-100">
+                                                                    <SwitchForm
+                                                                        modeTheme={"light"}
+                                                                        checked={data && data?.showHomeInfo}
+                                                                        onChange={(e) => handleChange(e.target.checked, 'showHomeInfo')}
+                                                                        text={""}
+                                                                    />
+                                                                    <Typography className="tw-font-bold tw-text-sm url-label tw-w-[150px] -tw-mt-3 tw-text-center">
+                                                                        {"Mostrar información en el Home"}
+                                                                    </Typography>
+                                                                </div>
+                                                            </Col>
+
+                                                            <Col
+                                                                md={6}
+                                                                lg={2}
+                                                                className="mb-3 d-flex align-items-center justify-content-end tw-mt-3"
                                                             >
                                                                 <label
                                                                     htmlFor="iconButton"
@@ -1371,13 +1411,15 @@ const MainFormModal = ({
                                                                     />
                                                                 </label>
                                                             </Col>
-                                                            <Col 
+                                                            <Col
                                                                 md={6}
-                                                                className="mb-3 d-flex align-items-center justify-content-start"
+                                                                className="mb-3 d-flex align-items-center justify-content-start tw-mt-3"
                                                             >
-                                                                <p style={{ fontSize: "11px", fontWeight: 300, margin: 0, color:
-                                                                    modeTheme === "light" ? "#000" : "#fff"}} >
-                                                                   Recomendaciones:<br />
+                                                                <p style={{
+                                                                    fontSize: "11px", fontWeight: 300, margin: 0, color:
+                                                                        modeTheme === "light" ? "#000" : "#fff"
+                                                                }} >
+                                                                    Recomendaciones:<br />
                                                                     - Dimensiones: 250 x 72,5 px<br />
                                                                     - Tamaño: 100 KB<br />
                                                                     - Formato: JPG, JPEG o PNG<br />
@@ -1442,7 +1484,7 @@ const MainFormModal = ({
                                                                                 "bold",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#396593"
                                                                                     : "#8bb8e7",
                                                                         },
@@ -1505,7 +1547,7 @@ const MainFormModal = ({
                                                                                 "bold",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#396593"
                                                                                     : "#8bb8e7",
                                                                         },
@@ -1571,7 +1613,7 @@ const MainFormModal = ({
                                                                                 "bold",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#396593"
                                                                                     : "#8bb8e7",
                                                                         },
@@ -1689,7 +1731,7 @@ const MainFormModal = ({
                                                                                 "bold",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#396593"
                                                                                     : "#8bb8e7",
                                                                         },
@@ -1712,10 +1754,10 @@ const MainFormModal = ({
                                                                     className="tw-mt-4 tw-w-full"
                                                                     value={
                                                                         data &&
-                                                                        data.indicativeTwo &&
-                                                                        data.indicativeTwo.includes(
-                                                                            "+",
-                                                                        )
+                                                                            data.indicativeTwo &&
+                                                                            data.indicativeTwo.includes(
+                                                                                "+",
+                                                                            )
                                                                             ? data.indicativeTwo
                                                                             : "+" +
                                                                             data.indicativeTwo
@@ -1793,7 +1835,7 @@ const MainFormModal = ({
                                                                                 "bold",
                                                                             color:
                                                                                 modeTheme ===
-                                                                                "light"
+                                                                                    "light"
                                                                                     ? "#396593"
                                                                                     : "#8bb8e7",
                                                                         },
@@ -1819,7 +1861,7 @@ const MainFormModal = ({
                                                                     aria-hidden="false"
                                                                     data={
                                                                         data &&
-                                                                        data.isActive
+                                                                            data.isActive
                                                                             ? "true"
                                                                             : ""
                                                                     }
@@ -1900,9 +1942,11 @@ const MainFormModal = ({
                                                                 </label>
                                                             </Col>
                                                             <Col className="mb-3 d-flex align-items-center justify-content-start" >
-                                                                <p style={{ fontSize: "11px", fontWeight: 300, margin: 0, color:
-                                                                    modeTheme === "light" ? "#000" : "#fff"}} >
-                                                                   Recomendaciones:<br />
+                                                                <p style={{
+                                                                    fontSize: "11px", fontWeight: 300, margin: 0, color:
+                                                                        modeTheme === "light" ? "#000" : "#fff"
+                                                                }} >
+                                                                    Recomendaciones:<br />
                                                                     - Dimensiones: 200 x 200 px<br />
                                                                     - Tamaño: 100 KB<br />
                                                                     - Formato: JPG, JPEG o PNG<br />
@@ -1919,7 +1963,7 @@ const MainFormModal = ({
                                                     className="alert alert-warning alert-dismissible fade show"
                                                     role="alert"
                                                     show={show}
-                                                    // onClick={() => setErrorForm(false)}
+                                                // onClick={() => setErrorForm(false)}
                                                 >
                                                     <strong>
                                                         Error de envío!.
@@ -1946,7 +1990,7 @@ const MainFormModal = ({
                                                     className="alert alert-info alert-dismissible fade show"
                                                     role="alert"
                                                     show={show}
-                                                    // onClick={() => setErrorForm(false)}
+                                                // onClick={() => setErrorForm(false)}
                                                 >
                                                     <strong>
                                                         Contraseñas no coinciden!.
@@ -1972,7 +2016,7 @@ const MainFormModal = ({
                                                     className="alert alert-warning alert-dismissible fade show"
                                                     role="alert"
                                                     show={show}
-                                                    // onClick={() => setErrorForm(false)}
+                                                // onClick={() => setErrorForm(false)}
                                                 >
                                                     {errorValid.includes("->") ? (
                                                         <>
@@ -2034,7 +2078,7 @@ const MainFormModal = ({
                                                                                 className="tw-rounded-3xl"
                                                                                 src={
                                                                                     data &&
-                                                                                    data.urlPhoto
+                                                                                        data.urlPhoto
                                                                                         ? data.urlPhoto
                                                                                         : "https://via.placeholder.com/150x150"
                                                                                 }
@@ -2055,7 +2099,7 @@ const MainFormModal = ({
                                                                                 placeholder="blur"
                                                                                 blurDataURL={
                                                                                     data &&
-                                                                                    data.urlPhoto
+                                                                                        data.urlPhoto
                                                                                         ? data.urlPhoto
                                                                                         : "https://via.placeholder.com/150x150"
                                                                                 }
@@ -2077,7 +2121,7 @@ const MainFormModal = ({
                                                                             className="tw-rounded-3xl"
                                                                             src={
                                                                                 data &&
-                                                                                data.icon
+                                                                                    data.icon
                                                                                     ? _.isArray(
                                                                                         data.icon,
                                                                                     )
@@ -2103,7 +2147,7 @@ const MainFormModal = ({
                                                                             placeholder="blur"
                                                                             blurDataURL={
                                                                                 data &&
-                                                                                data.icon
+                                                                                    data.icon
                                                                                     ? _.isArray(
                                                                                         data.icon,
                                                                                     )
@@ -2576,13 +2620,13 @@ const MainFormModal = ({
                                 handleShowMainFormEdit &&
                                 reference === "companies" && (
                                     <Col>{nextStep ? "Paso 1/2" : "Paso 2/2"}</Col>
-                            )}
-                            
+                                )}
+
                             {isEdit &&
                                 !handleShowMainFormEdit &&
                                 reference === "companies" && (
                                     <Col>{nextStep ? "Paso 1/2" : "Paso 2/2"}</Col>
-                            )}
+                                )}
 
                             {reference === "workAreas" ? (
                                 <Col className="tw-flex tw-flex-row tw-space-x-2 tw-items-center tw-justify-end">
@@ -2599,7 +2643,7 @@ const MainFormModal = ({
                                         <button
                                             type="submit"
                                             className="tw-flex tw-items-center tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-text-white"
-                                            // onClick={handleEditForm}
+                                        // onClick={handleEditForm}
                                         >
                                             <RiSave2Fill size={28} />
                                         </button>
@@ -2634,21 +2678,21 @@ const MainFormModal = ({
                                     ) : (
                                         <>
                                             {reference === "companies" &&
-                                            nextStep ? (
+                                                nextStep ? (
                                                 <Button
                                                     className=""
                                                     type={
                                                         companyVal &&
-                                                        urlVal()
+                                                            urlVal()
                                                             ? "button"
                                                             : "submit"
                                                     }
                                                     variant="primary"
                                                     onClick={() => {
                                                         urlVal() &&
-                                                        companyVal &&
-                                                        setNextStep(false)
-                                                        }
+                                                            companyVal &&
+                                                            setNextStep(false)
+                                                    }
                                                     }
                                                 >
                                                     {/* Siguiente &nbsp; */}

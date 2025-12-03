@@ -5,6 +5,7 @@ export interface DataMainFormObject {
     adminId: string;
     icon: string;
     idType: string;
+    idPlan: string;
     idTypeAdmin: string;
     id: string;
     companyId: string;
@@ -12,8 +13,8 @@ export interface DataMainFormObject {
     name: string;
     businessName: string;
     tradename: string;
-    cards: string;
-    cardGPS: string;
+    standardUsers: string;
+    premiumUsers: string;
     description: string;
     personType: string;
     discount: string;
@@ -201,11 +202,12 @@ export type DataCompanyObject = {
     adminId: string;
     idType: string;
     id: string;
+    idPlan: string;
     icon: string;
     businessName: string;
     tradename: string;
-    cards: string;
-    cardGPS: string;
+    standardUsers: string;
+    premiumUsers: string;
     indicative: string;
     phone: string;
     ext: string;
@@ -219,6 +221,8 @@ export type DataCompanyObject = {
     timestamp: string;
     isActive: boolean;
     isDeleted: boolean;
+    sendToAllEmployees: boolean;
+    showHomeInfo: boolean;
 };
 
 export type DataDiagnosticianObject = {

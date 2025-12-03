@@ -1166,7 +1166,71 @@ export const validateRoutes = async (routeIds: string) => {
   }
 };
 
+export const updatePlan = async (dataSave: any, id: string) => {
+  try {
+    const zoneRef = doc(db, "plans", id);
+    await updateDoc(zoneRef, dataSave);
 
+    return { success: true, message: "Plan updated successfully" };
+  } catch (error) {
+    console.error("Error updating Plan:", error);
+    return { success: false, message: "Error updating route", error };
+  }
+};
 
+export const canRegisterEmployee = async (
+  companyId: string,
+  selectedPlan: string
+) => {
+  // 1. Traer la empresa
+  const companyRef = doc(db, "companies", companyId);
+  const companySnap = await getDoc(companyRef);
 
+  if (!companySnap.exists()) {
+    return { allowed: false, message: "Empresa no encontrada" };
+  }
+  const companyData = companySnap.data();
 
+  const maxStandard = parseInt(companyData.standardUsers || "0", 10);
+  const maxPremium = parseInt(companyData.premiumUsers || "0", 10);
+
+  console.log('maxStandard ', maxStandard);
+  console.log('maxPremium ', maxPremium);
+
+  // 2. Traer info del plan
+  const planRef = doc(db, "plans", selectedPlan);
+  const planSnap = await getDoc(planRef);
+
+  if (!planSnap.exists()) {
+    return { allowed: false, message: "Plan no encontrado" };
+  }
+
+  const planData = planSnap.data();
+  const isPremium = planData.gps === true;
+
+  console.log('selectedPlan ', selectedPlan);
+  console.log('companyId ', companyId);
+
+  // 3. Contar empleados con ese plan
+  const usersRef = collection(db, "users");
+  const q = query(
+    usersRef,
+    where("idCompany", "==", companyId),
+    where("selectedPlan", "==", selectedPlan)
+  );
+  const usersSnap = await getDocs(q);
+  const currentCount = usersSnap.size;
+
+  console.log('currentCount ', currentCount);
+
+  // 4. Validar contra el cupo
+  if (!isPremium && currentCount >= maxStandard) {
+    return { allowed: false, message: "Cupo de usuarios estándar alcanzado." };
+  }
+
+  if (isPremium && currentCount >= maxPremium) {
+    return { allowed: false, message: "Cupo de usuarios premium alcanzado." };
+  }
+
+  return { allowed: true };
+};

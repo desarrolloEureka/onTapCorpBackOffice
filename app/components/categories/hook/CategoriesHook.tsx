@@ -1,6 +1,5 @@
 "use client";
 import { initialDataCategories } from "@/data/categoriesData";
-import { getGeolocation } from "@/data/formConstant";
 import useAuth from "@/firebase/auth";
 import {
     getDocumentReference,
@@ -35,15 +34,12 @@ const CategoriesHook = ({
     const [nameError, setNameError] = useState("");
     const [pointNameError, setPointNameError] = useState("");
     const [addressError, setAddressError] = useState("");
+    const [latitudeError, setLatitudeError] = useState("");
+    const [longitudeError, setLongitudeError] = useState("");
 
     //Busca el tema en almacenamiento local
     const theme = localStorage.getItem("@theme");
     const themeParsed = theme ? (JSON.parse(theme) as LocalVariable) : null;
-
-    //Filtra los campos vacíos
-    const directionsFiltered = data?.directions?.filter(
-        (item) => item.pointName !== "" && item.address !== "",
-    );
 
     // Valida campos
     const validateFields = () => {
@@ -73,6 +69,25 @@ const CategoriesHook = ({
             setAddressError("");
         }
 
+        if (!data.directions[0]?.lat?.trim()) {
+            setLatitudeError("La latitud es requerida");
+            valid = false;
+        } else if (isNaN(Number(data.directions[0].lat)) || Number(data.directions[0].lat) < -90 || Number(data.directions[0].lat) > 90) {
+            setLatitudeError("La latitud debe ser un número entre -90 y 90");
+            valid = false;
+        } else {
+            setLatitudeError("");
+        }
+
+        if (!data.directions[0]?.lng?.trim()) {
+            setLongitudeError("La longitud es requerida");
+            valid = false;
+        } else if (isNaN(Number(data.directions[0].lng)) || Number(data.directions[0].lng) < -180 || Number(data.directions[0].lng) > 180) {
+            setLongitudeError("La longitud debe ser un número entre -180 y 180");
+            valid = false;
+        } else {
+            setLongitudeError("");
+        }
         return valid;
     };
 
@@ -87,7 +102,7 @@ const CategoriesHook = ({
                 if ((prevData.directions || []).length < maxItems) {
                     const updatedAddress: AddressValues[] = [
                         ...(prevData.directions || []),
-                        { pointName: "", address: "" },
+                        { pointName: "", address: "", lat: null, lng: null },
                     ];
                     newData = { ...newData, directions: updatedAddress };
                 }
@@ -149,6 +164,15 @@ const CategoriesHook = ({
         }));
     };
 
+    const normalizeDirections = () => {
+        return data.directions.map(d => ({
+            ...d,
+            lat: d.lat !== "" ? Number(d.lat) : null,
+            lng: d.lng !== "" ? Number(d.lng) : null,
+        }));
+    };
+
+
     // Para enviar a guardar los datos nuevos.
     const handleSendForm = async (e?: any) => {
         e.preventDefault();
@@ -158,16 +182,7 @@ const CategoriesHook = ({
 
         // Validar los campos antes de continuar
         if (!validateFields()) return;
-
-        //Coordenadas de la Dirección
-        const coordsFromAddress: {
-            lat: number;
-            lng: number;
-        } | null = await getGeolocation(
-            directionsFiltered[0].address,
-            companyData,
-        );
-
+        const directions = normalizeDirections();
         setIsLoading(true);
 
         try {
@@ -175,12 +190,9 @@ const CategoriesHook = ({
                 // Se complementa la info faltante
                 const formData = {
                     ...data,
-                    directions: [
-                        // ...directionsFiltered,
-                        { ...directionsFiltered[0], ...coordsFromAddress },
-                    ],
                     idCompany: userData.companyId,
                     uid: documentRef.id,
+                    directions,
                 };
                 const queryResult = await saveDataDocumentsQuery({
                     documentRef,
@@ -220,6 +232,8 @@ const CategoriesHook = ({
         setNameError("");
         setPointNameError("");
         setAddressError("");
+        setLatitudeError("");
+        setLongitudeError("");
     };
 
     //Para actualizar los datos
@@ -228,16 +242,7 @@ const CategoriesHook = ({
         e.stopPropagation();
 
         if (!validateFields()) return;
-
-        //Coordenadas de la Dirección
-        const coordsFromAddress: {
-            lat: number;
-            lng: number;
-        } | null = await getGeolocation(
-            directionsFiltered[0].address,
-            companyData,
-        );
-
+        const directions = normalizeDirections();
         setIsLoading(true);
         try {
             if (userData?.companyId) {
@@ -245,10 +250,7 @@ const CategoriesHook = ({
                     id: data.uid,
                     data: {
                         ...data,
-                        directions: [
-                            // ...directionsFiltered,
-                            { ...directionsFiltered[0], ...coordsFromAddress },
-                        ],
+                        directions
                     },
                     reference,
                 });
@@ -314,6 +316,8 @@ const CategoriesHook = ({
         handleDeleteItem,
         handleAddData,
         handleChangeItem,
+        latitudeError,
+        longitudeError,
     };
 };
 

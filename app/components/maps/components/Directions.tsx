@@ -39,7 +39,7 @@ DirectionsMapsProps) {
     const waypoints = waypointsCoords
       .slice(1, waypointsCoords.length - 1)
       .map((coords) => ({
-        location: new google.maps.LatLng(coords.lat, coords.lng),
+        location: new google.maps.LatLng(coords?.lat, coords?.lng),
         stopover: true,
       }));
     directionsService

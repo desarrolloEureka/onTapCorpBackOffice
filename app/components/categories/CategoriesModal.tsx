@@ -15,6 +15,7 @@ import { IoIosArrowDown, IoMdClose } from "react-icons/io";
 import { RiSave2Fill } from "react-icons/ri";
 import { TbCategory, TbMapPin } from "react-icons/tb";
 import CategoriesHook from "./hook/CategoriesHook";
+import CustomTextField from "../company/components/CustomTextField";
 
 const CategoriesModal = ({
     handleShowMainForm,
@@ -45,6 +46,8 @@ const CategoriesModal = ({
         handleDeleteItem,
         handleAddData,
         handleChangeItem,
+        latitudeError,
+        longitudeError,
     } = CategoriesHook({
         handleShowMainForm,
         setHandleShowMainForm,
@@ -253,7 +256,7 @@ const CategoriesModal = ({
                                                                         "bold",
                                                                     color:
                                                                         modeTheme ===
-                                                                        "light"
+                                                                            "light"
                                                                             ? "#396593"
                                                                             : "#8bb8e7",
                                                                 },
@@ -307,12 +310,87 @@ const CategoriesModal = ({
                                                                         "bold",
                                                                     color:
                                                                         modeTheme ===
-                                                                        "light"
+                                                                            "light"
                                                                             ? "#396593"
                                                                             : "#8bb8e7",
                                                                 },
                                                             }}
                                                         />
+                                                    </div>
+                                                    <div className="tw-px-5 tw-py-3 tw-w-full tw-flex tw-flex-row tw-gap-4">
+                                                        <div className="tw-w-1/2">
+                                                            <TextField
+                                                                value={item.lat}
+                                                                onChange={(e) =>
+                                                                    handleChangeItem(
+                                                                        "directions",
+                                                                        index,
+                                                                        e.target.name,
+                                                                        e.target.value
+                                                                    )
+                                                                }
+                                                                type="number"
+                                                                name="lat"
+                                                                id="lat"
+                                                                fullWidth
+                                                                label="Latitud"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                helperText={latitudeError}
+                                                                error={!!latitudeError}
+                                                                InputProps={{
+                                                                    startAdornment: (
+                                                                        <InputAdornment position="start">
+                                                                            <ExploreOutlinedIcon />
+                                                                        </InputAdornment>
+                                                                    ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize: "20px",
+                                                                        fontWeight: "bold",
+                                                                        color: modeTheme === "light" ? "#396593" : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                            />
+
+                                                        </div>
+                                                        <div className="tw-w-1/2">
+                                                            <TextField
+                                                                value={item.lng}
+                                                                onChange={(e) =>
+                                                                    handleChangeItem(
+                                                                        "directions",
+                                                                        index,
+                                                                        e.target.name,
+                                                                        e.target.value
+                                                                    )
+                                                                }
+                                                                type="number"
+                                                                name="lng"
+                                                                id="lng"
+                                                                fullWidth
+                                                                label="Longitud"
+                                                                variant="standard"
+                                                                color="primary"
+                                                                helperText={longitudeError}
+                                                                error={!!longitudeError}
+                                                                InputProps={{
+                                                                    startAdornment: (
+                                                                        <InputAdornment position="start">
+                                                                            <ExploreOutlinedIcon />
+                                                                        </InputAdornment>
+                                                                    ),
+                                                                }}
+                                                                InputLabelProps={{
+                                                                    style: {
+                                                                        fontSize: "20px",
+                                                                        fontWeight: "bold",
+                                                                        color: modeTheme === "light" ? "#396593" : "#8bb8e7",
+                                                                    },
+                                                                }}
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 {/* <div className="tw-flex tw-flex-col tw-px-3 tw-my-6 tw-w-auto tw-space-y-4 tw-justify-center tw-items-center">
@@ -362,9 +440,8 @@ const CategoriesModal = ({
                         ) : (
                             <button
                                 type="submit"
-                                className={`${
-                                    isLoading && "btn-loader"
-                                } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
+                                className={`${isLoading && "btn-loader"
+                                    } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
                             >
                                 {isLoading ? (
                                     <span className="ml-2 loading">

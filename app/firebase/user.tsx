@@ -77,6 +77,8 @@ export const addUser = async ({
 
         return response.data;
     } catch (error: any) {
+        console.error("❌ Error en addUser:", error);
+        console.error("📄 Respuesta del servidor:", error.response?.data);
         return {
             success: false,
             message: error.response?.data?.message || "Error desconocido al crear usuario",

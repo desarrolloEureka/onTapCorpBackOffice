@@ -4,7 +4,6 @@ export default function convertArrayOfObjectsToCSV(
   array: object[],
   reference: string
 ): string {
-  //console.log("...", reference, array);
   if (array.length < 1) {
     return "";
   }
@@ -131,10 +130,11 @@ export default function convertArrayOfObjectsToCSV(
       "lastName",
       "documentType",
       "documentNumber",
+      "plan",
       "position",
       "phone",
       "email",
-      "isGPSActive",
+      //"isGPSActive",
     ];
     const headers: Record<string, string> = {
       createdDate: "Fecha creacion",
@@ -142,10 +142,11 @@ export default function convertArrayOfObjectsToCSV(
       lastName: "Apellidos",
       documentType: "Tipo de Documento",
       documentNumber: "Numero de Documento",
+      plan: "Plan",
       position: "Cargo",
       phone: "Telefono",
       email: "Correo Empleado",
-      isGPSActive: "GPS",
+      //isGPSActive: "GPS",
     };
     result += keys.map((key: string) => headers[key]).join(columnDelimiter);
   } else if (reference == "superadminEmployees") {
@@ -155,6 +156,7 @@ export default function convertArrayOfObjectsToCSV(
       "lastName",
       "documentType",
       "documentNumber",
+      "plan",
       "position",
       "phone",
       "email",
@@ -166,6 +168,7 @@ export default function convertArrayOfObjectsToCSV(
       lastName: "Apellidos",
       documentType: "Tipo de Documento",
       documentNumber: "Numero de Documento",
+      plan: "Plan",
       position: "Cargo",
       phone: "Telefono",
       email: "Correo Empleado",
@@ -202,35 +205,59 @@ export default function convertArrayOfObjectsToCSV(
     };
     result += keys.map((key: string) => headers[key]).join(columnDelimiter);
   } else if (reference == "campus") {
-    keys = ["timestamp", "name", "address"];
+    keys = ["timestamp", "name", "address", "latitude", "longitude"];
     const headers: Record<string, string> = {
       timestamp: "Fecha",
       name: "Nombre Sede",
       address: "Direccion",
+      latitude: "Latitud",
+      longitude: "Longitud"
     };
     result += keys.map((key: string) => headers[key]).join(columnDelimiter);
   } else if (reference == "zones") {
+
+    // Calcular cuántas direcciones reales tiene cada doc
+    /* const maxAddresses = Math.max(
+      ...array.map((doc: any) => {
+        const addressKeys = Object.keys(doc).filter((k) => k.startsWith("Address"));
+        return addressKeys.length;
+      })
+    ); */
+
     const maxAddresses = Math.max(
-      ...array.map((doc: any) => (doc?.addresses || []).length)
+      ...array.map((doc: any) => (doc?.geolocations || []).length)
     );
-    // Añadir las claves solo del nombre de la zona y el jefe
+
     keys = ["zoneName", "zoneManager"];
-    // Añadir encabezados solo del nombre de la zona y el jefe
+
     const headers: Record<string, string> = {
       zoneName: "Nombre",
       zoneManager: "Nombre Sede",
     };
 
-    // Añadir las claves con las direcciones dinámicamente
     for (let i = 1; i <= maxAddresses; i++) {
       keys.push(`Address${i}`);
+      keys.push(`Lat${i}`);
+      keys.push(`Lng${i}`);
     }
-    // Añadir encabezados de direcciones dinámicamente
+
     for (let i = 1; i <= maxAddresses; i++) {
-      headers[`Address${i}`] = `Direccion ${i}`;
+      headers[`Address${i}`] = `Dirección ${i}`;
+      headers[`Lat${i}`] = `Latitud ${i}`;
+      headers[`Lng${i}`] = `Longitud ${i}`;
     }
+
     result += keys.map((key: string) => headers[key]).join(columnDelimiter);
   } else if (reference == "routes") {
+
+    console.log('array ', array);
+
+    const maxAddresses = Math.max(
+      ...array.map((doc: any) => (doc?.geolocations || []).length)
+    );
+
+    console.log('maxAddresses ', maxAddresses);
+
     keys = [
       "timestamp",
       "routeName",
@@ -238,6 +265,7 @@ export default function convertArrayOfObjectsToCSV(
       "zoneName",
       "estimatedTime",
     ];
+
     const headers: Record<string, string> = {
       timestamp: "Fecha Registro",
       routeName: "Nombre de la ruta",
@@ -245,14 +273,34 @@ export default function convertArrayOfObjectsToCSV(
       zoneName: "Zona correspondiente",
       estimatedTime: "Tiempo estimado",
     };
+
+    for (let i = 1; i <= maxAddresses; i++) {
+      console.log('i1 ', i);
+
+      keys.push(`Address${i}`);
+      keys.push(`Lat${i}`);
+      keys.push(`Lng${i}`);
+    }
+
+    for (let i = 1; i <= maxAddresses; i++) {
+      console.log('i2 ', i);
+
+      headers[`Address${i}`] = `Dirección ${i}`;
+      headers[`Lat${i}`] = `Latitud ${i}`;
+      headers[`Lng${i}`] = `Longitud ${i}`;
+    }
+
     result += keys.map((key: string) => headers[key]).join(columnDelimiter);
+
   } else if (reference == "fixedPoints") {
-    keys = ["timestamp", "name", "namePoint", "address", "color"];
+    keys = ["timestamp", "name", "namePoint", "address", "latitude", "longitude", "color"];
     const headers: Record<string, string> = {
       timestamp: "Fecha Registro",
       name: "Nombre de categoria",
       namePoint: "Nombre Punto",
       address: "Direccion",
+      latitude: "Latitud",
+      longitude: "Longitud",
       color: "Color",
     };
     result += keys.map((key: string) => headers[key]).join(columnDelimiter);
@@ -292,7 +340,54 @@ export default function convertArrayOfObjectsToCSV(
       logoName: "Nombre",
     };
     result += keys.map((key: string) => headers[key]).join(columnDelimiter);
+  } else if (reference == "companies") {
+    keys = [
+      "uid",
+      "timestamp",
+      "idType",
+      "id",
+      "businessName",
+      "tradename",
+      "standardUsers",
+      "premiumUsers",
+      "indicative",
+      "phone",
+      "ext",
+      "phone2",
+      "address",
+      "sector",
+      "city",
+      "webSite",
+      "urlName",
+      "urlLink",
+      "isActive",
+    ];
+
+    const headers: Record<string, string> = {
+      uid: "Id",
+      timestamp: "Fecha Registro",
+      idType: "Tipo",
+      id: "Documento",
+      businessName: "Razón Social",
+      tradename: "Nombre Comercial",
+      standardUsers: "Usuarios Standard (sin GPS)",
+      premiumUsers: "Usuarios Premium (GPS)",
+      indicative: "Indicativo",
+      phone: "Teléfono",
+      ext: "Ext",
+      phone2: "Teléfono Fijo",
+      address: "Dirección",
+      sector: "Sector",
+      city: "Ciudad",
+      webSite: "Sitio Web",
+      urlName: "Nombre Url",
+      urlLink: "Enlace",
+      isActive: "Estado",
+    };
+
+    result += keys.map((key: string) => headers[key]).join(columnDelimiter);
   } else {
+
     keys = Object.keys(array[0]);
     result += keys.join(columnDelimiter);
   }

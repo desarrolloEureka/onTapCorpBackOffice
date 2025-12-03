@@ -1,11 +1,9 @@
 import {
   ExportProps,
   NoDataCardProps,
-  // TableDataItemOld,
   UploadDataButtonModalProps,
   UploadDataModalProps,
 } from "@/types/tables";
-// import differenceBy from "lodash/differenceBy";
 import dynamic from "next/dynamic";
 import { MouseEvent, useMemo } from "react";
 import { Button, Form } from "react-bootstrap";
@@ -14,10 +12,6 @@ import "react-data-table-component-extensions/dist/index.css";
 import { TfiClose, TfiExport, TfiImport } from "react-icons/tfi";
 import { VscAdd } from "react-icons/vsc";
 import { FiFilter } from "react-icons/fi";
-import employeesMostVisits from "@/components/employeesMostVisits/employeesMostVisits";
-// import Swal from "sweetalert2";
-import moment from "moment";
-import { unstable_createMuiStrictModeTheme } from "@mui/material";
 import convertArrayOfObjectsToCSV from "./exportFunction";
 import { IoClose } from "react-icons/io5";
 
@@ -44,7 +38,8 @@ function downloadCSV(array: any[], tableTitle: string, reference: string) {
   const filename = `${tableTitle}.csv`;
 
   // Codificar el contenido del CSV
-  const encodedCSV = encodeURIComponent(csv);
+  const BOM = "\uFEFF";
+  const encodedCSV = encodeURIComponent(BOM + csv);
 
   // Crear el enlace de descarga con la cadena codificada
   const dataURI = `data:text/csv;charset=utf-8,${encodedCSV}`;
@@ -77,7 +72,6 @@ const BranchFilter = ({
   branches: any[];
   setSelectedBranch: (branch: string) => void;
 }) => {
-  //console.log("branches", branches);
   return (
     <Form.Group controlId="branchFilter">
       <Form.Label style={{ fontSize: "14px" }} className="filter-label">
@@ -97,9 +91,9 @@ const BranchFilter = ({
             ? `Selecciona una ${titulo}`
             : `No hay ${titulo?.toLocaleLowerCase()}s disponibles`}
         </option>
+
         {branches.map((branch) => {
-          const displayValue =
-            names === "name" ? branch?.[names]?.[0] : branch?.[names];
+          const displayValue = names === "name" ? branch?.[names]?.[0] : titulo === "Plan" ? branch['name'] : branch?.[names];
 
           return (
             <option key={branch?.uid || branch} value={branch?.uid}>
@@ -230,10 +224,13 @@ export const ExportCSV = ({
   setSelectedZona,
   selectedRuta,
   setSelectedRuta,
+  selectedPlan,
+  setSelectedPlan,
   AreaData,
   SedeData,
   RutaData,
   ZonaData,
+  PlansData,
   isShowAlertCSV,
   setIsShowAlertCSV,
   dataAlertCSV,
@@ -254,7 +251,7 @@ export const ExportCSV = ({
             placeholder="Búsqueda"
             className="form-control tw-w-full"
             aria-label="search"
-            onChange={handleSearchAndFilter}
+            onChange={(e) => handleSearchAndFilter(e, reference)}
           />
 
           {(searchTerm ||
@@ -262,7 +259,9 @@ export const ExportCSV = ({
             selectedArea ||
             selectedSede ||
             selectedZona ||
-            selectedRuta) && (
+            selectedRuta ||
+            selectedPlan
+          ) && (
               <Button
                 className="tw-absolute tw-right-0 tw-bottom-0 text-gray-500 hover:text-gray-700"
                 onClick={clearSearch}
@@ -304,6 +303,14 @@ export const ExportCSV = ({
                   setSelectedBranch={setSelectedRuta}
                   branches={RutaData}
                 />
+                {(reference === "employees" || reference === "superadminEmployees") && (
+                  <BranchFilter
+                    names="planName"
+                    titulo="Plan"
+                    setSelectedBranch={setSelectedPlan}
+                    branches={PlansData}
+                  />
+                )}
                 <StartDayInput
                   startDate={startDate}
                   setStartDate={setStartDate}
@@ -313,11 +320,28 @@ export const ExportCSV = ({
                   startDate={startDate}
                   setEndDate={setEndDate}
                 />
-                <Filter handleSearchAndFilter={handleSearchAndFilter} />
+                <Filter handleSearchAndFilter={(e) => handleSearchAndFilter(e, reference)} />
+              </>
+            )}
+          {[
+            "companies",
+          ].includes(reference) && (
+              <>
+                <StartDayInput
+                  startDate={startDate}
+                  setStartDate={setStartDate}
+                />
+                <EndDayInput
+                  endDate={endDate}
+                  startDate={startDate}
+                  setEndDate={setEndDate}
+                />
+                <Filter handleSearchAndFilter={(e) => handleSearchAndFilter(e, reference)} />
               </>
             )}
           {![
             "roles",
+            "plans",
             "country",
             "departments",
             "cities",
@@ -336,17 +360,19 @@ export const ExportCSV = ({
           {onUploadDataModalPdf && (
             <UploadDataPdfModal onUploadDataModalPdf={onUploadDataModalPdf} />
           )}
-          {data.length > 0 && (
-            <Export
-              onExport={() =>
-                downloadCSV(tableData?.data ?? [], tableTitle, reference)
-              }
-            />
-          )}
+          {data.length > 0 && ![
+            "plans",
+          ].includes(reference) && (
+              <Export
+                onExport={() =>
+                  downloadCSV(tableData?.data ?? [], tableTitle, reference)
+                }
+              />
+            )}
         </div>
       </div>
     );
-  }, [reference, searchTerm, handleSearchAndFilter, endDate, selectedArea, selectedSede, selectedZona, selectedRuta, clearSearch, setSelectedArea, AreaData, setSelectedSede, SedeData, setSelectedZona, ZonaData, setSelectedRuta, RutaData, startDate, setStartDate, setEndDate, onMainFormModal, onUploadDataModalCsv, onUploadDataModalPdf, data.length, tableData?.data, tableTitle]);
+  }, [reference, searchTerm, handleSearchAndFilter, endDate, selectedArea, selectedSede, selectedZona, selectedRuta, selectedPlan, clearSearch, setSelectedArea, AreaData, setSelectedSede, SedeData, setSelectedZona, ZonaData, setSelectedRuta, RutaData, startDate, setStartDate, setEndDate, onMainFormModal, onUploadDataModalCsv, onUploadDataModalPdf, data.length, tableData?.data, tableTitle]);
 
   const conditionalRowStyles = [
     {

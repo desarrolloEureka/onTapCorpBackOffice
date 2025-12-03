@@ -38,6 +38,8 @@ const CampusModal = ({
     campusNumError,
     campusAddressError,
     campusUrlError,
+    latitudeError,
+    longitudeError,
     daysInSpanish,
     hoursArray,
     handleSendForm,
@@ -143,6 +145,46 @@ const CampusModal = ({
                       ),
                     }}
                   />
+
+                  <CustomTextField
+                    data={dataForm.latitude}
+                    onChange={(value: string, name: string) => handleChange(value, name)}
+                    name="latitude"
+                    type="number"
+                    theme={modeTheme}
+                    id="latitude"
+                    fullWidth
+                    label="Latitud"
+                    helperText={latitudeError}
+                    error={!!latitudeError}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <ExploreOutlinedIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                  <CustomTextField
+                    data={dataForm.longitude}
+                    onChange={(value: string, name: string) => handleChange(value, name)}
+                    name="longitude"
+                    type="number"
+                    theme={modeTheme}
+                    id="longitude"
+                    fullWidth
+                    label="Longitud"
+                    helperText={longitudeError}
+                    error={!!longitudeError}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <ExploreOutlinedIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+
                   <CustomTextField
                     data={dataForm.address}
                     onChange={(value: string, name: string, checked: boolean) =>
@@ -165,35 +207,8 @@ const CampusModal = ({
                       ),
                     }}
                   />
-                  {/* <CustomTextField
-                                        data={dataForm.url}
-                                        onChange={(
-                                            value: string,
-                                            name: string,
-                                            checked: boolean,
-                                        ) => handleChange(value, name, checked)}
-                                        name="url"
-                                        type="url"
-                                        switch="true"
-                                        theme={modeTheme}
-                                        id="url"
-                                        fullWidth
-                                        label="Url Locación"
-                                        helperText={
-                                            campusUrlError ||
-                                            "Ej: https://example.com"
-                                        }
-                                        error={!!campusUrlError}
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <AttachFileOutlinedIcon />
-                                                </InputAdornment>
-                                            ),
-                                            title: 'Ingrese una URL válida Ej: "https://example.com"',
-                                        }}
-                                    /> */}
                 </div>
+
               </div>
               <div className="tw-flex tw-p-2 tw-rounded tw-flex-col tw-justify-center tw-items-start sub-card-admin-body">
                 <div className="tw-flex tw-w-full tw-justify-between">
@@ -250,38 +265,38 @@ const CampusModal = ({
                           </div>
 
                           <CustomTextField
-                          data={[item.text, item.checked]}
-                          onChange={(value: string, name: string, checked: boolean) => {
-                            // Elimina cualquier carácter no numérico
-                            const numericValue = value.replace(/\D/g, '');
+                            data={[item.text, item.checked]}
+                            onChange={(value: string, name: string, checked: boolean) => {
+                              // Elimina cualquier carácter no numérico
+                              const numericValue = value.replace(/\D/g, '');
 
-                            // Limita la longitud a 10 caracteres
-                            if (numericValue.length <= 10) {
-                              handleChangeItem("phones", index, name, numericValue, checked);
-                            }
-                          }}
-                          name="text"
-                          type="text"
-                          switch="true"
-                          theme={modeTheme}
-                          id={`phone-${index}`}
-                          fullWidth
-                          label="Teléfono"
-                          helperText={campusNumError}
-                          error={!!campusNumError}
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <LocalPhoneOutlinedIcon />
-                              </InputAdornment>
-                            ),
-                            maxLength: 10, 
-                          }}
-                          inputProps={{
-                            maxLength: 10, 
-                            pattern: '[0-9]*', 
-                          }}
-                        />
+                              // Limita la longitud a 10 caracteres
+                              if (numericValue.length <= 10) {
+                                handleChangeItem("phones", index, name, numericValue, checked);
+                              }
+                            }}
+                            name="text"
+                            type="text"
+                            switch="true"
+                            theme={modeTheme}
+                            id={`phone-${index}`}
+                            fullWidth
+                            label="Teléfono"
+                            helperText={campusNumError}
+                            error={!!campusNumError}
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <LocalPhoneOutlinedIcon />
+                                </InputAdornment>
+                              ),
+                              maxLength: 10,
+                            }}
+                            inputProps={{
+                              maxLength: 10,
+                              pattern: '[0-9]*',
+                            }}
+                          />
 
                         </div>
 
@@ -435,9 +450,8 @@ const CampusModal = ({
             ) : (
               <button
                 type="submit"
-                className={`${
-                  isLoading && "btn-loader"
-                } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
+                className={`${isLoading && "btn-loader"
+                  } tw-py-2 tw-px-3 tw-rounded-[3px] tw-border-none tw-bg-transparent hover:tw-bg-transparent tw-flex tw-justify-center tw-items-center`}
               >
                 {isLoading ? (
                   <span className="ml-2 loading">

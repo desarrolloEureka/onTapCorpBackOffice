@@ -1,6 +1,6 @@
 "use client";
 import useAuth from "@/firebase/auth";
-import { saveNotificationQuery, getEmployeesByCompanyIdQuery, sendNotificationsToUsersQuery } from "@/queries/documentsQueries";
+import { saveNotificationQuery, getEmployeesByCompanyIdQuery, sendNotificationsToUsersQuery, getCompanyByIdQuery } from "@/queries/documentsQueries";
 import { LocalVariable } from "@/types/global";
 import { ModalParamsMainForm } from "@/types/modals";
 import moment from "moment";
@@ -59,10 +59,6 @@ const NotificationsFormHook = ({
 
         setIsLoading(true);
         try {
-            // const now = new Date();
-            // const date = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-            // const hour = now.toTimeString().split(' ')[0]; // Formato HH:MM:SS
-
             const currentDate = moment().format();
 
             if (userData?.companyId) {
@@ -72,17 +68,34 @@ const NotificationsFormHook = ({
                     content,
                     timestamp: currentDate,
                 };
+
                 const notificationResult = await saveNotificationQuery(formData);
+
                 if (notificationResult.success) {
                     const employees = await getEmployeesByCompanyIdQuery(userData?.companyId)
-                    const tokens = employees.map(employee => employee?.tokens).filter(token => token !== undefined);
-                    await sendNotificationsToUsersQuery(tokens, issue, content, companyData?.icon[0])
+                    let filteredEmployees = employees;
+
+                    if (!companyData?.sendToAllEmployees) {
+                        filteredEmployees = employees.filter(
+                            (emp) => emp?.selectedPlan === "aaXNNxttgU9toWRUcjtZ"
+                        );
+                    }
+
+                    const tokens = filteredEmployees
+                        .map((emp) => emp?.tokens)
+                        .filter((token) => !!token);
+
+
+                    if (tokens.length > 0) {
+                        await sendNotificationsToUsersQuery(tokens, issue, content, companyData?.icon[0])
+                    }
                 } else {
                     console.error(
                         "Failed to save notification:",
                         notificationResult.message,
                     );
                 }
+
             } else {
                 console.log(
                     "No se pudo encontrar la compañía. Por favor, inténtalo de nuevo.",

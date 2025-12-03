@@ -36,7 +36,11 @@ const RoutesFormHook = ({
     const [routeName, setRouteName] = useState("");
     const [routeManager, setRouteManager] = useState("");
     const [selectedZone, setSelectedZone] = useState("");
-    const [addresses, setAddresses] = useState(["", ""]);
+    //const [addresses, setAddresses] = useState(["", ""]);
+    const [addresses, setAddresses] = useState([
+        { address: "", coords: { lat: null, lng: null } },
+        { address: "", coords: { lat: null, lng: null } },
+    ]);
     const [hours, setHours] = useState(0);
     const [minutes, setMinutes] = useState(0);
 
@@ -47,6 +51,10 @@ const RoutesFormHook = ({
     const [addressesError, setAddressesError] = useState("");
     const [hoursError, setHoursError] = useState("");
     const [minutesError, setMinutesError] = useState("");
+    const [addressErrors, setAddressErrors] = useState([
+        { address: "", lat: "", lng: "" },
+        { address: "", lat: "", lng: "" },
+    ]);
 
     const currentDate = moment().format();
 
@@ -54,23 +62,6 @@ const RoutesFormHook = ({
     const generateOptions = (max: any) =>
         Array.from({ length: max + 1 }, (_, i) => i);
 
-    const getCoordinatesFromAddresses = async (addresses: string[]) => {
-        // Mapeamos cada dirección a una promesa de obtener las coordenadas
-        const coordsFromAddress: Promise<{
-            address: string;
-            coords: { lat: number; lng: number } | null;
-        }>[] = addresses.map(async (address: string) => {
-            const coords = await getGeolocation(address, companyData);
-
-            return { address, coords };
-        });
-
-        // Esperamos a que todas las promesas se resuelvan
-        const resolvedCoords = await Promise.all(coordsFromAddress);
-
-        // `resolvedCoords` contiene ahora los resultados reales
-        return resolvedCoords;
-    };
 
     const validateFields = () => {
         let valid = true;
@@ -109,22 +100,43 @@ const RoutesFormHook = ({
             setZoneError("");
         }
 
-        // Validación del campo 'addresses'
-        if (addresses.length === 0) {
-            setAddressesError("Debe agregar al menos una dirección");
-            valid = false;
-        } else {
-            // Validar cada dirección
-            const invalidAddresses = addresses.some(
-                (address) => !address.trim(),
-            );
-            if (invalidAddresses) {
-                setAddressesError("Cada dirección debe ser válida");
+        const newErrors = addresses.map(() => ({
+            address: "",
+            lat: "",
+            lng: ""
+        }));
+
+        addresses.forEach((item, index) => {
+            if (!item?.address?.trim()) {
+                newErrors[index].address = "La dirección es requerida";
                 valid = false;
-            } else {
-                setAddressesError("");
             }
-        }
+
+
+            const lat = Number(item.coords.lat);
+
+            if (item.coords.lat === null || item.coords.lat === "") {
+                newErrors[index].lat = "La latitud es requerida";
+                valid = false;
+            } else if (isNaN(lat) || lat < -90 || lat > 90) {
+                newErrors[index].lat = "Latitud inválida (-90 a 90)";
+                valid = false;
+            }
+
+
+            const lng = Number(item.coords.lng);
+
+            if (item.coords.lng === null || item.coords.lng === "") {
+                newErrors[index].lng = "La longitud es requerida";
+                valid = false;
+            } else if (isNaN(lng) || lng < -180 || lng > 180) {
+                newErrors[index].lng = "Longitud inválida (-180 a 180)";
+                valid = false;
+            }
+
+        });
+
+        setAddressErrors(newErrors);
 
         if (hours === 0 && minutes === 0) {
             setHoursError("La hora y los minutos no pueden ser 0.");
@@ -151,7 +163,10 @@ const RoutesFormHook = ({
     const handleReset = () => {
         setRouteName("");
         setRouteManager("");
-        setAddresses(["", ""]);
+        setAddresses([
+            { address: "", coords: { lat: null, lng: null } },
+            { address: "", coords: { lat: null, lng: null } },
+        ]);
         setRouteNameError("");
         setRouteManagerError("");
         setAddressesError("");
@@ -163,18 +178,22 @@ const RoutesFormHook = ({
         setMinutes(0);
     };
 
+    const normalizeAddresses = () => {
+        return addresses.map(a => ({
+            address: a.address,
+            coords: {
+                lat: Number(a.coords.lat),
+                lng: Number(a.coords.lng),
+            },
+        }));
+    };
+
+
     const handleSendForm = async (e?: any) => {
         e.preventDefault();
-
-        // Validar los campos antes de continuar
         if (!validateFields()) return;
 
-        //Coordenadas de la Dirección
-        const allCoordsFromAddresses: {
-            address: string;
-            coords: { lat: number; lng: number } | null;
-        }[] = await getCoordinatesFromAddresses(addresses);
-
+        const geolocations = normalizeAddresses();
         setIsLoading(true);
 
         try {
@@ -189,14 +208,13 @@ const RoutesFormHook = ({
                     routeManager,
                     zone: selectedZone,
                     zoneName: zoneData?.zoneName,
-                    addresses,
                     estimatedHours: hours,
                     estimatedMinutes: minutes,
                     // createdDate: date,
                     // createdTime: hour,
                     timestamp: currentDate,
                     idCompany: userData?.companyId,
-                    geolocations: allCoordsFromAddresses,
+                    geolocations
                 };
 
                 const zoneQueryResult = await saveRouteQuery(formData);
@@ -227,15 +245,9 @@ const RoutesFormHook = ({
         e.preventDefault();
         e.stopPropagation();
 
-        // Validar los campos antes de continuar
         if (!validateFields()) return;
 
-        //Coordenadas de la Dirección
-        const allCoordsFromAddresses: {
-            address: string;
-            coords: { lat: number; lng: number } | null;
-        }[] = await getCoordinatesFromAddresses(addresses);
-
+        const geolocations = normalizeAddresses();
         setIsLoading(true);
 
         try {
@@ -250,13 +262,13 @@ const RoutesFormHook = ({
                     routeManager,
                     zone: selectedZone,
                     zoneName: zoneData?.zoneName,
-                    addresses,
+                    //addresses,
                     estimatedHours: hours,
                     estimatedMinutes: minutes,
                     // createdDate: date,
                     // createdTime: hour,
                     timestamp: currentDate,
-                    geolocations: allCoordsFromAddresses,
+                    geolocations
                 };
 
                 const zoneQueryResult = await updateRouteQuery(
@@ -286,14 +298,24 @@ const RoutesFormHook = ({
         }
     };
 
-    const handleAddressChange = (index: number, value: string) => {
+    const handleAddressChange = (index: number, field: string, value: string) => {
         const newAddresses = [...addresses];
-        newAddresses[index] = value;
+
+        if (field === "address") {
+            newAddresses[index].address = value;
+        } else {
+            newAddresses[index].coords = {
+                ...newAddresses[index].coords,
+                [field]: value
+            };
+        }
+
         setAddresses(newAddresses);
     };
 
     const handleAddAddress = () => {
-        setAddresses([...addresses, ""]);
+        setAddresses([...addresses, { address: "", coords: { lat: null, lng: null } }]);
+        setAddressErrors(prev => [...prev, { address: "", lat: "", lng: "" }]);
     };
 
     const handleDeleteAddress = (index: number) => {
@@ -313,13 +335,13 @@ const RoutesFormHook = ({
     useEffect(() => {
         handleShowMainFormEdit &&
             (setShow(true),
-            setRouteName(editData?.routeName),
-            setRouteManager(editData?.routeManager),
-            setAddresses(editData?.addresses),
-            setIdRow(editData?.uid),
-            setSelectedZone(editData?.zone),
-            setHours(editData?.estimatedHours),
-            setMinutes(editData?.estimatedMinutes));
+                setRouteName(editData?.routeName),
+                setRouteManager(editData?.routeManager),
+                setAddresses(editData?.geolocations),
+                setIdRow(editData?.uid),
+                setSelectedZone(editData?.zone),
+                setHours(editData?.estimatedHours),
+                setMinutes(editData?.estimatedMinutes));
     }, [editData, handleShowMainFormEdit]);
 
     const scrollToCenter = (ref: any, index: any) => {
@@ -378,6 +400,7 @@ const RoutesFormHook = ({
         zoneError,
         hoursError,
         minutesError,
+        addressErrors
     };
 };
 

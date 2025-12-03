@@ -22,6 +22,7 @@ import {
   IoNewspaperSharp,
   IoPerson,
 } from "react-icons/io5";
+import { FaListUl } from "react-icons/fa6";
 import {
   MdOutlineChecklist,
   MdOutlineEventNote,
@@ -205,6 +206,16 @@ const HeaderContent = ({
                         Empleados
                       </NavDropdown.Item>
                     )}
+
+                    {userRole === "superadmin" && (
+                      <NavDropdown.Item
+                        href="#plans"
+                        eventKey="plans"
+                      >
+                        <FaListUl size={20} className="tw-mb-1 tw-mr-1" />
+                        Planes
+                      </NavDropdown.Item>
+                    )}
                   </NavDropdown>
                 )}
 
@@ -370,7 +381,7 @@ const HeaderContent = ({
                     <>
                       <NavDropdown.Item eventKey="logos">
                         <FaRegAddressCard size={20} className="tw-mb-1 tw-mr-1" />
-                        Logos
+                        Iconos
                       </NavDropdown.Item>
 
                       <NavDropdown.Item eventKey="fondos">
@@ -386,7 +397,7 @@ const HeaderContent = ({
                   ) : (
                     <NavDropdown.Item eventKey="logosSuperAdmin">
                       <FaRegAddressCard size={20} className="tw-mb-1 tw-mr-1" />
-                      Logos
+                      Iconos
                     </NavDropdown.Item>
                   )}
 

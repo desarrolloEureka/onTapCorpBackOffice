@@ -51,6 +51,8 @@ import {
   updateBackgroundImage,
   getLogosByCompanyId,
   getCompanyById,
+  updatePlan,
+  canRegisterEmployee,
 } from "@/firebase/Documents";
 import {
   uploadFile,
@@ -486,6 +488,8 @@ export const saveDataDocumentsQuery = async ({
   data: any;
 }) => {
   const queryResult = await saveOneDocumentFb(documentRef, data);
+  console.log('documentRef ', documentRef);
+  console.log('data ', data);
   return queryResult;
 };
 
@@ -511,7 +515,7 @@ export const saveEditDataDocumentsQuery = async ({
   data: any;
   reference: string;
 }) => {
-  try {
+  try {   
     const queryResult = await updateDocumentsByIdFb(id, data, reference);
     return queryResult;
   } catch (error) {
@@ -673,3 +677,12 @@ export const validateRoutesQuery = async (routeIds: string) => {
   return res;
 };
 
+export const editPlanQuery = async (dataSave: any, docId: string) => {
+  const result = await updatePlan(dataSave, docId);
+  return result;
+};
+
+export const canRegisterEmployeeQuery = async (companyId: string, selectedPlan: string) => {
+  const result = await canRegisterEmployee(companyId, selectedPlan);
+  return result;
+};

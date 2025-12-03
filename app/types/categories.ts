@@ -1,6 +1,8 @@
 export interface AddressValues {
     pointName: string;
     address: string;
+    lat: any;
+    lng: any;
 }
 
 export interface CategoriesValues {

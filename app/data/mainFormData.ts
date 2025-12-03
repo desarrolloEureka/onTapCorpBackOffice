@@ -19,6 +19,7 @@ export const dataMainFormObject = {
     adminId: "",
     icon: "",
     idType: "",
+    idPlan: "",
     idTypeAdmin: "",
     id: "",
     companyId: "",
@@ -26,8 +27,8 @@ export const dataMainFormObject = {
     name: "",
     businessName: "",
     tradename: "",
-    cards: "",
-    cardGPS: "",
+    standardUsers: "",
+    premiumUsers: "",
     description: "",
     personType: "",
     discount: "",
@@ -218,8 +219,8 @@ export const dataCompanyObject = {
     icon: "",
     businessName: "",
     tradename: "",
-    cards: "",
-    cardGPS: "",
+    standardUsers: "",
+    premiumUsers: "",
     indicative: "",
     phone: "",
     ext: "",
@@ -233,6 +234,8 @@ export const dataCompanyObject = {
     timestamp: "",
     isActive: false,
     isDeleted: false,
+    sendToAllEmployees: false,
+    showHomeInfo: false
 } as DataCompanyObject;
 
 export const dataDiagnosticianObject = {
