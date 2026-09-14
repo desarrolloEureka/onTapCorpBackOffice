@@ -1,9 +1,6 @@
-import firebase from "firebase/compat/app";
-import { config as configDotenv } from "dotenv";
-
-// Add the Firebase products that you want to use
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -16,9 +13,11 @@ const firebaseConfig = {
     backendBaseUrl: process.env.NEXT_PUBLIC_BACKEND_BASE_URL,
 };
 
-const firebaseApp = firebase.initializeApp(firebaseConfig);
+const firebaseApp = getApps().length
+    ? getApp()
+    : initializeApp(firebaseConfig);
 
-const db = firebaseApp.firestore();
-const auth = firebase.auth();
+const db = getFirestore(firebaseApp);
+const auth = getAuth(firebaseApp);
 
 export { db, auth, firebaseConfig };
