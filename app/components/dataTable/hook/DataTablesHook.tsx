@@ -36,6 +36,7 @@ import React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { FaTrashCan } from "react-icons/fa6";
 import { MdCheck, MdClose, MdModeEdit } from "react-icons/md";
+import { FaLocationDot } from "react-icons/fa6";
 import Swal from "sweetalert2";
 import { LocalVariable } from "@/types/global";
 import { ref } from "firebase/storage";
@@ -1070,6 +1071,15 @@ const DataTablesHook = (reference: string) => {
                       <MdModeEdit size={20} className="icon-actions-table" />
                     </IconButton>
                   </>
+                ) : reference === "campus" || reference === "fixedPoints" ? (
+                  <>
+                    <IconButton onClick={() => onMainFormModalEdit(row)}>
+                      <MdModeEdit size={20} className="icon-actions-table" />
+                    </IconButton>
+                    <IconButton onClick={() => handleOpenGoogleMaps(row)}>
+                      <FaLocationDot size={20} className="icon-actions-table" />
+                    </IconButton>
+                  </>
                 ) : reference !== "routes" &&
                   reference !== "logos" &&
                   reference !== "backgroundImages" &&
@@ -1403,6 +1413,13 @@ const DataTablesHook = (reference: string) => {
         setShowAlert(true);
         setTimeout(() => setShowAlert(false), 2000);
       })
+  };
+
+  const handleOpenGoogleMaps = (row: any) => {
+    const { latitude, longitude } = row
+    const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   const filterDataMetrics = (row: any) => {
