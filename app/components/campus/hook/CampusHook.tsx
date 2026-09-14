@@ -5,7 +5,6 @@ import {
     initialData,
     initialPhones,
 } from "@/data/campus";
-import { getGeolocation } from "@/data/formConstant";
 import useAuth from "@/firebase/auth";
 import {
     getDocumentReference,

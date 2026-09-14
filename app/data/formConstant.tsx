@@ -1,5 +1,4 @@
 import { colombianCitiesData } from "@/data/colombianCitiesData";
-import { getCoordinates } from "@/queries/GeoMapsQueries";
 
 export const roles = [
     { value: "Super Administrador", label: "Super Administrador" },
@@ -64,23 +63,6 @@ export const getStateName = (id: number): string | undefined => {
 
     const result = ColombianStates.find((value) => findValue(value, id))?.label;
     return result;
-};
-
-export const getGeolocation = async (
-    address: string,
-    companyData: any,
-): Promise<{
-    lat: number;
-    lng: number;
-} | null> => {
-    //Dirección formateada: "{dirección}, {ciudad}, {departamento}, {país}"
-    const formattedAddress: string = `${address}, ${
-        companyData.city[0]
-    }, ${getStateName(companyData.state[0])},${companyData.country[0]}`;
-
-    const coords = await getCoordinates(formattedAddress);
-
-    return coords;
 };
 
 export const specialties = [{ value: "Example", label: "Example" }];
