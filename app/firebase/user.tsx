@@ -3,6 +3,7 @@ import {
     createUserWithEmailAndPassword,
     sendPasswordResetEmail,
     signInWithEmailAndPassword,
+    updateProfile,
 } from "firebase/auth";
 import {
     doc,
@@ -224,7 +225,12 @@ export const updateProfileFirebase = async (
     displayName: string,
     photoURL?: string,
 ) => {
-    return await user?.updateProfile({
+    const currentUser = auth.currentUser;
+
+    if (!currentUser) {
+        throw new Error("No hay un usuario autenticado.");
+    }
+    return await updateProfile(currentUser, {
         displayName,
         photoURL,
     });
