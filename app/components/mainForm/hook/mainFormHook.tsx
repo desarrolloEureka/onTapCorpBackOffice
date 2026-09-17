@@ -20,6 +20,7 @@ import {
     listenToEmployeesByCompanyIdQuery,
     listenToIconsQuery
 } from "@/queries/documentsQueries";
+import { getAllDocumentsFb } from "@/firebase/Documents";
 import { getCoordinates } from "@/queries/GeoMapsQueries";
 import { ErrorDataForm } from "@/types/documents";
 import { LocalVariable } from "@/types/global";
@@ -387,19 +388,78 @@ const MainFormHook = ({
             }
 
             // Guardar datos del usuario
-            await saveDataDocumentsQuery({
-                documentRef: documentRefUser,
-                data: newData.admin,
-            });
+await saveDataDocumentsQuery({
+    documentRef: documentRefUser,
+    data: newData.admin,
+});
 
-            // Guardar datos de la compañía
-            await saveDataDocumentsQuery({
-                documentRef,
-                data: {
-                    ...newData.company,
-                    adminId: documentRefUser.id,
-                },
-            });
+// Funcion auxiliar para interpretar timestamps que puedan venir con espacios o saltos de linea sobrantes
+const parseTimestamp = (ts: any) => {
+    if (!ts) return 0;
+    const cleaned = String(ts).trim();
+    const time = new Date(cleaned).getTime();
+    return isNaN(time) ? 0 : time;
+};
+
+// Obtener la plantilla y el fondo mas antiguos para asignarlos por defecto
+const templatesSnapshot = await getAllDocumentsFb("templates");
+const allTemplatesWithId = templatesSnapshot.empty
+    ? []
+    : templatesSnapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id }));
+
+const backgroundsSnapshot = await getAllDocumentsFb("backgroundImages");
+const allBackgroundsWithId = backgroundsSnapshot.empty
+    ? []
+    : backgroundsSnapshot.docs.map((doc: any) => ({ ...doc.data(), id: doc.id }));
+
+console.log("Total documentos templates:", allTemplatesWithId.length);
+allTemplatesWithId.forEach((tpl: any) => {
+    console.log(
+        "id:", tpl.id,
+        "| timestamp crudo:", JSON.stringify(tpl.timestamp),
+        "| parsed:", parseTimestamp(tpl.timestamp)
+    );
+});
+
+console.log("Total documentos backgroundImages:", allBackgroundsWithId.length);
+allBackgroundsWithId.forEach((bg: any) => {
+    console.log(
+        "id:", bg.id,
+        "| timestamp crudo:", JSON.stringify(bg.timestamp),
+        "| parsed:", parseTimestamp(bg.timestamp)
+    );
+});
+
+const oldestTemplate = allTemplatesWithId.length > 0
+    ? [...allTemplatesWithId].sort(
+        (a: any, b: any) => parseTimestamp(a.timestamp) - parseTimestamp(b.timestamp)
+    )[0]
+    : null;
+
+const oldestBackground = allBackgroundsWithId.length > 0
+    ? [...allBackgroundsWithId].sort(
+        (a: any, b: any) => parseTimestamp(a.timestamp) - parseTimestamp(b.timestamp)
+    )[0]
+    : null;
+
+const defaultTemplateData = oldestTemplate && oldestBackground
+    ? [{
+        id: oldestTemplate.id,
+        background_id: oldestBackground.id,
+        checked: true,
+        timestamp: new Date().toISOString(),
+    }]
+    : [];
+
+// Guardar datos de la compañía
+await saveDataDocumentsQuery({
+    documentRef,
+    data: {
+        ...newData.company,
+        adminId: documentRefUser.id,
+        templateData: defaultTemplateData,
+    },
+});
 
             // Enviar correo de bienvenida
             await handleSendWelcomeEmail(data);

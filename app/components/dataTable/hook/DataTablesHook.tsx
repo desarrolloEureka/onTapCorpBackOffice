@@ -917,6 +917,7 @@ const DataTablesHook = (reference: string) => {
         };
       } else if (reference === "workingday") {
         columnNamesToDisplay = {
+          uid: "Opciones",
           startDay: "Fecha Inicio",
           endDay: "Fecha Final",
           firstName: "Nombres",
@@ -934,8 +935,8 @@ const DataTablesHook = (reference: string) => {
           firstName: "Nombres",
           lastName: "Apellidos",
           companyNameToVisit: "Cliente",
-          addressStart: "Dirección Inicio",
-          addressEnd: "Dirección Final",
+          uid: "Opciones",
+          addressStart: "Dirección Reunión",
           contactName: "Contacto",
           email: "Correo Contacto",
           subject: "Asunto",
@@ -1071,12 +1072,18 @@ const DataTablesHook = (reference: string) => {
                       <MdModeEdit size={20} className="icon-actions-table" />
                     </IconButton>
                   </>
-                ) : reference === "campus" || reference === "fixedPoints" ? (
+                ) : reference === "campus" || reference === "fixedPoints" || reference === "routes" || reference === "zones" || reference === "workingday" ? (
                   <>
                     <IconButton onClick={() => onMainFormModalEdit(row)}>
                       <MdModeEdit size={20} className="icon-actions-table" />
                     </IconButton>
-                    <IconButton onClick={() => handleOpenGoogleMaps(row)}>
+                    <IconButton onClick={() => handleOpenGoogleMaps(row, reference)}>
+                      <FaLocationDot size={20} className="icon-actions-table" />
+                    </IconButton>
+                  </>
+                ) : reference === "meetings" ? (
+                  <>
+                    <IconButton onClick={() => handleOpenGoogleMaps(row, reference)}>
                       <FaLocationDot size={20} className="icon-actions-table" />
                     </IconButton>
                   </>
@@ -1415,9 +1422,92 @@ const DataTablesHook = (reference: string) => {
       })
   };
 
-  const handleOpenGoogleMaps = (row: any) => {
-    const { latitude, longitude } = row
-    const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
+  const handleOpenGoogleMaps = (row: any, reference: string) => {
+    let url = "";
+
+    if (reference === "routes") {
+      const points = row.geolocations;
+
+      if (!points || points.length === 0) {
+        console.warn("No hay geolocations para esta ruta");
+        return;
+      }
+
+      const origin = `${points[0].coords.lat},${points[0].coords.lng}`;
+      const destination = `${points[points.length - 1].coords.lat},${points[points.length - 1].coords.lng}`;
+      const waypoints = points
+        .slice(1, -1)
+        .map((p: any) => `${p.coords.lat},${p.coords.lng}`)
+        .join("|");
+
+      url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${
+        waypoints ? `&waypoints=${waypoints}` : ""
+      }&travelmode=driving`;
+    } else if (reference === "zones") {
+      const points = (row.geolocations || []).filter(
+        (p: any) => p?.coords?.lat && p?.coords?.lng
+      );
+
+      if (points.length === 0) {
+        console.warn("No hay geolocations validas para esta zona");
+        return;
+      }
+
+      if (points.length === 1) {
+        const { lat, lng } = points[0].coords;
+        url = `https://www.google.com/maps?q=${lat},${lng}`;
+      } else {
+        const origin = `${points[0].coords.lat},${points[0].coords.lng}`;
+        const destination = origin;
+        const waypoints = points
+          .slice(1)
+          .map((p: any) => `${p.coords.lat},${p.coords.lng}`)
+          .join("|");
+
+        url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}&travelmode=driving`;
+      }
+    } else if (reference === "meetings") {
+      const { latitudeStart, longitudeStart } = row;
+
+      if (!latitudeStart || !longitudeStart) {
+        console.warn("No hay coordenadas para esta reunion");
+        return;
+      }
+
+      url = `https://www.google.com/maps?q=${latitudeStart},${longitudeStart}`;
+
+      window.open(url, "_blank", "noopener,noreferrer");
+      return;
+    } else if (reference === "workingday") {
+      const { latitudeStartDay, longitudeStartDay, latitudeEndDay, longitudeEndDay } = row;
+
+      const hasStart = latitudeStartDay && longitudeStartDay;
+      const hasEnd = latitudeEndDay && longitudeEndDay;
+
+      if (!hasStart && !hasEnd) {
+        console.warn("No hay coordenadas para esta jornada laboral");
+        return;
+      }
+
+      const sameLocation =
+        hasStart && hasEnd &&
+        latitudeStartDay === latitudeEndDay &&
+        longitudeStartDay === longitudeEndDay;
+
+      if (sameLocation || (hasStart && !hasEnd)) {
+        url = `https://www.google.com/maps?q=${latitudeStartDay},${longitudeStartDay}`;
+      } else if (!hasStart && hasEnd) {
+        url = `https://www.google.com/maps?q=${latitudeEndDay},${longitudeEndDay}`;
+      } else {
+        url = `https://www.google.com/maps/dir/?api=1&origin=${latitudeStartDay},${longitudeStartDay}&destination=${latitudeEndDay},${longitudeEndDay}&travelmode=driving`;
+      }
+
+      window.open(url, "_blank", "noopener,noreferrer");
+      return;
+    } else {
+      const { latitude, longitude } = row;
+      url = `https://www.google.com/maps?q=${latitude},${longitude}`;
+    }
 
     window.open(url, "_blank", "noopener,noreferrer");
   };
